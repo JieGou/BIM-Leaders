@@ -65,6 +65,7 @@
     <Compile Include="Commands\Family_Voids_Select.cs" />
     <Compile Include="Commands\Grids_Align.cs" />
     <Compile Include="Commands\Levels_Align.cs" />
+    <Compile Include="Commands\Stairs_Steps_Enumerate.cs" />
     <Compile Include="Forms\Levels_Align_Form.cs">
       <SubType>Form</SubType>
     </Compile>
