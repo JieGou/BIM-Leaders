@@ -154,6 +154,16 @@ namespace _BIM_Leaders
             pushbutton_4_3.ToolTip = "Align Levels Ends";
             pushbutton_4_3.LongDescription = "Can be useful on elevation and section views. Tags on ends of the levels can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option";
 
+            // Add Button
+            PushButtonData button_4_4 = new PushButtonData("button_4_4", "Steps\r\nEnumerate", path, "_BIM_Leaders.Stairs_Steps_Enumerate");
+            button_4_4.AvailabilityClassName = "_BIM_Leaders.ViewIsSection";
+            PushButton pushbutton_4_4 = panel_4.AddItem(button_4_4) as PushButton;
+            Uri imagePath_4_4 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Stairs_Steps_Enumerate.png");
+            BitmapImage image_4_4 = new BitmapImage(imagePath_4_4);
+            pushbutton_4_4.LargeImage = image_4_4;
+            pushbutton_4_4.ToolTip = "Enumerate Stairs Steps";
+            pushbutton_4_4.LongDescription = "Can be useful on section views. Note that only one staircase need to be visible, so check view depth before run";
+
             return Result.Succeeded;
         }
     }

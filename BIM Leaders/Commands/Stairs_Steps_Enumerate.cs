@@ -47,6 +47,7 @@ namespace _BIM_Leaders
                 // Getting input from user
                 bool right_side = true;
                 double start_number = 1;
+                /*
                 using (Dimension_Section_Floors_Form form = new Dimension_Section_Floors_Form())
                 {
                     form.ShowDialog();
@@ -57,8 +58,9 @@ namespace _BIM_Leaders
                         input_thickness_cm = Decimal.ToDouble(form.Result_Thickness());
                     }
                 }
+                
                 double input_thickness = UnitUtils.ConvertToInternalUnits(input_thickness_cm, DisplayUnitType.DUT_CENTIMETERS);
-
+                */
                 XYZ zero = new XYZ(0, 0, 0);
 
                 // Get Floors
@@ -88,7 +90,7 @@ namespace _BIM_Leaders
                 int count = 0;
                 int grouped = 0;
                 int unpinned = 0;
-
+                
                 // Filtering for multistairs that are in groups
                 List<MultistoryStairs> stairs_ms = new List<MultistoryStairs>();
                 foreach(MultistoryStairs m in stairs_ms_all)
@@ -135,20 +137,13 @@ namespace _BIM_Leaders
                 }
 
                 // Changing stairs order in a list according to base height
-                List<Stairs> stairs_sorted = new List<Stairs>();
-                for (int i = 0; i < stairs.Count; i++)
-                {
-                    for(int j = 0; j < levels.Count; j++)
-                    {
-
-                    }
-                }    
-
+                List<Stairs> stairs_sorted =  stairs.OrderBy(d => levels.IndexOf(d.BaseElevation)).ToList();
+                
                 // Create annotations
                 using (Transaction trans = new Transaction(doc, "Enumerate stairs"))
                 {
                     trans.Start();
-
+                    
                     // Unpinning groups (stairs) in multistairs
                     foreach (MultistoryStairs m in stairs_ms)
                     {
@@ -165,78 +160,78 @@ namespace _BIM_Leaders
                             }
                         }
                     }
-
+                    /*
                     risers_below = int(IN[0]);
-side = IN[1]
+                    side = IN[1]
 
-# Changing stairs order in a list according to base height
-zipped = zip(levels, stairs)
-stairs = [x for _, x in sorted(zipped)]
+                    # Changing stairs order in a list according to base height
+                    zipped = zip(levels, stairs)
+                    stairs = [x for _, x in sorted(zipped)]
 
-#  Changing thread numbers
-for stair in range(len(stairs)):
+                    #  Changing thread numbers
+                    for stair in range(len(stairs)):
 
-    parameter = stairs[stair].get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX)
+                        parameter = stairs[stair].get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX)
 
-    parameter.Set(risers_below)
+                        parameter.Set(risers_below)
 
-    risers_below += stairs[stair].ActualRisersNumber
+                        risers_below += stairs[stair].ActualRisersNumber
 
-#  Creating thread numbers on the view
-for run in range(len(runs)):
+                    #  Creating thread numbers on the view
+                    for run in range(len(runs)):
 
-    if side:
-		reference = runs[run].GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter)
+                        if side:
+		                    reference = runs[run].GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter)
 
-    else:
-		reference = runs[run].GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter)
+                        else:
+		                    reference = runs[run].GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter)
 
-    run_id = Autodesk.Revit.DB.LinkElementId(runs[run].Id)
-
-
-    try:
-		NumberSystem.Create(doc, view_id, run_id, reference)
-
-        count += 1
-
-    except:
-                                count += 1
+                        run_id = Autodesk.Revit.DB.LinkElementId(runs[run].Id)
 
 
-TransactionManager.Instance.TransactionTaskDone()
+                        try:
+		                    NumberSystem.Create(doc, view_id, run_id, reference)
 
-text = ""
-if grouped:
-	text += str(grouped)
+                            count += 1
 
-    text += " stairs are in groups! Exclude them from groups! "
-text += str(count)
-text += " runs with "
-text += str(risers_below - 1)
-text += " treads was numerated. "
-if unpinned:
-	text += str(unpinned)
+                        except:
+                                                    count += 1
 
-    text += " stairs was unpinned!"
-"""
-if pinned:
-	text += str(pinned)
 
-    text += " stairs are pinned!"
-"""
-OUT = text
+                    TransactionManager.Instance.TransactionTaskDone()
+
+                    text = ""
+                    if grouped:
+	                    text += str(grouped)
+
+                        text += " stairs are in groups! Exclude them from groups! "
+                    text += str(count)
+                    text += " runs with "
+                    text += str(risers_below - 1)
+                    text += " treads was numerated. "
+                    if unpinned:
+	                    text += str(unpinned)
+
+                        text += " stairs was unpinned!"
+                    """
+                    if pinned:
+	                    text += str(pinned)
+
+                        text += " stairs are pinned!"
+                    """
+                    */
 
                     trans.Commit();
 
-                    if (count == 0)
+                    if (count != 0)
                     {
                         TaskDialog.Show("Section Annotations", "No annotations created");
                     }
                     else
                     {
-                        if (count_spots == 0)
+                        if (0 == 0)
                         {
-                            TaskDialog.Show("Section Annotations", string.Format("Dimension with {0} segments created", count.ToString()));
+                            TaskDialog.Show("Section Annotations", string.Format("000"));
                         }
                         else
                         {
