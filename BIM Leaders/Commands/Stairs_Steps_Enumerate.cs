@@ -166,7 +166,7 @@ namespace _BIM_Leaders
                         }
                     }
 
-risers_below = int(IN[0])
+                    risers_below = int(IN[0]);
 side = IN[1]
 
 # Changing stairs order in a list according to base height
