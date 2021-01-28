@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIM Leaders", "BIM Leaders\BIM Leaders.csproj", "{CC132ACA-21DD-4E90-B767-F7FC7B339FCA}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BIM Leaders Setup", "BIM Leaders Setup\BIM Leaders Setup.vdproj", "{F36DFCE6-4E97-4E6F-B423-472C586E7042}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CC132ACA-21DD-4E90-B767-F7FC7B339FCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC132ACA-21DD-4E90-B767-F7FC7B339FCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC132ACA-21DD-4E90-B767-F7FC7B339FCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC132ACA-21DD-4E90-B767-F7FC7B339FCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F36DFCE6-4E97-4E6F-B423-472C586E7042}.Debug|Any CPU.ActiveCfg = Debug
+		{F36DFCE6-4E97-4E6F-B423-472C586E7042}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8628A0C7-6E01-41F9-BC25-997B44FEA902}
+	EndGlobalSection
+EndGlobal

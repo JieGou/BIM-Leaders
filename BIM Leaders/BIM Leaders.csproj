@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CC132ACA-21DD-4E90-B767-F7FC7B339FCA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>_BIM_Leaders</RootNamespace>
+    <AssemblyName>BIM Leaders</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>BIM Leaders.addin</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="RevitAPI">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\Dimension_Section_Floors.cs" />
+    <Compile Include="Commands\DWG_Name_Delete.cs" />
+    <Compile Include="Commands\DWG_View_Found.cs" />
+    <Compile Include="Commands\Element_Paint_Remove.cs" />
+    <Compile Include="Commands\Family_Zero_Coordinates.cs" />
+    <Compile Include="Commands\Family_Voids_Select.cs" />
+    <Compile Include="Commands\Grids_Align.cs" />
+    <Compile Include="Commands\Levels_Align.cs" />
+    <Compile Include="Forms\Levels_Align_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Levels_Align_Form.Designer.cs">
+      <DependentUpon>Levels_Align_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Grids_Align_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Grids_Align_Form.Designer.cs">
+      <DependentUpon>Grids_Align_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dimension_Section_Floors_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Dimension_Section_Floors_Form.Designer.cs">
+      <DependentUpon>Dimension_Section_Floors_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DWG_Name_Delete_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DWG_Name_Delete_Form.Designer.cs">
+      <DependentUpon>DWG_Name_Delete_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ribbon.cs" />
+    <None Include="Sample.cs" />
+    <None Include="ExternalDBApp.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BIM Leaders.addin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\Levels_Align_Form.resx">
+      <DependentUpon>Levels_Align_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Grids_Align_Form.resx">
+      <DependentUpon>Grids_Align_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Dimension_Section_Floors_Form.resx">
+      <DependentUpon>Dimension_Section_Floors_Form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DWG_Name_Delete_Form.resx">
+      <DependentUpon>DWG_Name_Delete_Form.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2020"</PostBuildEvent>
+  </PropertyGroup>
+</Project>
