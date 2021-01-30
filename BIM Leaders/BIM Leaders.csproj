@@ -66,6 +66,12 @@
     <Compile Include="Commands\Grids_Align.cs" />
     <Compile Include="Commands\Levels_Align.cs" />
     <Compile Include="Commands\Stairs_Steps_Enumerate.cs" />
+    <Compile Include="Forms\Stairs_Steps_Enumerate_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Stairs_Steps_Enumerate_Form.Designer.cs">
+      <DependentUpon>Stairs_Steps_Enumerate_Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Levels_Align_Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,6 +107,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Stairs_Steps_Enumerate_Form.resx">
+      <DependentUpon>Stairs_Steps_Enumerate_Form.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Levels_Align_Form.resx">
       <DependentUpon>Levels_Align_Form.cs</DependentUpon>
     </EmbeddedResource>

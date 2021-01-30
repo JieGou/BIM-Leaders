@@ -47,42 +47,37 @@ namespace _BIM_Leaders
                 // Getting input from user
                 bool right_side = true;
                 double start_number = 1;
-                /*
-                using (Dimension_Section_Floors_Form form = new Dimension_Section_Floors_Form())
+                
+                using (Stairs_Steps_Enumerate_Form form = new Stairs_Steps_Enumerate_Form())
                 {
                     form.ShowDialog();
 
                     if (form.DialogResult == System.Windows.Forms.DialogResult.OK)
                     {
-                        input_spots = form.Result_Spots();
-                        input_thickness_cm = Decimal.ToDouble(form.Result_Thickness());
+                        right_side = form.Result_Side();
+                        start_number = form.Result_Number();
                     }
                 }
-                
-                double input_thickness = UnitUtils.ConvertToInternalUnits(input_thickness_cm, DisplayUnitType.DUT_CENTIMETERS);
-                */
-                XYZ zero = new XYZ(0, 0, 0);
 
                 // Get Floors
-                FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                IEnumerable<MultistoryStairs> stairs_ms_all = collector.OfCategory(BuiltInCategory.OST_MultistoryStairs)
+                IEnumerable<MultistoryStairs> stairs_ms_all = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_MultistoryStairs)
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<MultistoryStairs>();
 
                 // Selecting all levels in the view
-                IEnumerable<ElementId> levels_all = collector.OfCategory(BuiltInCategory.OST_Levels)
+                IEnumerable<ElementId> levels_all = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Levels)
                     .WhereElementIsNotElementType()
                     .ToElementIds();
 
                 // Selecting all runs in the view
-                IEnumerable<StairsRun> runs = collector.OfCategory(BuiltInCategory.OST_StairsRuns)
+                IEnumerable<StairsRun> runs = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_StairsRuns)
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<StairsRun>();
 
                 // Selecting all stairs in the view
-                IEnumerable<Stairs> stairs_all = collector.OfCategory(BuiltInCategory.OST_Stairs)
+                IEnumerable<Stairs> stairs_all = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Stairs)
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<Stairs>();
@@ -137,7 +132,7 @@ namespace _BIM_Leaders
                 }
 
                 // Changing stairs order in a list according to base height
-                List<Stairs> stairs_sorted =  stairs.OrderBy(d => levels.IndexOf(d.BaseElevation)).ToList();
+                IOrderedEnumerable<Stairs> stairs_sorted =  stairs.OrderBy(d => d.BaseElevation);
                 
                 // Create annotations
                 using (Transaction trans = new Transaction(doc, "Enumerate stairs"))
@@ -160,83 +155,70 @@ namespace _BIM_Leaders
                             }
                         }
                     }
-                    /*
-                    risers_below = int(IN[0]);
-                    side = IN[1]
 
-                    # Changing stairs order in a list according to base height
-                    zipped = zip(levels, stairs)
-                    stairs = [x for _, x in sorted(zipped)]
+                    // Changing thread numbers
+                    foreach(Stairs s in stairs_sorted)
+                    {
+                        Parameter p = s.get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX);
+                        p.Set(start_number);
+                        start_number += s.ActualRisersNumber;
+                    }
 
-                    #  Changing thread numbers
-                    for stair in range(len(stairs)):
+                    // Creating thread numbers on the view
+                    foreach(StairsRun r in runs)
+                    {
+                        Reference refer = r.GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter);
 
-                        parameter = stairs[stair].get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX)
+                        if(right_side)
+                        {
+                            refer = r.GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter);
+                        }
 
-                        parameter.Set(risers_below)
+                        LinkElementId run_id = new LinkElementId(r.Id);
 
-                        risers_below += stairs[stair].ActualRisersNumber
-
-                    #  Creating thread numbers on the view
-                    for run in range(len(runs)):
-
-                        if side:
-		                    reference = runs[run].GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter)
-
-                        else:
-		                    reference = runs[run].GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter)
-
-                        run_id = Autodesk.Revit.DB.LinkElementId(runs[run].Id)
-
-
-                        try:
-		                    NumberSystem.Create(doc, view_id, run_id, reference)
-
-                            count += 1
-
-                        except:
-                                                    count += 1
-
-
-                    TransactionManager.Instance.TransactionTaskDone()
-
-                    text = ""
-                    if grouped:
-	                    text += str(grouped)
-
-                        text += " stairs are in groups! Exclude them from groups! "
-                    text += str(count)
-                    text += " runs with "
-                    text += str(risers_below - 1)
-                    text += " treads was numerated. "
-                    if unpinned:
-	                    text += str(unpinned)
-
-                        text += " stairs was unpinned!"
-                    """
-                    if pinned:
-	                    text += str(pinned)
-
-                        text += " stairs are pinned!"
-                    """
-                    */
+                        try
+                        {
+                            NumberSystem.Create(doc, view.Id, run_id, refer);
+                            count++;
+                        }
+                        catch
+                        {
+                            count++;
+                        }
+                    }
 
                     trans.Commit();
 
-                    if (count != 0)
+                    string text = "";
+                    if(grouped > 0)
+                    {
+                        text += grouped.ToString();
+                        text += " stairs are in groups! Exclude them from groups!";
+                    }
+                    text += count.ToString();
+                    text += " runs with ";
+                    text += (start_number - 1).ToString();
+                    text += " threads was numbered. ";
+                    if(unpinned > 0)
+                    {
+                        text += unpinned.ToString();
+                        text += " stairs was unpinned!";
+                    }
+                    /*
+                    if(pinned > 0)
+                    {
+                        text += pinned.ToString();
+                        text += " stairs are pinned!";
+                    }
+                    */
+
+                    if (count == 0)
                     {
                         TaskDialog.Show("Section Annotations", "No annotations created");
                     }
                     else
                     {
-                        if (0 == 0)
-                        {
-                            TaskDialog.Show("Section Annotations", string.Format("000"));
-                        }
-                        else
-                        {
-                            TaskDialog.Show("Section Annotations", string.Format("{0} spot elevations created", count.ToString()));
-                        }
+                        TaskDialog.Show("Section Annotations", text);
                     }
                 }
                 return Result.Succeeded;
