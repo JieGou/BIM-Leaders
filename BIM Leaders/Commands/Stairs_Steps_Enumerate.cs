@@ -55,7 +55,7 @@ namespace _BIM_Leaders
                     if (form.DialogResult == System.Windows.Forms.DialogResult.OK)
                     {
                         right_side = form.Result_Side();
-                        start_number = form.Result_Number();
+                        start_number = Decimal.ToDouble(form.Result_Number());
                     }
                 }
 

@@ -60,7 +60,7 @@ namespace _BIM_Leaders
             result_side_left = true;
         }
 
-        public bool Result_Spots()
+        public bool Result_Side()
         {
             bool result_side = false;
             if (result_side_right)
