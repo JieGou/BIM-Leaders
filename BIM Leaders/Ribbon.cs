@@ -76,6 +76,15 @@ namespace _BIM_Leaders
             pushbutton_1_1.ToolTip = "Delete all unused linestyles";
             pushbutton_1_1.LongDescription = "Linestyles cannot be deleted via Purge function. Use this command to purge all linestyles that are unneeded";
 
+            // Add Button
+            PushButtonData button_1_2 = new PushButtonData("button_1_2", "Delete IMPORT\r\nLinetypes", path, "_BIM_Leaders.Linetypes_IMPORT_Delete");
+            PushButton pushbutton_1_2 = panel_1.AddItem(button_1_2) as PushButton;
+            Uri imagePath_1_2 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Linetypes_IMPORT_Delete.png");
+            BitmapImage image_1_2 = new BitmapImage(imagePath_1_2);
+            pushbutton_1_2.LargeImage = image_1_2;
+            pushbutton_1_2.ToolTip = "Delete all linetypes of the given name";
+            pushbutton_1_2.LongDescription = "Can be useful to delete IMPORT linetypes after importing DWG files";
+
             // Create Ribbon Panel
             RibbonPanel panel_2 = application.CreateRibbonPanel("BIM Leaders", "DWG");
 
