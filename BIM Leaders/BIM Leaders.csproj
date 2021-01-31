@@ -109,7 +109,7 @@
     </Compile>
     <Compile Include="Ribbon.cs" />
     <None Include="Sample.cs" />
-    <None Include="ExternalDBApp.cs" />
+    <Compile Include="ExternalDBApp_Group_Restore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

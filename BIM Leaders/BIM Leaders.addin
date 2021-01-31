@@ -8,14 +8,14 @@
 		<VendorId>Pinchuk</VendorId>
 		<VendorDescription>42</VendorDescription>
 	</AddIn>
-	<!--<AddIn Type="DBApplication">
-		<Name>_42_Tools</Name>
-		<Assembly>42 Tools.dll</Assembly>
+	<AddIn Type="DBApplication">
+		<Name>_BIM_Leaders</Name>
+		<Assembly>BIM Leaders.dll</Assembly>
 		<AddInId>CADBFF10-CE2C-4729-8CDE-B3F5E1ABB310</AddInId>
-		<FullClassName>_42_Tools.ExternalDBApp</FullClassName>
-		<Text>Change in a Document</Text>
-		<Description>Event Register for Furniture Element Change</Description>
+		<FullClassName>_BIM_Leaders.ExternalDBApp_Group_Restore</FullClassName>
+		<Text>Group Restore in a Document</Text>
+		<Description>Event Register for Group Restore</Description>
 		<VendorId>Pinchuk</VendorId>
 		<VendorDescription>42</VendorDescription>
-	</AddIn>-->
+	</AddIn>
 </RevitAddIns>
