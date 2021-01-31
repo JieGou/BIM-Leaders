@@ -60,6 +60,10 @@ namespace _BIM_Leaders
                         input_spots = form.Result_Spots();
                         input_thickness_cm = Decimal.ToDouble(form.Result_Thickness());
                     }
+                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
+                    {
+                        return Result.Cancelled;
+                    }
                 }
                 double input_thickness = UnitUtils.ConvertToInternalUnits(input_thickness_cm, DisplayUnitType.DUT_CENTIMETERS);
 

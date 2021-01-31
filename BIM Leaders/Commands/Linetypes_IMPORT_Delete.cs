@@ -29,6 +29,10 @@ namespace _BIM_Leaders
                     {
                         name_delete = form.Result();
                     }
+                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
+                    {
+                        return Result.Cancelled;
+                    }
                 }
 
                 FilteredElementCollector collector = new FilteredElementCollector(doc);

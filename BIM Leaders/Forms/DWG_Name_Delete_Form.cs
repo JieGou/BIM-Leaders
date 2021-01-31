@@ -35,6 +35,7 @@ namespace _BIM_Leaders
         }
         private void Button_exit_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.Cancel;
             this.Close();
         }
         string result = "";

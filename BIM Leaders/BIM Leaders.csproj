@@ -35,6 +35,9 @@
   <PropertyGroup>
     <ApplicationManifest>BIM Leaders.addin</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Revit.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="RevitAPI">
@@ -133,6 +136,9 @@
     <EmbeddedResource Include="Forms\DWG_Name_Delete_Form.resx">
       <DependentUpon>DWG_Name_Delete_Form.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Revit.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

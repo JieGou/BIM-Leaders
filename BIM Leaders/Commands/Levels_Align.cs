@@ -35,6 +35,10 @@ namespace _BIM_Leaders
                         condition_side_2 = true;
                     }
                 }
+                if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
+                {
+                    return Result.Cancelled;
+                }
             }
 
             // Get UIDocument

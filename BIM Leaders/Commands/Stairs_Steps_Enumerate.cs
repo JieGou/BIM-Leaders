@@ -57,6 +57,10 @@ namespace _BIM_Leaders
                         right_side = form.Result_Side();
                         start_number = Decimal.ToDouble(form.Result_Number());
                     }
+                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
+                    {
+                        return Result.Cancelled;
+                    }
                 }
 
                 // Get Floors

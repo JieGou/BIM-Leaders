@@ -36,6 +36,7 @@ namespace _BIM_Leaders
         }
         private void Button_exit_Click(object sender, EventArgs e)
         {
+            DialogResult = DialogResult.Cancel;
             this.Close();
         }
         bool result_spots_1 = false;

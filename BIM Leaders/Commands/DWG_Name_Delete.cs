@@ -50,8 +50,12 @@ namespace _BIM_Leaders
                     {
                         import_name = form.Result();
                     }
+                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
+                    {
+                        return Result.Cancelled;
+                    }
 
-                    foreach(ImportInstance i in imports_all)
+                    foreach (ImportInstance i in imports_all)
                     {
                         string i_name = i.Category.Name;
                         if(import_name.Length > 0)
