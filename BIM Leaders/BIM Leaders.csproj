@@ -71,6 +71,7 @@
     <Compile Include="Commands\Linestyles_Unused_Delete.cs" />
     <Compile Include="Commands\Linetypes_IMPORT_Delete.cs" />
     <Compile Include="Commands\Stairs_Steps_Enumerate.cs" />
+    <Compile Include="Commands\Walls_Parallel.cs" />
     <Compile Include="Forms\Linetypes_IMPORT_Delete_Form.cs">
       <SubType>Form</SubType>
     </Compile>

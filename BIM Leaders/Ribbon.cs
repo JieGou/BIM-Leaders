@@ -52,6 +52,29 @@ namespace _BIM_Leaders
             }
         }
     }
+    // Get true if in plan view
+    public class ViewIsPlan : IExternalCommandAvailability
+    {
+        public static bool IsCommandAvaiable { get; internal set; }
+
+        public bool IsCommandAvailable(UIApplication applicationData, CategorySet selectedCategories)
+        {
+            try
+            {
+                ViewType v_type = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
+
+                if (v_type == ViewType.FloorPlan)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+    }
     class ExternalApplication : IExternalApplication
     {
         public Result OnShutdown(UIControlledApplication application)
@@ -73,8 +96,8 @@ namespace _BIM_Leaders
             Uri imagePath_1_1 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Linestyles_Unused_Delete.png");
             BitmapImage image_1_1 = new BitmapImage(imagePath_1_1);
             pushbutton_1_1.LargeImage = image_1_1;
-            pushbutton_1_1.ToolTip = "Delete all unused linestyles";
-            pushbutton_1_1.LongDescription = "Linestyles cannot be deleted via Purge function. Use this command to purge all linestyles that are unneeded";
+            pushbutton_1_1.ToolTip = "Delete all unused linestyles.";
+            pushbutton_1_1.LongDescription = "Linestyles cannot be deleted via Purge function. Use this command to purge all linestyles that are unneeded.";
 
             // Add Button
             PushButtonData button_1_2 = new PushButtonData("button_1_2", "Delete IMPORT\r\nLinetypes", path, "_BIM_Leaders.Linetypes_IMPORT_Delete");
@@ -82,8 +105,18 @@ namespace _BIM_Leaders
             Uri imagePath_1_2 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Linetypes_IMPORT_Delete.png");
             BitmapImage image_1_2 = new BitmapImage(imagePath_1_2);
             pushbutton_1_2.LargeImage = image_1_2;
-            pushbutton_1_2.ToolTip = "Delete all linetypes of the given name";
-            pushbutton_1_2.LongDescription = "Can be useful to delete IMPORT linetypes after importing DWG files";
+            pushbutton_1_2.ToolTip = "Delete all linetypes of the given name.";
+            pushbutton_1_2.LongDescription = "Can be useful to delete IMPORT linetypes after importing DWG files.";
+
+            // Add Button
+            PushButtonData button_1_3 = new PushButtonData("button_1_3", "Walls\r\nParralel", path, "_BIM_Leaders.Walls_Parallel");
+            button_1_3.AvailabilityClassName = "_BIM_Leaders.ViewIsPlan";
+            PushButton pushbutton_1_3 = panel_1.AddItem(button_1_3) as PushButton;
+            Uri imagePath_1_3 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Walls_Parallel.png");
+            BitmapImage image_1_3 = new BitmapImage(imagePath_1_3);
+            pushbutton_1_3.LargeImage = image_1_3;
+            pushbutton_1_3.ToolTip = "Walls parallel check.";
+            pushbutton_1_3.LongDescription = "Creates wall checking filter. All non-parallel and non-perpendicular walls will be colored.";
 
             // Create Ribbon Panel
             RibbonPanel panel_2 = application.CreateRibbonPanel("BIM Leaders", "DWG");
@@ -94,7 +127,7 @@ namespace _BIM_Leaders
             Uri imagePath_2_1 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_DWG_View_Found.png");
             BitmapImage image_2_1 = new BitmapImage(imagePath_2_1);
             pushbutton_2_1.LargeImage = image_2_1;
-            pushbutton_2_1.ToolTip = "Shows information about all DWG files imports";
+            pushbutton_2_1.ToolTip = "Shows information about all DWG files imports.";
             pushbutton_2_1.LongDescription = "Shows name of the import, view on which it lays on (if the import is 2D), and import type (Import or Link).";
 
             // Add Button
@@ -103,7 +136,7 @@ namespace _BIM_Leaders
             Uri imagePath_2_2 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_DWG_Name_Delete.png");
             BitmapImage image_2_2 = new BitmapImage(imagePath_2_2);
             pushbutton_2_2.LargeImage = image_2_2;
-            pushbutton_2_2.ToolTip = "Delete DWG by selected name on all views";
+            pushbutton_2_2.ToolTip = "Delete DWG by selected name on all views.";
             pushbutton_2_2.LongDescription = "Usable to delete imported DWG, because it can be on many views, and it takes a time to find all those views and delete the DWG manually.";
 
 
@@ -116,8 +149,8 @@ namespace _BIM_Leaders
             Uri imagePath_3_1 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Element_Paint_Remove.png");
             BitmapImage image_3_1 = new BitmapImage(imagePath_3_1);
             pushbutton_3_1.LargeImage = image_3_1;
-            pushbutton_3_1.ToolTip = "Remove paint from all faces of element";
-            pushbutton_3_1.LongDescription = "Usable if need to clear paint from all faces of some element. Usable only for Paint tool";
+            pushbutton_3_1.ToolTip = "Remove paint from all faces of element.";
+            pushbutton_3_1.LongDescription = "Usable if need to clear paint from all faces of some element. Usable only for Paint tool.";
 
 
             // Create Ribbon Panel
@@ -130,8 +163,8 @@ namespace _BIM_Leaders
             Uri imagePath_4_1 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Familiy_Voids_Select.png");
             BitmapImage image_4_1 = new BitmapImage(imagePath_4_1);
             pushbutton_4_1.LargeImage = image_4_1;
-            pushbutton_4_1.ToolTip = "Select voids in a current family";
-            pushbutton_4_1.LongDescription = "Usable if need to select void geometry. This is hard if voids not joined with family geometry";
+            pushbutton_4_1.ToolTip = "Select voids in a current family.";
+            pushbutton_4_1.LongDescription = "Usable if need to select void geometry. This is hard if voids not joined with family geometry.";
 
             // Add Button
             PushButtonData button_4_2 = new PushButtonData("button_4_2", "Find\r\nZero", path, "_BIM_Leaders.Family_Zero_Coordinates");
@@ -140,8 +173,8 @@ namespace _BIM_Leaders
             Uri imagePath_4_2 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Family_Zero_Coordinates.png");
             BitmapImage image_4_2 = new BitmapImage(imagePath_4_2);
             pushbutton_4_2.LargeImage = image_4_2;
-            pushbutton_4_2.ToolTip = "Find Femily Zero";
-            pushbutton_4_2.LongDescription = "Creates lines around zero coordinates in a current family. Usable for Profile family and other annotation family types";
+            pushbutton_4_2.ToolTip = "Find Femily Zero.";
+            pushbutton_4_2.LongDescription = "Creates lines around zero coordinates in a current family. Usable for Profile family and other annotation family types.";
 
 
             // Create Ribbon Panel
@@ -154,8 +187,8 @@ namespace _BIM_Leaders
             Uri imagePath_5_1 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Dimensions_Section_Floors.png");
             BitmapImage image_5_1 = new BitmapImage(imagePath_5_1);
             pushbutton_5_1.LargeImage = image_5_1;
-            pushbutton_5_1.ToolTip = "Dimensions or elevation spots on section";
-            pushbutton_5_1.LongDescription = "Automatically puts annotations on a current section. Select a vertical line as a reference for annotations arrangement";
+            pushbutton_5_1.ToolTip = "Dimensions or elevation spots on section.";
+            pushbutton_5_1.LongDescription = "Automatically puts annotations on a current section. Select a vertical line as a reference for annotations arrangement.";
             
             // Add Button
             PushButtonData button_5_2 = new PushButtonData("button_5_2", "Align\r\nGrids", path, "_BIM_Leaders.Grids_Align");
@@ -163,8 +196,8 @@ namespace _BIM_Leaders
             Uri imagePath_5_2 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Grids_Align.png");
             BitmapImage image_5_2 = new BitmapImage(imagePath_5_2);
             pushbutton_5_2.LargeImage = image_5_2;
-            pushbutton_5_2.ToolTip = "Align Grid Ends";
-            pushbutton_5_2.LongDescription = "Can be useful on elevation and section views. Bubbles on ends of the grids can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option";
+            pushbutton_5_2.ToolTip = "Align Grid Ends.";
+            pushbutton_5_2.LongDescription = "Can be useful on elevation and section views. Bubbles on ends of the grids can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.";
 
             // Add Button
             PushButtonData button_5_3 = new PushButtonData("button_5_3", "Align\r\nLevels", path, "_BIM_Leaders.Levels_Align");
@@ -172,8 +205,8 @@ namespace _BIM_Leaders
             Uri imagePath_5_3 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Levels_Align.png");
             BitmapImage image_5_3 = new BitmapImage(imagePath_5_3);
             pushbutton_5_3.LargeImage = image_5_3;
-            pushbutton_5_3.ToolTip = "Align Levels Ends";
-            pushbutton_5_3.LongDescription = "Can be useful on elevation and section views. Tags on ends of the levels can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option";
+            pushbutton_5_3.ToolTip = "Align Levels Ends.";
+            pushbutton_5_3.LongDescription = "Can be useful on elevation and section views. Tags on ends of the levels can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.";
 
             // Add Button
             PushButtonData button_5_4 = new PushButtonData("button_5_4", "Steps\r\nEnumerate", path, "_BIM_Leaders.Stairs_Steps_Enumerate");
@@ -182,8 +215,8 @@ namespace _BIM_Leaders
             Uri imagePath_5_4 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Stairs_Steps_Enumerate.png");
             BitmapImage image_5_4 = new BitmapImage(imagePath_5_4);
             pushbutton_5_4.LargeImage = image_5_4;
-            pushbutton_5_4.ToolTip = "Enumerate Stairs Steps";
-            pushbutton_5_4.LongDescription = "Can be useful on section views. Note that only one staircase need to be visible, so check view depth before run";
+            pushbutton_5_4.ToolTip = "Enumerate Stairs Steps.";
+            pushbutton_5_4.LongDescription = "Can be useful on section views. Note that only one staircase need to be visible, so check view depth before run.";
 
             return Result.Succeeded;
         }
