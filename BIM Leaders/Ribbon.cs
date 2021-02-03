@@ -91,32 +91,41 @@ namespace _BIM_Leaders
             RibbonPanel panel_1 = application.CreateRibbonPanel("BIM Leaders", "Standards");
 
             // Add Button
-            PushButtonData button_1_1 = new PushButtonData("button_1_1", "Delete Unused\r\nLinestyles", path, "_BIM_Leaders.Linestyles_Unused_Delete");
+            PushButtonData button_1_1 = new PushButtonData("button_1_1", "Names Prefix\r\nChange", path, "_BIM_Leaders.Names_Prefix_Change");
             PushButton pushbutton_1_1 = panel_1.AddItem(button_1_1) as PushButton;
-            Uri imagePath_1_1 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Linestyles_Unused_Delete.png");
+            Uri imagePath_1_1 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Names_Prefix_Change.png");
             BitmapImage image_1_1 = new BitmapImage(imagePath_1_1);
             pushbutton_1_1.LargeImage = image_1_1;
-            pushbutton_1_1.ToolTip = "Delete all unused linestyles.";
-            pushbutton_1_1.LongDescription = "Linestyles cannot be deleted via Purge function. Use this command to purge all linestyles that are unneeded.";
+            pushbutton_1_1.ToolTip = "Change all names prefixes.";
+            pushbutton_1_1.LongDescription = "Check which categories need to be renamed. Also can be useful to change part of the names in the middle or at the end.";
 
             // Add Button
-            PushButtonData button_1_2 = new PushButtonData("button_1_2", "Delete IMPORT\r\nLinetypes", path, "_BIM_Leaders.Linetypes_IMPORT_Delete");
+            PushButtonData button_1_2 = new PushButtonData("button_1_2", "Delete Unused\r\nLinestyles", path, "_BIM_Leaders.Linestyles_Unused_Delete");
             PushButton pushbutton_1_2 = panel_1.AddItem(button_1_2) as PushButton;
-            Uri imagePath_1_2 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Linetypes_IMPORT_Delete.png");
+            Uri imagePath_1_2 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Linestyles_Unused_Delete.png");
             BitmapImage image_1_2 = new BitmapImage(imagePath_1_2);
             pushbutton_1_2.LargeImage = image_1_2;
-            pushbutton_1_2.ToolTip = "Delete all linetypes of the given name.";
-            pushbutton_1_2.LongDescription = "Can be useful to delete IMPORT linetypes after importing DWG files.";
+            pushbutton_1_2.ToolTip = "Delete all unused linestyles.";
+            pushbutton_1_2.LongDescription = "Linestyles cannot be deleted via Purge function. Use this command to purge all linestyles that are unneeded.";
 
             // Add Button
-            PushButtonData button_1_3 = new PushButtonData("button_1_3", "Walls\r\nParralel", path, "_BIM_Leaders.Walls_Parallel");
-            button_1_3.AvailabilityClassName = "_BIM_Leaders.ViewIsPlan";
+            PushButtonData button_1_3 = new PushButtonData("button_1_3", "Delete IMPORT\r\nLinetypes", path, "_BIM_Leaders.Linetypes_IMPORT_Delete");
             PushButton pushbutton_1_3 = panel_1.AddItem(button_1_3) as PushButton;
-            Uri imagePath_1_3 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Walls_Parallel.png");
+            Uri imagePath_1_3 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Linetypes_IMPORT_Delete.png");
             BitmapImage image_1_3 = new BitmapImage(imagePath_1_3);
             pushbutton_1_3.LargeImage = image_1_3;
-            pushbutton_1_3.ToolTip = "Walls parallel check.";
-            pushbutton_1_3.LongDescription = "Creates wall checking filter. All non-parallel and non-perpendicular walls will be colored.";
+            pushbutton_1_3.ToolTip = "Delete all linetypes of the given name.";
+            pushbutton_1_3.LongDescription = "Can be useful to delete IMPORT linetypes after importing DWG files.";
+
+            // Add Button
+            PushButtonData button_1_4 = new PushButtonData("button_1_4", "Walls\r\nParralel", path, "_BIM_Leaders.Walls_Parallel");
+            button_1_4.AvailabilityClassName = "_BIM_Leaders.ViewIsPlan";
+            PushButton pushbutton_1_4 = panel_1.AddItem(button_1_4) as PushButton;
+            Uri imagePath_1_4 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Walls_Parallel.png");
+            BitmapImage image_1_4 = new BitmapImage(imagePath_1_4);
+            pushbutton_1_4.LargeImage = image_1_4;
+            pushbutton_1_4.ToolTip = "Walls parallel check.";
+            pushbutton_1_4.LongDescription = "Creates wall checking filter. All non-parallel and non-perpendicular walls will be colored.";
 
             // Create Ribbon Panel
             RibbonPanel panel_2 = application.CreateRibbonPanel("BIM Leaders", "DWG");

@@ -70,8 +70,15 @@
     <Compile Include="Commands\Levels_Align.cs" />
     <Compile Include="Commands\Linestyles_Unused_Delete.cs" />
     <Compile Include="Commands\Linetypes_IMPORT_Delete.cs" />
+    <Compile Include="Commands\Names_Prefix_Change.cs" />
     <Compile Include="Commands\Stairs_Steps_Enumerate.cs" />
     <Compile Include="Commands\Walls_Parallel.cs" />
+    <Compile Include="Forms\Names_Prefix_Change_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Names_Prefix_Change_Form.Designer.cs">
+      <DependentUpon>Names_Prefix_Change_Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Linetypes_IMPORT_Delete_Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +126,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\Names_Prefix_Change_Form.resx">
+      <DependentUpon>Names_Prefix_Change_Form.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Linetypes_IMPORT_Delete_Form.resx">
       <DependentUpon>Linetypes_IMPORT_Delete_Form.cs</DependentUpon>
     </EmbeddedResource>
