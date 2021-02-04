@@ -30,6 +30,11 @@ namespace _BIM_Leaders
         {
             last_point = new System.Drawing.Point(e.X,  e.Y);
         }
+        // Tooltip
+        private void label1_MouseHover(object sender, EventArgs e)
+        {
+            toolTip_thickness.Show("From 0 to 50 cm", label1);
+        }
         private void Button_ok_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
