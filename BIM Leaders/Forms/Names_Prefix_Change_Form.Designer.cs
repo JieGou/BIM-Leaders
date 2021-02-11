@@ -25,7 +25,7 @@ namespace _BIM_Leaders
             this.button_rename.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.button_rename.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.button_rename.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_rename.Location = new System.Drawing.Point(235, 42);
+            this.button_rename.Location = new System.Drawing.Point(235, 407);
             this.button_rename.Name = "button_rename";
             this.button_rename.Size = new System.Drawing.Size(75, 23);
             this.button_rename.TabIndex = 1;
@@ -46,7 +46,7 @@ namespace _BIM_Leaders
             // button_exit
             // 
             this.button_exit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_exit.Location = new System.Drawing.Point(235, 71);
+            this.button_exit.Location = new System.Drawing.Point(235, 436);
             this.button_exit.Name = "button_exit";
             this.button_exit.Size = new System.Drawing.Size(75, 23);
             this.button_exit.TabIndex = 3;
@@ -97,27 +97,42 @@ namespace _BIM_Leaders
             this.checkedListBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.checkedListBox1.FormattingEnabled = true;
             this.checkedListBox1.Items.AddRange(new object[] {
-            "Annotate",
-            "Architecture",
             "Area Schemes",
+            "Browser Organization",
+            "Building Pad Types",
+            "Ceiling Types",
+            "Curtain System Types",
+            "Dimension Types",
             "Families",
-            "Groups",
-            "Manage",
-            "Massing & Site",
+            "Filled Region Types",
+            "Grid Types",
+            "Group Types",
+            "Level Types",
+            "Line Patterns",
             "Materials",
-            "View"});
+            "Panel Types",
+            "Railing Types",
+            "Roof Types",
+            "Spot Dimension Types",
+            "Stair Types",
+            "Stair Landing Types",
+            "Stair Run Types",
+            "Text Note Types",
+            "Views",
+            "Wall Types",
+            "Wall Foundation Types"});
             this.checkedListBox1.Location = new System.Drawing.Point(15, 97);
             this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(201, 287);
+            this.checkedListBox1.Size = new System.Drawing.Size(201, 362);
             this.checkedListBox1.TabIndex = 8;
-            this.checkedListBox1.SelectedIndexChanged += new System.EventHandler(this.checkedListBox1_SelectedIndexChanged);
+            this.checkedListBox1.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBox1_SelectedIndexChanged);
             // 
             // Names_Prefix_Change_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(322, 423);
+            this.ClientSize = new System.Drawing.Size(322, 480);
             this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);

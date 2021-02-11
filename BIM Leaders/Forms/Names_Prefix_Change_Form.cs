@@ -55,7 +55,7 @@ namespace _BIM_Leaders
                 button_rename.Enabled = true;
             }
         }
-        private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void checkedListBox1_SelectedIndexChanged(object sender, ItemCheckEventArgs e)
         {
             categories.Add(checkedListBox1.GetItemChecked(0));
             categories.Add(checkedListBox1.GetItemChecked(1));
@@ -66,6 +66,21 @@ namespace _BIM_Leaders
             categories.Add(checkedListBox1.GetItemChecked(6));
             categories.Add(checkedListBox1.GetItemChecked(7));
             categories.Add(checkedListBox1.GetItemChecked(8));
+            categories.Add(checkedListBox1.GetItemChecked(9));
+            categories.Add(checkedListBox1.GetItemChecked(10));
+            categories.Add(checkedListBox1.GetItemChecked(11));
+            categories.Add(checkedListBox1.GetItemChecked(12));
+            categories.Add(checkedListBox1.GetItemChecked(13));
+            categories.Add(checkedListBox1.GetItemChecked(14));
+            categories.Add(checkedListBox1.GetItemChecked(15));
+            categories.Add(checkedListBox1.GetItemChecked(16));
+            categories.Add(checkedListBox1.GetItemChecked(17));
+            categories.Add(checkedListBox1.GetItemChecked(18));
+            categories.Add(checkedListBox1.GetItemChecked(19));
+            categories.Add(checkedListBox1.GetItemChecked(20));
+            categories.Add(checkedListBox1.GetItemChecked(21));
+            categories.Add(checkedListBox1.GetItemChecked(22));
+            categories.Add(checkedListBox1.GetItemChecked(23));
         }
 
         // Buttons actions
