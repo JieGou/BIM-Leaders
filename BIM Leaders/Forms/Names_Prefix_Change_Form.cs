@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace _BIM_Leaders
@@ -28,7 +29,7 @@ namespace _BIM_Leaders
         // New
         string prefix_old = "";
         string prefix_new = "";
-        List<bool> categories = new List<bool>();
+        List<bool> categories = Enumerable.Repeat(false, 24).ToList();
 
         // Get input data
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -57,30 +58,15 @@ namespace _BIM_Leaders
         }
         private void checkedListBox1_SelectedIndexChanged(object sender, ItemCheckEventArgs e)
         {
-            categories.Add(checkedListBox1.GetItemChecked(0));
-            categories.Add(checkedListBox1.GetItemChecked(1));
-            categories.Add(checkedListBox1.GetItemChecked(2));
-            categories.Add(checkedListBox1.GetItemChecked(3));
-            categories.Add(checkedListBox1.GetItemChecked(4));
-            categories.Add(checkedListBox1.GetItemChecked(5));
-            categories.Add(checkedListBox1.GetItemChecked(6));
-            categories.Add(checkedListBox1.GetItemChecked(7));
-            categories.Add(checkedListBox1.GetItemChecked(8));
-            categories.Add(checkedListBox1.GetItemChecked(9));
-            categories.Add(checkedListBox1.GetItemChecked(10));
-            categories.Add(checkedListBox1.GetItemChecked(11));
-            categories.Add(checkedListBox1.GetItemChecked(12));
-            categories.Add(checkedListBox1.GetItemChecked(13));
-            categories.Add(checkedListBox1.GetItemChecked(14));
-            categories.Add(checkedListBox1.GetItemChecked(15));
-            categories.Add(checkedListBox1.GetItemChecked(16));
-            categories.Add(checkedListBox1.GetItemChecked(17));
-            categories.Add(checkedListBox1.GetItemChecked(18));
-            categories.Add(checkedListBox1.GetItemChecked(19));
-            categories.Add(checkedListBox1.GetItemChecked(20));
-            categories.Add(checkedListBox1.GetItemChecked(21));
-            categories.Add(checkedListBox1.GetItemChecked(22));
-            categories.Add(checkedListBox1.GetItemChecked(23));
+            // Set all categories to false (default)
+            categories = Enumerable.Repeat(false, 24).ToList();
+            // Get all checked categories to true value
+            IEnumerable<object> l = checkedListBox1.CheckedItems.Cast<object>();
+            foreach (object itemChecked in l)
+            {
+                int index = checkedListBox1.Items.IndexOf(itemChecked);
+                categories[index] = true;
+            }
         }
 
         // Buttons actions

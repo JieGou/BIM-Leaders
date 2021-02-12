@@ -24,13 +24,8 @@ namespace _BIM_Leaders
                 // Getting input data from user
                 string prefix_old = "OLD";
                 string prefix_new = "";
-                List<bool> categories = new List<bool>();
-                /*
-                for(int i=0; i<23; i++)
-                {
-                    categories.Add(false);
-                }
-                */
+                List<bool> categories = Enumerable.Repeat(false, 24).ToList();
+
                 using (Names_Prefix_Change_Form form = new Names_Prefix_Change_Form())
                 {
                     form.ShowDialog();
@@ -48,11 +43,12 @@ namespace _BIM_Leaders
                 }
 
                 int count = 0;
+
                 using (Transaction trans = new Transaction(doc, "Change Names Prefix"))
                 {
                     trans.Start();
-
-                    if (categories[0])
+                    
+                    if (categories[0] == true)
                     {
                         FilteredElementCollector collector_area_schemes = new FilteredElementCollector(doc);
                         IEnumerable<AreaScheme> area_schemes = collector_area_schemes.OfClass(typeof(AreaScheme))
