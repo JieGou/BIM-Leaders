@@ -27,8 +27,8 @@ namespace _BIM_Leaders
         }
 
         // New
-        string prefix_old = "";
-        string prefix_new = "";
+        string prefix_old = "OLD";
+        string prefix_new = "NEW";
         List<bool> categories = Enumerable.Repeat(false, 24).ToList();
 
         // Get input data
@@ -47,6 +47,7 @@ namespace _BIM_Leaders
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
             prefix_new = textBox2.Text;
+            /*
             if (string.IsNullOrWhiteSpace(textBox2.Text))
             {
                 button_rename.Enabled = false;
@@ -55,17 +56,26 @@ namespace _BIM_Leaders
             {
                 button_rename.Enabled = true;
             }
+            */
+            button_rename.Enabled = !string.IsNullOrWhiteSpace(textBox2.Text);
         }
         private void checkedListBox1_SelectedIndexChanged(object sender, ItemCheckEventArgs e)
         {
-            // Set all categories to false (default)
-            categories = Enumerable.Repeat(false, 24).ToList();
             // Get all checked categories to true value
-            IEnumerable<object> l = checkedListBox1.CheckedItems.Cast<object>();
-            foreach (object itemChecked in l)
+            for (int index = 0;  index < checkedListBox1.Items.Count - 1; index++)
             {
-                int index = checkedListBox1.Items.IndexOf(itemChecked);
-                categories[index] = true;
+                //int index = checkedListBox1.Items.IndexOf(item);
+                /*
+                if (checkedListBox1.Items[index].Equals(true))
+                {
+                    categories[index] = true;
+                }
+                else
+                {
+                    categories[index] = false;
+                }
+                */
+                categories[index] = checkedListBox1.Items[index].Equals(true);
             }
         }
 

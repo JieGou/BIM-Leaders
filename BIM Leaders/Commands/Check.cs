@@ -9,7 +9,7 @@ using Autodesk.Revit.Attributes;
 namespace _BIM_Leaders
 {
     [TransactionAttribute(TransactionMode.Manual)]
-    public class Names_Prefix_Change : IExternalCommand
+    public class Check : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -22,19 +22,21 @@ namespace _BIM_Leaders
             try
             {
                 // Getting input data from user
-                string prefix_old = "OLD";
-                string prefix_new = "NEW";
+                string prefix = "PRE_";
                 List<bool> categories = Enumerable.Repeat(false, 24).ToList();
+                List<bool> model = Enumerable.Repeat(false, 5).ToList();
+                List<bool> codes = Enumerable.Repeat(false, 2).ToList();
 
-                using (Names_Prefix_Change_Form form = new Names_Prefix_Change_Form())
+                using (Check_Form form = new Check_Form())
                 {
                     form.ShowDialog();
 
                     if (form.DialogResult == System.Windows.Forms.DialogResult.OK)
                     {
-                        prefix_old = form.Result_prefix_old();
-                        prefix_new = form.Result_prefix_new();
+                        prefix = form.Result_prefix();
                         categories = form.Result_categories();
+                        model = form.Result_model();
+                        codes = form.Result_codes();
                     }
                     if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
                     {
@@ -42,9 +44,15 @@ namespace _BIM_Leaders
                     }
                 }
 
-                int count = 0;
+                int count_prefixes = 0;
+                int count_groups_unused = 0;
+                int count_groups_unpinned = 0;
+                int count_groups_excluded = 0;
+                int count_linestyles = 0;
+                int count_rooms_placement = 0;
+                int count_rooms_intersect = 0;
 
-                using (Transaction trans = new Transaction(doc, "Change Names Prefix"))
+                using (Transaction trans = new Transaction(doc, "Check"))
                 {
                     trans.Start();
 
@@ -56,11 +64,9 @@ namespace _BIM_Leaders
                         foreach (AreaScheme ass in area_schemes)
                         {
                             string name = ass.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                ass.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -73,11 +79,9 @@ namespace _BIM_Leaders
                         foreach (BrowserOrganization bo in browser_organization)
                         {
                             string name = bo.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                bo.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -90,11 +94,9 @@ namespace _BIM_Leaders
                         foreach (BuildingPadType bpt in building_pad_types)
                         {
                             string name = bpt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                bpt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -107,11 +109,9 @@ namespace _BIM_Leaders
                         foreach (CeilingType ct in ceiling_types)
                         {
                             string name = ct.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                ct.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -124,11 +124,9 @@ namespace _BIM_Leaders
                         foreach (CurtainSystemType cst in curtain_system_types)
                         {
                             string name = cst.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                cst.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -141,11 +139,9 @@ namespace _BIM_Leaders
                         foreach (DimensionType dt in dimension_types)
                         {
                             string name = dt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                dt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -161,21 +157,17 @@ namespace _BIM_Leaders
                         foreach (Family f in families)
                         {
                             string name = f.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                f.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                         foreach (FamilySymbol fs in family_symbols)
                         {
                             string name = fs.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                fs.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -188,11 +180,9 @@ namespace _BIM_Leaders
                         foreach (FilledRegionType frt in filled_region_types)
                         {
                             string name = frt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                frt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -205,11 +195,9 @@ namespace _BIM_Leaders
                         foreach (GridType gdt in grid_types)
                         {
                             string name = gdt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                gdt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -222,11 +210,9 @@ namespace _BIM_Leaders
                         foreach (GroupType gt in group_types)
                         {
                             string name = gt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                gt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -239,11 +225,9 @@ namespace _BIM_Leaders
                         foreach (LevelType lt in level_types)
                         {
                             string name = lt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                lt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -256,11 +240,9 @@ namespace _BIM_Leaders
                         foreach (LinePatternElement lp in line_patterns)
                         {
                             string name = lp.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                lp.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -273,11 +255,9 @@ namespace _BIM_Leaders
                         foreach (Material m in materials)
                         {
                             string name = m.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                m.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -290,11 +270,9 @@ namespace _BIM_Leaders
                         foreach (PanelType pt in panel_types)
                         {
                             string name = pt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                pt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -310,21 +288,17 @@ namespace _BIM_Leaders
                         foreach (ContinuousRailType crt in continuous_rail_types)
                         {
                             string name = crt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                crt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                         foreach (RailingType rt in railing_types)
                         {
                             string name = rt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                rt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -343,31 +317,25 @@ namespace _BIM_Leaders
                         foreach (FasciaType ft in fascia_types)
                         {
                             string name = ft.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                ft.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                         foreach (GutterType gt in gutter_types)
                         {
                             string name = gt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                gt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                         foreach (RoofType rft in roof_types)
                         {
                             string name = rft.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                rft.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -380,11 +348,9 @@ namespace _BIM_Leaders
                         foreach (SpotDimensionType sdt in spot_dimension_types)
                         {
                             string name = sdt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                sdt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -397,11 +363,9 @@ namespace _BIM_Leaders
                         foreach (StairsType st in stair_types)
                         {
                             string name = st.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                st.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -414,11 +378,9 @@ namespace _BIM_Leaders
                         foreach (StairsLandingType slt in stair_landing_types)
                         {
                             string name = slt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                slt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -431,11 +393,9 @@ namespace _BIM_Leaders
                         foreach (StairsRunType srt in stair_run_types)
                         {
                             string name = srt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                srt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -448,11 +408,9 @@ namespace _BIM_Leaders
                         foreach (TextNoteType tnt in text_note_types)
                         {
                             string name = tnt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                tnt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -474,41 +432,33 @@ namespace _BIM_Leaders
                         foreach (ViewDrafting vd in views_drafting)
                         {
                             string name = vd.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                vd.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                         foreach (ViewPlan vp in views_plan)
                         {
                             string name = vp.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                vp.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                         foreach (ViewSchedule vs in views_schedule)
                         {
                             string name = vs.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                vs.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                         foreach (ViewSection vsn in views_section)
                         {
                             string name = vsn.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                vsn.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -521,11 +471,9 @@ namespace _BIM_Leaders
                         foreach (WallType wt in wall_types)
                         {
                             string name = wt.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                wt.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
@@ -538,24 +486,172 @@ namespace _BIM_Leaders
                         foreach (WallFoundationType wft in wall_foundation_types)
                         {
                             string name = wft.Name;
-                            if (name.Contains(prefix_old))
+                            if (!name.StartsWith(prefix))
                             {
-                                string name_new = name.Replace(prefix_old, prefix_new);
-                                wft.Name = name_new;
-                                count++;
+                                count_prefixes++;
                             }
                         }
                     }
 
+                    // Groups check
+                    if (model[0])
+                    {
+                        FilteredElementCollector collector_group_types_0 = new FilteredElementCollector(doc);
+                        IEnumerable<GroupType> group_types_0 = collector_group_types_0.OfClass(typeof(GroupType))
+                            .ToElements().Cast<GroupType>();
+                        FilteredElementCollector collector_groups = new FilteredElementCollector(doc);
+                        IEnumerable<Group> groups = collector_groups.OfClass(typeof(Group))
+                            .ToElements().Cast<Group>();
+                        foreach (GroupType gt in group_types_0)
+                        {
+                            // Check size of GroupSet which given from GroupType
+                            if (gt.Groups.Size == 0)
+                            {
+                                count_groups_unused++;
+                            }
+                        }
+                        foreach (Group g in groups)
+                        {
+                            // Check for unpinned groups
+                            if (!g.Pinned)
+                            {
+                                count_groups_unpinned++;
+                            }
+                            // Check if group has excluded elements
+                            if (g.Name.EndsWith("(members excluded)"))
+                            {
+                                count_groups_excluded++;
+                            }
+                        }
+                    }                     
+
+                    // Line Styles Unused check
+                    if(model[1])
+                    {
+                        FilteredElementCollector collector_lines = new FilteredElementCollector(doc);
+                        IEnumerable<Line> lines = collector_lines.OfClass(typeof(Line)).WhereElementIsNotElementType().ToElements().Cast<Line>();
+                        List<ElementId> line_styles_used = new List<ElementId>();
+                        foreach (Line l in lines)
+                        {
+                            ElementId line_style = l.GraphicsStyleId;
+                            if (!line_styles_used.Contains(line_style))
+                            {
+                                line_styles_used.Add(line_style);
+                            }
+                        }
+                        // Selecting all line styles in the project
+                        CategoryNameMap line_styles_all = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
+                        List<ElementId> line_styles = new List<ElementId>();
+                        foreach (Category c in line_styles_all)
+                        {
+                            line_styles.Add(c.Id);
+                        }
+                        foreach (ElementId i in line_styles)
+                        {
+                            if (!line_styles_used.Contains(i))
+                            {
+                                count_linestyles++;
+                            }
+                        }
+                    }
+                    
+                    // Rooms check
+                    if(model[2])
+                    {
+                        RoomFilter filter = new RoomFilter();
+                        FilteredElementCollector collector_rooms = new FilteredElementCollector(doc);
+                        IEnumerable<Room> rooms = collector_rooms.OfClass(typeof(Room)).WherePasses(filter).ToElements().Cast<Room>();
+                        
+                        Options opt = new Options();
+                        List<Solid> solids = new List<Solid>();
+                        foreach(Room r in rooms)
+                        {
+                            if(r.Location is null)
+                            {
+                                count_rooms_placement++;
+                            }
+                            // Checking for volumes overlap
+                            else
+                            {
+                                foreach(Solid s1 in r.get_Geometry(opt))
+                                {
+                                    foreach(Solid s2 in solids)
+                                    {
+                                        Solid solid = BooleanOperationsUtils.ExecuteBooleanOperation(s1, s2, BooleanOperationsType.Intersect);
+                                        if(solid.Volume > 0)
+                                        {
+                                            count_rooms_intersect++;
+                                        }
+                                    }
+                                    solids.Add(s1);
+                                }
+                            }
+                        }
+                    }
+        
                     trans.Commit();
 
-                    if (count == 0)
+                    if (count_prefixes == 0 && count_groups_unused == 0 && count_groups_unpinned == 0 && count_groups_excluded == 0)
                     {
-                        TaskDialog.Show("Names Prefix Change", "No prefixes changed");
+                        TaskDialog.Show("Check", "No issues found");
                     }
                     else
                     {
-                        TaskDialog.Show("Names Prefix Change", string.Format("{0} prefixes changed", count.ToString()));
+                        string mes = "";
+                        if (!(count_prefixes == 0))
+                        {
+                            mes += string.Format("{0} prefixes wrong.", count_prefixes.ToString());
+                        }
+                        if (!(count_groups_unused == 0))
+                        {
+                            if(!(mes.Length == 0))
+                            {
+                                mes += " ";
+                            }
+                            mes += string.Format("{0} of {1} groups are not pinned.", count_groups_unused.ToString(), groups.Count().ToString());
+                        }
+                        if (!(count_groups_unpinned == 0))
+                        {
+                            if (!(mes.Length == 0))
+                            {
+                                mes += " ";
+                            }
+                            mes += string.Format("{0} of {1} groups are not used.", count_groups_unpinned.ToString(), groups.Count().ToString());
+                        }
+                        if (!(count_groups_excluded == 0))
+                        {
+                            if (!(mes.Length == 0))
+                            {
+                                mes += " ";
+                            }
+                            mes += string.Format("{0} of {1} group instances are with excluded elements.", count_groups_excluded.ToString(), groups.Count().ToString());
+                        }
+                        if (!(count_linestyles == 0))
+                        {
+                            if (!(mes.Length == 0))
+                            {
+                                mes += " ";
+                            }
+                            mes += string.Format("{0} line styles are unused.", count_linestyles.ToString());
+                        }
+                        if (!(count_rooms_placement == 0))
+                        {
+                            if (!(mes.Length == 0))
+                            {
+                                mes += " ";
+                            }
+                            mes += string.Format("{0} rooms are not placed.", count_rooms_placement.ToString());
+                        }
+                        if (!(count_rooms_intersect == 0))
+                        {
+                            if (!(mes.Length == 0))
+                            {
+                                mes += " ";
+                            }
+                            mes += string.Format("{0} rooms overlap.", count_rooms_intersect.ToString());
+
+
+                            TaskDialog.Show("Check", mes);
                     }
                 }
                 return Result.Succeeded;
