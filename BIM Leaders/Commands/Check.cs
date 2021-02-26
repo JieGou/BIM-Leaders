@@ -53,6 +53,8 @@ namespace _BIM_Leaders
                 int count_rooms_placement = 0;
                 int count_rooms_intersect = 0;
                 int count_warnings = 0;
+                int count_walls_interior = 0;
+                int count_stairs_formula = 0;
 
                 using (Transaction trans = new Transaction(doc, "Check"))
                 {
@@ -599,6 +601,124 @@ namespace _BIM_Leaders
                         count_warnings = warnings.Count();
                     }
 
+                    // Exterior walls check
+                    if (model[4])
+                    {
+                        FilteredElementCollector collector_views = new FilteredElementCollector(doc);
+                        View3D v = collector_views.OfClass(typeof(View3D)).ToElements().Cast<View3D>().First();
+                        ElementId v_id = v.GetTypeId();
+                        View3D view_new = View3D.CreateIsometric(doc, v_id);
+
+                        BoundingBoxXYZ box = view_new.GetSectionBox(); // CHECK !!!
+
+                        // Get perimeter points and lines
+                        XYZ p1 = box.Min;
+                        XYZ p2 = new XYZ(box.Min.X, box.Max.Y, box.Min.Z);
+                        XYZ p3 = new XYZ(box.Max.X, box.Max.Y, box.Min.Z);
+                        XYZ p4 = new XYZ(box.Max.X, box.Min.Y, box.Min.Z);
+
+                        CurveLoop curve = new CurveLoop();
+                        curve.Append(Line.CreateBound(p1, p2));
+                        curve.Append(Line.CreateBound(p2, p3));
+                        curve.Append(Line.CreateBound(p3, p4));
+                        curve.Append(Line.CreateBound(p4, p1));
+
+                        // Get the lowest level
+                        FilteredElementCollector collector_levels = new FilteredElementCollector(doc);
+                        IEnumerable<Level> levels = collector_levels.OfClass(typeof(Level)).ToElements().Cast<Level>();
+                        Level level = levels.First();
+                        double elev = levels.First().Elevation;
+                        foreach(Level l in levels)
+                        {
+                            if(l.Elevation < elev)
+                            {
+                                level = l;
+                                elev = l.Elevation;
+                            }
+                        }
+                        ElementId level_id = level.Id;
+
+                        // Create perimeter walls
+                        List<Wall> walls_to_delete = new List<Wall>();
+                        foreach(Line l in curve)
+                        {
+                            Wall w = Wall.Create(doc, l, level_id, false);
+                            Parameter p = w.get_Parameter(BuiltInParameter.WALL_TOP_OFFSET);
+                            p.Set(1000);
+                            walls_to_delete.Add(w); // For deleting
+                        }
+
+                        // Create room
+                        UV point = new UV(box.Min.X + 10, box.Min.Y + 10);
+                        Room room = doc.Create.NewRoom(level, point);
+
+                        // Get outer walls
+                        List<Element> walls = new List<Element>();
+                        SpatialElementBoundaryOptions seb_options = new SpatialElementBoundaryOptions();
+                        IList<IList<BoundarySegment>> segments = room.GetBoundarySegments(seb_options);
+                        foreach(IList<BoundarySegment> i in segments)
+                        {
+                            foreach(BoundarySegment j in i)
+                            {
+                                Element element = doc.GetElement(j.ElementId);
+                                try
+                                {
+                                    if(element.Category.Name == "Walls")
+                                    {
+                                        walls.Add(element);
+                                    }
+                                }
+                                catch
+                                {
+
+                                }
+                            }
+                        }
+
+                        // Check if walls are Exterior
+                        foreach(Wall w in walls)
+                        {
+                            if(w.WallType.Function == WallFunction.Interior)
+                            {
+                                count_walls_interior++;
+                            }
+                        }
+                        
+                        // Remove created 4 walls if needed
+                        if(walls_to_delete[0].WallType.Function == WallFunction.Interior)
+                        {
+                            count_walls_interior = count_walls_interior - 4;
+                        }
+
+                        // Deleting
+                        doc.Delete(room.Id);
+                        foreach(Wall i in walls_to_delete)
+                        {
+                            doc.Delete(i.Id);
+                        }
+                    }
+
+                    // Checking stairs formula
+                    if (codes[0])
+                    {
+                        FilteredElementCollector collector_stairs = new FilteredElementCollector(doc);
+                        IEnumerable<Stairs> stairs = collector_stairs.OfClass(typeof(Stairs)).ToElements().Cast<Stairs>();
+                        
+                        // Check if stairs steps are right height and depth
+                        foreach(Stairs s in stairs)
+                        {
+                            double step_height = UnitUtils.ConvertToInternalUnits(s.ActualRiserHeight, DisplayUnitType.DUT_CENTIMETERS);
+                            double step_depth = UnitUtils.ConvertToInternalUnits(s.ActualTreadDepth, DisplayUnitType.DUT_CENTIMETERS);
+
+                            double r = 2 * step_height + step_depth;
+
+                            if(r < 61 | r > 63 | step_height < 10 | step_height > 17.5 | step_depth < 26)
+                            {
+                                count_stairs_formula++;
+                            }                   
+                        }
+                    }
+
                     trans.Commit();
 
                     if (count_prefixes == 0 && count_groups_unused == 0 && count_groups_unpinned == 0 && count_groups_excluded == 0)
@@ -667,6 +787,22 @@ namespace _BIM_Leaders
                                 mes += " ";
                             }
                             mes += string.Format("{0} warnings in the project.", count_warnings.ToString());
+                        }
+                        if (!(count_walls_interior == 0))
+                        {
+                            if (!(mes.Length == 0))
+                            {
+                                mes += " ";
+                            }
+                            mes += string.Format("{0} exterior walls have interior type.", count_walls_interior.ToString());
+                        }
+                        if (!(count_stairs_formula == 0))
+                        {
+                            if (!(mes.Length == 0))
+                            {
+                                mes += " ";
+                            }
+                            mes += string.Format("{0} stairs have bad formula.", count_stairs_formula.ToString());
                         }
                     }
                 }
