@@ -45,12 +45,14 @@ namespace _BIM_Leaders
                 }
 
                 int count_prefixes = 0;
+                int count_groups = 0;
                 int count_groups_unused = 0;
                 int count_groups_unpinned = 0;
                 int count_groups_excluded = 0;
                 int count_linestyles = 0;
                 int count_rooms_placement = 0;
                 int count_rooms_intersect = 0;
+                int count_warnings = 0;
 
                 using (Transaction trans = new Transaction(doc, "Check"))
                 {
@@ -522,6 +524,7 @@ namespace _BIM_Leaders
                             {
                                 count_groups_excluded++;
                             }
+                            count_groups++;
                         }
                     }                     
 
@@ -588,7 +591,14 @@ namespace _BIM_Leaders
                             }
                         }
                     }
-        
+
+                    // Warnings check
+                    if (model[3])
+                    {
+                        IList<FailureMessage> warnings = doc.GetWarnings();
+                        count_warnings = warnings.Count();
+                    }
+
                     trans.Commit();
 
                     if (count_prefixes == 0 && count_groups_unused == 0 && count_groups_unpinned == 0 && count_groups_excluded == 0)
@@ -608,7 +618,7 @@ namespace _BIM_Leaders
                             {
                                 mes += " ";
                             }
-                            mes += string.Format("{0} of {1} groups are not pinned.", count_groups_unused.ToString(), groups.Count().ToString());
+                            mes += string.Format("{0} of {1} groups are not pinned.", count_groups_unused.ToString(), count_groups.ToString());
                         }
                         if (!(count_groups_unpinned == 0))
                         {
@@ -616,7 +626,7 @@ namespace _BIM_Leaders
                             {
                                 mes += " ";
                             }
-                            mes += string.Format("{0} of {1} groups are not used.", count_groups_unpinned.ToString(), groups.Count().ToString());
+                            mes += string.Format("{0} of {1} groups are not used.", count_groups_unpinned.ToString(), count_groups.ToString());
                         }
                         if (!(count_groups_excluded == 0))
                         {
@@ -624,7 +634,7 @@ namespace _BIM_Leaders
                             {
                                 mes += " ";
                             }
-                            mes += string.Format("{0} of {1} group instances are with excluded elements.", count_groups_excluded.ToString(), groups.Count().ToString());
+                            mes += string.Format("{0} of {1} group instances are with excluded elements.", count_groups_excluded.ToString(), count_groups.ToString());
                         }
                         if (!(count_linestyles == 0))
                         {
@@ -649,9 +659,15 @@ namespace _BIM_Leaders
                                 mes += " ";
                             }
                             mes += string.Format("{0} rooms overlap.", count_rooms_intersect.ToString());
-
-
-                            TaskDialog.Show("Check", mes);
+                        }
+                        if (!(count_warnings == 0))
+                        {
+                            if (!(mes.Length == 0))
+                            {
+                                mes += " ";
+                            }
+                            mes += string.Format("{0} warnings in the project.", count_warnings.ToString());
+                        }
                     }
                 }
                 return Result.Succeeded;
