@@ -10,7 +10,7 @@ namespace _BIM_Leaders
     {
         private void InitializeComponent()
         {
-            this.button_rename = new System.Windows.Forms.Button();
+            this.button_check = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button_exit = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -23,23 +23,26 @@ namespace _BIM_Leaders
             this.Codes = new System.Windows.Forms.GroupBox();
             this.checkedListBox3 = new System.Windows.Forms.CheckedListBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
             this.Standards.SuspendLayout();
             this.Model.SuspendLayout();
             this.Codes.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
-            // button_rename
+            // button_check
             // 
-            this.button_rename.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.button_rename.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.button_rename.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_rename.Location = new System.Drawing.Point(713, 414);
-            this.button_rename.Name = "button_rename";
-            this.button_rename.Size = new System.Drawing.Size(75, 23);
-            this.button_rename.TabIndex = 1;
-            this.button_rename.Text = "Check";
-            this.button_rename.UseVisualStyleBackColor = true;
-            this.button_rename.Click += new System.EventHandler(this.Button_Check_Click);
+            this.button_check.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.button_check.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.button_check.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_check.Location = new System.Drawing.Point(713, 414);
+            this.button_check.Name = "button_check";
+            this.button_check.Size = new System.Drawing.Size(75, 23);
+            this.button_check.TabIndex = 1;
+            this.button_check.Text = "Check";
+            this.button_check.UseVisualStyleBackColor = true;
+            this.button_check.Click += new System.EventHandler(this.Button_Check_Click);
             // 
             // label1
             // 
@@ -47,9 +50,9 @@ namespace _BIM_Leaders
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label1.Location = new System.Drawing.Point(6, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(69, 13);
+            this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Names Prefix";
+            this.label1.Text = "Names Prefix:";
             // 
             // button_exit
             // 
@@ -172,6 +175,8 @@ namespace _BIM_Leaders
             // 
             // Codes
             // 
+            this.Codes.Controls.Add(this.label5);
+            this.Codes.Controls.Add(this.numericUpDown1);
             this.Codes.Controls.Add(this.checkedListBox3);
             this.Codes.Controls.Add(this.label2);
             this.Codes.Location = new System.Drawing.Point(462, 12);
@@ -206,6 +211,44 @@ namespace _BIM_Leaders
             this.label2.TabIndex = 7;
             this.label2.Text = "Checks";
             // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Location = new System.Drawing.Point(9, 40);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Minimum = new decimal(new int[] {
+            210,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(77, 20);
+            this.numericUpDown1.TabIndex = 12;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            210,
+            0,
+            0,
+            0});
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.label5.Location = new System.Drawing.Point(6, 24);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(122, 13);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Stairs Head Height (cm):";
+            // 
             // Check_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -216,7 +259,7 @@ namespace _BIM_Leaders
             this.Controls.Add(this.Model);
             this.Controls.Add(this.Standards);
             this.Controls.Add(this.button_exit);
-            this.Controls.Add(this.button_rename);
+            this.Controls.Add(this.button_check);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Check_Form";
             this.ShowIcon = false;
@@ -228,10 +271,11 @@ namespace _BIM_Leaders
             this.Model.PerformLayout();
             this.Codes.ResumeLayout(false);
             this.Codes.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
 
         }
-        private System.Windows.Forms.Button button_rename;
+        private System.Windows.Forms.Button button_check;
         private System.Windows.Forms.Label label1;
         private Button button_exit;
         private TextBox textBox1;
@@ -244,5 +288,7 @@ namespace _BIM_Leaders
         private GroupBox Codes;
         private CheckedListBox checkedListBox3;
         private Label label2;
+        private Label label5;
+        private NumericUpDown numericUpDown1;
     }
 }

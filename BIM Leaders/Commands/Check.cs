@@ -19,6 +19,12 @@ namespace _BIM_Leaders
             // Get Document
             Document doc = uidoc.Document;
 
+            // Options
+            Options opt = new Options();
+            opt.ComputeReferences = false;
+            opt.View = doc.ActiveView;
+            opt.IncludeNonVisibleObjects = true;
+
             try
             {
                 // Getting input data from user
@@ -55,6 +61,8 @@ namespace _BIM_Leaders
                 int count_warnings = 0;
                 int count_walls_interior = 0;
                 int count_stairs_formula = 0;
+                int count_height_landings = 0;
+                int count_height_runs = 0;
 
                 using (Transaction trans = new Transaction(doc, "Check"))
                 {
@@ -528,10 +536,10 @@ namespace _BIM_Leaders
                             }
                             count_groups++;
                         }
-                    }                     
+                    }
 
                     // Line Styles Unused check
-                    if(model[1])
+                    if (model[1])
                     {
                         FilteredElementCollector collector_lines = new FilteredElementCollector(doc);
                         IEnumerable<Line> lines = collector_lines.OfClass(typeof(Line)).WhereElementIsNotElementType().ToElements().Cast<Line>();
@@ -559,31 +567,31 @@ namespace _BIM_Leaders
                             }
                         }
                     }
-                    
+
                     // Rooms check
-                    if(model[2])
+                    if (model[2])
                     {
                         RoomFilter filter = new RoomFilter();
                         FilteredElementCollector collector_rooms = new FilteredElementCollector(doc);
                         IEnumerable<Room> rooms = collector_rooms.OfClass(typeof(Room)).WherePasses(filter).ToElements().Cast<Room>();
-                        
+
                         Options opt = new Options();
                         List<Solid> solids = new List<Solid>();
-                        foreach(Room r in rooms)
+                        foreach (Room r in rooms)
                         {
-                            if(r.Location is null)
+                            if (r.Location is null)
                             {
                                 count_rooms_placement++;
                             }
                             // Checking for volumes overlap
                             else
                             {
-                                foreach(Solid s1 in r.get_Geometry(opt))
+                                foreach (Solid s1 in r.get_Geometry(opt))
                                 {
-                                    foreach(Solid s2 in solids)
+                                    foreach (Solid s2 in solids)
                                     {
                                         Solid solid = BooleanOperationsUtils.ExecuteBooleanOperation(s1, s2, BooleanOperationsType.Intersect);
-                                        if(solid.Volume > 0)
+                                        if (solid.Volume > 0)
                                         {
                                             count_rooms_intersect++;
                                         }
@@ -628,9 +636,9 @@ namespace _BIM_Leaders
                         IEnumerable<Level> levels = collector_levels.OfClass(typeof(Level)).ToElements().Cast<Level>();
                         Level level = levels.First();
                         double elev = levels.First().Elevation;
-                        foreach(Level l in levels)
+                        foreach (Level l in levels)
                         {
-                            if(l.Elevation < elev)
+                            if (l.Elevation < elev)
                             {
                                 level = l;
                                 elev = l.Elevation;
@@ -640,7 +648,7 @@ namespace _BIM_Leaders
 
                         // Create perimeter walls
                         List<Wall> walls_to_delete = new List<Wall>();
-                        foreach(Line l in curve)
+                        foreach (Line l in curve)
                         {
                             Wall w = Wall.Create(doc, l, level_id, false);
                             Parameter p = w.get_Parameter(BuiltInParameter.WALL_TOP_OFFSET);
@@ -656,14 +664,14 @@ namespace _BIM_Leaders
                         List<Element> walls = new List<Element>();
                         SpatialElementBoundaryOptions seb_options = new SpatialElementBoundaryOptions();
                         IList<IList<BoundarySegment>> segments = room.GetBoundarySegments(seb_options);
-                        foreach(IList<BoundarySegment> i in segments)
+                        foreach (IList<BoundarySegment> i in segments)
                         {
-                            foreach(BoundarySegment j in i)
+                            foreach (BoundarySegment j in i)
                             {
                                 Element element = doc.GetElement(j.ElementId);
                                 try
                                 {
-                                    if(element.Category.Name == "Walls")
+                                    if (element.Category.Name == "Walls")
                                     {
                                         walls.Add(element);
                                     }
@@ -676,23 +684,23 @@ namespace _BIM_Leaders
                         }
 
                         // Check if walls are Exterior
-                        foreach(Wall w in walls)
+                        foreach (Wall w in walls)
                         {
-                            if(w.WallType.Function == WallFunction.Interior)
+                            if (w.WallType.Function == WallFunction.Interior)
                             {
                                 count_walls_interior++;
                             }
                         }
-                        
+
                         // Remove created 4 walls if needed
-                        if(walls_to_delete[0].WallType.Function == WallFunction.Interior)
+                        if (walls_to_delete[0].WallType.Function == WallFunction.Interior)
                         {
                             count_walls_interior = count_walls_interior - 4;
                         }
 
                         // Deleting
                         doc.Delete(room.Id);
-                        foreach(Wall i in walls_to_delete)
+                        foreach (Wall i in walls_to_delete)
                         {
                             doc.Delete(i.Id);
                         }
@@ -703,110 +711,239 @@ namespace _BIM_Leaders
                     {
                         FilteredElementCollector collector_stairs = new FilteredElementCollector(doc);
                         IEnumerable<Stairs> stairs = collector_stairs.OfClass(typeof(Stairs)).ToElements().Cast<Stairs>();
-                        
+
                         // Check if stairs steps are right height and depth
-                        foreach(Stairs s in stairs)
+                        foreach (Stairs s in stairs)
                         {
                             double step_height = UnitUtils.ConvertToInternalUnits(s.ActualRiserHeight, DisplayUnitType.DUT_CENTIMETERS);
                             double step_depth = UnitUtils.ConvertToInternalUnits(s.ActualTreadDepth, DisplayUnitType.DUT_CENTIMETERS);
 
                             double r = 2 * step_height + step_depth;
 
-                            if(r < 61 | r > 63 | step_height < 10 | step_height > 17.5 | step_depth < 26)
+                            if (r < 61 | r > 63 | step_height < 10 | step_height > 17.5 | step_depth < 26)
                             {
                                 count_stairs_formula++;
-                            }                   
+                            }
                         }
                     }
 
-                    trans.Commit();
+                    // Checking stairs head height
+                    if (codes[1])
+                    {
+                        double height_offset = UnitUtils.ConvertToInternalUnits(10, DisplayUnitType.DUT_CENTIMETERS);
+                        double height = UnitUtils.ConvertToInternalUnits(head_height, DisplayUnitType.DUT_CENTIMETERS) - height_offset;
 
-                    if (count_prefixes == 0 && count_groups_unused == 0 && count_groups_unpinned == 0 && count_groups_excluded == 0)
-                    {
-                        TaskDialog.Show("Check", "No issues found");
+                        FilteredElementCollector collector_stairs = new FilteredElementCollector(doc);
+                        IEnumerable<Stairs> stairs = collector_stairs.OfClass(typeof(Stairs)).ToElements().Cast<Stairs>();
+
+                        // Check
+                        foreach (Stairs s in stairs)
+                        {
+                            // Get landings
+                            ICollection<ElementId> landings_ids = s.GetStairsLandings();
+                            List<StairsLanding> landings = new List<StairsLanding>();
+                            foreach (ElementId i in landings_ids)
+                            {
+                                landings.Add(doc.GetElement(i) as StairsLanding);
+                            }
+
+                            // Check landings geometry
+                            foreach (StairsLanding l in landings)
+                            {
+                                double landing_z = l.get_BoundingBox(doc.ActiveView).Max.Z;
+                                double landing_elev = l.BaseElevation;
+                                CurveLoop landing_p = l.GetFootprintBoundary();
+                                List<CurveLoop> looplist = new List<CurveLoop>();
+                                looplist.Add(landing_p);
+
+                                // Get extrusion vector, only direction is needed but for sure the point is on 0 point of solid bottom but Z is on solid top
+                                XYZ extrusion_dir = new XYZ(0, 0, 1);
+
+                                // Create solid, with solid height of "height_offset"
+                                Solid solid_landing = GeometryCreationUtilities.CreateExtrusionGeometry(looplist, extrusion_dir, height_offset);
+                                // Transform solid to the needed height
+                                Transform t = Transform.CreateTranslation(new XYZ(0, 0, height + landing_elev));
+                                Solid transformed = SolidUtils.CreateTransformed(solid_landing, t);
+
+                                // Create filter to get intersecting elements
+                                ElementIntersectsSolidFilter filter = new ElementIntersectsSolidFilter(transformed);
+                                FilteredElementCollector collector_intersect = new FilteredElementCollector(doc);
+                                IList<Element> el = collector_intersect.WherePasses(filter).ToElements();
+
+                                count_height_landings += el.Count;
+                            }
+
+                            // Get runs
+                            ICollection<ElementId> runs_ids = s.GetStairsRuns();
+                            List<StairsRun> runs = new List<StairsRun>();
+                            foreach (ElementId i in runs_ids)
+                            {
+                                runs.Add(doc.GetElement(i) as StairsRun);
+                            }
+
+                            // Check runs geometry
+                            foreach (StairsRun r in runs)
+                            {
+                                GeometryElement run_geom = r.get_Geometry(opt);
+
+                                // Get run solid that on top (in run might be second solid for topping)
+                                double g_bb_prev = -10000;
+                                List<FaceArray> face_arrays = new List<FaceArray>();
+                                foreach (Solid g in run_geom)
+                                {
+                                    if (g.Volume > 0)
+                                    {
+                                        double g_bb = g.GetBoundingBox().Max.Z;
+                                        if (g_bb > g_bb_prev)
+                                        {
+                                            face_arrays.Add(g.Faces);
+                                        }
+                                    }
+                                }
+
+                                // Filter faces by normal going up
+                                List<Face> run_faces = new List<Face>();
+                                foreach (FaceArray f_a in face_arrays)
+                                {
+                                    foreach (PlanarFace f in f_a)
+                                    {
+                                        double f_n_x = f.FaceNormal.X;
+                                        double f_n_y = f.FaceNormal.Y;
+                                        double f_n_z = f.FaceNormal.Z;
+                                        if (f_n_x == 0 && f_n_y == 0 && f_n_z == 1)
+                                        {
+                                            run_faces.Add(f);
+                                        }
+                                    }
+                                }
+
+                                // Making solid and check
+                                foreach (PlanarFace r_f in run_faces)
+                                {
+                                    IList<CurveLoop> run_p = r_f.GetEdgesAsCurveLoops();
+                                    XYZ extrusion_dir = new XYZ(0, 0, 1);
+
+                                    // Create solid on "height" height from landing, with solid height of "height_offset"
+                                    Solid solid_run = GeometryCreationUtilities.CreateExtrusionGeometry(run_p, extrusion_dir, height_offset);
+                                    // Transform solid to the needed height
+                                    Transform t_f = Transform.CreateTranslation(new XYZ(0, 0, height));
+                                    Solid transformed = SolidUtils.CreateTransformed(solid_run, t_f);
+
+                                    // Create filter to get intersecting elements
+                                    ElementIntersectsSolidFilter face_filter = new ElementIntersectsSolidFilter(transformed);
+                                    FilteredElementCollector collector_intersect = new FilteredElementCollector(doc);
+                                    IList<Element> er = collector_intersect.WherePasses(face_filter).ToElements();
+
+                                    count_height_runs += er.Count;
+                                }
+                            }
+                        }
+
+                        trans.Commit();
+
+                        if (count_prefixes == 0 && count_groups_unused == 0 && count_groups_unpinned == 0 && count_groups_excluded == 0)
+                        {
+                            TaskDialog.Show("Check", "No issues found");
+                        }
+                        else
+                        {
+                            string mes = "";
+                            if (!(count_prefixes == 0))
+                            {
+                                mes += string.Format("{0} prefixes wrong.", count_prefixes.ToString());
+                            }
+                            if (!(count_groups_unused == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} of {1} groups are not pinned.", count_groups_unused.ToString(), count_groups.ToString());
+                            }
+                            if (!(count_groups_unpinned == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} of {1} groups are not used.", count_groups_unpinned.ToString(), count_groups.ToString());
+                            }
+                            if (!(count_groups_excluded == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} of {1} group instances are with excluded elements.", count_groups_excluded.ToString(), count_groups.ToString());
+                            }
+                            if (!(count_linestyles == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} line styles are unused.", count_linestyles.ToString());
+                            }
+                            if (!(count_rooms_placement == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} rooms are not placed.", count_rooms_placement.ToString());
+                            }
+                            if (!(count_rooms_intersect == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} rooms overlap.", count_rooms_intersect.ToString());
+                            }
+                            if (!(count_warnings == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} warnings in the project.", count_warnings.ToString());
+                            }
+                            if (!(count_walls_interior == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} exterior walls have interior type.", count_walls_interior.ToString());
+                            }
+                            if (!(count_stairs_formula == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} stairs have bad formula.", count_stairs_formula.ToString());
+                            }
+                            if (!(count_height_landings == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} stairs landings have too low head height.", count_height_landings.ToString());
+                            }
+                            if (!(count_height_runs == 0))
+                            {
+                                if (!(mes.Length == 0))
+                                {
+                                    mes += " ";
+                                }
+                                mes += string.Format("{0} stairs runs have too low head height.", count_height_runs.ToString());
+                            }
+                        }
                     }
-                    else
-                    {
-                        string mes = "";
-                        if (!(count_prefixes == 0))
-                        {
-                            mes += string.Format("{0} prefixes wrong.", count_prefixes.ToString());
-                        }
-                        if (!(count_groups_unused == 0))
-                        {
-                            if(!(mes.Length == 0))
-                            {
-                                mes += " ";
-                            }
-                            mes += string.Format("{0} of {1} groups are not pinned.", count_groups_unused.ToString(), count_groups.ToString());
-                        }
-                        if (!(count_groups_unpinned == 0))
-                        {
-                            if (!(mes.Length == 0))
-                            {
-                                mes += " ";
-                            }
-                            mes += string.Format("{0} of {1} groups are not used.", count_groups_unpinned.ToString(), count_groups.ToString());
-                        }
-                        if (!(count_groups_excluded == 0))
-                        {
-                            if (!(mes.Length == 0))
-                            {
-                                mes += " ";
-                            }
-                            mes += string.Format("{0} of {1} group instances are with excluded elements.", count_groups_excluded.ToString(), count_groups.ToString());
-                        }
-                        if (!(count_linestyles == 0))
-                        {
-                            if (!(mes.Length == 0))
-                            {
-                                mes += " ";
-                            }
-                            mes += string.Format("{0} line styles are unused.", count_linestyles.ToString());
-                        }
-                        if (!(count_rooms_placement == 0))
-                        {
-                            if (!(mes.Length == 0))
-                            {
-                                mes += " ";
-                            }
-                            mes += string.Format("{0} rooms are not placed.", count_rooms_placement.ToString());
-                        }
-                        if (!(count_rooms_intersect == 0))
-                        {
-                            if (!(mes.Length == 0))
-                            {
-                                mes += " ";
-                            }
-                            mes += string.Format("{0} rooms overlap.", count_rooms_intersect.ToString());
-                        }
-                        if (!(count_warnings == 0))
-                        {
-                            if (!(mes.Length == 0))
-                            {
-                                mes += " ";
-                            }
-                            mes += string.Format("{0} warnings in the project.", count_warnings.ToString());
-                        }
-                        if (!(count_walls_interior == 0))
-                        {
-                            if (!(mes.Length == 0))
-                            {
-                                mes += " ";
-                            }
-                            mes += string.Format("{0} exterior walls have interior type.", count_walls_interior.ToString());
-                        }
-                        if (!(count_stairs_formula == 0))
-                        {
-                            if (!(mes.Length == 0))
-                            {
-                                mes += " ";
-                            }
-                            mes += string.Format("{0} stairs have bad formula.", count_stairs_formula.ToString());
-                        }
-                    }
+                    return Result.Succeeded;
                 }
-                return Result.Succeeded;
             }
             catch (Exception e)
             {

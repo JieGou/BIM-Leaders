@@ -31,6 +31,7 @@ namespace _BIM_Leaders
         List<bool> categories = Enumerable.Repeat(false, 24).ToList();
         List<bool> model = Enumerable.Repeat(false, 5).ToList();
         List<bool> codes = Enumerable.Repeat(false, 2).ToList();
+        int head_height = 210;
 
         // Get input data
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -38,11 +39,11 @@ namespace _BIM_Leaders
             prefix = textBox1.Text;
             if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
-                button_rename.Enabled = false;
+                button_check.Enabled = false;
             }
             else
             {
-                button_rename.Enabled = true;
+                button_check.Enabled = true;
             }
         }
         private void checkedListBox1_SelectedIndexChanged(object sender, ItemCheckEventArgs e)
@@ -66,6 +67,10 @@ namespace _BIM_Leaders
             {
                 codes[index] = checkedListBox3.Items[index].Equals(true);
             }
+        }
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            head_height = Decimal.ToInt32(numericUpDown1.Value);
         }
         // Buttons actions
         private void Button_Check_Click(object sender, EventArgs e)
@@ -97,6 +102,11 @@ namespace _BIM_Leaders
         public List<bool> Result_codes()
         {
             List<bool> result = codes;
+            return result;
+        }
+        public int Result_height()
+        {
+            int result = head_height;
             return result;
         }
     }
