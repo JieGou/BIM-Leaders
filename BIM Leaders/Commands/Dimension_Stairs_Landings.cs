@@ -92,9 +92,9 @@ namespace _BIM_Leaders
                 }
                 // Create lines for dimensions
                 List<Line> lines = new List<Line>();
-                for(int l = 0; l < landings_sorted.Count; l++)
+                for(i = 0; i < landings_sorted.Count; i++)
                 {
-                    BoundingBoxXYZ bb = landings_sorted[l][0].get_BoundingBox(view);
+                    BoundingBoxXYZ bb = landings_sorted[i][0].get_BoundingBox(view);
                     double line_x = (bb.Max.X + bb.Min.X) / 2;
                     double line_y = (bb.Max.Y + bb.Min.Y) / 2;
                     XYZ p_1 = new XYZ(line_x, line_y, -100);
