@@ -87,6 +87,7 @@
     <Compile Include="Commands\Linetypes_IMPORT_Delete.cs" />
     <Compile Include="Commands\Check.cs" />
     <Compile Include="Commands\Names_Prefix_Change.cs" />
+    <Compile Include="Commands\Dimension_Stairs_Landings.cs" />
     <Compile Include="Commands\Stairs_Steps_Enumerate.cs" />
     <Compile Include="Commands\Walls_Parallel.cs" />
     <Compile Include="Forms\Check_Form.cs">

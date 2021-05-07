@@ -47,7 +47,7 @@ namespace _BIM_Leaders
                 // Getting input from user
                 bool right_side = true;
                 double start_number = 1;
-                
+
                 using (Stairs_Steps_Enumerate_Form form = new Stairs_Steps_Enumerate_Form())
                 {
                     form.ShowDialog();
@@ -89,12 +89,12 @@ namespace _BIM_Leaders
                 int count = 0;
                 int grouped = 0;
                 int unpinned = 0;
-                
+
                 // Filtering for multistairs that are in groups
                 List<MultistoryStairs> stairs_ms = new List<MultistoryStairs>();
-                foreach(MultistoryStairs m in stairs_ms_all)
+                foreach (MultistoryStairs m in stairs_ms_all)
                 {
-                    if(m.GroupId == ElementId.InvalidElementId)
+                    if (m.GroupId == ElementId.InvalidElementId)
                     {
                         stairs_ms.Add(m);
                     }
@@ -121,7 +121,7 @@ namespace _BIM_Leaders
                 // Creating list of stairs levels and filtering for Model-In-Place
                 List<Stairs> stairs = new List<Stairs>();
                 List<double> levels = new List<double>();
-                foreach(Stairs stair in stairs_temp)
+                foreach (Stairs stair in stairs_temp)
                 {
                     try
                     {
@@ -136,13 +136,13 @@ namespace _BIM_Leaders
                 }
 
                 // Changing stairs order in a list according to base height
-                IOrderedEnumerable<Stairs> stairs_sorted =  stairs.OrderBy(d => d.BaseElevation);
-                
+                IOrderedEnumerable<Stairs> stairs_sorted = stairs.OrderBy(d => d.BaseElevation);
+
                 // Create annotations
                 using (Transaction trans = new Transaction(doc, "Enumerate stairs"))
                 {
                     trans.Start();
-                    
+
                     // Unpinning groups (stairs) in multistairs
                     foreach (MultistoryStairs m in stairs_ms)
                     {
@@ -161,7 +161,7 @@ namespace _BIM_Leaders
                     }
 
                     // Changing thread numbers
-                    foreach(Stairs s in stairs_sorted)
+                    foreach (Stairs s in stairs_sorted)
                     {
                         Parameter p = s.get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX);
                         p.Set(start_number);
@@ -169,11 +169,11 @@ namespace _BIM_Leaders
                     }
 
                     // Creating thread numbers on the view
-                    foreach(StairsRun r in runs)
+                    foreach (StairsRun r in runs)
                     {
                         Reference refer = r.GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter);
 
-                        if(right_side)
+                        if (right_side)
                         {
                             refer = r.GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter);
                         }
@@ -194,7 +194,7 @@ namespace _BIM_Leaders
                     trans.Commit();
 
                     string text = "";
-                    if(grouped > 0)
+                    if (grouped > 0)
                     {
                         text += grouped.ToString();
                         text += " stairs are in groups! Exclude them from groups!";
@@ -203,7 +203,7 @@ namespace _BIM_Leaders
                     text += " runs with ";
                     text += (start_number - 1).ToString();
                     text += " threads was numbered. ";
-                    if(unpinned > 0)
+                    if (unpinned > 0)
                     {
                         text += unpinned.ToString();
                         text += " stairs was unpinned!";

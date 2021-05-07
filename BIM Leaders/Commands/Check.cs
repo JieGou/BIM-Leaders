@@ -50,6 +50,8 @@ namespace _BIM_Leaders
                     }
                 }
 
+                int head_height = 210;
+
                 int count_prefixes = 0;
                 int count_groups = 0;
                 int count_groups_unused = 0;
@@ -575,7 +577,6 @@ namespace _BIM_Leaders
                         FilteredElementCollector collector_rooms = new FilteredElementCollector(doc);
                         IEnumerable<Room> rooms = collector_rooms.OfClass(typeof(Room)).WherePasses(filter).ToElements().Cast<Room>();
 
-                        Options opt = new Options();
                         List<Solid> solids = new List<Solid>();
                         foreach (Room r in rooms)
                         {

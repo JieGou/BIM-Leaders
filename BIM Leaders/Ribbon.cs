@@ -198,34 +198,44 @@ namespace _BIM_Leaders
             pushbutton_5_1.LargeImage = image_5_1;
             pushbutton_5_1.ToolTip = "Dimensions or elevation spots on section.";
             pushbutton_5_1.LongDescription = "Automatically puts annotations on a current section. Select a vertical line as a reference for annotations arrangement.";
-            
+
             // Add Button
-            PushButtonData button_5_2 = new PushButtonData("button_5_2", "Align\r\nGrids", path, "_BIM_Leaders.Grids_Align");
+            PushButtonData button_5_2 = new PushButtonData("button_5_2", "Annotate\r\nLandings", path, "_BIM_Leaders.Dimension_Stairs_Landings");
+            button_5_2.AvailabilityClassName = "_BIM_Leaders.ViewIsSection";
             PushButton pushbutton_5_2 = panel_5.AddItem(button_5_2) as PushButton;
-            Uri imagePath_5_2 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Grids_Align.png");
+            Uri imagePath_5_2 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Dimensions_Stairs_Landings.png");
             BitmapImage image_5_2 = new BitmapImage(imagePath_5_2);
             pushbutton_5_2.LargeImage = image_5_2;
-            pushbutton_5_2.ToolTip = "Align Grid Ends.";
-            pushbutton_5_2.LongDescription = "Can be useful on elevation and section views. Bubbles on ends of the grids can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.";
+            pushbutton_5_2.ToolTip = "Dimensions stairs landings on section.";
+            pushbutton_5_2.LongDescription = "Automatically puts dimensions on a current section. Note that only one staircase need to be visible, so check view depth before run.";
 
             // Add Button
-            PushButtonData button_5_3 = new PushButtonData("button_5_3", "Align\r\nLevels", path, "_BIM_Leaders.Levels_Align");
+            PushButtonData button_5_3 = new PushButtonData("button_5_3", "Align\r\nGrids", path, "_BIM_Leaders.Grids_Align");
             PushButton pushbutton_5_3 = panel_5.AddItem(button_5_3) as PushButton;
-            Uri imagePath_5_3 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Levels_Align.png");
+            Uri imagePath_5_3 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Grids_Align.png");
             BitmapImage image_5_3 = new BitmapImage(imagePath_5_3);
             pushbutton_5_3.LargeImage = image_5_3;
-            pushbutton_5_3.ToolTip = "Align Levels Ends.";
-            pushbutton_5_3.LongDescription = "Can be useful on elevation and section views. Tags on ends of the levels can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.";
+            pushbutton_5_3.ToolTip = "Align Grid Ends.";
+            pushbutton_5_3.LongDescription = "Can be useful on elevation and section views. Bubbles on ends of the grids can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.";
 
             // Add Button
-            PushButtonData button_5_4 = new PushButtonData("button_5_4", "Steps\r\nEnumerate", path, "_BIM_Leaders.Stairs_Steps_Enumerate");
-            button_5_4.AvailabilityClassName = "_BIM_Leaders.ViewIsSection";
+            PushButtonData button_5_4 = new PushButtonData("button_5_4", "Align\r\nLevels", path, "_BIM_Leaders.Levels_Align");
             PushButton pushbutton_5_4 = panel_5.AddItem(button_5_4) as PushButton;
-            Uri imagePath_5_4 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Stairs_Steps_Enumerate.png");
+            Uri imagePath_5_4 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Levels_Align.png");
             BitmapImage image_5_4 = new BitmapImage(imagePath_5_4);
             pushbutton_5_4.LargeImage = image_5_4;
-            pushbutton_5_4.ToolTip = "Enumerate Stairs Steps.";
-            pushbutton_5_4.LongDescription = "Can be useful on section views. Note that only one staircase need to be visible, so check view depth before run.";
+            pushbutton_5_4.ToolTip = "Align Levels Ends.";
+            pushbutton_5_4.LongDescription = "Can be useful on elevation and section views. Tags on ends of the levels can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.";
+
+            // Add Button
+            PushButtonData button_5_5 = new PushButtonData("button_5_5", "Steps\r\nEnumerate", path, "_BIM_Leaders.Stairs_Steps_Enumerate");
+            button_5_5.AvailabilityClassName = "_BIM_Leaders.ViewIsSection";
+            PushButton pushbutton_5_5 = panel_5.AddItem(button_5_5) as PushButton;
+            Uri imagePath_5_5 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Stairs_Steps_Enumerate.png");
+            BitmapImage image_5_5 = new BitmapImage(imagePath_5_5);
+            pushbutton_5_5.LargeImage = image_5_5;
+            pushbutton_5_5.ToolTip = "Enumerate Stairs Steps.";
+            pushbutton_5_5.LongDescription = "Can be useful on section views. Note that only one staircase need to be visible, so check view depth before run.";
 
             return Result.Succeeded;
         }
