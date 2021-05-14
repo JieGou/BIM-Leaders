@@ -237,6 +237,16 @@ namespace _BIM_Leaders
             pushbutton_5_5.ToolTip = "Enumerate Stairs Steps.";
             pushbutton_5_5.LongDescription = "Can be useful on section views. Note that only one staircase need to be visible, so check view depth before run.";
 
+            // Add Button
+            PushButtonData button_5_6 = new PushButtonData("button_5_6", "Walls\r\nCompare", path, "_BIM_Leaders.Walls_Compare");
+            button_5_6.AvailabilityClassName = "_BIM_Leaders.ViewIsPlan";
+            PushButton pushbutton_5_6 = panel_5.AddItem(button_5_6) as PushButton;
+            Uri imagePath_5_6 = new Uri(@"C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders\BIM_Leaders_Walls_Compare.png");
+            BitmapImage image_5_6 = new BitmapImage(imagePath_5_6);
+            pushbutton_5_6.LargeImage = image_5_6;
+            pushbutton_5_6.ToolTip = "Compare Walls for Permit Change Drawing.";
+            pushbutton_5_6.LongDescription = "Can be useful on plan views. Select a Revit link after settings entering.";
+
             return Result.Succeeded;
         }
     }
