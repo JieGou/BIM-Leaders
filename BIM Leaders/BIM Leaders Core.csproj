@@ -48,6 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2020'">
       <HintPath>C:\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
       <Private>False</Private>
@@ -67,12 +68,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Dimension_Section_Floors.cs" />
@@ -96,6 +99,9 @@
     </Compile>
     <Compile Include="Forms\Check_Form.Designer.cs">
       <DependentUpon>Check_Form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Dimension_Section_Floors_Form.xaml.cs">
+      <DependentUpon>Dimension_Section_Floors_Form.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\Walls_Compare_Form.cs">
       <SubType>Form</SubType>
@@ -133,11 +139,11 @@
     <Compile Include="Forms\Grids_Align_Form.Designer.cs">
       <DependentUpon>Grids_Align_Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Dimension_Section_Floors_Form.cs">
+    <Compile Include="Forms\Dimension_Section_Floors_Form_OLD.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Dimension_Section_Floors_Form.Designer.cs">
-      <DependentUpon>Dimension_Section_Floors_Form.cs</DependentUpon>
+    <Compile Include="Forms\Dimension_Section_Floors_Form_OLD.Designer.cs">
+      <DependentUpon>Dimension_Section_Floors_Form_OLD.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\DWG_Name_Delete_Form.cs">
       <SubType>Form</SubType>
@@ -177,8 +183,8 @@
     <EmbeddedResource Include="Forms\Grids_Align_Form.resx">
       <DependentUpon>Grids_Align_Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Dimension_Section_Floors_Form.resx">
-      <DependentUpon>Dimension_Section_Floors_Form.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Dimension_Section_Floors_Form_OLD.resx">
+      <DependentUpon>Dimension_Section_Floors_Form_OLD.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DWG_Name_Delete_Form.resx">
       <DependentUpon>DWG_Name_Delete_Form.cs</DependentUpon>
@@ -186,6 +192,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Revit.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Forms\Dimension_Section_Floors_Form.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
