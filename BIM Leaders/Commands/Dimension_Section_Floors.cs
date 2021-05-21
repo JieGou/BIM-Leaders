@@ -6,32 +6,14 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI.Selection;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
     public class Dimension_Section_Floors : IExternalCommand
     {
-        public class LineSelectionFilter : ISelectionFilter
-        {
-            public bool AllowElement(Element element)
-            {
-                if (element.Category.Name == "Lines")
-                {
-                    return true;
-                }
-                return false;
-            }
-
-            public bool AllowReference(Reference refer, XYZ point)
-            {
-                return false;
-            }
-        }
         public static Reference GetLineRef(UIDocument doc)
         {
-            ReferenceArray ra = new ReferenceArray();
-            ISelectionFilter selFilter = new LineSelectionFilter();
-            Reference line_ref = doc.Selection.PickObject(ObjectType.Element, selFilter, "Select line");
+            Reference line_ref = doc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select line");
             return line_ref;
         }
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -334,6 +316,11 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(Dimension_Section_Floors).Namespace + "." + nameof(Dimension_Section_Floors);
         }
     }
 }

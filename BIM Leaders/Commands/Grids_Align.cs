@@ -6,7 +6,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI.Selection;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
     public class Grids_Align : IExternalCommand
@@ -126,6 +126,11 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(Grids_Align).Namespace + "." + nameof(Grids_Align);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     public partial class Names_Prefix_Change_Form : System.Windows.Forms.Form
     {

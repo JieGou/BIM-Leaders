@@ -6,7 +6,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI.Selection;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
     public class Levels_Align : IExternalCommand
@@ -124,6 +124,11 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(Levels_Align).Namespace + "." + nameof(Levels_Align);
         }
     }
 }

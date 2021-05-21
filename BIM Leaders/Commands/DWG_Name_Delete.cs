@@ -5,7 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
     public class DWG_Name_Delete : IExternalCommand
@@ -98,6 +98,11 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(DWG_Name_Delete).Namespace + "." + nameof(DWG_Name_Delete);
         }
     }
 }

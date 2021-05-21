@@ -5,7 +5,7 @@ using Autodesk.Revit.UI;
 using System;
 using System.Linq;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders
 {
 
     class ExternalDBApp_Group_Restore : IExternalDBApplication
@@ -23,7 +23,7 @@ namespace _BIM_Leaders
                 // Register Event
                 application.DocumentChanged += new EventHandler<DocumentChangedEventArgs>(GroupRestoreEvent);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return ExternalDBApplicationResult.Failed;
             }
@@ -36,7 +36,7 @@ namespace _BIM_Leaders
             ElementId element = args.GetModifiedElementIds(filter).First();
             string name = args.GetTransactionNames().First();
 
-            if(name == "Restore All Excluded")
+            if (name == "Restore All Excluded")
             {
                 TaskDialog td = new TaskDialog("Group Restoring");
                 td.MainIcon = TaskDialogIcon.TaskDialogIconWarning;
@@ -44,7 +44,7 @@ namespace _BIM_Leaders
                 td.MainInstruction = "Group Id " + element.ToString() + " trying to be restored. This is not recommended and can cause problems!";
                 td.MainContent = "Contact with model responsible person (Architect, BIM Coordinator) to ensure that groups can be restored.";
                 td.Show();
-            }  
+            }
         }
     }
 }

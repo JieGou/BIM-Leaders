@@ -3,8 +3,9 @@ using System;
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.DB;
+using BIM_Leaders_UI;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     // Get true if in family document
     public class DocumentIsFamily : IExternalCommandAvailability

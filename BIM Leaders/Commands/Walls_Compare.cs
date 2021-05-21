@@ -6,31 +6,14 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI.Selection;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
     public class Walls_Compare : IExternalCommand
     {
-        public class LinkSelectionFilter : ISelectionFilter
-        {
-            public bool AllowElement(Element element)
-            {
-                if (element.Category.Name == "RVT Links")
-                {
-                    return true;
-                }
-                return false;
-            }
-
-            public bool AllowReference(Reference refer, XYZ point)
-            {
-                return false;
-            }
-        }
         public static Reference GetLinkRef(UIDocument doc)
         {
-            ISelectionFilter selFilter = new LinkSelectionFilter();
-            Reference link_ref = doc.Selection.PickObject(ObjectType.Element, selFilter, "Select Link");
+            Reference link_ref = doc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select Link");
             return link_ref;
         }
         public static List<CurveLoop> GetWallsLoops(Wall wall)
@@ -311,6 +294,11 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(Walls_Compare).Namespace + "." + nameof(Walls_Compare);
         }
     }
 }

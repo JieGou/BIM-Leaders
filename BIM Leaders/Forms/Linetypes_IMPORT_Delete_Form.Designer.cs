@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Autodesk.Revit.DB;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     public partial class Linetypes_IMPORT_Delete_Form : System.Windows.Forms.Form
     {

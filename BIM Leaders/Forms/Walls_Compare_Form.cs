@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     public partial class Walls_Compare_Form : System.Windows.Forms.Form
     {

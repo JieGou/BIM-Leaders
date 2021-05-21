@@ -25,7 +25,7 @@ clr.AddReference("ProtoGeometry")
 from Autodesk.DesignScript import Geometry as geom
 */
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
     public class Stairs_Steps_Enumerate : IExternalCommand
@@ -232,6 +232,11 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(Stairs_Steps_Enumerate).Namespace + "." + nameof(Stairs_Steps_Enumerate);
         }
     }
 }

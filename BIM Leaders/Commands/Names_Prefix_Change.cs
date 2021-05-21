@@ -6,7 +6,7 @@ using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
     public class Names_Prefix_Change : IExternalCommand
@@ -565,6 +565,15 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        /// <summary>
+        /// Gets the full namespace path to this command
+        /// </summary>
+        /// <returns></returns>
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(Names_Prefix_Change).Namespace + "." + nameof(Names_Prefix_Change);
         }
     }
 }

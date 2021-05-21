@@ -4,7 +4,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using System.Collections.Generic;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.ReadOnly)]
     public class Family_Voids_Select : IExternalCommand
@@ -92,6 +92,11 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(Family_Voids_Select).Namespace + "." + nameof(Family_Voids_Select);
         }
     }
 }

@@ -7,32 +7,14 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
     public class Walls_Parallel : IExternalCommand
     {
-        public class LineSelectionFilter : ISelectionFilter
-        {
-            public bool AllowElement(Element element)
-            {
-                if (element.Category.Name == "Reference Planes")
-                {
-                    return true;
-                }
-                return false;
-            }
-
-            public bool AllowReference(Reference refer, XYZ point)
-            {
-                return false;
-            }
-        }
         public static Reference GetRefRef(UIDocument doc)
         {
-            ReferenceArray ra = new ReferenceArray();
-            ISelectionFilter selFilter = new LineSelectionFilter();
-            Reference line_ref = doc.Selection.PickObject(ObjectType.Element, selFilter, "Select Reference Plane");
+            Reference line_ref = doc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Reference Plane");
             return line_ref;
         }
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -186,6 +168,11 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(Walls_Parallel).Namespace + "." + nameof(Walls_Parallel);
         }
     }
 }

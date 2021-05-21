@@ -5,7 +5,7 @@ using Autodesk.Revit.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
     public class Linestyles_Unused_Delete : IExternalCommand
@@ -93,6 +93,11 @@ namespace _BIM_Leaders
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+        public static string GetPath()
+        {
+            // Return constructed namespace path
+            return typeof(Linestyles_Unused_Delete).Namespace + "." + nameof(Linestyles_Unused_Delete);
         }
     }
 }

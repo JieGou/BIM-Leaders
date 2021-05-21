@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     public partial class Levels_Align_Form : System.Windows.Forms.Form
     {

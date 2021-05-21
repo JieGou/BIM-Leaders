@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace _BIM_Leaders
+namespace BIM_Leaders_Core
 {
     public partial class Linetypes_IMPORT_Delete_Form : System.Windows.Forms.Form
     {
