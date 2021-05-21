@@ -1,4 +1,5 @@
 ﻿namespace BIM_Leaders_Core
+{
     /// <summary>
     /// Specific window message type.
     /// </summary>
