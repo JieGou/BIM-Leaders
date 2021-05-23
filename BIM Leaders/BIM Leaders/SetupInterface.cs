@@ -1,8 +1,6 @@
-﻿using Autodesk.Revit.UI;
-using System;
-using System.Reflection;
-using System.Windows.Media.Imaging;
+﻿using System.Reflection;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using BIM_Leaders_UI;
 using BIM_Leaders_Resources;
 using BIM_Leaders_Core;

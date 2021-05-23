@@ -33,6 +33,7 @@ namespace BIM_Leaders_Core
                 // Getting input from user
                 bool input_spots = false;
                 double input_thickness_cm = 10;
+                double dim_value_moved_cm = 200; // If less then dimension segment text will be moved
                 using (Dimension_Section_Floors_Form form = new Dimension_Section_Floors_Form())
                 {
                     form.ShowDialog();
@@ -283,7 +284,49 @@ namespace BIM_Leaders_Core
                     {
                         try
                         {
-                            doc.Create.NewDimension(view, line[0], references);
+                            Dimension d = doc.Create.NewDimension(view, line[0], references);
+
+                            ElementTransformUtils.MoveElement(doc, d.Id, XYZ.BasisZ);
+                            ElementTransformUtils.MoveElement(doc, d.Id, -XYZ.BasisZ);
+                            doc.Regenerate();
+
+                            // Remove leaders
+                            d.get_Parameter(BuiltInParameter.DIM_LEADER).SetValueString("No");
+
+                            ElementTransformUtils.MoveElement(doc, d.Id, XYZ.BasisZ);
+                            ElementTransformUtils.MoveElement(doc, d.Id, -XYZ.BasisZ);
+                            doc.Regenerate();
+
+                            // Move little segments text
+                            DimensionSegmentArray dsa = d.Segments;
+                            TaskDialog.Show("E", dsa.Size.ToString());
+                            foreach (DimensionSegment ds in dsa)
+                            {
+                                if (ds.IsTextPositionAdjustable())
+                                {
+                                    double value = UnitUtils.ConvertToInternalUnits(ds.Value.Value, DisplayUnitType.DUT_CENTIMETERS);
+                                    if (value < dim_value_moved_cm)
+                                    {
+                                        // Get the current text XYZ position
+                                        XYZ currentTextPosition = ds.TextPosition;
+                                        // Calculate a new XYZ position by transforming the current text position
+                                        XYZ newTextPosition = Transform.CreateTranslation(new XYZ(0, 0, 1)).OfPoint(currentTextPosition);
+                                        // Set the new text position for the segment's text
+                                        ds.TextPosition = newTextPosition;
+                                    }
+                                    else
+                                    {
+                                        XYZ pos_old = ds.TextPosition;
+                                        double move = ds.Value.Value;
+                                        XYZ pos_new = new XYZ(pos_old.X, pos_old.Y, pos_old.Z + move / 2 + 0.5);
+                                        ds.TextPosition = pos_new;
+                                    }
+                                }
+                                else
+                                {
+                                    TaskDialog.Show("E", "E");
+                                }
+                            }
                         }
                         catch (Exception ex)
                         {
