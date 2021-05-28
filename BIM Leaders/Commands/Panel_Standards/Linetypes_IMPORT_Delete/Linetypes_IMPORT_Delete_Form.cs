@@ -1,16 +1,44 @@
-﻿using Autodesk.Revit.DB;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace BIM_Leaders_Core
 {
+    /// <summary>
+    /// Linetypes delete aquisition form.
+    /// </summary>
+    /// <seealso cref="System.Windows.Forms.Form"/>
     public partial class Linetypes_IMPORT_Delete_Form : System.Windows.Forms.Form
     {
+        /// <summary>
+        /// Default constructor.
+        /// Initializes a new instance of the <see cref="Linetypes_IMPORT_Delete_Form"/>
+        /// </summary>
         public Linetypes_IMPORT_Delete_Form()
         {
             InitializeComponent();
         }
+
+        /// <summary>
+        /// Handles the Click event of the Button_delete control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void Button_delete_Click(object sender, System.EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+        /// <summary>
+        /// Handles the Click event of the Button_exit control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void Button_exit_Click(object sender, System.EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
         System.Drawing.Point last_point;
         private void Linetypes_IMPORT_Delete_Form_MouseMove(object sender, MouseEventArgs e)
         {
@@ -24,17 +52,23 @@ namespace BIM_Leaders_Core
         {
             last_point = new System.Drawing.Point(e.X,  e.Y);
         }
-        private void Button_delete_Click(object sender, EventArgs e)
+
+        /// <summary>
+        /// Gets the information from user.
+        /// </summary>
+        /// <returns></returns>
+        public Linetypes_IMPORT_Delete_Data GetInformation()
         {
-            DialogResult = DialogResult.OK;
+            // Information gathered from window
+            var information = new Linetypes_IMPORT_Delete_Data()
+            {
+                result_name = textBox1.ToString()
+            };
+            return information;
         }
-        private void Button_exit_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
+
         string result = "IMPORT";
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, System.EventArgs e)
         {
             result = textBox1.ToString();
         }

@@ -4,16 +4,16 @@ using System.Windows.Forms;
 namespace BIM_Leaders_Core
 {
     /// <summary>
-    /// Align levels aquisition form.
+    /// Align grids aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Forms.Form"/>
-    public partial class Levels_Align_Form : System.Windows.Forms.Form
+    public partial class Grids_Align_Form_OLD : System.Windows.Forms.Form
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="Levels_Align_Form"/>
+        /// Initializes a new instance of the <see cref="Grids_Align_Form"/>
         /// </summary>
-        public Levels_Align_Form()
+        public Grids_Align_Form_OLD()
         {
             InitializeComponent();
         }
@@ -39,23 +39,8 @@ namespace BIM_Leaders_Core
             Close();
         }
 
-        /// <summary>
-        /// Gets the information from user.
-        /// </summary>
-        /// <returns></returns>
-        public Levels_Align_Data GetInformation()
-        {
-            // Information gathered from window
-            var information = new Levels_Align_Data()
-            {
-                result_side = radioButton1.Checked,
-                result_switch = checkBox1.Checked
-            };
-            return information;
-        }
-
         System.Drawing.Point last_point;
-        private void Levels_Align_Form_MouseMove(object sender, MouseEventArgs e)
+        private void Grids_Align_Form_MouseMove(object sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left)
             {
@@ -63,11 +48,26 @@ namespace BIM_Leaders_Core
                 this.Top += e.Y - last_point.Y - 57;
             }
         }
-        private void Levels_Align_Form_MouseDown(object sender, MouseEventArgs e)
+        private void Grids_Align_Form_MouseDown(object sender, MouseEventArgs e)
         {
             last_point = new System.Drawing.Point(e.X,  e.Y);
         }
-        
+
+        /// <summary>
+        /// Gets the information from user.
+        /// </summary>
+        /// <returns></returns>
+        public Grids_Align_Data GetInformation()
+        {
+            // Information gathered from window
+            var information = new Grids_Align_Data()
+            {
+                result_side = radioButton1.Checked,
+                result_switch = checkBox1.Checked
+            };
+            return information;
+        }
+
         bool condition_switch = true;
         bool condition_side_1 = true;
         bool condition_side_2 = false;

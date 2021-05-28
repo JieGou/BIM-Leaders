@@ -20,62 +20,41 @@ namespace BIM_Leaders_Core
 
             try
             {
-                // Get Imports
-                FilteredElementCollector collector = new FilteredElementCollector(doc);
-                IEnumerable<ImportInstance> imports_all = collector.OfClass(typeof(ImportInstance))
-                    .WhereElementIsNotElementType()
-                    .Cast<ImportInstance>(); //LINQ function;
+                // Collector for data provided in window
+                DWG_Name_Delete_Data data = new DWG_Name_Delete_Data(); 
 
-                // Get unique imports names list
-                List<ImportInstance> imports = new List<ImportInstance>();
-                List<string> imports_categories = new List<string>();
-                foreach(ImportInstance i in imports_all)
-                {
-                    string instance_name = i.Category.Name;
-                    if(!imports_categories.Contains(instance_name))
-                    {
-                        imports.Add(i);
-                        imports_categories.Add(instance_name);
-                    }
-                }
-
-                // Getting delete list from user selected item
-                List<ElementId> delete = new List<ElementId>();
-                using (DWG_Name_Delete_Form form = new DWG_Name_Delete_Form(imports))
+                // Get user provided information from window
+                using (DWG_Name_Delete_Form form = new DWG_Name_Delete_Form(uidoc))
                 {
                     form.ShowDialog();
 
-                    string import_name = "";
-                    if(form.DialogResult == System.Windows.Forms.DialogResult.OK)
-                    {
-                        import_name = form.Result();
-                    }
                     if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                    {
                         return Result.Cancelled;
-                    }
 
-                    foreach (ImportInstance i in imports_all)
-                    {
-                        string i_name = i.Category.Name;
-                        if(import_name.Length > 0)
-                        {
-                            if (i_name == import_name)
-                            {
-                                delete.Add(i.Id);
-                            }
-                        }
-                    }
+                    data = form.GetInformation();
+                }
+
+                string name = doc.GetElement(data.result_dwg).Category.Name;
+                // Get all Imports with name same as input from a form
+                FilteredElementCollector collector = new FilteredElementCollector(doc);
+                IEnumerable<ImportInstance> dwg_types_all = collector.OfClass(typeof(ImportInstance))
+                    .WhereElementIsNotElementType()
+                    .Cast<ImportInstance>(); //LINQ function;
+                List<ElementId> delete = new List<ElementId>();
+                foreach (ImportInstance i in dwg_types_all)
+                {
+                    string i_name = i.Category.Name;
+                    if (i_name == name)
+                        delete.Add(i.Id);
                 }
                 int count = 0;
-                string name = "";
+
                 using (Transaction trans = new Transaction(doc, "Delete DWG by Name"))
                 {
                     trans.Start();
 
                     foreach(ElementId i in delete)
                     {
-                        name = doc.GetElement(i).Category.Name;
                         doc.Delete(i);
                         count++;
                     }

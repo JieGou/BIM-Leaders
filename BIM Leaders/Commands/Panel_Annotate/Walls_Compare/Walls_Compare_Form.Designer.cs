@@ -26,6 +26,7 @@ namespace BIM_Leaders_Core
             this.Walls_Compare_Form_List_Fills.Name = "Walls_Compare_Form_List_Fills";
             this.Walls_Compare_Form_List_Fills.Size = new System.Drawing.Size(204, 21);
             this.Walls_Compare_Form_List_Fills.TabIndex = 0;
+            this.Walls_Compare_Form_List_Fills.SelectedIndexChanged += new System.EventHandler(this.Walls_Compare_Form_List_Fills_SelectedIndexChanged);
             // 
             // button_compare
             // 
@@ -96,6 +97,7 @@ namespace BIM_Leaders_Core
             this.Name = "Walls_Compare_Form";
             this.ShowIcon = false;
             this.Text = "Walls Compare";
+            this.Load += new System.EventHandler(this.Walls_Compare_Form_Load);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Walls_Compare_Form_MouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();

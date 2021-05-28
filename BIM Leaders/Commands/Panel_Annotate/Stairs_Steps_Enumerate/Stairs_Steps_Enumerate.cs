@@ -44,24 +44,26 @@ namespace BIM_Leaders_Core
 
             try
             {
-                // Getting input from user
-                bool right_side = true;
-                double start_number = 1;
+                // Collector for data provided in window
+                Stairs_Steps_Enumerate_Data data = new Stairs_Steps_Enumerate_Data();
 
+                // Get user provided information from window
                 using (Stairs_Steps_Enumerate_Form form = new Stairs_Steps_Enumerate_Form())
                 {
                     form.ShowDialog();
 
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.OK)
-                    {
-                        right_side = form.Result_Side();
-                        start_number = Decimal.ToDouble(form.Result_Number());
-                    }
                     if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                    {
                         return Result.Cancelled;
-                    }
+                    
+                    data = form.GetInformation();
                 }
+
+                // Getting input from user
+                bool right_side = data.result_side_right;
+                double start_number = decimal.ToDouble(data.result_number);
+                int count = 0;
+                int grouped = 0;
+                int unpinned = 0;
 
                 // Get Floors
                 IEnumerable<MultistoryStairs> stairs_ms_all = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_MultistoryStairs)
@@ -85,10 +87,6 @@ namespace BIM_Leaders_Core
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<Stairs>();
-
-                int count = 0;
-                int grouped = 0;
-                int unpinned = 0;
 
                 // Filtering for multistairs that are in groups
                 List<MultistoryStairs> stairs_ms = new List<MultistoryStairs>();

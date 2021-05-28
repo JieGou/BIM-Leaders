@@ -30,27 +30,25 @@ namespace BIM_Leaders_Core
 
             try
             {
-                // Getting input from user
-                bool input_spots = false;
-                double input_thickness_cm = 10;
-                double dim_value_moved_cm = 200; // If less then dimension segment text will be moved
-                using (Dimension_Section_Floors_Form form = new Dimension_Section_Floors_Form())
-                {
-                    form.ShowDialog();
+                // Collector for data provided in window
+                Dimension_Section_Floors_Data data = new Dimension_Section_Floors_Data();
 
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.OK)
-                    {
-                        input_spots = form.Result_Spots();
-                        input_thickness_cm = Decimal.ToDouble(form.Result_Thickness());
-                    }
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                    {
-                        return Result.Cancelled;
-                    }
-                }
+                Dimension_Section_Floors_Form form = new Dimension_Section_Floors_Form();
+                form.ShowDialog();
+
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
+
+                // Get user provided information from window
+                data = form.GetInformation();
+
+                bool input_spots = data.result_spots;
+                double input_thickness_cm = data.result_thickness;
                 double input_thickness = UnitUtils.ConvertToInternalUnits(input_thickness_cm, DisplayUnitType.DUT_CENTIMETERS);
-
+                double dim_value_moved_cm = 200; // If less then dimension segment text will be moved
                 XYZ zero = new XYZ(0,0,0);
+                int count = 0;
+                int count_spots = 0;
 
                 // Get Floors
                 FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
@@ -192,7 +190,6 @@ namespace BIM_Leaders_Core
                 }
 
                 // Convert lists to ReferenceArrays
-                int count = 0;
                 ReferenceArray references = new ReferenceArray();
 
                 foreach (Reference p in intersections_thick_top)
@@ -218,8 +215,6 @@ namespace BIM_Leaders_Core
                 {
                     count--;
                 }
-
-                int count_spots = 0;
 
                 // Create annotations
                 using (Transaction trans = new Transaction(doc, "Section Dimensions"))

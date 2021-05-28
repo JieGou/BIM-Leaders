@@ -2,7 +2,7 @@
 
 namespace BIM_Leaders_Core
 {
-    public partial class Grids_Align_Form : System.Windows.Forms.Form
+    public partial class Grids_Align_Form_OLD : System.Windows.Forms.Form
     {
         private void InitializeComponent()
         {

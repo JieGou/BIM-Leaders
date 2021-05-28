@@ -91,54 +91,25 @@ namespace BIM_Leaders_Core
 
             try
             {
-                string mat_name = "";
-                string fill_name = "";
-                double elevation = view.GenLevel.Elevation;
+                // Collector for data provided in window
+                Walls_Compare_Data data = new Walls_Compare_Data();
 
-                int count = 0;
-
-                // Get Imports
-                FilteredElementCollector collector = new FilteredElementCollector(doc);
-                IEnumerable<FilledRegionType> fills_all = collector.OfClass(typeof(FilledRegionType))
-                    .Cast<FilledRegionType>(); //LINQ function;
-                
-                FilledRegionType fill = fills_all.First();
-
-                // Get unique fills names list
-                List<FilledRegionType> fills = new List<FilledRegionType>();
-                List<string> fills_names = new List<string>();
-                foreach (FilledRegionType i in fills_all)
-                {
-                    fill_name = i.Name;
-                    if (!fills_names.Contains(fill_name))
-                    {
-                        fills.Add(i);
-                        fills_names.Add(fill_name);
-                    }
-                }
-
-                using (Walls_Compare_Form form = new Walls_Compare_Form(fills_names))
+                // Get user provided information from window
+                using (Walls_Compare_Form form = new Walls_Compare_Form(uidoc))
                 {
                     form.ShowDialog();
 
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.OK)
-                    {
-                        mat_name = form.Result_Material();
-                        fill_name = form.Result_Fill();
-                    }
                     if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                    {
                         return Result.Cancelled;
-                    }
-                    foreach (FilledRegionType i in fills_all)
-                    {
-                        string i_name = i.Name;
-                        if (i_name == fill_name)
-                        {
-                            fill = i;
-                        }
-                    }
+
+                    data = form.GetInformation();
                 }
+
+                string mat_name = data.result_mat;
+                FilledRegionType fill = doc.GetElement(data.result_fill_id) as FilledRegionType;
+                string fill_name = fill.Name;
+                double elevation = view.GenLevel.Elevation;
+                int count = 0;
 
                 RevitLinkInstance link = doc.GetElement(GetLinkRef(uidoc).ElementId) as RevitLinkInstance;
 

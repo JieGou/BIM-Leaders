@@ -69,5 +69,11 @@
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Stairs_Steps_Enumerate.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Walls_Parallel.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Icons\BIM_Leaders_Walls_Compare.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Icons\BIM_Leaders_Dimensions_Stairs_Landings.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

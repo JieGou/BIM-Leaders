@@ -14,16 +14,16 @@ namespace BIM_Leaders_Core
             this.button_delete = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button_exit = new System.Windows.Forms.Button();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.radiobuttons = new System.Windows.Forms.GroupBox();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.in_thickness = new System.Windows.Forms.NumericUpDown();
+            this.in_rb = new System.Windows.Forms.GroupBox();
+            this.in_rb2 = new System.Windows.Forms.RadioButton();
+            this.in_rb1 = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.toolTip_thickness = new System.Windows.Forms.ToolTip(this.components);
-            this.label2 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            this.radiobuttons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.in_thickness)).BeginInit();
+            this.in_rb.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -48,10 +48,10 @@ namespace BIM_Leaders_Core
             // 
             this.label1.AutoSize = true;
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label1.Font = new System.Drawing.Font("Roboto Light", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(15, 154);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(226, 19);
+            this.label1.Size = new System.Drawing.Size(223, 20);
             this.label1.TabIndex = 2;
             this.label1.Text = "Top Floor Max Thickness (cm):";
             this.label1.MouseHover += new System.EventHandler(this.label1_MouseHover);
@@ -70,65 +70,65 @@ namespace BIM_Leaders_Core
             this.button_exit.UseVisualStyleBackColor = false;
             this.button_exit.Click += new System.EventHandler(this.Button_exit_Click);
             // 
-            // numericUpDown1
+            // in_thickness
             // 
-            this.numericUpDown1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numericUpDown1.Font = new System.Drawing.Font("Roboto Light", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericUpDown1.Location = new System.Drawing.Point(267, 152);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.in_thickness.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.in_thickness.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.in_thickness.Location = new System.Drawing.Point(267, 152);
+            this.in_thickness.Maximum = new decimal(new int[] {
             50,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(48, 27);
-            this.numericUpDown1.TabIndex = 7;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.in_thickness.Name = "in_thickness";
+            this.in_thickness.Size = new System.Drawing.Size(48, 26);
+            this.in_thickness.TabIndex = 7;
+            this.in_thickness.Value = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
+            this.in_thickness.ValueChanged += new System.EventHandler(this.In_thickness_ValueChanged);
             // 
-            // radiobuttons
+            // in_rb
             // 
-            this.radiobuttons.Controls.Add(this.radioButton2);
-            this.radiobuttons.Controls.Add(this.radioButton1);
-            this.radiobuttons.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radiobuttons.Font = new System.Drawing.Font("Roboto Light", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.radiobuttons.Location = new System.Drawing.Point(18, 54);
-            this.radiobuttons.Name = "radiobuttons";
-            this.radiobuttons.Size = new System.Drawing.Size(212, 72);
-            this.radiobuttons.TabIndex = 8;
-            this.radiobuttons.TabStop = false;
-            this.radiobuttons.Text = "Annotation Type";
+            this.in_rb.Controls.Add(this.in_rb2);
+            this.in_rb.Controls.Add(this.in_rb1);
+            this.in_rb.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.in_rb.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.in_rb.Location = new System.Drawing.Point(18, 54);
+            this.in_rb.Name = "in_rb";
+            this.in_rb.Size = new System.Drawing.Size(212, 72);
+            this.in_rb.TabIndex = 8;
+            this.in_rb.TabStop = false;
+            this.in_rb.Text = "Annotation Type";
             // 
-            // radioButton2
+            // in_rb1
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radioButton2.Location = new System.Drawing.Point(6, 42);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(135, 23);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Spot Elevations";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            this.in_rb1.AutoSize = true;
+            this.in_rb1.Checked = true;
+            this.in_rb1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.in_rb1.Location = new System.Drawing.Point(6, 19);
+            this.in_rb1.Name = "in_rb1";
+            this.in_rb1.Size = new System.Drawing.Size(109, 24);
+            this.in_rb1.TabIndex = 0;
+            this.in_rb1.TabStop = true;
+            this.in_rb1.Text = "Dimensions";
+            this.in_rb1.UseVisualStyleBackColor = true;
+            this.in_rb1.CheckedChanged += new System.EventHandler(this.In_rb1_CheckedChanged);
             // 
-            // radioButton1
+            // in_rb2
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Checked = true;
-            this.radioButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.radioButton1.Location = new System.Drawing.Point(6, 19);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(109, 23);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Dimensions";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            this.in_rb2.AutoSize = true;
+            this.in_rb2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.in_rb2.Location = new System.Drawing.Point(6, 42);
+            this.in_rb2.Name = "in_rb2";
+            this.in_rb2.Size = new System.Drawing.Size(137, 24);
+            this.in_rb2.TabIndex = 1;
+            this.in_rb2.TabStop = true;
+            this.in_rb2.Text = "Spot Elevations";
+            this.in_rb2.UseVisualStyleBackColor = true;
+            this.in_rb2.CheckedChanged += new System.EventHandler(this.In_rb2_CheckedChanged);
             // 
             // panel1
             // 
@@ -138,6 +138,17 @@ namespace BIM_Leaders_Core
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(360, 48);
             this.panel1.TabIndex = 9;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.Location = new System.Drawing.Point(51, 12);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(250, 24);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Dimension Section Floors";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel2
             // 
@@ -153,17 +164,6 @@ namespace BIM_Leaders_Core
             // 
             this.toolTip_thickness.BackColor = System.Drawing.Color.LightGray;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Roboto Medium", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(51, 12);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(254, 23);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Dimension Section Floors";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // Dimension_Section_Floors_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -172,8 +172,8 @@ namespace BIM_Leaders_Core
             this.ClientSize = new System.Drawing.Size(360, 240);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.radiobuttons);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.in_rb);
+            this.Controls.Add(this.in_thickness);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Roboto", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -181,9 +181,9 @@ namespace BIM_Leaders_Core
             this.ShowIcon = false;
             this.Text = "Dimension Section Floors";
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Dimension_Section_Floors_Form_MouseMove);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            this.radiobuttons.ResumeLayout(false);
-            this.radiobuttons.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.in_thickness)).EndInit();
+            this.in_rb.ResumeLayout(false);
+            this.in_rb.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -194,10 +194,10 @@ namespace BIM_Leaders_Core
         private System.Windows.Forms.Button button_delete;
         private System.Windows.Forms.Label label1;
         private Button button_exit;
-        private NumericUpDown numericUpDown1;
-        private GroupBox radiobuttons;
-        private RadioButton radioButton2;
-        private RadioButton radioButton1;
+        private NumericUpDown in_thickness;
+        private GroupBox in_rb;
+        private RadioButton in_rb2;
+        private RadioButton in_rb1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private ToolTip toolTip_thickness;

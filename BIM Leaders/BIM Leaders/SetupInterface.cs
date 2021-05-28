@@ -7,75 +7,6 @@ using BIM_Leaders_Core;
 
 namespace BIM_Leaders
 {
-    // Get true if in family document
-    public class DocumentIsFamily : IExternalCommandAvailability
-    {
-        public static bool IsCommandAvaiable { get; internal set; }
-
-        public bool IsCommandAvailable(UIApplication applicationData, CategorySet selectedCategories)
-        {
-            try
-            {
-                Document o_doc = applicationData.ActiveUIDocument.Document;
-
-                if (o_doc.IsFamilyDocument)
-                {
-                    return true;
-                }
-                return false;
-            }
-            catch
-            {
-                return true;
-            }
-        }
-    }
-    // Get true if in section view
-    public class ViewIsSection : IExternalCommandAvailability
-    {
-        public static bool IsCommandAvaiable { get; internal set; }
-
-        public bool IsCommandAvailable(UIApplication applicationData, CategorySet selectedCategories)
-        {
-            try
-            {
-                ViewType v_type = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
-
-                if (v_type == ViewType.Section)
-                {
-                    return true;
-                }
-                return false;
-            }
-            catch
-            {
-                return true;
-            }
-        }
-    }
-    // Get true if in plan view
-    public class ViewIsPlan : IExternalCommandAvailability
-    {
-        public static bool IsCommandAvaiable { get; internal set; }
-
-        public bool IsCommandAvailable(UIApplication applicationData, CategorySet selectedCategories)
-        {
-            try
-            {
-                ViewType v_type = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
-
-                if (v_type == ViewType.FloorPlan)
-                {
-                    return true;
-                }
-                return false;
-            }
-            catch
-            {
-                return true;
-            }
-        }
-    }
     public class SetupInterface
     {
         public SetupInterface()
@@ -102,7 +33,7 @@ namespace BIM_Leaders
                 LongDescription = "Check which categories need to be renamed. Also can be useful to change part of the names in the middle or at the end.",
                 CommandNamespacePath = Names_Prefix_Change.GetPath(),
                 IconImageName = "BIM_Leaders_Names_Prefix_Change.png",
-                TooltipImageName = "BIM_Leaders_Names_Prefix_Change.png"
+                //TooltipImageName = "BIM_Leaders_Names_Prefix_Change.png"
             };
             // Create button from provided data
             var button_1_1 = RevitPushButton.Create(button_1_1_data);
@@ -116,7 +47,7 @@ namespace BIM_Leaders
                 LongDescription = "Linestyles cannot be deleted via Purge function. Use this command to purge all linestyles that are unneeded.",
                 CommandNamespacePath = Linestyles_Unused_Delete.GetPath(),
                 IconImageName = "BIM_Leaders_Linestyles_Unused_Delete.png",
-                TooltipImageName = "BIM_Leaders_Linestyles_Unused_Delete.png"
+                //TooltipImageName = "BIM_Leaders_Linestyles_Unused_Delete.png"
             };
             // Create button from provided data
             var button_1_2 = RevitPushButton.Create(button_1_2_data);
@@ -130,7 +61,7 @@ namespace BIM_Leaders
                 LongDescription = "Can be useful to delete IMPORT linetypes after importing DWG files.",
                 CommandNamespacePath = Linetypes_IMPORT_Delete.GetPath(),
                 IconImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png",
-                TooltipImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png"
+                //TooltipImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png"
             };
             // Create button from provided data
             var button_1_3 = RevitPushButton.Create(button_1_3_data);
@@ -144,9 +75,9 @@ namespace BIM_Leaders
                 LongDescription = "Creates wall checking filter. All non-parallel and non-perpendicular walls will be colored.",
                 CommandNamespacePath = Walls_Parallel.GetPath(),
                 IconImageName = "BIM_Leaders_Walls_Parallel.png",
-                TooltipImageName = "BIM_Leaders_Walls_Parallel.png",
-                AvailabilityClassName = "BIM_Leaders.ViewIsPlan"
-        };
+                //TooltipImageName = "BIM_Leaders_Walls_Parallel.png",
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsPlan"
+            };
             // Create button from provided data
             var button_1_4 = RevitPushButton.Create(button_1_4_data);
 
@@ -163,7 +94,7 @@ namespace BIM_Leaders
                 LongDescription = "Shows name of the import, view on which it lays on (if the import is 2D), and import type (Import or Link).",
                 CommandNamespacePath = DWG_View_Found.GetPath(),
                 IconImageName = "BIM_Leaders_DWG_View_Found.png",
-                TooltipImageName = "BIM_Leaders_DWG_View_Found.png"
+                //TooltipImageName = "BIM_Leaders_DWG_View_Found.png"
             };
             // Create button from provided data
             var button_2_1 = RevitPushButton.Create(button_2_1_data);
@@ -177,7 +108,7 @@ namespace BIM_Leaders
                 LongDescription = "Usable to delete imported DWG, because it can be on many views, and it takes a time to find all those views and delete the DWG manually.",
                 CommandNamespacePath = DWG_Name_Delete.GetPath(),
                 IconImageName = "BIM_Leaders_DWG_Name_Delete.png",
-                TooltipImageName = "BIM_Leaders_DWG_Name_Delete.png"
+                //TooltipImageName = "BIM_Leaders_DWG_Name_Delete.png"
             };
             // Create button from provided data
             var button_2_2 = RevitPushButton.Create(button_2_2_data);
@@ -195,7 +126,7 @@ namespace BIM_Leaders
                 LongDescription = "Usable if need to clear paint from all faces of some element. Usable only for Paint tool.",
                 CommandNamespacePath = Element_Paint_Remove.GetPath(),
                 IconImageName = "BIM_Leaders_Element_Paint_Remove.png",
-                TooltipImageName = "BIM_Leaders_Element_Paint_Remove.png"
+                //TooltipImageName = "BIM_Leaders_Element_Paint_Remove.png"
             };
             // Create button from provided data
             var button_3_1 = RevitPushButton.Create(button_3_1_data);
@@ -213,9 +144,9 @@ namespace BIM_Leaders
                 LongDescription = "Usable if need to select void geometry. This is hard if voids not joined with family geometry.",
                 CommandNamespacePath = Family_Voids_Select.GetPath(),
                 IconImageName = "BIM_Leaders_Familiy_Voids_Select.png",
-                TooltipImageName = "BIM_Leaders_Familiy_Voids_Select.png",
-                AvailabilityClassName = "BIM_Leaders.DocumentIsFamily"
-        };
+                //TooltipImageName = "BIM_Leaders_Familiy_Voids_Select.png",
+                AvailabilityClassName = "BIM_Leaders_Core.DocumentIsFamily"
+            };
             // Create button from provided data
             var button_4_1 = RevitPushButton.Create(button_4_1_data);
 
@@ -228,8 +159,8 @@ namespace BIM_Leaders
                 LongDescription = "Creates lines around zero coordinates in a current family. Usable for Profile family and other annotation family types.",
                 CommandNamespacePath = Family_Zero_Coordinates.GetPath(),
                 IconImageName = "BIM_Leaders_Family_Zero_Coordinates.png",
-                TooltipImageName = "BIM_Leaders_Family_Zero_Coordinates.png",
-                AvailabilityClassName = "BIM_Leaders.DocumentIsFamily"
+                //TooltipImageName = "BIM_Leaders_Family_Zero_Coordinates.png",
+                AvailabilityClassName = "BIM_Leaders_Core.DocumentIsFamily"
             };
             // Create button from provided data
             var button_4_2 = RevitPushButton.Create(button_4_2_data);
@@ -247,8 +178,8 @@ namespace BIM_Leaders
                 LongDescription = "Automatically puts annotations on a current section. Select a vertical line as a reference for annotations arrangement.",
                 CommandNamespacePath = Dimension_Section_Floors.GetPath(),
                 IconImageName = "BIM_Leaders_Dimensions_Section_Floors.png",
-                TooltipImageName = "BIM_Leaders_Dimensions_Section_Floors.png",
-                AvailabilityClassName = "BIM_Leaders.ViewIsSection"
+                //TooltipImageName = "BIM_Leaders_Dimensions_Section_Floors.png",
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
             };
             // Create button from provided data
             var button_5_1 = RevitPushButton.Create(button_5_1_data);
@@ -262,8 +193,8 @@ namespace BIM_Leaders
                 LongDescription = "Automatically puts dimensions on a current section. Note that only one staircase need to be visible, so check view depth before run.",
                 CommandNamespacePath = Dimension_Stairs_Landings.GetPath(),
                 IconImageName = "BIM_Leaders_Dimensions_Stairs_Landings.png",
-                TooltipImageName = "BIM_Leaders_Dimensions_Stairs_Landings.png",
-                AvailabilityClassName = "BIM_Leaders.ViewIsSection"
+                //TooltipImageName = "BIM_Leaders_Dimensions_Stairs_Landings.png",
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
             };
             // Create button from provided data
             var button_5_2 = RevitPushButton.Create(button_5_2_data);
@@ -277,7 +208,7 @@ namespace BIM_Leaders
                 LongDescription = "Can be useful on elevation and section views. Bubbles on ends of the grids can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.",
                 CommandNamespacePath = Grids_Align.GetPath(),
                 IconImageName = "BIM_Leaders_Grids_Align.png",
-                TooltipImageName = "BIM_Leaders_Grids_Align.png"
+                //TooltipImageName = "BIM_Leaders_Grids_Align.png"
             };
             // Create button from provided data
             var button_5_3 = RevitPushButton.Create(button_5_3_data);
@@ -291,7 +222,7 @@ namespace BIM_Leaders
                 LongDescription = "Can be useful on elevation and section views. Tags on ends of the levels can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.",
                 CommandNamespacePath = Levels_Align.GetPath(),
                 IconImageName = "BIM_Leaders_Levels_Align.png",
-                TooltipImageName = "BIM_Leaders_Levels_Align.png"
+                //TooltipImageName = "BIM_Leaders_Levels_Align.png"
             };
             // Create button from provided data
             var button_5_4 = RevitPushButton.Create(button_5_4_data);
@@ -305,8 +236,8 @@ namespace BIM_Leaders
                 LongDescription = "Can be useful on section views. Note that only one staircase need to be visible, so check view depth before run.",
                 CommandNamespacePath = Stairs_Steps_Enumerate.GetPath(),
                 IconImageName = "BIM_Leaders_Stairs_Steps_Enumerate.png",
-                TooltipImageName = "BIM_Leaders_Stairs_Steps_Enumerate.png",
-                AvailabilityClassName = "BIM_Leaders.ViewIsSection"
+                //TooltipImageName = "BIM_Leaders_Stairs_Steps_Enumerate.png",
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
             };
             // Create button from provided data
             var button_5_5 = RevitPushButton.Create(button_5_5_data);
@@ -320,8 +251,8 @@ namespace BIM_Leaders
                 LongDescription = "Can be useful on plan views. Select a Revit link after settings entering.",
                 CommandNamespacePath = Walls_Compare.GetPath(),
                 IconImageName = "BIM_Leaders_Walls_Compare.png",
-                TooltipImageName = "BIM_Leaders_Walls_Compare.png",
-                AvailabilityClassName = "BIM_Leaders.ViewIsPlan"
+                //TooltipImageName = "BIM_Leaders_Walls_Compare.png",
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsPlan"
             };
             // Create button from provided data
             var button_5_6 = RevitPushButton.Create(button_5_6_data);

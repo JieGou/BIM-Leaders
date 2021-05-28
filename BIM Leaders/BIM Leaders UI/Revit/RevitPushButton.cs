@@ -20,7 +20,7 @@ namespace BIM_Leaders_UI
                 ToolTip = data.ToolTip,
                 LongDescription = data.LongDescription,
                 LargeImage = ResourceImage.GetIcon(data.IconImageName),
-                ToolTipImage = ResourceImage.GetIcon(data.TooltipImageName),
+                //ToolTipImage = ResourceImage.GetIcon(data.TooltipImageName),
                 AvailabilityClassName = data.AvailabilityClassName
             };
 

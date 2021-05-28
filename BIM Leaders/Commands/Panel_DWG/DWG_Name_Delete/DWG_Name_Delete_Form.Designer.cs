@@ -24,6 +24,7 @@ namespace BIM_Leaders_Core
             this.DWG_Name_Delete_List.Name = "DWG_Name_Delete_List";
             this.DWG_Name_Delete_List.Size = new System.Drawing.Size(204, 21);
             this.DWG_Name_Delete_List.TabIndex = 0;
+            this.DWG_Name_Delete_List.SelectedIndexChanged += new System.EventHandler(this.DWG_Name_Delete_List_SelectedIndexChanged);
             // 
             // button_delete
             // 
@@ -73,6 +74,7 @@ namespace BIM_Leaders_Core
             this.Name = "DWG_Name_Delete_Form";
             this.ShowIcon = false;
             this.Text = "DWG Name Delete";
+            this.Load += new System.EventHandler(this.DWG_Name_Delete_Form_Load);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DWG_Name_Delete_Form_MouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();

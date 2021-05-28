@@ -20,26 +20,26 @@ namespace BIM_Leaders_Core
 
             try
             {
-                string name_delete = "IMPORT";
+                // Collector for data provided in window
+                Linetypes_IMPORT_Delete_Data data = new Linetypes_IMPORT_Delete_Data();
+
+                // Get user provided information from window
                 using (Linetypes_IMPORT_Delete_Form form = new Linetypes_IMPORT_Delete_Form())
                 {
                     form.ShowDialog();
 
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.OK)
-                    {
-                        name_delete = form.Result();
-                    }
                     if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                    {
                         return Result.Cancelled;
-                    }
+                    
+                    data = form.GetInformation();
                 }
+
+                string name_delete = data.result_name;
+                int count = 0;
 
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
                 IEnumerable<LinePatternElement> line_patterns = collector.OfClass(typeof(LinePatternElement))
                     .WhereElementIsNotElementType().ToElements().Cast<LinePatternElement>();
-
-                int count = 0;
 
                 using (Transaction trans = new Transaction(doc, "Delete Line Patterns"))
                 {

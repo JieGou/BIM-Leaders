@@ -13,33 +13,28 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Getting input from user
-            bool condition_switch = false;
-            bool condition_side_1 = false;
-            bool condition_side_2 = false;
+            // Collector for data provided in window
+            Levels_Align_Data data = new Levels_Align_Data();
+
+            // Get user provided information from window
             using (Levels_Align_Form form = new Levels_Align_Form())
             {
                 form.ShowDialog();
 
-                if (form.DialogResult == System.Windows.Forms.DialogResult.OK)
-                {
-                    condition_switch = form.Result_Switch();
-                    if (form.Result_Side())
-                    {
-                        condition_side_1 = true;
-                        condition_side_2 = false;
-                    }
-                    else
-                    {
-                        condition_side_1 = false;
-                        condition_side_2 = true;
-                    }
-                }
                 if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                {
                     return Result.Cancelled;
-                }
+
+                data = form.GetInformation();
             }
+
+            // Getting input from user
+            bool condition_switch = data.result_switch;
+            bool condition_side_1 = data.result_side;
+            bool condition_side_2 = false;
+            if (!condition_side_1)
+                condition_side_2 = true;
+            int count_2D = 0;
+            int count = 0;
 
             // Get UIDocument
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
@@ -67,9 +62,6 @@ namespace BIM_Leaders_Core
                     double curve_1_y = curve.GetEndPoint(0).Y;
                     double curve_2_x = curve.GetEndPoint(1).X;
                     double curve_2_y = curve.GetEndPoint(1).Y;
-
-                    int count_2D = 0;
-                    int count = 0;
 
                     foreach (Level l in levels)
                     {

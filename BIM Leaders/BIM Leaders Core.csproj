@@ -9,10 +9,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BIM_Leaders_Core</RootNamespace>
     <AssemblyName>BIM Leaders Core</AssemblyName>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +48,14 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.2.0.1\lib\net452\MaterialDesignColors.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=4.1.0.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.4.1.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2020'">
@@ -65,6 +76,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -77,6 +89,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Helpers\Message.cs" />
+    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Data.cs" />
+    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form.xaml.cs">
+      <DependentUpon>Dimension_Section_Floors_Form.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form.xaml.cs">
+      <DependentUpon>Grids_Align_Form.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Data.cs" />
+    <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Data.cs" />
+    <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\Stairs_Steps_Enumerate_Data.cs" />
+    <Compile Include="Commands\Panel_Annotate\Walls_Compare\Walls_Compare_Data.cs" />
+    <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Data.cs" />
+    <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete_Data.cs" />
+    <Compile Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change_Data.cs" />
     <Compile Include="Commands\Selection\SelectionFilterByCategory.cs" />
     <Compile Include="Commands\Type\WindowType.cs" />
     <Compile Include="CoreAssembly.cs" />
@@ -132,24 +158,26 @@
     <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Form.Designer.cs">
       <DependentUpon>Levels_Align_Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form.cs">
+    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_OLD.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form.Designer.cs">
-      <DependentUpon>Grids_Align_Form.cs</DependentUpon>
+    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_OLD.Designer.cs">
+      <DependentUpon>Grids_Align_Form_OLD.cs</DependentUpon>
     </Compile>
-    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form.cs">
+    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_OLD.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form.Designer.cs">
-      <DependentUpon>Dimension_Section_Floors_Form.cs</DependentUpon>
-    </Compile>
+    </None>
+    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_OLD.Designer.cs">
+      <DependentUpon>Dimension_Section_Floors_Form_OLD.cs</DependentUpon>
+    </None>
     <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Form.Designer.cs">
       <DependentUpon>DWG_Name_Delete_Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="RevitPushButtonAvailability.cs" />
+    <None Include="packages.config" />
     <None Include="[Sample].cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -172,12 +200,12 @@
     <EmbeddedResource Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Form.resx">
       <DependentUpon>Levels_Align_Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form.resx">
-      <DependentUpon>Grids_Align_Form.cs</DependentUpon>
+    <EmbeddedResource Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_OLD.resx">
+      <DependentUpon>Grids_Align_Form_OLD.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form.resx">
-      <DependentUpon>Dimension_Section_Floors_Form.cs</DependentUpon>
-    </EmbeddedResource>
+    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_OLD.resx">
+      <DependentUpon>Dimension_Section_Floors_Form_OLD.cs</DependentUpon>
+    </None>
     <EmbeddedResource Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Form.resx">
       <DependentUpon>DWG_Name_Delete_Form.cs</DependentUpon>
     </EmbeddedResource>
@@ -185,10 +213,30 @@
   <ItemGroup>
     <Content Include="Revit.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Commands\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == 2020 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2020"
 if $(ConfigurationName) == 2021 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2021"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets'))" />
+  </Target>
 </Project>
