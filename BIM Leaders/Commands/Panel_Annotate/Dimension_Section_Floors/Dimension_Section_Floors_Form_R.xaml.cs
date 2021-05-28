@@ -7,13 +7,13 @@ namespace BIM_Leaders_Core
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class Dimension_Section_Floors_Form : Window
+    public partial class Dimension_Section_Floors_Form_R : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="Dimension_Section_Floors_Form"/>
+        /// Initializes a new instance of the <see cref="Dimension_Section_Floors_Form_R"/>
         /// </summary>
-        public Dimension_Section_Floors_Form()
+        public Dimension_Section_Floors_Form_R()
         {
             InitializeComponent();
         }

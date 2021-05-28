@@ -90,11 +90,11 @@
   <ItemGroup>
     <Compile Include="Commands\Helpers\Message.cs" />
     <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Data.cs" />
-    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form.xaml.cs">
-      <DependentUpon>Dimension_Section_Floors_Form.xaml</DependentUpon>
+    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_R.xaml.cs">
+      <DependentUpon>Dimension_Section_Floors_Form_R.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form.xaml.cs">
-      <DependentUpon>Grids_Align_Form.xaml</DependentUpon>
+    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_R.xaml.cs">
+      <DependentUpon>Grids_Align_Form_R.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Data.cs" />
     <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Data.cs" />
@@ -214,18 +214,14 @@
     <Content Include="Revit.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form.xaml">
+    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_R.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form.xaml">
+    </None>
+    <None Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_R.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Commands\Styles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
