@@ -1,19 +1,19 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace BIM_Leaders_UI
+namespace BIM_Leaders_Windows
 {
     /// <summary>
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class Dimension_Section_Floors_Form : Window
+    public partial class Grids_Align_Form : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="Dimension_Section_Floors_Form"/>
+        /// Initializes a new instance of the <see cref="Grids_Align_Form"/>
         /// </summary>
-        public Dimension_Section_Floors_Form()
+        public Grids_Align_Form()
         {
             InitializeComponent();
         }
@@ -46,22 +46,17 @@ namespace BIM_Leaders_UI
                 this.DragMove();
         }
 
-        private void input_thickness_TextChanged(object sender, System.EventArgs e)
-        {
-            string result_thickness = in_thickness.Text;
-        }
-
         /// <summary>
         /// Gets the information from user.
         /// </summary>
         /// <returns></returns>
-        public Dimension_Section_Floors_Data GetInformation()
+        public Grids_Align_Data GetInformation()
         {
             // Information gathered from window
-            var information = new Dimension_Section_Floors_Data()
+            var information = new Grids_Align_Data()
             {
-                result_spots = (bool)rb_1.IsChecked,
-                result_thickness = double.Parse(in_thickness.Text)
+                result_side = (bool)rb_1.IsChecked,
+                result_switch = (bool)switch_2d.IsChecked
             };
             return information;
         }

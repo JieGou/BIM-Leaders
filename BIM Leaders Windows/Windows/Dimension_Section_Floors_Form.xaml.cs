@@ -1,21 +1,22 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace BIM_Leaders_UI
+namespace BIM_Leaders_Windows
 {
     /// <summary>
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class Grids_Align_Form : Window
+    public partial class Dimension_Section_Floors_Form : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="Grids_Align_Form"/>
+        /// Initializes a new instance of the <see cref="Dimension_Section_Floors_Form"/>
         /// </summary>
-        public Grids_Align_Form()
+        public Dimension_Section_Floors_Form()
         {
             InitializeComponent();
+            DataContext = new Dimension_Section_Floors_Data();
         }
 
         /// <summary>

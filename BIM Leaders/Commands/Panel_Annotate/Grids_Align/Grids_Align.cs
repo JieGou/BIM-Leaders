@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI.Selection;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -14,18 +15,16 @@ namespace BIM_Leaders_Core
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Collector for data provided in window
-            Grids_Align_Data data = new Grids_Align_Data();
+            Grids_Align_Data data = new Grids_Align_Data();;
+
+            Grids_Align_Form form = new Grids_Align_Form();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return Result.Cancelled;
 
             // Get user provided information from window
-            using (Grids_Align_Form form = new Grids_Align_Form())
-            {
-                form.ShowDialog();
-
-                if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                    return Result.Cancelled;
-
-                data = form.GetInformation();
-            }
+            data = form.GetInformation();
 
             // Getting input from user
             bool condition_switch = data.result_switch;

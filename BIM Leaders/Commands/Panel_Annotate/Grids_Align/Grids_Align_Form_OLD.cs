@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace BIM_Leaders_Core
+namespace BIM_Leaders_Windows
 {
     /// <summary>
     /// Align grids aquisition form.

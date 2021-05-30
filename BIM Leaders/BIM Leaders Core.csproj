@@ -89,14 +89,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Helpers\Message.cs" />
-    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Data.cs" />
-    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_R.xaml.cs">
-      <DependentUpon>Dimension_Section_Floors_Form_R.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_R.xaml.cs">
-      <DependentUpon>Grids_Align_Form_R.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Data.cs" />
+    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Data.cs" />
+    <None Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Data.cs" />
     <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Data.cs" />
     <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\Stairs_Steps_Enumerate_Data.cs" />
     <Compile Include="Commands\Panel_Annotate\Walls_Compare\Walls_Compare_Data.cs" />
@@ -158,9 +152,9 @@
     <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Form.Designer.cs">
       <DependentUpon>Levels_Align_Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_OLD.cs">
+    <None Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_OLD.cs">
       <SubType>Form</SubType>
-    </Compile>
+    </None>
     <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_OLD.Designer.cs">
       <DependentUpon>Grids_Align_Form_OLD.cs</DependentUpon>
     </Compile>
@@ -214,14 +208,10 @@
     <Content Include="Revit.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_R.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_R.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </None>
+    <ProjectReference Include="..\BIM Leaders Windows\BIM Leaders Windows.csproj">
+      <Project>{799942ac-6d9b-44e4-ab3f-1191b32f8cd4}</Project>
+      <Name>BIM Leaders Windows</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
