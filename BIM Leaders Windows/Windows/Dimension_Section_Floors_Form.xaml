@@ -12,10 +12,11 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         Background="{x:Null}"
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        d:DataContext="{d:DesignInstance Type=local:Dimension_Section_Floors_Data}">
 
     <Window.Resources>
-        <ResourceDictionary Source="/Resources.xaml"/>
+        <ResourceDictionary Source="../Resources.xaml" />
     </Window.Resources>
 
     <Grid Background="{x:Null}">
@@ -52,31 +53,24 @@
                             <Label Content="Annotation type:" 
                                    Style="{StaticResource SLabel}" Grid.Row="1"  Margin="20,0,0,0">
                             </Label>
-                            <RadioButton x:Name="rb_1" GroupName="rb_group" IsChecked="True"
-                                         Content="Dimensions" 
+                            <RadioButton x:Name="radiobutton_1" GroupName="rb_group" IsChecked="{Binding Path=result_spots, Mode=TwoWay}"
+                                         Content="Dimensions"
                                          Style="{StaticResource SRadioButton}" Grid.Row="1" Margin="20,26,0,0">
                             </RadioButton>
-                            <RadioButton x:Name="rb_2" GroupName="rb_group"
-                                         Content="Spot Elevations" 
+                            <RadioButton x:Name="radiobutton_2" GroupName="rb_group"
+                                         Content="Spot Elevations"
                                          Style="{StaticResource SRadioButton}" Grid.Row="1" Margin="20,44,0,0">
                             </RadioButton>
 
                             <Label Content="Top Floor Max Thickness (cm):"
                                    Style="{StaticResource SLabel}" Grid.Row="2" Margin="20,0,0,0">
                             </Label>
-                            <TextBox x:Name="in_thickness" TextChanged="input_thickness_TextChanged"
+                            <TextBox x:Name="textbox_1"
                                      Style="{StaticResource STextBox}" Grid.Row="2" Margin="20,20,20,0"
-                                     materialDesign:HintAssist.Hint="10"
-                                     materialDesign:HintAssist.HelperText="Input the value in centimeters">
-                                <TextBox.Text>
-                                    <Binding Path="input_thickness" UpdateSourceTrigger="PropertyChanged">
-                                        <Binding.ValidationRules>
-                                            <ExceptionValidationRule/>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
+                                     Text="{Binding result_thickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
                             </TextBox>
-
+                            <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                                   Style="{StaticResource SLabelError}" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,45,20,0"/>
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">
@@ -89,6 +83,11 @@
                         <Button x:Name="button_ok" Click="Button_ok_Click"
                                 Content="Magic" ToolTip="Run"
                                 Style="{StaticResource SRectangleButton}" Margin="30,10,30,10">
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                                    <Binding ElementName="textbox_1" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                                </MultiBinding>
+                            </Button.IsEnabled>
                         </Button>
                     </Grid>
                 </Grid>

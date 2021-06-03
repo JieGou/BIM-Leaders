@@ -4,7 +4,6 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using Autodesk.Revit.UI.Selection;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
@@ -41,10 +40,10 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                data = form.GetInformation();
+                data = data.GetInformation();
 
                 bool input_spots = data.result_spots;
-                double input_thickness_cm = data.result_thickness;
+                double input_thickness_cm = double.Parse(data.result_thickness);
                 double input_thickness = UnitUtils.ConvertToInternalUnits(input_thickness_cm, DisplayUnitType.DUT_CENTIMETERS);
                 double dim_value_moved_cm = 200; // If less then dimension segment text will be moved
                 XYZ zero = new XYZ(0,0,0);

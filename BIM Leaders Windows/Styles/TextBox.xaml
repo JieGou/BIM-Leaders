@@ -9,11 +9,28 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="STextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
-        <Setter Property="Margin" Value="0,8"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="BorderBrush" Value="White"/>
         <Setter Property="TextAlignment" Value="Right"/>
+        <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
     </Style>
     
+    <Style x:Key="STextBoxInError" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="TextAlignment" Value="Right"/>
+        <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
+
+        <!--
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="true">
+                <Setter Property="materialDesign:HintAssist.HelperText"
+                        Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+            </Trigger>
+        </Style.Triggers>
+        -->
+    </Style>
+
 </ResourceDictionary>

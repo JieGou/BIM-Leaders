@@ -50,11 +50,9 @@
   <ItemGroup>
     <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.2.0.1\lib\net452\MaterialDesignColors.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.1.0.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.1.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -152,12 +150,6 @@
     <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Form.Designer.cs">
       <DependentUpon>Levels_Align_Form.cs</DependentUpon>
     </Compile>
-    <None Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_OLD.cs">
-      <SubType>Form</SubType>
-    </None>
-    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_OLD.Designer.cs">
-      <DependentUpon>Grids_Align_Form_OLD.cs</DependentUpon>
-    </Compile>
     <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_OLD.cs">
       <SubType>Form</SubType>
     </None>
@@ -193,9 +185,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Form.resx">
       <DependentUpon>Levels_Align_Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Form_OLD.resx">
-      <DependentUpon>Grids_Align_Form_OLD.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_OLD.resx">
       <DependentUpon>Dimension_Section_Floors_Form_OLD.cs</DependentUpon>

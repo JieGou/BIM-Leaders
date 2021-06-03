@@ -13,5 +13,6 @@
         <ResourceDictionary Source="Styles/TextBlock.xaml" />
         <ResourceDictionary Source="Styles/TextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
+    <local:MultivalueBoolInvertConverter  x:Key="MultivalueBoolInvert" />
 
 </ResourceDictionary>

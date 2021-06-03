@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                     xmlns:local="clr-namespace:BIM_Leaders_Windows">
-    
+
     <ResourceDictionary.MergedDictionaries>
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
@@ -12,10 +12,10 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="Background" Value="#0062bb" />
+        <Setter Property="Background" Value="#0060aa" />
         <Setter Property="BorderBrush" Value="#0060aa" />
         <Style.Resources>
-            <SolidColorBrush x:Key="MaterialDesignCheckBoxOff" Color="#0062bb"/>
+            <SolidColorBrush x:Key="MaterialDesignCheckBoxOff" Color="#0060aa"/>
             <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#0062bb"/>
         </Style.Resources>
     </Style>

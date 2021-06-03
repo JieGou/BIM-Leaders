@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 
 namespace BIM_Leaders_Windows
@@ -16,8 +17,10 @@ namespace BIM_Leaders_Windows
         public Dimension_Section_Floors_Form()
         {
             InitializeComponent();
+
             DataContext = new Dimension_Section_Floors_Data();
         }
+
 
         /// <summary>
         /// Handles the Click event of the Button_ok control.
@@ -44,14 +47,9 @@ namespace BIM_Leaders_Windows
         private void Dimension_Section_Floors_Form_MouseMove(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
+                DragMove();
         }
-
-        private void input_thickness_TextChanged(object sender, System.EventArgs e)
-        {
-            string result_thickness = in_thickness.Text;
-        }
-
+        /*
         /// <summary>
         /// Gets the information from user.
         /// </summary>
@@ -59,12 +57,11 @@ namespace BIM_Leaders_Windows
         public Dimension_Section_Floors_Data GetInformation()
         {
             // Information gathered from window
-            var information = new Dimension_Section_Floors_Data()
-            {
-                result_spots = (bool)rb_1.IsChecked,
-                result_thickness = double.Parse(in_thickness.Text)
-            };
+            var information = new Dimension_Section_Floors_Data();
+            information.result_spots = (bool)radiobutton_1.IsChecked;
+            information.result_thickness = textbox_1.Text;
             return information;
         }
+        */
     }
 }

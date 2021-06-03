@@ -14,4 +14,13 @@
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
+
+    <Style x:Key="SLabelError" TargetType="{x:Type Label}">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="Orange"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="VerticalContentAlignment" Value="Top"/>
+    </Style>
+    
 </ResourceDictionary>
