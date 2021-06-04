@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Helpers\Message.cs" />
-    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Data.cs" />
     <None Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Data.cs" />
     <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Data.cs" />
     <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\Stairs_Steps_Enumerate_Data.cs" />

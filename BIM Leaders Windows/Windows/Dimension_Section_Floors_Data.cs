@@ -41,7 +41,7 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(result_thickness));
             }
         }
-
+        /*
         // Boolean for abling/disabling the Ok button.
         private bool _IsValid;
         public bool IsValid
@@ -53,7 +53,7 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(IsValid));
             }
         }
-
+        */
 
         // Dictionary for property (key) and error
         //private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
@@ -97,7 +97,7 @@ namespace BIM_Leaders_Windows
             }
             return null;
         }
-
+        /*
         static readonly string[] ValidatedProperties =
 {
             "result_thickness"
@@ -110,66 +110,8 @@ namespace BIM_Leaders_Windows
                     return true;
             return false;
         }
-
-        /*
-        public bool IsValid
-        {
-            get
-            {
-                OnPropertyChanged(nameof(IsValid));
-                foreach (string property in ValidatedProperties)
-                    if (GetValidationError(property) != null)
-                        return false;
-                return true;
-            }
-        }
         */
-
         #endregion
-
-        /*
-        // Checking all properties and collect their errors
-        private void CollectErrors()
-        {
-            Errors.Clear();
-            if (string.IsNullOrEmpty(result_thickness))
-                Errors.Add(nameof(result_thickness), "Input is empty");
-            else
-            {
-                if (int.TryParse(result_thickness, out int y))
-                {
-                    if (y < 1 || y > 100)
-                        Errors.Add(nameof(result_thickness), "From 1 to 100 cm");
-                }
-                else
-                    Errors.Add(nameof(result_thickness), "Invalid input");
-            }
-        }
-        */
-        /*
-
-        public bool HasErrors => Errors.Any();
-        public bool IsOk => !HasErrors;
-
-
-        private bool _button_ok_status;
-        public bool button_ok_status
-        {
-            get
-            {
-                //return _button_ok_status;
-                return true;
-            }
-            set
-            {
-                if (HasErrors)
-                    _button_ok_status = true;
-                else
-                    _button_ok_status = false;
-                OnPropertyChanged(nameof(button_ok_status));
-            }
-        }
-        */
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -23,13 +23,60 @@ namespace BIM_Leaders_Core
             UIApplication uiapp = commandData.Application;
 
             // Get Document
-            Autodesk.Revit.DB.Document doc = uidoc.Document;
+            Document doc = uidoc.Document;
 
             // Get View
             View view = doc.ActiveView;
 
             try
             {
+                Options options = new Options();
+                options.ComputeReferences = true;
+                options.IncludeNonVisibleObjects = false;
+                options.View = view;
+
+                // Get the line from user selection
+                Selection sel = uidoc.Selection;
+                IList<ElementId> selectedIds = uidoc.Selection.GetElementIds() as IList<ElementId>;
+                List<Line> line = new List<Line>();
+                if (selectedIds.Count == 0)
+                {
+                    // If no elements selected.
+                    TaskDialog.Show("Section Annotations", "You haven't selected any elements.");
+                    return Result.Failed;
+                }
+                else if (selectedIds.Count > 1)
+                {
+                    // If no elements selected.
+                    TaskDialog.Show("Section Annotations", "Select only one vertical line.");
+                    return Result.Failed;
+                }
+                else
+                {
+                    // If one element selected.
+                    Element elem = doc.GetElement(selectedIds[0]);
+                    if (elem.Category.Name != "Lines")
+                    {
+                        // If no line selected.
+                        TaskDialog.Show("Section Annotations", "Select element is not a line.");
+                        return Result.Failed;
+                    }
+                    else
+                    {
+                        foreach (Line l in elem.get_Geometry(options))
+                        {
+                            line.Add(l);
+                        }
+                        // Checking if not vertical
+                        double d = line[0].Direction.Z;
+                        if (d != 1 && d != -1)
+                        {
+                            TaskDialog.Show("Section Annotations", "Selected line is not vertical.");
+                            return Result.Failed;
+                        }
+                    }
+                }
+
                 // Collector for data provided in window
                 Dimension_Section_Floors_Data data = new Dimension_Section_Floors_Data();
 
@@ -40,11 +87,12 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                data = data.GetInformation();
+                data = form.DataContext as Dimension_Section_Floors_Data;
 
                 bool input_spots = data.result_spots;
                 double input_thickness_cm = double.Parse(data.result_thickness);
                 double input_thickness = UnitUtils.ConvertToInternalUnits(input_thickness_cm, DisplayUnitType.DUT_CENTIMETERS);
+                double scale = view.Scale;
                 double dim_value_moved_cm = 200; // If less then dimension segment text will be moved
                 XYZ zero = new XYZ(0,0,0);
                 int count = 0;
@@ -56,26 +104,18 @@ namespace BIM_Leaders_Core
                     .WhereElementIsNotElementType()
                     .ToElements();
 
-                Options options = new Options();
-                options.ComputeReferences = true;
-                options.IncludeNonVisibleObjects = false;
-                options.View = view;
-
-                Element line_element = doc.GetElement(GetLineRef(uidoc).ElementId);
-                List<Line> line = new List<Line>();
-                foreach (Line l in line_element.get_Geometry(options))
-                {
-                    line.Add(l);
-                }
 
                 /*
+
                 #  Transforming offset to world coordinates
                 view_dir_x = view.ViewDirection.X
                 view_dir_y = view.ViewDirection.Y
                 offset_scaled_x = offset * view.Scale * view_dir_x
                 offset_scaled_y = offset * view.Scale * view_dir_y
                 off = XYZ(0 - offset_scaled_y, offset_scaled_x, 0)
+
                 */
+
 
                 // Divide Floors to thick and thin tor spot elevations arrangement
                 List<Floor> floors_thin = new List<Floor>();
@@ -294,32 +334,34 @@ namespace BIM_Leaders_Core
 
                             // Move little segments text
                             DimensionSegmentArray dsa = d.Segments;
-                            TaskDialog.Show("E", dsa.Size.ToString());
                             foreach (DimensionSegment ds in dsa)
                             {
                                 if (ds.IsTextPositionAdjustable())
                                 {
-                                    double value = UnitUtils.ConvertToInternalUnits(ds.Value.Value, DisplayUnitType.DUT_CENTIMETERS);
-                                    if (value < dim_value_moved_cm)
+                                    double value = UnitUtils.ConvertFromInternalUnits(ds.Value.Value, DisplayUnitType.DUT_CENTIMETERS);
+
+                                    double ratio = 0.7; // Ratio of dimension text height to width
+                                    if (value > 9)
+                                        ratio = 1.5; // For 2-digit dimensions
+                                    if (value > 99)
+                                        ratio = 2.5; // For 3-digit dimensions
+
+                                    double dim_size_d = d.DimensionType.get_Parameter(BuiltInParameter.TEXT_SIZE).AsDouble();
+                                    double dim_size = UnitUtils.ConvertFromInternalUnits(dim_size_d, DisplayUnitType.DUT_CENTIMETERS) * ratio; // Size of the dimension along dimension line
+
+                                    double factor = value / (scale * dim_size); // Factor calculated if dimension should be moved to the side
+                                    
+                                    if (factor < 1)
                                     {
                                         // Get the current text XYZ position
                                         XYZ currentTextPosition = ds.TextPosition;
+                                        // Calculate moving offset
+                                        double translation_z = UnitUtils.ConvertToInternalUnits((value + dim_size * scale) / 2 + 3, DisplayUnitType.DUT_CENTIMETERS);
                                         // Calculate a new XYZ position by transforming the current text position
-                                        XYZ newTextPosition = Transform.CreateTranslation(new XYZ(0, 0, 1)).OfPoint(currentTextPosition);
+                                        XYZ newTextPosition = Transform.CreateTranslation(new XYZ(0, 0, translation_z)).OfPoint(currentTextPosition);
                                         // Set the new text position for the segment's text
                                         ds.TextPosition = newTextPosition;
                                     }
-                                    else
-                                    {
-                                        XYZ pos_old = ds.TextPosition;
-                                        double move = ds.Value.Value;
-                                        XYZ pos_new = new XYZ(pos_old.X, pos_old.Y, pos_old.Z + move / 2 + 0.5);
-                                        ds.TextPosition = pos_new;
-                                    }
-                                }
-                                else
-                                {
-                                    TaskDialog.Show("E", "E");
                                 }
                             }
                         }
@@ -347,6 +389,7 @@ namespace BIM_Leaders_Core
                         }
                     }
                 }
+
                 return Result.Succeeded;
             }
             catch (Exception e)

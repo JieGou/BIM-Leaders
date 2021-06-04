@@ -21,17 +21,6 @@ namespace BIM_Leaders_Windows
             DataContext = new Dimension_Section_Floors_Data();
         }
 
-
-        /// <summary>
-        /// Handles the Click event of the Button_ok control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void Button_ok_Click(object sender, System.EventArgs e)
-        {
-            DialogResult = true;
-            Close();
-        }
         /// <summary>
         /// Handles the Click event of the Button_exit control.
         /// </summary>
@@ -43,25 +32,22 @@ namespace BIM_Leaders_Windows
             Close();
         }
 
+        /// <summary>
+        /// Handles the Click event of the Button_ok control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void Button_ok_Click(object sender, System.EventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
+
         // Move the window
         private void Dimension_Section_Floors_Form_MouseMove(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
-        /*
-        /// <summary>
-        /// Gets the information from user.
-        /// </summary>
-        /// <returns></returns>
-        public Dimension_Section_Floors_Data GetInformation()
-        {
-            // Information gathered from window
-            var information = new Dimension_Section_Floors_Data();
-            information.result_spots = (bool)radiobutton_1.IsChecked;
-            information.result_thickness = textbox_1.Text;
-            return information;
-        }
-        */
     }
 }

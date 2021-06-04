@@ -54,11 +54,11 @@
                                    Style="{StaticResource SLabel}" Grid.Row="1"  Margin="20,0,0,0">
                             </Label>
                             <RadioButton x:Name="radiobutton_1" GroupName="rb_group" IsChecked="{Binding Path=result_spots, Mode=TwoWay}"
-                                         Content="Dimensions"
+                                         Content="Spot Elevations"
                                          Style="{StaticResource SRadioButton}" Grid.Row="1" Margin="20,26,0,0">
                             </RadioButton>
                             <RadioButton x:Name="radiobutton_2" GroupName="rb_group"
-                                         Content="Spot Elevations"
+                                         Content="Dimensions"
                                          Style="{StaticResource SRadioButton}" Grid.Row="1" Margin="20,44,0,0">
                             </RadioButton>
 

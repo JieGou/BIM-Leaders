@@ -14,7 +14,7 @@ namespace BIM_Leaders_Core
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Collector for data provided in window
-            Grids_Align_Data data = new Grids_Align_Data();;
+            Grids_Align_Data data = new Grids_Align_Data();
 
             Grids_Align_Form form = new Grids_Align_Form();
             form.ShowDialog();
