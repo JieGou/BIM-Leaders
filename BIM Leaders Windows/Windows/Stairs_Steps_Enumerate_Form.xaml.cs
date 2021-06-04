@@ -7,17 +7,17 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class Dimension_Section_Floors_Form : Window
+    public partial class Stairs_Steps_Enumerate_Form : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="Dimension_Section_Floors_Form"/>
+        /// Initializes a new instance of the <see cref="Stairs_Steps_Enumerate_Form"/>
         /// </summary>
-        public Dimension_Section_Floors_Form()
+        public Stairs_Steps_Enumerate_Form()
         {
             InitializeComponent();
 
-            DataContext = new Dimension_Section_Floors_Data();
+            DataContext = new Stairs_Steps_Enumerate_Data();
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace BIM_Leaders_Windows
         }
 
         // Move the window
-        private void Dimension_Section_Floors_Form_MouseMove(object sender, MouseButtonEventArgs e)
+        private void Stairs_Steps_Enumerate_Form_MouseMove(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();

@@ -87,9 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Helpers\Message.cs" />
-    <None Include="Commands\Panel_Annotate\Grids_Align\Grids_Align_Data.cs" />
-    <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Data.cs" />
-    <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\Stairs_Steps_Enumerate_Data.cs" />
     <Compile Include="Commands\Panel_Annotate\Walls_Compare\Walls_Compare_Data.cs" />
     <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Data.cs" />
     <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete_Data.cs" />
@@ -97,20 +94,20 @@
     <Compile Include="Commands\Selection\SelectionFilterByCategory.cs" />
     <Compile Include="Commands\Type\WindowType.cs" />
     <Compile Include="CoreAssembly.cs" />
-    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors.cs" />
+    <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors.cs" />
     <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete.cs" />
     <Compile Include="Commands\Panel_DWG\DWG_View_Found\DWG_View_Found.cs" />
     <Compile Include="Commands\Panel_Element\Element_Paint_Remove\Element_Paint_Remove.cs" />
     <Compile Include="Commands\Panel_Family\Family_Zero_Coordinates\Family_Zero_Coordinates.cs" />
     <Compile Include="Commands\Panel_Family\Family_Voids_Select\Family_Voids_Select.cs" />
-    <Compile Include="Commands\Panel_Annotate\Grids_Align\Grids_Align.cs" />
-    <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align.cs" />
+    <Compile Include="Commands\Panel_Annotate\Grids_Align.cs" />
+    <Compile Include="Commands\Panel_Annotate\Levels_Align.cs" />
     <Compile Include="Commands\Panel_Standards\Linestyles_Unused_Delete\Linestyles_Unused_Delete.cs" />
     <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete.cs" />
     <Compile Include="Commands\Check.cs" />
     <Compile Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change.cs" />
-    <Compile Include="Commands\Panel_Annotate\Dimension_Stairs_Landings\Dimension_Stairs_Landings.cs" />
-    <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\Stairs_Steps_Enumerate.cs" />
+    <Compile Include="Commands\Panel_Annotate\Dimension_Stairs_Landings.cs" />
+    <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate.cs" />
     <Compile Include="Commands\Panel_Annotate\Walls_Compare\Walls_Compare.cs" />
     <Compile Include="Commands\Panel_Standards\Walls_Parallel\Walls_Parallel.cs" />
     <Compile Include="Forms\Check_Form.cs">
@@ -137,24 +134,6 @@
     <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete_Form.Designer.cs">
       <DependentUpon>Linetypes_IMPORT_Delete_Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\Stairs_Steps_Enumerate_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\Stairs_Steps_Enumerate_Form.Designer.cs">
-      <DependentUpon>Stairs_Steps_Enumerate_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Form.Designer.cs">
-      <DependentUpon>Levels_Align_Form.cs</DependentUpon>
-    </Compile>
-    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_OLD.cs">
-      <SubType>Form</SubType>
-    </None>
-    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_OLD.Designer.cs">
-      <DependentUpon>Dimension_Section_Floors_Form_OLD.cs</DependentUpon>
-    </None>
     <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,15 +158,6 @@
     <EmbeddedResource Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete_Form.resx">
       <DependentUpon>Linetypes_IMPORT_Delete_Form.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\Stairs_Steps_Enumerate_Form.resx">
-      <DependentUpon>Stairs_Steps_Enumerate_Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Panel_Annotate\Levels_Align\Levels_Align_Form.resx">
-      <DependentUpon>Levels_Align_Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <None Include="Commands\Panel_Annotate\Dimension_Section_Floors\Dimension_Section_Floors_Form_OLD.resx">
-      <DependentUpon>Dimension_Section_Floors_Form_OLD.cs</DependentUpon>
-    </None>
     <EmbeddedResource Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Form.resx">
       <DependentUpon>DWG_Name_Delete_Form.cs</DependentUpon>
     </EmbeddedResource>
@@ -200,6 +170,13 @@
       <Project>{799942ac-6d9b-44e4-ab3f-1191b32f8cd4}</Project>
       <Name>BIM Leaders Windows</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\Panel_Annotate\Dimension_Section_Floors\" />
+    <Folder Include="Commands\Panel_Annotate\Dimension_Stairs_Landings\" />
+    <Folder Include="Commands\Panel_Annotate\Grids_Align\" />
+    <Folder Include="Commands\Panel_Annotate\Levels_Align\" />
+    <Folder Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

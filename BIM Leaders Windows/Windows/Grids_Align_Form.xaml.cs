@@ -16,6 +16,8 @@ namespace BIM_Leaders_Windows
         public Grids_Align_Form()
         {
             InitializeComponent();
+
+            DataContext = new Grids_Align_Data();
         }
 
         /// <summary>
@@ -40,25 +42,10 @@ namespace BIM_Leaders_Windows
         }
 
         // Move the window
-        private void Dimension_Section_Floors_Form_MouseMove(object sender, MouseButtonEventArgs e)
+        private void Grids_Align_Form_MouseMove(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
-        }
-
-        /// <summary>
-        /// Gets the information from user.
-        /// </summary>
-        /// <returns></returns>
-        public Grids_Align_Data GetInformation()
-        {
-            // Information gathered from window
-            var information = new Grids_Align_Data()
-            {
-                result_side = (bool)rb_1.IsChecked,
-                result_switch = (bool)switch_2d.IsChecked
-            };
-            return information;
+                DragMove();
         }
     }
 }

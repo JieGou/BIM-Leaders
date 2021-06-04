@@ -5,25 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-/*
-import clr
-clr.AddReference("ProtoGeometry")
-from Autodesk.DesignScript import Geometry as geom
-
-# Import Element wrapper extension methods
-clr.AddReference("RevitNodes")
-import Revit
-from Autodesk.Revit.DB import *
-
-# Import ToProtoType, ToRevitType geometry conversion extension methods
-clr.ImportExtensions(Revit.GeometryConversion)
-
-clr.AddReference("RevitAPIUI")
-from Autodesk.Revit.UI.Selection import ObjectType
-
-clr.AddReference("ProtoGeometry")
-from Autodesk.DesignScript import Geometry as geom
-*/
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -47,20 +29,18 @@ namespace BIM_Leaders_Core
                 // Collector for data provided in window
                 Stairs_Steps_Enumerate_Data data = new Stairs_Steps_Enumerate_Data();
 
-                // Get user provided information from window
-                using (Stairs_Steps_Enumerate_Form form = new Stairs_Steps_Enumerate_Form())
-                {
-                    form.ShowDialog();
+                Stairs_Steps_Enumerate_Form form = new Stairs_Steps_Enumerate_Form();
+                form.ShowDialog();
 
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                        return Result.Cancelled;
-                    
-                    data = form.GetInformation();
-                }
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
+
+                // Get user provided information from window
+                data = form.DataContext as Stairs_Steps_Enumerate_Data;
 
                 // Getting input from user
                 bool right_side = data.result_side_right;
-                double start_number = decimal.ToDouble(data.result_number);
+                double start_number = double.Parse(data.result_number);
                 int count = 0;
                 int grouped = 0;
                 int unpinned = 0;

@@ -3,22 +3,22 @@
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command <see cref="Grids_Align"/>
+    /// Information and data model for command <see cref="Levels_Align"/>
     /// </summary>
-    public class Grids_Align_Data : INotifyPropertyChanged
+    public class Levels_Align_Data : INotifyPropertyChanged
     {
         /// <summary>
         /// Default constructor
-        /// Initializing a new instance of the <see cref="Grids_Align_Data"/> class.
+        /// Initializing a new instance of the <see cref="Levels_Align_Data"/> class.
         /// </summary>
-        public Grids_Align_Data()
+        public Levels_Align_Data()
         {
             result_side = true;
             result_switch = true;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating picked side for <see cref="Grids_Align_Data"/> annotations.
+        /// Gets or sets a value indicating picked side for <see cref="Levels_Align_Data"/> annotations.
         /// </summary>
         /// /// <value>
         ///     <c>true</c> if side 1 is chosen, if side 2 is chosen, then <c>false</c>.
@@ -35,7 +35,7 @@ namespace BIM_Leaders_Windows
         }
 
         /// <summary>
-        /// Gets or sets a value indicating if <see cref="Grids_Align_Data"/> chosen Switch to 2D.
+        /// Gets or sets a value indicating if <see cref="Levels_Align_Data"/> chosen Switch to 2D.
         /// </summary>
         /// /// <value>
         ///     <c>true</c> if Switch to 2D is chosen, if not, then <c>false</c>.
@@ -63,10 +63,10 @@ namespace BIM_Leaders_Windows
         /// Gets the information from user.
         /// </summary>
         /// <returns></returns>
-        public Grids_Align_Data GetInformation()
+        public Levels_Align_Data GetInformation()
         {
             // Information gathered from window
-            var information = new Grids_Align_Data();
+            var information = new Levels_Align_Data();
             information.result_side = result_side;
             information.result_switch = result_switch;
             return information;

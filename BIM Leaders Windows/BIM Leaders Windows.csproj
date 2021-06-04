@@ -63,10 +63,18 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Windows\Stairs_Steps_Enumerate_Form.xaml.cs">
+      <DependentUpon>Stairs_Steps_Enumerate_Form.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Stairs_Steps_Enumerate_Data.cs" />
     <Compile Include="Windows\Dimension_Section_Floors_Data.cs" />
     <Compile Include="Windows\Dimension_Section_Floors_Form.xaml.cs">
       <DependentUpon>Dimension_Section_Floors_Form.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Levels_Align_Form.xaml.cs">
+      <DependentUpon>Levels_Align_Form.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Levels_Align_Data.cs" />
     <Compile Include="Windows\Grids_Align_Data.cs" />
     <Compile Include="Windows\Grids_Align_Form.xaml.cs">
       <DependentUpon>Grids_Align_Form.xaml</DependentUpon>
@@ -97,6 +105,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Stairs_Steps_Enumerate_Form.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Levels_Align_Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

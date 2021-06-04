@@ -9,21 +9,21 @@ using BIM_Leaders_Windows;
 namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
-    public class Grids_Align : IExternalCommand
+    public class Levels_Align : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Collector for data provided in window
-            Grids_Align_Data data = new Grids_Align_Data();
+            Levels_Align_Data data = new Levels_Align_Data();
 
-            Grids_Align_Form form = new Grids_Align_Form();
+            Levels_Align_Form form = new Levels_Align_Form();
             form.ShowDialog();
 
             if (form.DialogResult == false)
                 return Result.Cancelled;
 
             // Get user provided information from window
-            data = form.GetInformation();
+            data = form.DataContext as Levels_Align_Data;
 
             // Getting input from user
             bool condition_switch = data.result_switch;
@@ -46,55 +46,53 @@ namespace BIM_Leaders_Core
 
             try
             {
-                IEnumerable<Grid> grids = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Grids).ToElements().Cast<Grid>();
+                IEnumerable<Level> levels = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Levels).ToElements().Cast<Level>();
 
                 DatumExtentType extent_mode = DatumExtentType.ViewSpecific;
 
                 // Edit extents
-                using (Transaction trans = new Transaction(doc, "Align Grids"))
+                using (Transaction trans = new Transaction(doc, "Align Levels"))
                 {
                     trans.Start();
 
-                    Curve curve = grids.First().GetCurvesInView(extent_mode, view)[0];
+                    Curve curve = levels.First().GetCurvesInView(extent_mode, view)[0];
                     double curve_1_x = curve.GetEndPoint(0).X;
                     double curve_1_y = curve.GetEndPoint(0).Y;
-                    double curve_1_z = curve.GetEndPoint(0).Z;
                     double curve_2_x = curve.GetEndPoint(1).X;
                     double curve_2_y = curve.GetEndPoint(1).Y;
-                    double curve_2_z = curve.GetEndPoint(1).Z;
 
-                    foreach (Grid g in grids)
+                    foreach (Level l in levels)
                     {
-                        if(condition_switch)
+                        if (condition_switch)
                         {
-                            g.SetDatumExtentType(DatumEnds.End0, view, extent_mode);
-                            g.SetDatumExtentType(DatumEnds.End1, view, extent_mode);
+                            l.SetDatumExtentType(DatumEnds.End0, view, extent_mode);
+                            l.SetDatumExtentType(DatumEnds.End1, view, extent_mode);
 
                             if (view.ViewType == ViewType.Elevation | view.ViewType == ViewType.Section)
                             {
-                                Curve c = g.GetCurvesInView(extent_mode, view)[0];
-                                XYZ p_0 = new XYZ(c.GetEndPoint(0).X, c.GetEndPoint(0).Y, curve.GetEndPoint(0).Z);
-                                XYZ p_1 = new XYZ(c.GetEndPoint(1).X, c.GetEndPoint(1).Y, curve.GetEndPoint(1).Z);
-                                Line l = Line.CreateBound(p_0, p_1);
-                                g.SetCurveInView(extent_mode, view, l);
+                                Curve c = l.GetCurvesInView(extent_mode, view)[0];
+                                XYZ p_0 = new XYZ(curve.GetEndPoint(0).X, curve.GetEndPoint(0).Y, c.GetEndPoint(0).Z);
+                                XYZ p_1 = new XYZ(curve.GetEndPoint(1).X, curve.GetEndPoint(1).Y, c.GetEndPoint(1).Z);
+                                Line line = Line.CreateBound(p_0, p_1);
+                                l.SetCurveInView(extent_mode, view, line);
                             }
                             count_2D++;
                         }
-                        if(condition_side_1)
+                        if (condition_side_1)
                         {
-                            g.ShowBubbleInView(DatumEnds.End0, view);
+                            l.ShowBubbleInView(DatumEnds.End0, view);
                         }
-                        if(!condition_side_1)
+                        if (!condition_side_1)
                         {
-                            g.HideBubbleInView(DatumEnds.End0, view);
+                            l.HideBubbleInView(DatumEnds.End0, view);
                         }
                         if (condition_side_2)
                         {
-                            g.ShowBubbleInView(DatumEnds.End1, view);
+                            l.ShowBubbleInView(DatumEnds.End1, view);
                         }
                         if (!condition_side_2)
                         {
-                            g.HideBubbleInView(DatumEnds.End1, view);
+                            l.HideBubbleInView(DatumEnds.End1, view);
                         }
                         count++;
                     }
@@ -102,11 +100,13 @@ namespace BIM_Leaders_Core
 
                     if (count == 0)
                     {
-                        TaskDialog.Show("Grids Align", "No grids aligned");
+                        TaskDialog.Show("Levels Align", "No levels aligned");
                     }
                     else
                     {
-                        TaskDialog.Show("Grids Align", string.Format("{0} grids switched to 2D and aligned {1} grids changed bubbles", count_2D.ToString(), count.ToString()));
+                        TaskDialog.Show("Levels Align", string.Format("{0} levels switched to 2D and aligned." + Environment.NewLine + 
+                                                                      "{1} levels changed tags",
+                                                                      count_2D.ToString(), count.ToString()));
                     }
                 }
                 return Result.Succeeded;
@@ -120,7 +120,7 @@ namespace BIM_Leaders_Core
         public static string GetPath()
         {
             // Return constructed namespace path
-            return typeof(Grids_Align).Namespace + "." + nameof(Grids_Align);
+            return typeof(Levels_Align).Namespace + "." + nameof(Levels_Align);
         }
     }
 }
