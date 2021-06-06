@@ -171,13 +171,7 @@
       <Name>BIM Leaders Windows</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\Panel_Annotate\Dimension_Section_Floors\" />
-    <Folder Include="Commands\Panel_Annotate\Dimension_Stairs_Landings\" />
-    <Folder Include="Commands\Panel_Annotate\Grids_Align\" />
-    <Folder Include="Commands\Panel_Annotate\Levels_Align\" />
-    <Folder Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == 2020 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2020"
