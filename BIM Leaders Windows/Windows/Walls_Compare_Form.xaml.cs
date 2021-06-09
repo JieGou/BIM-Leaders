@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Windows
 {
@@ -13,11 +14,11 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="Walls_Compare_Form"/>
         /// </summary>
-        public Walls_Compare_Form()
+        public Walls_Compare_Form(UIDocument uidoc)
         {
             InitializeComponent();
 
-            DataContext = new Dimension_Section_Floors_Data();
+            DataContext = new Walls_Compare_Data(uidoc);
         }
 
         /// <summary>

@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Helpers\Message.cs" />
-    <Compile Include="Commands\Panel_Annotate\Walls_Compare\Walls_Compare_Data.cs" />
     <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Data.cs" />
     <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete_Data.cs" />
     <Compile Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change_Data.cs" />
@@ -108,19 +107,13 @@
     <Compile Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change.cs" />
     <Compile Include="Commands\Panel_Annotate\Dimension_Stairs_Landings.cs" />
     <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate.cs" />
-    <Compile Include="Commands\Panel_Annotate\Walls_Compare\Walls_Compare.cs" />
+    <Compile Include="Commands\Panel_Annotate\Walls_Compare.cs" />
     <Compile Include="Commands\Panel_Standards\Walls_Parallel\Walls_Parallel.cs" />
     <Compile Include="Forms\Check_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Check_Form.Designer.cs">
       <DependentUpon>Check_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Commands\Panel_Annotate\Walls_Compare\Walls_Compare_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Commands\Panel_Annotate\Walls_Compare\Walls_Compare_Form.Designer.cs">
-      <DependentUpon>Walls_Compare_Form.cs</DependentUpon>
     </Compile>
     <Compile Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change_Form.cs">
       <SubType>Form</SubType>
@@ -148,9 +141,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\Check_Form.resx">
       <DependentUpon>Check_Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Panel_Annotate\Walls_Compare\Walls_Compare_Form.resx">
-      <DependentUpon>Walls_Compare_Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change_Form.resx">
       <DependentUpon>Names_Prefix_Change_Form.cs</DependentUpon>

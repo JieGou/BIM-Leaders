@@ -67,6 +67,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MultivalueTextBoxesConverter.cs" />
     <Compile Include="Windows\Walls_Compare_Data.cs" />
     <Compile Include="Windows\Walls_Compare_Form.xaml.cs">
       <DependentUpon>Walls_Compare_Form.xaml</DependentUpon>

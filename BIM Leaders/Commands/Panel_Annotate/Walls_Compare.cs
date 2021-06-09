@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI.Selection;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -92,21 +93,19 @@ namespace BIM_Leaders_Core
             try
             {
                 // Collector for data provided in window
-                Walls_Compare_Data data = new Walls_Compare_Data();
+                Walls_Compare_Data data = new Walls_Compare_Data(uidoc);
+
+                Walls_Compare_Form form = new Walls_Compare_Form(uidoc);
+                form.ShowDialog();
+
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
 
                 // Get user provided information from window
-                using (Walls_Compare_Form form = new Walls_Compare_Form(uidoc))
-                {
-                    form.ShowDialog();
+                data = form.DataContext as Walls_Compare_Data;
 
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                        return Result.Cancelled;
-
-                    data = form.GetInformation();
-                }
-
-                string mat_name = data.result_mat;
-                FilledRegionType fill = doc.GetElement(data.result_fill_id) as FilledRegionType;
+                string mat_name = doc.GetElement(data.fill_types_list_sel).Name;
+                FilledRegionType fill = doc.GetElement(data.mats_list_sel) as FilledRegionType;
                 string fill_name = fill.Name;
                 double elevation = view.GenLevel.Elevation;
                 int count = 0;

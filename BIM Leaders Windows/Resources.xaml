@@ -15,5 +15,6 @@
         <ResourceDictionary Source="Styles/TextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
     <local:MultivalueBoolInvertConverter  x:Key="MultivalueBoolInvert" />
+    <local:MultivalueTextBoxesConverter  x:Key="MultivalueTextBoxes" />
 
 </ResourceDictionary>
