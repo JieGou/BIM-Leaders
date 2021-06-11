@@ -4,6 +4,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using System.Collections.Generic;
 using System.Linq;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -23,16 +24,14 @@ namespace BIM_Leaders_Core
                 // Collector for data provided in window
                 Linetypes_IMPORT_Delete_Data data = new Linetypes_IMPORT_Delete_Data();
 
-                // Get user provided information from window
-                using (Linetypes_IMPORT_Delete_Form form = new Linetypes_IMPORT_Delete_Form())
-                {
-                    form.ShowDialog();
+                Linetypes_IMPORT_Delete_Form form = new Linetypes_IMPORT_Delete_Form();
+                form.ShowDialog();
 
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                        return Result.Cancelled;
-                    
-                    data = form.GetInformation();
-                }
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
+
+                // Get user provided information from window
+                data = form.DataContext as Linetypes_IMPORT_Delete_Data;
 
                 string name_delete = data.result_name;
                 int count = 0;

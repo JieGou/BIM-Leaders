@@ -20,7 +20,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card Margin="10" UniformCornerRadius="20" Background="{x:Null}" MouseLeftButtonDown="Stairs_Steps_Enumerate_Form_MouseMove">
+        <materialDesign:Card Margin="10" UniformCornerRadius="20" Background="{x:Null}" MouseLeftButtonDown="Form_MouseMove">
             <StackPanel>
                 <StackPanel.Background>
                     <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">

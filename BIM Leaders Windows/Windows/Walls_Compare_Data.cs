@@ -54,15 +54,7 @@ namespace BIM_Leaders_Windows
             {
                 materials_list.Add(i.Name, i.Id);
             }
-            /*
-            SortedDictionary<ElementId, string> materials_list_sorted = new SortedDictionary<ElementId, string>();
 
-            materials_list.ToList().Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-            foreach (var value in materials_list)
-            {
-                materials_list_sorted.Add(value.Key, value.Value);
-            }
-            */
             return materials_list;
         }
 
@@ -132,8 +124,6 @@ namespace BIM_Leaders_Windows
             }
         }
 
-
-        private List<KeyValuePair<string, ElementId>> material;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows.Input;
 
 namespace BIM_Leaders_Windows
 {
@@ -39,22 +40,7 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(result_thickness));
             }
         }
-        /*
-        // Boolean for abling/disabling the Ok button.
-        private bool _IsValid;
-        public bool IsValid
-        {
-            get { return _IsValid; }
-            set
-            {
-                _IsValid = Validate_IsValid();
-                OnPropertyChanged(nameof(IsValid));
-            }
-        }
-        */
 
-        // Dictionary for property (key) and error
-        //private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
         public string this[string property_name]
         {
             get

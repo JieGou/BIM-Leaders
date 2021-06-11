@@ -8,17 +8,17 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class Walls_Compare_Form : Window
+    public partial class DWG_Name_Delete_Form : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="Walls_Compare_Form"/>
+        /// Initializes a new instance of the <see cref="DWG_Name_Delete_Form"/>
         /// </summary>
-        public Walls_Compare_Form(UIDocument uidoc)
+        public DWG_Name_Delete_Form(UIDocument uidoc)
         {
             InitializeComponent();
 
-            DataContext = new Walls_Compare_Data(uidoc);
+            DataContext = new DWG_Name_Delete_Data(uidoc);
         }
 
         /// <summary>

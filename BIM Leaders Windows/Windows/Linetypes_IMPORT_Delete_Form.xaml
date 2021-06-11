@@ -1,4 +1,4 @@
-﻿<Window x:Class="BIM_Leaders_Windows.Walls_Compare_Form"
+﻿<Window x:Class="BIM_Leaders_Windows.Linetypes_IMPORT_Delete_Form"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,14 +6,14 @@
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="BIM Leaders - Walls Compare"
+        Title="BIM Leaders - Delete Linetypes"
         Height="350" Width="250"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="NoResize"
         Background="{x:Null}"
         AllowsTransparency="True"
-        d:DataContext="{d:DesignInstance Type=local:Walls_Compare_Data}">
+        d:DataContext="{d:DesignInstance Type=local:Linetypes_IMPORT_Delete_Data}">
 
     <Window.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
@@ -41,31 +41,24 @@
                                 <RowDefinition Height="1*"></RowDefinition>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Text="Walls Compare"
-                                       Grid.Row="0" Style="{StaticResource STextBlock}">
+                            <TextBlock Text="Delete Linetypes"
+                                       Style="{StaticResource STextBlock}" Grid.Row="0">
                             </TextBlock>
                             <Button x:Name="button_cancel" Click="Button_exit_Click" IsCancel="True"
                                     ToolTip="Cancel"
-                                    Grid.Row="0" Style="{StaticResource SRoundButton}">
+                                    Style="{StaticResource SRoundButton}" Grid.Row="0">
                                 <materialDesign:PackIcon Kind="CancelCircle" Width="24" Height="24" Foreground="White"/>
                             </Button>
 
-                            <Label Content="Wall Material:" 
-                                   Grid.Row="1" Style="{StaticResource SLabel}" Margin="20,0,0,0">
+                            <Label Content="String to search:"
+                                   Style="{StaticResource SLabel}" Grid.Row="1" Margin="20,0,0,0">
                             </Label>
-                            <ComboBox x:Name="combobox_1" SelectedValue="{Binding mats_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                      ItemsSource="{Binding mats_list, Mode=OneWay}"
-                                      Grid.Row="1" Style="{StaticResource SComboBox}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="190">
-                            </ComboBox>
-
-                            <Label Content="Fill Type:"
-                                   Grid.Row="2" Style="{StaticResource SLabel}" Margin="20,0,0,0">
-                            </Label>
-                            <ComboBox x:Name="combobox_2" SelectedValue="{Binding fill_types_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                      ItemsSource="{Binding fill_types_list, Mode=OneWay}"
-                                      Grid.Row="2" Style="{StaticResource SComboBox}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="190">
-                            </ComboBox>
-                            
+                            <TextBox x:Name="textbox_1"
+                                     Style="{StaticResource STextBox}" Grid.Row="1" Margin="20,20,20,0"
+                                     Text="{Binding result_name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                            </TextBox>
+                            <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                                   Style="{StaticResource SLabelError}" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,45,20,0"/>
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">
@@ -79,9 +72,8 @@
                                 Content="Magic" ToolTip="Run"
                                 Style="{StaticResource SRectangleButton}" Margin="30,10,30,10">
                             <Button.IsEnabled>
-                                <MultiBinding Converter="{StaticResource MultivalueTextBoxes}" Mode="TwoWay">
-                                    <Binding ElementName="combobox_1" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
-                                    <Binding ElementName="combobox_2" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
+                                <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                                    <Binding ElementName="textbox_1" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
                                 </MultiBinding>
                             </Button.IsEnabled>
                         </Button>

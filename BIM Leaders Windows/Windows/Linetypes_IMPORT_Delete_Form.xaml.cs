@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Windows
 {
@@ -8,17 +7,17 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class Walls_Compare_Form : Window
+    public partial class Linetypes_IMPORT_Delete_Form : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="Walls_Compare_Form"/>
+        /// Initializes a new instance of the <see cref="Linetypes_IMPORT_Delete_Form"/>
         /// </summary>
-        public Walls_Compare_Form(UIDocument uidoc)
+        public Linetypes_IMPORT_Delete_Form()
         {
             InitializeComponent();
 
-            DataContext = new Walls_Compare_Data(uidoc);
+            DataContext = new Linetypes_IMPORT_Delete_Data();
         }
 
         /// <summary>

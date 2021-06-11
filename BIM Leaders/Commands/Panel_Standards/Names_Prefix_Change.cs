@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -24,21 +25,19 @@ namespace BIM_Leaders_Core
                 // Collector for data provided in window
                 Names_Prefix_Change_Data data = new Names_Prefix_Change_Data();
 
+                Names_Prefix_Change_Form form = new Names_Prefix_Change_Form();
+                form.ShowDialog();
+
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
+
                 // Get user provided information from window
-                using (Names_Prefix_Change_Form form = new Names_Prefix_Change_Form())
-                {
-                    form.ShowDialog();
-
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                        return Result.Cancelled;
-
-                    data = form.GetInformation();
-                }
+                data = form.DataContext as Names_Prefix_Change_Data;
 
                 // Getting input data from user
                 string prefix_old = data.result_prefix_old;
                 string prefix_new = data.result_prefix_new;
-                IList<bool> categories = data.result_categories;
+                List<bool> categories = data.result_categories;
                 int count = 0;
 
                 using (Transaction trans = new Transaction(doc, "Change Names Prefix"))

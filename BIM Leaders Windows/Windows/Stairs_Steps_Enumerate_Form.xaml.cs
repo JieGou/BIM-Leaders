@@ -43,7 +43,7 @@ namespace BIM_Leaders_Windows
         }
 
         // Move the window
-        private void Stairs_Steps_Enumerate_Form_MouseMove(object sender, MouseButtonEventArgs e)
+        private void Form_MouseMove(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();

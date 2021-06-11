@@ -4,6 +4,7 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -21,20 +22,18 @@ namespace BIM_Leaders_Core
             try
             {
                 // Collector for data provided in window
-                DWG_Name_Delete_Data data = new DWG_Name_Delete_Data(); 
+                DWG_Name_Delete_Data data = new DWG_Name_Delete_Data(uidoc);
+
+                DWG_Name_Delete_Form form = new DWG_Name_Delete_Form(uidoc);
+                form.ShowDialog();
+
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
 
                 // Get user provided information from window
-                using (DWG_Name_Delete_Form form = new DWG_Name_Delete_Form(uidoc))
-                {
-                    form.ShowDialog();
+                data = form.DataContext as DWG_Name_Delete_Data;
 
-                    if (form.DialogResult == System.Windows.Forms.DialogResult.Cancel)
-                        return Result.Cancelled;
-
-                    data = form.GetInformation();
-                }
-
-                string name = doc.GetElement(data.result_dwg).Category.Name;
+                string name = doc.GetElement(data.dwg_list_sel).Category.Name;
                 // Get all Imports with name same as input from a form
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
                 IEnumerable<ImportInstance> dwg_types_all = collector.OfClass(typeof(ImportInstance))

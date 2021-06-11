@@ -87,51 +87,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Helpers\Message.cs" />
-    <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Data.cs" />
-    <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete_Data.cs" />
-    <Compile Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change_Data.cs" />
     <Compile Include="Commands\Selection\SelectionFilterByCategory.cs" />
     <Compile Include="Commands\Type\WindowType.cs" />
     <Compile Include="CoreAssembly.cs" />
     <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors.cs" />
-    <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete.cs" />
-    <Compile Include="Commands\Panel_DWG\DWG_View_Found\DWG_View_Found.cs" />
-    <Compile Include="Commands\Panel_Element\Element_Paint_Remove\Element_Paint_Remove.cs" />
-    <Compile Include="Commands\Panel_Family\Family_Zero_Coordinates\Family_Zero_Coordinates.cs" />
-    <Compile Include="Commands\Panel_Family\Family_Voids_Select\Family_Voids_Select.cs" />
+    <Compile Include="Commands\Panel_DWG\DWG_Name_Delete.cs" />
+    <Compile Include="Commands\Panel_DWG\DWG_View_Found.cs" />
+    <Compile Include="Commands\Panel_Element\Element_Paint_Remove.cs" />
+    <Compile Include="Commands\Panel_Family\Family_Zero_Coordinates.cs" />
+    <Compile Include="Commands\Panel_Family\Family_Voids_Select.cs" />
     <Compile Include="Commands\Panel_Annotate\Grids_Align.cs" />
     <Compile Include="Commands\Panel_Annotate\Levels_Align.cs" />
-    <Compile Include="Commands\Panel_Standards\Linestyles_Unused_Delete\Linestyles_Unused_Delete.cs" />
-    <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete.cs" />
+    <Compile Include="Commands\Panel_Standards\Linestyles_Unused_Delete.cs" />
+    <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete.cs" />
     <Compile Include="Commands\Check.cs" />
-    <Compile Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change.cs" />
+    <Compile Include="Commands\Panel_Standards\Names_Prefix_Change.cs" />
     <Compile Include="Commands\Panel_Annotate\Dimension_Stairs_Landings.cs" />
     <Compile Include="Commands\Panel_Annotate\Stairs_Steps_Enumerate.cs" />
     <Compile Include="Commands\Panel_Annotate\Walls_Compare.cs" />
-    <Compile Include="Commands\Panel_Standards\Walls_Parallel\Walls_Parallel.cs" />
+    <Compile Include="Commands\Panel_Standards\Walls_Parallel.cs" />
     <Compile Include="Forms\Check_Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Check_Form.Designer.cs">
       <DependentUpon>Check_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change_Form.Designer.cs">
-      <DependentUpon>Names_Prefix_Change_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete_Form.Designer.cs">
-      <DependentUpon>Linetypes_IMPORT_Delete_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Form.Designer.cs">
-      <DependentUpon>DWG_Name_Delete_Form.cs</DependentUpon>
     </Compile>
     <Compile Include="RevitPushButtonAvailability.cs" />
     <None Include="packages.config" />
@@ -141,15 +120,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\Check_Form.resx">
       <DependentUpon>Check_Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Panel_Standards\Names_Prefix_Change\Names_Prefix_Change_Form.resx">
-      <DependentUpon>Names_Prefix_Change_Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Panel_Standards\Linetypes_IMPORT_Delete\Linetypes_IMPORT_Delete_Form.resx">
-      <DependentUpon>Linetypes_IMPORT_Delete_Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Commands\Panel_DWG\DWG_Name_Delete\DWG_Name_Delete_Form.resx">
-      <DependentUpon>DWG_Name_Delete_Form.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

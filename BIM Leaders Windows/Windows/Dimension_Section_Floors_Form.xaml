@@ -20,7 +20,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card Margin="10" UniformCornerRadius="20" Background="{x:Null}" MouseLeftButtonDown="Dimension_Section_Floors_Form_MouseMove">
+        <materialDesign:Card Margin="10" UniformCornerRadius="20" Background="{x:Null}" MouseLeftButtonDown="Form_MouseMove">
             <StackPanel>
                 <StackPanel.Background>
                     <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
@@ -44,7 +44,7 @@
                             <TextBlock Text="Dimension Section Floors"
                                        Style="{StaticResource STextBlock}" Grid.Row="0">
                             </TextBlock>
-                            <Button x:Name="button_cancel" Click="Button_exit_Click" IsCancel="True"
+                            <Button x:Name="button_cancel" IsCancel="True" 
                                     ToolTip="Cancel"
                                     Style="{StaticResource SRoundButton}" Grid.Row="0">
                                 <materialDesign:PackIcon Kind="CancelCircle" Width="24" Height="24" Foreground="White"/>
@@ -80,7 +80,7 @@
                                 <GradientStop Color="#cfcfcf" Offset="1"/>
                             </LinearGradientBrush>
                         </Grid.Background>
-                        <Button x:Name="button_ok" Click="Button_ok_Click"
+                        <Button x:Name="button_ok" Click="Button_ok_Click" 
                                 Content="Magic" ToolTip="Run"
                                 Style="{StaticResource SRectangleButton}" Margin="30,10,30,10">
                             <Button.IsEnabled>
