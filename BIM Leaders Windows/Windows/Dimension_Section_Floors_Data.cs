@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel;
-using System.Windows.Input;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command <see cref="Dimension_Section_Floors"/>
+    /// Information and data model for command "Dimension_Section_Floors"
     /// </summary>
     public class Dimension_Section_Floors_Data : INotifyPropertyChanged, IDataErrorInfo
     {
@@ -81,20 +80,7 @@ namespace BIM_Leaders_Windows
             }
             return null;
         }
-        /*
-        static readonly string[] ValidatedProperties =
-{
-            "result_thickness"
-        };
-        // Changing boolean for abling/disabling the Ok button.
-        public bool Validate_IsValid()
-        {
-            foreach (string property in ValidatedProperties)
-                if (GetValidationError(property) != null)
-                    return true;
-            return false;
-        }
-        */
+
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;

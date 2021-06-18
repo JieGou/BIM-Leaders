@@ -4,6 +4,8 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using System.Data;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -78,14 +80,75 @@ namespace BIM_Leaders_Core
                 // Export to Excel
                 // ...
 
-                // Show result
-                if(imports.Count() > 0)
+                // Create a DataSet
+                DataSet dwgDataSet = new DataSet("dwgDataSet");
+                // Create DataTable
+                DataTable dwgDataTable = new DataTable("DWG");
+                // Create 4 columns, and add them to the table
+                DataColumn dwgColumnFile = new DataColumn("File", typeof(string));
+                DataColumn dwgColumnView = new DataColumn("View", typeof(string));
+                DataColumn dwgColumnId = new DataColumn("Id", typeof(string));
+                DataColumn dwgColumnImportType = new DataColumn("Import Type", typeof(string));
+
+                dwgDataTable.Columns.Add(dwgColumnFile);
+                dwgDataTable.Columns.Add(dwgColumnView);
+                dwgDataTable.Columns.Add(dwgColumnId);
+                dwgDataTable.Columns.Add(dwgColumnImportType);
+
+                // Add the table to the DataSet
+                dwgDataSet.Tables.Add(dwgDataTable);
+
+                // Fill the table
+                DataRow newRow1;
+                string i_name = "";
+                string i_view = "Not a view specific import";
+                string i_id = "";
+                string i_link = "Import";
+                foreach (ImportInstance i in imports)
                 {
-                    TaskDialog.Show("Imports", string.Format("[{0}] on view [{1}] as {2}", imports_names[1], views[1], islink[1]));
+                    newRow1 = dwgDataTable.NewRow();
+
+                    // Name
+                    try
+                    {
+                        i_name = i.Category.Name;
+                    }
+                    catch (Exception empty_name) { }
+
+                    // Checking if 2D or 3D
+                    if (i.ViewSpecific)
+                        i_view = doc.GetElement(i.OwnerViewId).Name;
+
+                    // Id
+                    i_id = i.Id.ToString();
+
+                    // Checking if link or import
+                    if (i.IsLinked)
+                        i_link = "Link";
+
+                    newRow1["File"] = i_name;
+                    newRow1["View"] = i_view;
+                    newRow1["Id"] = i_id;
+                    newRow1["Import Type"] = i_link;
+
+                    // Add the row to the Customers table.  
+                    dwgDataTable.Rows.Add(newRow1); 
+                }
+
+
+                // Show result
+                if (imports.Count() > 0)
+                {
+                    //TaskDialog.Show("Imports", string.Format("[{0}] on view [{1}] as {2}", imports_names[1], views[1], islink[1]));
+
+                    DWG_View_Found_Data data = new DWG_View_Found_Data(dwgDataSet);
+
+                    DWG_View_Found_Form form = new DWG_View_Found_Form(dwgDataSet);
+                    form.ShowDialog();
                 }
                 else
                 {
-                    TaskDialog.Show("Imports", string.Format("No importts in the file"));
+                    TaskDialog.Show("Imports", string.Format("No imports in the file"));
                 }
                 
                 return Result.Succeeded;

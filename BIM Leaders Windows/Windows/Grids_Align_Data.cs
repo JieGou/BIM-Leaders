@@ -3,7 +3,7 @@
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command <see cref="Grids_Align"/>
+    /// Information and data model for command "Grids_Align"
     /// </summary>
     public class Grids_Align_Data : INotifyPropertyChanged
     {
@@ -18,10 +18,10 @@ namespace BIM_Leaders_Windows
         }
 
         /// <summary>
-        /// Gets or sets a value indicating picked side for <see cref="Grids_Align_Data"/> annotations.
+        /// Gets or sets a value indicating if <see cref="Grids_Align_Data"/> chosen Switch to 2D.
         /// </summary>
         /// /// <value>
-        ///     <c>true</c> if side 1 is chosen, if side 2 is chosen, then <c>false</c>.
+        ///     <c>true</c> if Switch to 2D is chosen, if not, then <c>false</c>.
         /// </value>
         private bool _result_side;
         public bool result_side
@@ -56,20 +56,6 @@ namespace BIM_Leaders_Windows
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
-        /// <summary>
-        /// Gets the information from user.
-        /// </summary>
-        /// <returns></returns>
-        public Grids_Align_Data GetInformation()
-        {
-            // Information gathered from window
-            var information = new Grids_Align_Data();
-            information.result_side = result_side;
-            information.result_switch = result_switch;
-            return information;
         }
     }
 }

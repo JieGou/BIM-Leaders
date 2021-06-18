@@ -44,12 +44,13 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.1.0.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.1.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAPI, Version=20.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
+    <Reference Include="RevitAPI">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -68,8 +69,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MultivalueTextBoxesConverter.cs" />
+    <Compile Include="Windows\DWG_View_Found_Data.cs" />
     <Compile Include="Windows\Names_Prefix_Change_Data.cs" />
     <Compile Include="Windows\Linetypes_IMPORT_Delete_Data.cs" />
+    <Compile Include="Windows\DWG_View_Found_Form.xaml.cs">
+      <DependentUpon>DWG_View_Found_Form.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Names_Prefix_Change_Form.xaml.cs">
       <DependentUpon>Names_Prefix_Change_Form.xaml</DependentUpon>
     </Compile>
@@ -101,6 +106,10 @@
       <DependentUpon>Grids_Align_Form.xaml</DependentUpon>
     </Compile>
     <Compile Include="MultivalueBoolInvertConverter.cs" />
+    <Page Include="Styles\DataGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Styles\GroupBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -134,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\DWG_View_Found_Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

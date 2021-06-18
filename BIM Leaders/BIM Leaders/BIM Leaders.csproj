@@ -61,11 +61,11 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -93,7 +93,6 @@
     <ProjectReference Include="..\BIM Leaders Core.csproj">
       <Project>{cc132aca-21dd-4e90-b767-f7fc7b339fca}</Project>
       <Name>BIM Leaders Core</Name>
-      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\BIM Leaders Resources\BIM Leaders Resources.csproj">
       <Project>{2f6cf1c2-84b4-4342-895d-277c481dcdd1}</Project>

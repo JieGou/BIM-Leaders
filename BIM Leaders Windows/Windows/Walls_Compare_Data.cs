@@ -3,12 +3,11 @@ using System.ComponentModel;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using System.Runtime.CompilerServices;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command <see cref="Walls_Compare"/>
+    /// Information and data model for command "Walls_Compare"
     /// </summary>
     public class Walls_Compare_Data : INotifyPropertyChanged
     {

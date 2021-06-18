@@ -3,7 +3,9 @@ using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Core
 {
-    // Get true if in family document
+    /// <summary>
+    /// Return true if document type is FamilyDocument
+    /// </summary>
     public class DocumentIsFamily : IExternalCommandAvailability
     {
         public static bool IsCommandAvaiable { get; internal set; }
@@ -24,7 +26,10 @@ namespace BIM_Leaders_Core
             }
         }
     }
-    // Get true if in section view
+
+    /// <summary>
+    /// Return true if view type is Section
+    /// </summary>
     public class ViewIsSection : IExternalCommandAvailability
     {
         public static bool IsCommandAvaiable { get; internal set; }
@@ -45,7 +50,10 @@ namespace BIM_Leaders_Core
             }
         }
     }
-    // Get true if in plan view
+
+    /// <summary>
+    /// Return true if view type is FloorPlan
+    /// </summary>
     public class ViewIsPlan : IExternalCommandAvailability
     {
         public static bool IsCommandAvaiable { get; internal set; }

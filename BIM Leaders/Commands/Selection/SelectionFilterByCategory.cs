@@ -19,7 +19,7 @@ namespace BIM_Leaders_Core
         /// <param name="category">The category of element, such as Walls, Floors,..</param>
         public SelectionFilterByCategory(string category)
         {
-
+            mCategory = category;
         }
 
         /// <summary>

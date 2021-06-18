@@ -3,7 +3,7 @@
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command <see cref="Levels_Align"/>
+    /// Information and data model for command "Levels_Align"
     /// </summary>
     public class Levels_Align_Data : INotifyPropertyChanged
     {

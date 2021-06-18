@@ -5,7 +5,7 @@ using System.Linq;
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command <see cref="Names_Prefix_Change"/>
+    /// Information and data model for command "Names_Prefix_Change"
     /// </summary>
     public class Names_Prefix_Change_Data : INotifyPropertyChanged, IDataErrorInfo
     {

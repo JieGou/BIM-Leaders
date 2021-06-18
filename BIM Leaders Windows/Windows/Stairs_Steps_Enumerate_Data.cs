@@ -3,7 +3,7 @@
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command <see cref="Stairs_Steps_Enumerate"/>
+    /// Information and data model for command "Stairs_Steps_Enumerate"
     /// </summary>
     public class Stairs_Steps_Enumerate_Data : INotifyPropertyChanged, IDataErrorInfo
     {

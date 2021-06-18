@@ -3,12 +3,11 @@ using System.ComponentModel;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using System.Runtime.CompilerServices;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command <see cref="DWG_Name_Delete"/>
+    /// Information and data model for command "DWG_Name_Delete"
     /// </summary>
     public class DWG_Name_Delete_Data : INotifyPropertyChanged
     {
