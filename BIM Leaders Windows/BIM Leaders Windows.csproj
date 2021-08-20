@@ -40,9 +40,11 @@
   <ItemGroup>
     <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.2.0.1\lib\net452\MaterialDesignColors.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.1.0.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.1.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
       <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
@@ -70,10 +72,14 @@
   <ItemGroup>
     <Compile Include="MultivalueTextBoxesConverter.cs" />
     <Compile Include="Windows\DWG_View_Found_Data.cs" />
+    <Compile Include="Windows\Checker_Data.cs" />
     <Compile Include="Windows\Names_Prefix_Change_Data.cs" />
     <Compile Include="Windows\Linetypes_IMPORT_Delete_Data.cs" />
     <Compile Include="Windows\DWG_View_Found_Form.xaml.cs">
       <DependentUpon>DWG_View_Found_Form.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Checker_Form.xaml.cs">
+      <DependentUpon>Checker_Form.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Names_Prefix_Change_Form.xaml.cs">
       <DependentUpon>Names_Prefix_Change_Form.xaml</DependentUpon>
@@ -106,6 +112,14 @@
       <DependentUpon>Grids_Align_Form.xaml</DependentUpon>
     </Compile>
     <Compile Include="MultivalueBoolInvertConverter.cs" />
+    <Page Include="Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\TabControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Styles\DataGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -147,6 +161,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\DWG_View_Found_Form.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Checker_Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

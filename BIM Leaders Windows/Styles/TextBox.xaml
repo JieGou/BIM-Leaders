@@ -6,20 +6,21 @@
     <ResourceDictionary.MergedDictionaries>
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+        <ResourceDictionary Source="..\Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="STextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
         <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="Foreground" Value="{StaticResource SColorText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource SColorText}"/>
         <Setter Property="TextAlignment" Value="Right"/>
         <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
     </Style>
     
     <Style x:Key="STextBoxInError" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
         <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="Foreground" Value="{StaticResource SColorText}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource SColorText}"/>
         <Setter Property="TextAlignment" Value="Right"/>
         <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
 

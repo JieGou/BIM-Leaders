@@ -6,11 +6,12 @@
     <ResourceDictionary.MergedDictionaries>
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+        <ResourceDictionary Source="..\Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="SLabel" TargetType="{x:Type Label}">
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{StaticResource SColorText}"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
@@ -18,7 +19,7 @@
     <Style x:Key="SLabelError" TargetType="{x:Type Label}">
         <Setter Property="FontSize" Value="10"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="Orange"/>
+        <Setter Property="Foreground" Value="{StaticResource SColorTextError}"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="VerticalContentAlignment" Value="Top"/>
     </Style>

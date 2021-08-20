@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<?define sourcefolder="C:\Users\i.pinchuk\source\repos\Vanilla42\BIM-Leaders\BIM Leaders\BIM Leaders\bin\2020"?>
+	<Product Id="*" Name="BIM Leaders Setup" Language="1033" Version="1.0.0.0" Manufacturer="BIM Leaders" UpgradeCode="7d0eb875-32b1-4bbc-b647-b3b0a27bbc7b">
+		<Package Id="*" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="BIM Leaders Setup" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+		
+		<!-- Add installer icon -->
+		<Icon Id="icon.ico" SourceFile="$(var.sourcefolder)..\..\..\Revit.ico" />
+		<Property Id="APPPRODUCTICON" Value="icon.ico" />
+		
+	</Product>
+
+	<!-- Define the directory structure -->
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="CommonAppDataFolder">
+				<Directory Id="AutodeskDir" Name="Autodesk">
+					<Directory Id="RevitDir" Name="Revit">
+						<Directory Id="AddinsDir" Name="Addins">
+							<Directory Id="INSTALLFOLDER" Name="2020" />
+						</Directory>
+					</Directory>
+				</Directory>
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Guid="{7FFD6633-385E-4A75-8C04-C1380B89732B}">
+				<File Source="$(var.BIM Leaders.TargetPath)" KeyPath="yes" />
+			</Component>
+			<Component Guid="{FE5AFC0C-1FCF-42F3-9CB1-E8CD446017AC}">
+				<File Source="$(var.BIM Leaders Core.TargetPath)" KeyPath="yes" />
+			</Component>
+			<Component Guid="{DEA66557-502F-4E1F-8D50-E68140AA1E1B}">
+				<File Source="$(var.BIM Leaders Resources.TargetPath)" KeyPath="yes" />
+			</Component>
+			<Component Guid="{1ED92FD9-0D4E-4078-BC60-31225606899C}">
+				<File Source="$(var.BIM Leaders UI.TargetPath)" KeyPath="yes" />
+			</Component>
+			<Component Guid="{65316EAB-B3CD-47F2-850B-29E4E5D63027}">
+				<File Source="$(var.BIM Leaders Windows.TargetPath)" KeyPath="yes" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>

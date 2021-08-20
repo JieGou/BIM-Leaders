@@ -6,17 +6,18 @@
     <ResourceDictionary.MergedDictionaries>
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+        <ResourceDictionary Source="..\Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="SRadioButton" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource MaterialDesignRadioButton}">
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="Background" Value="#0060aa" />
-        <Setter Property="BorderBrush" Value="#0060aa" />
+        <Setter Property="Foreground" Value="{StaticResource SColorText}" />
+        <Setter Property="Background" Value="{StaticResource SColorControls}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SColorControls}" />
         <Style.Resources>
-            <SolidColorBrush x:Key="MaterialDesignCheckBoxOff" Color="#0060aa"/>
-            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#0062bb"/>
+            <SolidColorBrush x:Key="MaterialDesignCheckBoxOff" Color="{Binding Source={StaticResource SColorControls}, Path=Color}"/>
+            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{Binding Source={StaticResource SColorControls}, Path=Color}"/>
         </Style.Resources>
     </Style>
     

@@ -24,8 +24,8 @@
             <StackPanel>
                 <StackPanel.Background>
                     <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
-                        <GradientStop Color="#121212" Offset="1"/>
-                        <GradientStop Color="#292929" Offset="0"/>
+                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1"/>
+                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0"/>
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <Grid>
@@ -41,16 +41,18 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Text="Find DWG"
-                                       Grid.Row="0" Style="{StaticResource STextBlock}">
+                                       Grid.Row="0"
+                                       Style="{StaticResource STextBlock}">
                             </TextBlock>
                             <Button x:Name="button_cancel" IsCancel="True"
-                                    ToolTip="Cancel"
-                                    Grid.Row="0" Style="{StaticResource SRoundButton}">
-                                <materialDesign:PackIcon Kind="CancelCircle" Width="24" Height="24" Foreground="White"/>
+                                    Grid.Row="0"
+                                    Style="{StaticResource SRoundButton}">
                             </Button>
 
                             <DataGrid x:Name="datagrid"
-                                      Grid.Row="1" Style="{StaticResource SDataGrid}" Margin="15,15,15,15" IsReadOnly="True" ItemsSource="{Binding dwg.Tables[0]}">
+                                      ItemsSource="{Binding dwg.Tables[0]}" IsReadOnly="True"
+                                      Grid.Row="1" Margin="15,15,15,15"
+                                      Style="{StaticResource SDataGrid}">
                             </DataGrid>
 
                         </Grid>
@@ -58,13 +60,14 @@
                     <Grid Grid.Row="1">
                         <Grid.Background>
                             <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
-                                <GradientStop Color="#FFBFBFBF" Offset="0"/>
-                                <GradientStop Color="#cfcfcf" Offset="1"/>
+                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
+                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter2}, Path=Color}" Offset="1"/>
                             </LinearGradientBrush>
                         </Grid.Background>
                         <Button x:Name="button_ok" Click="Button_ok_Click"
                                 Content="OK" ToolTip="Run"
-                                Style="{StaticResource SRectangleButton}" Margin="280,10,280,10">
+                                Margin="280,10,280,10"
+                                Style="{StaticResource SRectangleButton}">
                         </Button>
                     </Grid>
                 </Grid>

@@ -6,11 +6,12 @@
     <ResourceDictionary.MergedDictionaries>
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+        <ResourceDictionary Source="..\Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="SComboBox" TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignComboBox}">
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="BorderBrush" Value="#0060aa" />
+        <Setter Property="Foreground" Value="{StaticResource SColorText}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SColorControls}" />
     </Style>
 
 </ResourceDictionary>

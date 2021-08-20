@@ -24,8 +24,8 @@
             <StackPanel>
                 <StackPanel.Background>
                     <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
-                        <GradientStop Color="#121212" Offset="1"/>
-                        <GradientStop Color="#292929" Offset="0"/>
+                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1"/>
+                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0"/>
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <Grid>
@@ -42,40 +42,46 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Text="Levels Align"
-                                       Style="{StaticResource STextBlock}" Grid.Row="0">
+                                       Grid.Row="0"
+                                       Style="{StaticResource STextBlock}">
                             </TextBlock>
                             <Button x:Name="button_cancel" Click="Button_exit_Click" IsCancel="True"
-                                    ToolTip="Cancel"
-                                    Grid.Row="0" Style="{StaticResource SRoundButton}">
-                                <materialDesign:PackIcon Kind="CancelCircle" Width="24" Height="24" Foreground="White"/>
+                                    Grid.Row="0"
+                                    Style="{StaticResource SRoundButton}">
                             </Button>
 
-                            <Label Content="Bubbles Side:" 
-                                   Style="{StaticResource SLabel}" Grid.Row="1" Margin="20,0,0,0">
+                            <Label Content="Bubbles Side:"
+                                   Grid.Row="1" Margin="20,0,0,0"
+                                   Style="{StaticResource SLabel}">
                             </Label>
                             <RadioButton x:Name="rb_1" GroupName="rb_group" IsChecked="{Binding Path=result_side, Mode=TwoWay}"
                                          Content="Side 1"
-                                         Grid.Row="1" Style="{StaticResource SRadioButton}" Margin="20,26,0,0">
+                                         Grid.Row="1" Margin="20,26,0,0"
+                                         Style="{StaticResource SRadioButton}">
                             </RadioButton>
                             <RadioButton x:Name="rb_2" GroupName="rb_group"
                                          Content="Side 2"
-                                         Grid.Row="1" Style="{StaticResource SRadioButton}" Margin="20,44,0,0">
+                                         Grid.Row="1" Margin="20,44,0,0"
+                                         Style="{StaticResource SRadioButton}">
                             </RadioButton>
 
-                            <CheckBox x:Name="switch_2d" Content="Switch to 2D" IsChecked="{Binding Path=result_switch, Mode=TwoWay}"
-                                      Grid.Row="2" Style="{StaticResource SCheckBox}" Margin="20,00,0,0"/>
+                            <CheckBox x:Name="switch_2d" IsChecked="{Binding Path=result_switch, Mode=TwoWay}"
+                                      Content="Switch to 2D"
+                                      Grid.Row="2" Margin="20,00,0,0"
+                                      Style="{StaticResource SCheckBox}"/>
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">
                         <Grid.Background>
                             <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
-                                <GradientStop Color="#FFBFBFBF" Offset="0"/>
-                                <GradientStop Color="#cfcfcf" Offset="1"/>
+                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
+                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter2}, Path=Color}" Offset="1"/>
                             </LinearGradientBrush>
                         </Grid.Background>
                         <Button x:Name="button_ok" Click="Button_ok_Click"
                                 Content="Magic" ToolTip="Run"
-                                Style="{StaticResource SRectangleButton}" Margin="30,10,30,10">
+                                Margin="30,10,30,10"
+                                Style="{StaticResource SRectangleButton}">
                         </Button>
                     </Grid>
                 </Grid>

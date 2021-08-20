@@ -13,10 +13,32 @@
         <ResourceDictionary Source="Styles/GroupBox.xaml" />
         <ResourceDictionary Source="Styles/Label.xaml" />
         <ResourceDictionary Source="Styles/RadioButton.xaml" />
+        <ResourceDictionary Source="Styles/TabControl.xaml" />
         <ResourceDictionary Source="Styles/TextBlock.xaml" />
         <ResourceDictionary Source="Styles/TextBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
     <local:MultivalueBoolInvertConverter  x:Key="MultivalueBoolInvert" />
     <local:MultivalueTextBoxesConverter  x:Key="MultivalueTextBoxes" />
+
+    <!-- COLORS -->
+    <!--
+    <SolidColorBrush x:Key="SColorBackgroundMain1" Color="#121212" />
+    <SolidColorBrush x:Key="SColorBackgroundMain2" Color="#292929" />
+    <SolidColorBrush x:Key="SColorBackgroundFooter1" Color="#FFBFBFBF" />
+    <SolidColorBrush x:Key="SColorBackgroundFooter2" Color="#CFCFCF" />
+
+    <SolidColorBrush x:Key="SColorButtonBackground" Color="#0062BB" />
+    <SolidColorBrush x:Key="SColorButtonBorder" Color="#0060AA" />
+
+    <SolidColorBrush x:Key="SColorControls" Color="#0062BB" />
+
+    <SolidColorBrush x:Key="SColorDataGridBackground" Color="White" />
+    <SolidColorBrush x:Key="SColorDataGridText" Color="Black" />
+    <SolidColorBrush x:Key="SColorDataGridBorder" Color="#0060AA" />
+
+    <SolidColorBrush x:Key="SColorText" Color="White" />
+    <SolidColorBrush x:Key="SColorTextError" Color="Orange" />
+    -->
+
 
 </ResourceDictionary>

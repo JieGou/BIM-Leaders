@@ -24,8 +24,8 @@
             <StackPanel>
                 <StackPanel.Background>
                     <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
-                        <GradientStop Color="#121212" Offset="1"/>
-                        <GradientStop Color="#292929" Offset="0"/>
+                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1"/>
+                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0"/>
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <Grid>
@@ -45,44 +45,50 @@
                                        Style="{StaticResource STextBlock}" Grid.Row="0">
                             </TextBlock>
                             <Button x:Name="button_cancel" Click="Button_exit_Click" IsCancel="True"
-                                    ToolTip="Cancel"
-                                    Style="{StaticResource SRoundButton}" Grid.Row="0">
-                                <materialDesign:PackIcon Kind="CancelCircle" Width="24" Height="24" Foreground="White"/>
+                                    Grid.Row="0"
+                                    Style="{StaticResource SRoundButton}">
                             </Button>
 
                             <Label Content="Annotation type:" 
-                                   Style="{StaticResource SLabel}" Grid.Row="1"  Margin="20,0,0,0">
+                                   Grid.Row="1" Margin="20,0,0,0"
+                                   Style="{StaticResource SLabel}">
                             </Label>
                             <RadioButton x:Name="radiobutton_1" GroupName="rb_group" IsChecked="{Binding Path=result_side_right, Mode=TwoWay}"
                                          Content="Right Side"
-                                         Style="{StaticResource SRadioButton}" Grid.Row="1" Margin="20,26,0,0">
+                                         Grid.Row="1" Margin="20,26,0,0"
+                                         Style="{StaticResource SRadioButton}">
                             </RadioButton>
                             <RadioButton x:Name="radiobutton_2" GroupName="rb_group"
                                          Content="Left Side"
-                                         Style="{StaticResource SRadioButton}" Grid.Row="1" Margin="20,44,0,0">
+                                         Grid.Row="1" Margin="20,44,0,0"
+                                         Style="{StaticResource SRadioButton}">
                             </RadioButton>
 
                             <Label Content="Start number:"
-                                   Style="{StaticResource SLabel}" Grid.Row="2" Margin="20,0,0,0">
+                                   Grid.Row="2" Margin="20,0,0,0"
+                                   Style="{StaticResource SLabel}">
                             </Label>
                             <TextBox x:Name="textbox_1"
-                                     Style="{StaticResource STextBox}" Grid.Row="2" Margin="20,20,20,0"
-                                     Text="{Binding result_number, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}">
+                                     Text="{Binding result_number, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                     Grid.Row="2" Margin="20,20,20,0"
+                                     Style="{StaticResource STextBox}">
                             </TextBox>
                             <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors).CurrentItem.ErrorContent}"
-                                   Style="{StaticResource SLabelError}" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,45,20,0"/>
+                                   Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,45,20,0"
+                                   Style="{StaticResource SLabelError}"/>
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">
                         <Grid.Background>
                             <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
-                                <GradientStop Color="#FFBFBFBF" Offset="0"/>
-                                <GradientStop Color="#cfcfcf" Offset="1"/>
+                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
+                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter2}, Path=Color}" Offset="1"/>
                             </LinearGradientBrush>
                         </Grid.Background>
                         <Button x:Name="button_ok" Click="Button_ok_Click"
                                 Content="Magic" ToolTip="Run"
-                                Style="{StaticResource SRectangleButton}" Margin="30,10,30,10">
+                                Margin="30,10,30,10"
+                                Style="{StaticResource SRectangleButton}">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                                     <Binding ElementName="textbox_1" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
