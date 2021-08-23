@@ -39,7 +39,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2020|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\2020\</OutputPath>
+    <OutputPath>..\Output\2020\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>

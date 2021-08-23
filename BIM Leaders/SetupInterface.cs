@@ -176,6 +176,21 @@ namespace BIM_Leaders
             // Create button from provided data
             RevitPushButton.Create(button_3_1_data);
 
+            // Populate button data model
+            var button_3_2_data = new RevitPushButtonDataModel
+            {
+                Label = "Join",
+                Panel = panel_3,
+                ToolTip = "Joins all walls and floors on a section view.",
+                LongDescription = "Usable only on a section view. Joins may be reviewed for correct joining order.",
+                CommandNamespacePath = Elements_Join.GetPath(),
+                IconImageName = "BIM_Leaders_Element_Paint_Remove.png",
+                //TooltipImageName = "BIM_Leaders_Element_Paint_Remove.png"
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
+            };
+            // Create button from provided data
+            RevitPushButton.Create(button_3_2_data);
+
 
 
 

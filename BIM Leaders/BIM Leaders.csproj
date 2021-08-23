@@ -35,7 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2020|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\2020\</OutputPath>
+    <OutputPath>..\Output\2020\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -68,20 +68,22 @@
     <ProjectReference Include="..\BIM Leaders UI\BIM Leaders UI.csproj">
       <Project>{ee61c151-bf4c-41a7-b29c-45d042e6ea0f}</Project>
       <Name>BIM Leaders UI</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\BIM Leaders Windows\BIM Leaders Windows.csproj">
       <Project>{799942ac-6d9b-44e4-ab3f-1191b32f8cd4}</Project>
       <Name>BIM Leaders Windows</Name>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\BIM Leaders Core\BIM Leaders Core.csproj">
       <Project>{cc132aca-21dd-4e90-b767-f7fc7b339fca}</Project>
       <Name>BIM Leaders Core</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\BIM Leaders Resources\BIM Leaders Resources.csproj">
       <Project>{2f6cf1c2-84b4-4342-895d-277c481dcdd1}</Project>
       <Name>BIM Leaders Resources</Name>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

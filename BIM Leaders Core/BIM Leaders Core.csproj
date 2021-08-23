@@ -40,8 +40,10 @@
     <ApplicationIcon>Revit.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2020|AnyCPU'">
-    <OutputPath>bin\2020\</OutputPath>
+    <OutputPath>..\Output\2020\</OutputPath>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2021|AnyCPU'">
     <OutputPath>bin\2021\</OutputPath>
@@ -89,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Helpers\Message.cs" />
+    <Compile Include="Commands\Panel_Element\Elements_Join.cs" />
     <Compile Include="Commands\Panel_Standards\Walls_Arranged.cs" />
     <Compile Include="Commands\Selection\SelectionFilterByCategory.cs" />
     <Compile Include="Commands\Type\WindowType.cs" />
