@@ -184,7 +184,7 @@ namespace BIM_Leaders
                 ToolTip = "Joins all walls and floors on a section view.",
                 LongDescription = "Usable only on a section view. Joins may be reviewed for correct joining order.",
                 CommandNamespacePath = Elements_Join.GetPath(),
-                IconImageName = "BIM_Leaders_Element_Paint_Remove.png",
+                IconImageName = "BIM_Leaders_Elements_Join.png",
                 //TooltipImageName = "BIM_Leaders_Element_Paint_Remove.png"
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
             };
