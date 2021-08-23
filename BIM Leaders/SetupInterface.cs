@@ -30,7 +30,7 @@ namespace BIM_Leaders
                 ToolTip = "Check file for standards, model and codes.",
                 LongDescription = "Check which categories need to be checked for prefix in naming. Also check model issues, and problems with national codes.",
                 CommandNamespacePath = Checker.GetPath(),
-                IconImageName = "BIM_Leaders_Names_Prefix_Change.png",
+                IconImageName = "BIM_Leaders_Checker.png",
                 //TooltipImageName = "BIM_Leaders_Names_Prefix_Change.png"
             };
             // Create button from provided data
