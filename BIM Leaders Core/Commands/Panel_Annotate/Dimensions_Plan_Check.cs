@@ -10,7 +10,7 @@ using BIM_Leaders_Windows;
 namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
-    public class Dimension_Plan_Check : IExternalCommand
+    public class Dimensions_Plan_Check : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -161,7 +161,7 @@ namespace BIM_Leaders_Core
         public static string GetPath()
         {
             // Return constructed namespace path
-            return typeof(Dimension_Plan_Check).Namespace + "." + nameof(Dimension_Plan_Check);
+            return typeof(Dimensions_Plan_Check).Namespace + "." + nameof(Dimensions_Plan_Check);
         }
     }
 }

@@ -242,8 +242,8 @@ namespace BIM_Leaders
                 Panel = panel_5,
                 ToolTip = "Check if walls are dimensioned.",
                 LongDescription = "Creates a selection filter on a view that shows non-dimensioned walls.",
-                CommandNamespacePath = Dimension_Plan_Check.GetPath(),
-                IconImageName = "BIM_Leaders_Walls_Compare.png",
+                CommandNamespacePath = Dimensions_Plan_Check.GetPath(),
+                IconImageName = "BIM_Leaders_Dimensions_Plan_Check.png",
                 //TooltipImageName = "BIM_Leaders_Dimensions_Section_Floors.png",
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsPlan"
             };
