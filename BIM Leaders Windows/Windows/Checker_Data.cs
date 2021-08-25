@@ -97,10 +97,7 @@ namespace BIM_Leaders_Windows
                 case "result_prefix":
                     error = Validate_result_prefix();
                     break;
-                case "checkboxes":
-                    error = Validate_result_checkboxes();
-                    break;
-                case "codes":
+                case "result_height":
                     error = Validate_result_codes();
                     break;
             }

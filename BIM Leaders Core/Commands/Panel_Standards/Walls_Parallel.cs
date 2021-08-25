@@ -91,10 +91,7 @@ namespace BIM_Leaders_Core
                 List<Wall> walls_filter = new List<Wall>();
                 foreach (Wall w in walls)
                 {
-                    if (walls_par.Contains(w) | walls_per.Contains(w))
-                    {
-                        
-                    }
+                    if (walls_par.Contains(w) | walls_per.Contains(w)) { }
                     else
                     {
                         walls_filter.Add(w);

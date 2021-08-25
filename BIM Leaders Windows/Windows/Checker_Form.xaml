@@ -48,10 +48,6 @@
                                     Grid.Row="0" Grid.Column="1"
                                     Style="{StaticResource SRoundButton}">
                             </Button>
-                            <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors)/ErrorContent}"
-                                               Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,12,50,0"
-                                               Style="{StaticResource SLabelError}">
-                            </Label>
 
 
                             <TabControl Grid.Row="1" Width="720" Height="205" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,5,5"
@@ -72,6 +68,10 @@
                                                  Grid.Row="1" Margin="20,20,20,0"
                                                  Style="{StaticResource STextBox}">
                                             </TextBox>
+                                            <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors)/ErrorContent}"
+                                                   Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,45,20,0"
+                                                   Style="{StaticResource SLabelError}">
+                                            </Label>
 
                                             <Label Content="Categories:"
                                                Grid.Column="1"
@@ -216,6 +216,10 @@
                                                          Grid.Row="2" Margin="140,40,20,0"
                                                          Style="{StaticResource STextBox}">
                                             </TextBox>
+                                            <Label Content="{Binding ElementName=textbox_2, Path=(Validation.Errors)/ErrorContent}"
+                                                   Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,65,20,0"
+                                                   Style="{StaticResource SLabelError}">
+                                            </Label>
                                         </Grid>
                                     </Border>
                                 </TabItem>

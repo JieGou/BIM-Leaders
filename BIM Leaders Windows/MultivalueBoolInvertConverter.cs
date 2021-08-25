@@ -22,14 +22,14 @@ namespace BIM_Leaders_Windows
                 {
                     if (value is bool)
                     {
-                        if ((bool)value == false)
+                        if ((bool)value == true)
                         {
                             b = false;
                         }
                     }
                 }
             }
-            return !b;
+            return b;
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -37,12 +37,12 @@ namespace BIM_Leaders_Windows
             bool b = true;
             if (value is bool)
             {
-                if ((bool)value == false)
+                if ((bool)value == true)
                 {
                     b = false;
                 }
             }
-            return !b;
+            return b;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

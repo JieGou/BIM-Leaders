@@ -11,9 +11,9 @@ namespace BIM_Leaders_Core
     [TransactionAttribute(TransactionMode.Manual)]
     public class Dimension_Section_Floors : IExternalCommand
     {
-        public static Reference GetLineRef(UIDocument doc)
+        public static Reference GetLineRef(UIDocument uidoc)
         {
-            Reference line_ref = doc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select line");
+            Reference line_ref = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select line");
             return line_ref;
         }
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -43,7 +43,7 @@ namespace BIM_Leaders_Core
                 if (selectedIds.Count == 0)
                 {
                     // If no elements selected.
-                    TaskDialog.Show("Section Annotations", "You haven't selected any elements.");
+                    TaskDialog.Show("Section Annotations", "You haven't selected any lines.");
                     return Result.Failed;
                 }
                 else if (selectedIds.Count > 1)
@@ -275,10 +275,7 @@ namespace BIM_Leaders_Core
                                 SpotDimension sd = doc.Create.NewSpotElevation(view, intersections_thick_top[i], origin, zero, zero, origin, false);
                                 count_spots++;
                             }
-                            catch
-                            {
-
-                            }
+                            catch { }
                         }
                         for (int i = 0; i < intersections_thick_bot.Count; i++)
                         {
@@ -292,10 +289,7 @@ namespace BIM_Leaders_Core
                                 SpotDimension sd = doc.Create.NewSpotElevation(view, intersections_thick_bot[i], origin, zero, zero, origin, false);
                                 count_spots++;
                             }
-                            catch
-                            {
-
-                            }
+                            catch { }
                         }
                         for (int i = 0; i < intersections_thin_top.Count; i++)
                         {
@@ -309,10 +303,7 @@ namespace BIM_Leaders_Core
                                 SpotDimension sd = doc.Create.NewSpotElevation(view, intersections_thin_top[i], origin, zero, zero, origin, false);
                                 count_spots++;
                             }
-                            catch
-                            {
-
-                            }
+                            catch { }
                         }
                     }
                     else
