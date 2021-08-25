@@ -36,63 +36,66 @@ namespace BIM_Leaders_Core
 
                 double scale = view.Scale;
                 XYZ zero = new XYZ(0,0,0);
-                int count = 0;
-
-                // Get Dimensions
-                FilteredElementCollector collector_d = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                IEnumerable<Element> dimensions_all = collector_d.OfClass(typeof(Dimension))
-                    .WhereElementIsNotElementType()
-                    .ToElements();
-
-                List<Reference> references_d = new List<Reference>();
-                // Iterate through dimensions and get references
-                foreach (Dimension d in dimensions_all)
-                {
-                    ReferenceArray ref_array = d.References;
-                    foreach (Reference r in ref_array)
-                    {
-                        references_d.Add(r);
-                    }
-                }
 
                 // Get Walls
                 FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                IEnumerable<Element> walls_all = collector.OfClass(typeof(Wall))
+                IEnumerable<Wall> walls_all = collector.OfClass(typeof(Wall))
                     .WhereElementIsNotElementType()
-                    .ToElements();
+                    .ToElements()
+                    .Cast<Wall>();
 
-                List<ElementId> wall_ids = new List<ElementId>();
-                // Get Walls long sides references
+                // Get Dimensions
+                FilteredElementCollector collector_d = new FilteredElementCollector(doc, doc.ActiveView.Id);
+                IEnumerable<Dimension> dimensions_all = collector_d.OfClass(typeof(Dimension))
+                    .WhereElementIsNotElementType()
+                    .ToElements()
+                    .Cast<Dimension>();
+
+                // List for creating a filter
+                List<ElementId> wall_filter_ids = new List<ElementId>();
+
+                // Iterate walls
                 foreach (Wall w in walls_all)
                 {
-                    XYZ orient = w.Orientation;
-                    foreach (Solid s in w.get_Geometry(options))
+                    XYZ normal_wall = new XYZ(0,0,0);
+                    try
                     {
-                        foreach (Face face in s.Faces)
+                        normal_wall = w.Orientation;
+                    }
+                    catch { continue; }
+                    // List for intersectins count for each dimansion
+                    List<int> count_ints = new List<int>();
+                    // Iterate dimensions
+                    foreach (Dimension d in dimensions_all)
+                    {
+                        Line dim_line = d.Curve as Line;
+                        if (dim_line != null)
                         {
-                            // Some faces are cylidrical so pass them
-                            try
+                            dim_line.MakeBound(0, 1);
+                            XYZ pt1 = dim_line.GetEndPoint(0);
+                            XYZ pt2 = dim_line.GetEndPoint(1);
+                            XYZ dim_loc = pt2.Subtract(pt1).Normalize();
+                            // Intersections count
+                            int count_int = 0;
+
+                            ReferenceArray ref_array = d.References;
+                            // Iterate dimension references
+                            foreach (Reference r in ref_array)
                             {
-                                // Check if face is vertical
-                                UV p = new UV(0, 0);
-                                if (Math.Round(face.ComputeNormal(p).Z) == 0)
-                                {
-                                    // Check if face perpendicular to wall normal
-                                    if (Math.Round(face.ComputeNormal(p).AngleTo(orient)) == 0)
-                                    {
-                                        // Check if wall reference with no dimension
-                                        Reference r = face.Reference;
-                                        if (!references_d.Contains(r))
-                                        {
-                                            wall_ids.Add(w.Id);
-                                            count++;
-                                        }
-                                    }
-                                }
+                                if (r.ElementId == w.Id)
+                                    count_int++;
                             }
-                            catch (Exception e) { }
+                            // If 2 dimensions on a wall so check if dimansion is parallel to wall normal
+                            if (count_int >= 2)
+                            {
+                                if (Math.Round(Math.Abs((dim_loc.AngleTo(normal_wall) / Math.PI - 0.5) * 2)) == 1) // Angle is from 0 to PI, so divide by PI - from 0 to 1, then...
+                                    count_ints.Add(count_int);
+                            }
                         }
                     }
+                    // Check if no dimensions left
+                    if (count_ints.Count == 0)
+                        wall_filter_ids.Add(w.Id);
                 }
 
                 using (Transaction trans = new Transaction(doc, "Create Filter for non-dimensioned Walls"))
@@ -110,7 +113,7 @@ namespace BIM_Leaders_Core
                     }
 
                     SelectionFilterElement filter = SelectionFilterElement.Create(doc, "Walls dimension filter");
-                    filter.SetElementIds(wall_ids);
+                    filter.SetElementIds(wall_filter_ids);
 
                     // Add the filter to the view
                     ElementId filterId = filter.Id;
@@ -133,18 +136,18 @@ namespace BIM_Leaders_Core
                     overrideSettings.SetCutForegroundPatternColor(color);
                     overrideSettings.SetCutForegroundPatternId(pattern);
                     view.SetFilterOverrides(filterId, overrideSettings);
-
+                    
                     trans.Commit();
                 }
 
                 // Show result
-                if (count == 0)
+                if (wall_filter_ids.Count == 0)
                 {
                     TaskDialog.Show("Dimension Plan Check", "All walls are dimensioned");
                 }
                 else
                 {
-                    TaskDialog.Show("Dimension Plan Check", string.Format("{0} walls added to Walls dimension filter", wall_ids.Count.ToString()));
+                    TaskDialog.Show("Dimension Plan Check", string.Format("{0} walls added to Walls dimension filter", wall_filter_ids.Count.ToString()));
                 }
 
                 return Result.Succeeded;

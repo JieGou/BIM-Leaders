@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<?define sourcefolder="C:\Users\i.pinchuk\source\repos\Vanilla42\BIM-Leaders\BIM Leaders\BIM Leaders\bin\2020"?>
+	<?define sourcefolder="C:\Users\i.pinchuk\source\repos\Vanilla42\BIM-Leaders\Output\2020"?>
 	<Product Id="*" Name="BIM Leaders Setup" Language="1033" Version="1.0.0.0" Manufacturer="BIM Leaders" UpgradeCode="7d0eb875-32b1-4bbc-b647-b3b0a27bbc7b">
 		<Package Id="*" InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
@@ -12,8 +12,8 @@
 		</Feature>
 		
 		<!-- Add installer icon -->
-		<Icon Id="icon.ico" SourceFile="$(var.sourcefolder)..\..\..\Revit.ico" />
-		<Property Id="APPPRODUCTICON" Value="icon.ico" />
+		<Icon Id="Revit.ico" SourceFile="$(var.sourcefolder)..\..\BIM Leaders\Revit.ico" />
+		<Property Id="APPPRODUCTICON" Value="Revit.ico" />
 		
 	</Product>
 
