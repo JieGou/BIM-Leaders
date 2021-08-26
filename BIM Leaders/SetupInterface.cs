@@ -120,7 +120,21 @@ namespace BIM_Leaders
             // Create button from provided data
             RevitPushButton.CreateInPulldown(button_1_5_2_data, button_1_5);
 
+            panel_1.AddSeparator();
 
+            // Populate button data model
+            var button_1_6_data = new RevitPushButtonDataModel
+            {
+                Label = "Help\r\nStandards",
+                Panel = panel_1,
+                ToolTip = "Standards.",
+                LongDescription = "Help!",
+                CommandNamespacePath = Help_Standards.GetPath(),
+                IconImageName = "BIM_Leaders_Help_Standards.png",
+                //TooltipImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png"
+            };
+            // Create button from provided data
+            RevitPushButton.Create(button_1_6_data);
 
 
             // Create Ribbon Panel

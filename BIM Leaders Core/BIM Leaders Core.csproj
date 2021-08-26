@@ -94,6 +94,7 @@
     <Compile Include="Commands\Panel_Annotate\Dimensions_Plan_Check.cs" />
     <Compile Include="Commands\Panel_Element\Elements_Join.cs" />
     <Compile Include="Commands\Panel_Standards\Walls_Arranged.cs" />
+    <Compile Include="Commands\Panel_Standards\Help_Standards.cs" />
     <Compile Include="Commands\Selection\SelectionFilterByCategory.cs" />
     <Compile Include="Commands\Type\WindowType.cs" />
     <Compile Include="CoreAssembly.cs" />
