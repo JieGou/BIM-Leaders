@@ -17,7 +17,7 @@
 	<?define Comments = "Developed in 2021 to make work easy"?>
 	
 	<Product Id="$(var.ProductCode)"
-			 Name="BIM Leaders Setup"
+			 Name="BIM Leaders Addin"
 			 Language="1033"
 			 Version="$(var.BuildVersion)"
 			 Manufacturer="$(var.Company)"
