@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные со сборкой.
 [assembly: AssemblyTitle("BIM Leaders")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Revit Addin")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("BIM Leaders")]
+[assembly: AssemblyCompany("BIM Leaders")]
+[assembly: AssemblyProduct("BIM Leaders Revit Addin")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

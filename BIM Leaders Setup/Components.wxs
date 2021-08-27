@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+
+			<ComponentRef Id="File0" />
+			<ComponentRef Id="File1" />
+			<ComponentRef Id="File2" />
+			<ComponentRef Id="File3" />
+			<ComponentRef Id="File4" />
+			<ComponentRef Id="File5" />
+
+		</ComponentGroup>
+
+		<DirectoryRef Id="INSTALLFOLDER" FileSource="..\Output\$(var.Configuration)">
+			<Component Id="File0" Guid="{090D194B-9C28-49A1-9E4C-AF190BED2545}">
+				<File Id="FileAddinFile" Name="BIM Leaders.addin" KeyPath="yes"></File>
+			</Component>
+			<Component Id="File1" Guid="{72928FF8-B91B-47CF-B708-4E3742AA5168}">
+				<File Id="FileCoreFile" Name="BIM Leaders Core.dll"></File>
+			</Component>
+			<Component Id="File2" Guid="{57A3F0C2-D65B-485D-806C-A5CDAEF9CC98}">
+				<File Id="FileResourcesFile" Name="BIM Leaders Resources.dll"></File>
+			</Component>
+			<Component Id="File3" Guid="{75CD2FDA-08EB-4469-8709-1C528EB37983}">
+				<File Id="FileUIFile" Name="BIM Leaders UI.dll"></File>
+			</Component>
+			<Component Id="File4" Guid="{8B489D1F-E7FD-4D57-BFF9-65727094AF0C}">
+				<File Id="FileWindowsFile" Name="BIM Leaders Windows.dll"></File>
+			</Component>
+			<Component Id="File5" Guid="{6683198B-B3E5-4269-9F96-CC24DABB5283}">
+				<File Id="FileMainFile" Name="BIM Leaders.dll"></File>
+			</Component>
+		</DirectoryRef>
+		
+	</Fragment>
+</Wix>

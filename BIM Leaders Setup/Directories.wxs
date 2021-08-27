@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			
+			<!-- ProgramData folder -->
+			<Directory Id="CommonAppDataFolder">
+				<Directory Id="AutodeskFolder" Name="Autodesk">
+					<Directory Id="RevitFolder" Name="Revit">
+						<Directory Id="AddinsFolder" Name="Addins">
+							<Directory Id="INSTALLFOLDER" Name="$(var.Configuration)">
+							</Directory>
+						</Directory>
+					</Directory>
+				</Directory>
+			</Directory>
+			
+		</Directory>
+	</Fragment>
+</Wix>
