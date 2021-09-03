@@ -87,6 +87,9 @@
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Dimensions_Stairs_Landings.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Fonts\Montserrat-Regular.ttf" />
+    <Resource Include="Fonts\Montserrat-Bold.ttf" />
+    <Resource Include="Fonts\Montserrat-SemiBold.ttf" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

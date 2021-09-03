@@ -7,12 +7,14 @@
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
         <ResourceDictionary Source="..\Colors.xaml" />
+        <ResourceDictionary Source="..\Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="SCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
         <Setter Property="Foreground" Value="{StaticResource SColorText}"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
         <Style.Resources>
             <SolidColorBrush x:Key="MaterialDesignCheckBoxOff" Color="{Binding Source={StaticResource SColorControls}, Path=Color}"/>
             <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{Binding Source={StaticResource SColorControls}, Path=Color}"/>

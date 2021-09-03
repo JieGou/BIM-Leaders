@@ -7,19 +7,22 @@
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
         <ResourceDictionary Source="..\Colors.xaml" />
+        <ResourceDictionary Source="..\Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 	<Style x:Key="SDataGridColumnHeader" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
 		<Setter Property="Foreground" Value="{StaticResource SColorText}"/>
 		<Setter Property="Background" Value="{StaticResource SColorDataGridBorder}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource SColorDataGridBorder}"/>
-		<Setter Property="FontStyle" Value="Oblique"/>
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
+        <Setter Property="FontStyle" Value="Oblique"/>
 	</Style>
 
 	<Style x:Key="SDataGridRowHeader"  TargetType="{x:Type DataGridRowHeader}" BasedOn="{StaticResource MaterialDesignDataGridRowHeader}">
 		<Setter Property="Foreground" Value="{StaticResource SColorText}"/>
 		<Setter Property="Background" Value="{StaticResource SColorDataGridBorder}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource SColorDataGridBorder}"/>
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
 		<Setter Property="FontStyle" Value="Oblique"/>
 	</Style>
 	
@@ -34,6 +37,7 @@
         <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
         <Setter Property="ColumnHeaderStyle" Value="{StaticResource SDataGridColumnHeader}"/>
         <Setter Property="RowHeaderStyle" Value="{StaticResource SDataGridRowHeader}"/>
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
     </Style>
     
 </ResourceDictionary>

@@ -7,6 +7,7 @@
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
         <ResourceDictionary Source="..\Colors.xaml" />
+        <ResourceDictionary Source="..\Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="STabControl" TargetType="TabControl">
@@ -49,7 +50,7 @@
                              Margin="0,0,0,0" SnapsToDevicePixels="True">
 
                         </Border>
-                        <TextBlock Name="TextBlock" HorizontalAlignment="Center">
+                        <TextBlock Name="TextBlock" HorizontalAlignment="Center" FontFamily="{StaticResource SFontFamilyMain}">
                                 <ContentPresenter ContentSource="Header" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12,2,12,2"/>
                         </TextBlock>
                     </Grid>

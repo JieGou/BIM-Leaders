@@ -7,6 +7,7 @@
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
         <ResourceDictionary Source="..\Colors.xaml" />
+        <ResourceDictionary Source="..\Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="STextBox" TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
@@ -14,6 +15,7 @@
         <Setter Property="Foreground" Value="{StaticResource SColorText}"/>
         <Setter Property="BorderBrush" Value="{StaticResource SColorText}"/>
         <Setter Property="TextAlignment" Value="Right"/>
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
         <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
     </Style>
     
@@ -22,6 +24,7 @@
         <Setter Property="Foreground" Value="{StaticResource SColorText}"/>
         <Setter Property="BorderBrush" Value="{StaticResource SColorText}"/>
         <Setter Property="TextAlignment" Value="Right"/>
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
         <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
 
         <!--

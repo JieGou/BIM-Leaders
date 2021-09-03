@@ -58,15 +58,17 @@
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">
+                        <!--
                         <Grid.Background>
                             <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
                                 <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
                                 <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter2}, Path=Color}" Offset="1"/>
                             </LinearGradientBrush>
                         </Grid.Background>
+                        -->
                         <Button x:Name="button_ok" Click="Button_ok_Click"
                                 Content="OK" ToolTip="Run"
-                                Margin="280,10,280,10"
+                                Margin="270,10,270,10"
                                 Style="{StaticResource SRectangleButton}">
                         </Button>
                     </Grid>

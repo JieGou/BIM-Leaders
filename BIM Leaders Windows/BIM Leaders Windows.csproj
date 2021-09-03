@@ -112,6 +112,10 @@
       <DependentUpon>Grids_Align_Form.xaml</DependentUpon>
     </Compile>
     <Compile Include="MultivalueBoolInvertConverter.cs" />
+    <Page Include="Fonts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

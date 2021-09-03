@@ -42,8 +42,7 @@
 
                             <TextBlock Text="Checker"
                                        Grid.Row="0"
-                                       Style="{StaticResource STextBlock}">
-                            </TextBlock>
+                                       Style="{StaticResource STextBlock}" />
                             <Button x:Name="button_cancel" IsCancel="True"
                                     Grid.Row="0" Grid.Column="1"
                                     Style="{StaticResource SRoundButton}">
@@ -66,7 +65,7 @@
                                             <TextBox x:Name="textbox_1"
                                                  Text="{Binding result_prefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                                  Grid.Row="1" Margin="20,20,20,0"
-                                                 Style="{StaticResource STextBox}">
+                                                 Style="{StaticResource STextBox}" FontFamily="Montserrat">
                                             </TextBox>
                                             <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors)/ErrorContent}"
                                                    Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,45,20,0"
@@ -229,16 +228,18 @@
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">
+                        <!--
                         <Grid.Background>
                             <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
                                 <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
                                 <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter2}, Path=Color}" Offset="1"/>
                             </LinearGradientBrush>
                         </Grid.Background>
+                        -->
                         <Button x:Name="button_ok" Click="Button_ok_Click"
                                 Content="Magic" ToolTip="Run"
-                                Margin="280,10,280,10"
-                                Style="{StaticResource SRectangleButton}">
+                                Margin="270,10,270,10"
+                                Style="{StaticResource SRectangleButton}" FontFamily="{DynamicResource SFontFamilyMain}">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                                     <Binding ElementName="textbox_1" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>

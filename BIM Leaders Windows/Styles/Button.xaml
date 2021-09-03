@@ -7,13 +7,31 @@
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
         <ResourceDictionary Source="..\Colors.xaml" />
+        <ResourceDictionary Source="..\Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="SRectangleButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
         <Setter Property="Background" Value="{StaticResource SColorButtonBackground}" />
         <Setter Property="Foreground" Value="{StaticResource SColorText}" />
         <Setter Property="BorderBrush" Value="{StaticResource SColorButtonBorder}" />
-        <Setter Property="Margin" Value="10" />
+        <Setter Property="Margin" Value="20,10" />
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="5"
+                            BorderThickness="0,0,0,0"
+                            Background="{StaticResource SColorButtonBackground}">
+                        <ContentPresenter x:Name="contentPresenter" 
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                          Content="{TemplateBinding Content}" 
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                          Margin="{TemplateBinding Padding}" 
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
     
     <Style x:Key="SRoundButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
@@ -26,6 +44,7 @@
         <Setter Property="VerticalAlignment" Value="Top" />
 
         <Setter Property="ToolTip" Value="Cancel" />
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
 
         <Setter Property="Template">
             <Setter.Value>
