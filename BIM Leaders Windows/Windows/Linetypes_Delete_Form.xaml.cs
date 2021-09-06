@@ -7,17 +7,17 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class Linetypes_IMPORT_Delete_Form : Window
+    public partial class Linetypes_Delete_Form : Window
     {
         /// <summary>
         /// Default constructor.
         /// Initializes a new instance of the <see cref="Linetypes_IMPORT_Delete_Form"/>
         /// </summary>
-        public Linetypes_IMPORT_Delete_Form()
+        public Linetypes_Delete_Form()
         {
             InitializeComponent();
 
-            DataContext = new Linetypes_IMPORT_Delete_Data();
+            DataContext = new Linetypes_Delete_Data();
         }
 
         /// <summary>

@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="BIM Leaders - Change Names Prefix"
-        Height="350" Width="750"
+        Height="350" Width="800"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -84,11 +84,11 @@
                             <!--Path=(Validation.Errors).CurrentItem.ErrorContent}-->
 
                             <GroupBox x:Name="groupbox" Header="Categories" 
-                                      Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Width="470"
+                                      Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Width="520"
                                       Style="{StaticResource SGroupBox}">
                             </GroupBox>
 
-                            <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Left" Height="150" Margin="10,42,0,0" VerticalAlignment="Top" Width="150">
+                            <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Left" Height="150" Margin="10,42,0,0" VerticalAlignment="Top" Width="175">
                                 <CheckBox Content="Area Schemes"
                                           IsChecked="{Binding Path=result_categories[0], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
@@ -114,7 +114,7 @@
                                           IsChecked="{Binding Path=result_categories[7], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                             </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Left" Height="150" Margin="160,42,0,0" VerticalAlignment="Top" Width="150">
+                            <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Left" Height="150" Margin="185,42,0,0" VerticalAlignment="Top" Width="175">
                                 <CheckBox Content="Grid Types"
                                           IsChecked="{Binding Path=result_categories[8], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
@@ -140,7 +140,7 @@
                                           IsChecked="{Binding Path=result_categories[15], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                             </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Left" Height="150" Margin="310,42,0,0" VerticalAlignment="Top" Width="150">
+                            <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Left" Height="150" Margin="360,42,0,0" VerticalAlignment="Top" Width="175">
                                 <CheckBox Content="Spot Dimension Types"
                                           IsChecked="{Binding Path=result_categories[16], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>

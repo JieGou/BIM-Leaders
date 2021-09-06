@@ -66,13 +66,13 @@ namespace BIM_Leaders
             // Populate button data model
             var button_1_4_data = new RevitPushButtonDataModel
             {
-                Label = "Delete IMPORT\r\nLine Patterns",
+                Label = "Delete \r\nLine Patterns",
                 Panel = panel_1,
                 ToolTip = "Delete all line patterns that contains input string.",
                 LongDescription = "Can be useful to delete IMPORT line patterns after importing DWG files.",
-                CommandNamespacePath = Linetypes_IMPORT_Delete.GetPath(),
+                CommandNamespacePath = Linetypes_Delete.GetPath(),
                 IconImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png",
-                //TooltipImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png"
+                //TooltipImageName = "BIM_Leaders_Linetypes_Delete.png"
             };
             // Create button from provided data
             RevitPushButton.Create(button_1_4_data);

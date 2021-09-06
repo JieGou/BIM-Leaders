@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="BIM Leaders - Delete DWG By Name"
-        Height="350" Width="250"
+        Height="350" Width="300"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -56,7 +56,7 @@
                             </Label>
                             <ComboBox x:Name="combobox_1" SelectedValue="{Binding dwg_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                                       ItemsSource="{Binding dwg_list, Mode=OneWay}"
-                                      Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="190"
+                                      Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="240"
                                       Style="{StaticResource SComboBox}">
                             </ComboBox>
 

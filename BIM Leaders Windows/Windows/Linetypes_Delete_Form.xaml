@@ -1,4 +1,4 @@
-﻿<Window x:Class="BIM_Leaders_Windows.Linetypes_IMPORT_Delete_Form"
+﻿<Window x:Class="BIM_Leaders_Windows.Linetypes_Delete_Form"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,13 +7,13 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="BIM Leaders - Delete Linetypes"
-        Height="350" Width="250"
+        Height="350" Width="300"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="NoResize"
         Background="{x:Null}"
         AllowsTransparency="True"
-        d:DataContext="{d:DesignInstance Type=local:Linetypes_IMPORT_Delete_Data}">
+        d:DataContext="{d:DesignInstance Type=local:Linetypes_Delete_Data}">
 
     <Window.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
@@ -41,7 +41,7 @@
                                 <RowDefinition Height="1*"></RowDefinition>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Text="Delete Linetypes"
+                            <TextBlock Text="Delete Line Patterns"
                                        Grid.Row="0"
                                        Style="{StaticResource STextBlock}">
                             </TextBlock>

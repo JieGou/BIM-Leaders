@@ -30,7 +30,7 @@
         -->
     </Style>
 
-    <Style x:Key="STabItem" TargetType="TabItem">
+    <Style x:Key="STabItemLeft" TargetType="TabItem">
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0,0,0,0" />
         <Setter Property="Margin" Value="0,0,0,0" />
@@ -46,7 +46,7 @@
                              Background="{StaticResource SColorBackgroundFooter1}"
                              BorderBrush="{StaticResource SColorBackgroundFooter1}"
                              BorderThickness="0,0,0,0"
-                             CornerRadius="5,5,0,0"
+                             CornerRadius="3,0,0,3"
                              Margin="0,0,0,0" SnapsToDevicePixels="True">
 
                         </Border>
@@ -65,7 +65,96 @@
                         </Trigger>
                         <Trigger Property="IsSelected" Value="False">
                             <Setter TargetName="Border" Property="Background" Value="{StaticResource SColorBackgroundFooter1}" />
-                            <Setter TargetName="Border" Property="CornerRadius" Value="5,5,0,0" />
+                            <Setter TargetName="Border" Property="CornerRadius" Value="3,0,0,3" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True" SourceName="Border" >
+                            <Setter TargetName="Border" Property="BorderThickness" Value="2,2,2,0" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SColorText}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="STabItemCenter" TargetType="TabItem">
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="BorderThickness" Value="0,0,0,0" />
+        <Setter Property="Margin" Value="0,0,0,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Grid SnapsToDevicePixels="True">
+                        <Border
+                             Name="Border"
+                             Background="{StaticResource SColorBackgroundFooter1}"
+                             BorderBrush="{StaticResource SColorBackgroundFooter1}"
+                             BorderThickness="0,0,0,0"
+                             CornerRadius="0,0,0,0"
+                             Margin="0,0,0,0" SnapsToDevicePixels="True">
+
+                        </Border>
+                        <TextBlock Name="TextBlock" HorizontalAlignment="Center" FontFamily="{StaticResource SFontFamilyMain}">
+                                <ContentPresenter ContentSource="Header" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12,2,12,2"/>
+                        </TextBlock>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource SColorText}" />
+                            <!--
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SColorButtonBackground}" />
+                            <Setter TargetName="TextBlock" Property="Foreground" Value="Black" />
+                            <Setter TargetName="Border" Property="Margin" Value="0,0,2,-1" />
+                            -->
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource SColorBackgroundFooter1}" />
+                            <Setter TargetName="Border" Property="CornerRadius" Value="0,0,0,0" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True" SourceName="Border" >
+                            <Setter TargetName="Border" Property="BorderThickness" Value="2,2,2,0" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SColorText}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="STabItemRight" TargetType="TabItem">
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="BorderThickness" Value="0,0,0,0" />
+        <Setter Property="Margin" Value="0,0,0,0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Grid SnapsToDevicePixels="True">
+                        <Border
+                             Name="Border"
+                             Background="{StaticResource SColorBackgroundFooter1}"
+                             BorderBrush="{StaticResource SColorBackgroundFooter1}"
+                             BorderThickness="0,0,0,0"
+                             CornerRadius="0,3,3,0"
+                             Margin="0,0,0,0" SnapsToDevicePixels="True">
+
+                        </Border>
+                        <TextBlock Name="TextBlock" HorizontalAlignment="Center" FontFamily="{StaticResource SFontFamilyMain}">
+                                <ContentPresenter ContentSource="Header" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="12,2,12,2"/>
+                        </TextBlock>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource SColorText}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="False">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource SColorBackgroundFooter1}" />
+                            <Setter TargetName="Border" Property="CornerRadius" Value="0,3,3,0" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True" SourceName="Border" >
                             <Setter TargetName="Border" Property="BorderThickness" Value="2,2,2,0" />

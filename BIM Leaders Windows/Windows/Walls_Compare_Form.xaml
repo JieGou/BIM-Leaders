@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Title="BIM Leaders - Walls Compare"
-        Height="350" Width="250"
+        Height="350" Width="300"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -55,7 +55,7 @@
                             </Label>
                             <ComboBox x:Name="combobox_1" SelectedValue="{Binding mats_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                                       ItemsSource="{Binding mats_list, Mode=OneWay}"
-                                      Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="190"
+                                      Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="240"
                                       Style="{StaticResource SComboBox}">
                             </ComboBox>
 
@@ -65,7 +65,7 @@
                             </Label>
                             <ComboBox x:Name="combobox_2" SelectedValue="{Binding fill_types_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                                       ItemsSource="{Binding fill_types_list, Mode=OneWay}"
-                                      Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="190"
+                                      Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="240"
                                       Style="{StaticResource SComboBox}">
                             </ComboBox>
                             
