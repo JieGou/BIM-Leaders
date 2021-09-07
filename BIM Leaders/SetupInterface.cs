@@ -6,10 +6,7 @@ namespace BIM_Leaders
 {
     public class SetupInterface
     {
-        public SetupInterface()
-        {
-            
-        }
+        public SetupInterface() { }
         public void Initialize(UIControlledApplication application)
         {
             // Create Ribbon Tab

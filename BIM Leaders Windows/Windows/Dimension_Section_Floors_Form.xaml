@@ -52,7 +52,7 @@
                             </Button>
 
                             <Label Content="Annotation type:" 
-                                   Grid.Row="1" Margin="17,0,20,0"
+                                   Grid.Row="1" Margin="15,0,20,0"
                                    Style="{StaticResource SLabelBold}">
                             </Label>
                             <RadioButton x:Name="radiobutton_1" GroupName="rb_group" IsChecked="{Binding Path=result_spots, Mode=TwoWay}"
@@ -67,7 +67,7 @@
                             </RadioButton>
 
                             <Label Content="Top Floor Max Thickness (cm):"
-                                   Grid.Row="2" Margin="17,0,20,0"
+                                   Grid.Row="2" Margin="15,0,20,0"
                                    Style="{StaticResource SLabelBold}">
                             </Label>
                             <TextBox x:Name="textbox_1"
