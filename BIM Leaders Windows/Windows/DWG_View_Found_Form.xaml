@@ -13,6 +13,7 @@
         ResizeMode="NoResize"
         Background="{x:Null}"
         AllowsTransparency="True"
+        TextOptions.TextFormattingMode="Display"
         d:DataContext="{d:DesignInstance Type=local:DWG_View_Found_Data}">
 
     <Window.Resources>

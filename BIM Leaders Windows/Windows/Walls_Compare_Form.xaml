@@ -13,6 +13,7 @@
         ResizeMode="NoResize"
         Background="{x:Null}"
         AllowsTransparency="True"
+        TextOptions.TextFormattingMode="Display"
         d:DataContext="{d:DesignInstance Type=local:Walls_Compare_Data}">
 
     <Window.Resources>
@@ -50,8 +51,8 @@
                             </Button>
 
                             <Label Content="Wall Material:" 
-                                   Grid.Row="1" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
+                                   Grid.Row="1" Margin="15,0,20,0"
+                                   Style="{StaticResource SLabelBold}">
                             </Label>
                             <ComboBox x:Name="combobox_1" SelectedValue="{Binding mats_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                                       ItemsSource="{Binding mats_list, Mode=OneWay}"
@@ -60,8 +61,8 @@
                             </ComboBox>
 
                             <Label Content="Fill Type:"
-                                   Grid.Row="2" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
+                                   Grid.Row="2" Margin="15,0,20,0"
+                                   Style="{StaticResource SLabelBold}">
                             </Label>
                             <ComboBox x:Name="combobox_2" SelectedValue="{Binding fill_types_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                                       ItemsSource="{Binding fill_types_list, Mode=OneWay}"

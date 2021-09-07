@@ -15,23 +15,47 @@
         <Setter Property="Foreground" Value="{StaticResource SColorText}" />
         <Setter Property="BorderBrush" Value="{StaticResource SColorButtonBorder}" />
         <Setter Property="Margin" Value="20,10" />
-        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="5"
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border CornerRadius="5"
                             BorderThickness="0,0,0,0"
                             Background="{StaticResource SColorButtonBackground}">
-                        <ContentPresenter x:Name="contentPresenter" 
+                                <ContentPresenter x:Name="contentPresenter" 
                                           ContentTemplate="{TemplateBinding ContentTemplate}" 
                                           Content="{TemplateBinding Content}" 
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                           Margin="{TemplateBinding Padding}" 
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border CornerRadius="5"
+                            BorderThickness="0,0,0,0"
+                            Background="{StaticResource SColorButtonBackgroundDisabled}">
+                                <ContentPresenter x:Name="contentPresenter" 
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                          Content="{TemplateBinding Content}" 
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                          Margin="{TemplateBinding Padding}" 
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+        
     </Style>
     
     <Style x:Key="SRoundButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">

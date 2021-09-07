@@ -13,6 +13,7 @@
         ResizeMode="NoResize"
         Background="{x:Null}"
         AllowsTransparency="True"
+        TextOptions.TextFormattingMode="Display"
         d:DataContext="{d:DesignInstance Type=local:Grids_Align_Data}">
 
     <Window.Resources>
@@ -51,8 +52,8 @@
                             </Button>
 
                             <Label Content="Bubbles Side:"
-                                   Grid.Row="1" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
+                                   Grid.Row="1" Margin="15,0,20,0"
+                                   Style="{StaticResource SLabelBold}">
                             </Label>
                             <RadioButton x:Name="rb_1" GroupName="rb_group" IsChecked="{Binding Path=result_side, Mode=TwoWay}"
                                          Content="Side 1"
@@ -67,8 +68,8 @@
 
                             <CheckBox x:Name="switch_2d" IsChecked="{Binding Path=result_switch, Mode=TwoWay}"
                                       Content="Switch to 2D" 
-                                      Grid.Row="2" Margin="20,00,0,0"
-                                      Style="{StaticResource SCheckBox}"/>
+                                      Grid.Row="2" Margin="20,0,20,0"
+                                      Style="{StaticResource SCheckBoxBold}"/>
                         </Grid>
                     </Grid>
                     <Grid Grid.Row="1">

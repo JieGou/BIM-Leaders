@@ -17,10 +17,20 @@
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
+    
+    <Style x:Key="SLabelBold" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource SColorText}"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
 
     <Style x:Key="SLabelError" TargetType="{x:Type Label}">
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
         <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="{StaticResource SColorTextError}"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="VerticalContentAlignment" Value="Top"/>

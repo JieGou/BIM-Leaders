@@ -13,6 +13,7 @@
         ResizeMode="NoResize"
         Background="{x:Null}"
         AllowsTransparency="True"
+        TextOptions.TextFormattingMode="Display"
         d:DataContext="{d:DesignInstance Type=local:Checker_Data}">
 
     <Window.Resources>
@@ -49,32 +50,31 @@
                             </Button>
 
 
-                            <TabControl Grid.Row="1" Width="770" Height="205" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,0,5,5"
+                            <TabControl Grid.Row="1" Width="740" Height="205" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,0,20,5"
                                         Style="{StaticResource STabControl}">
                                 <TabItem Header=" Naming " Style="{StaticResource STabItemLeft}">
 
                                     <Grid Background="{x:Null}">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="200"></ColumnDefinition>
-                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="220"></ColumnDefinition>
+                                            <ColumnDefinition Width="550"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Label Content="Names Prefix:"
-                                               Grid.Column="0" Margin="20,0,0,0"
-                                               Style="{StaticResource SLabel}">
-                                        </Label>
+                                               Grid.Column="0" Margin="-6,0,0,0"
+                                               Style="{StaticResource SLabelBold}"/>
                                         <TextBox x:Name="textbox_1"
                                                  Text="{Binding result_prefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                                                 Grid.Row="1" Margin="20,20,20,0"
-                                                 Style="{StaticResource STextBox}" FontFamily="Montserrat">
+                                                 Grid.Row="1" Margin="0,20,20,0"
+                                                 Style="{StaticResource STextBox}">
                                         </TextBox>
                                         <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors)/ErrorContent}"
-                                                   Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,45,20,0"
+                                                   Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,45,20,0"
                                                    Style="{StaticResource SLabelError}">
                                         </Label>
 
                                         <Label Content="Categories:"
-                                               Grid.Column="1"
-                                               Style="{StaticResource SLabel}">
+                                               Grid.Column="1" Margin="7,0,0,0"
+                                               Style="{StaticResource SLabelBold}">
                                         </Label>
 
                                         <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Height="150" Margin="10,25,0,0" VerticalAlignment="Top" Width="175">
@@ -164,11 +164,11 @@
                                             <ColumnDefinition Width="466"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Label Content="Checks:"
-                                               Grid.Column="0" Margin="20,0,0,0"
-                                               Style="{StaticResource SLabel}">
+                                               Grid.Column="0" Margin="-6,0,0,0"
+                                               Style="{StaticResource SLabelBold}">
                                         </Label>
 
-                                        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Height="150" Margin="10,25,0,0" VerticalAlignment="Top" Width="150">
+                                        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Height="150" Margin="0,25,0,0" VerticalAlignment="Top" Width="150">
                                             <CheckBox Content="Groups"
                                                       IsChecked="{Binding Path=result_model[0], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
@@ -194,11 +194,11 @@
                                             <ColumnDefinition Width="466"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
                                         <Label Content="Checks:"
-                                               Grid.Column="0" Margin="20,0,0,0"
-                                               Style="{StaticResource SLabel}">
+                                               Grid.Column="0" Margin="-6,0,0,0"
+                                               Style="{StaticResource SLabelBold}">
                                         </Label>
 
-                                        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Height="150" Margin="10,25,0,0" VerticalAlignment="Top" Width="150">
+                                        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Height="150" Margin="0,25,0,0" VerticalAlignment="Top" Width="150">
                                             <CheckBox Content="Stairs Formula"
                                                       IsChecked="{Binding Path=result_codes[0], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
@@ -208,11 +208,11 @@
                                         </StackPanel>
                                         <TextBox x:Name="textbox_2"
                                                          Text="{Binding result_height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                                                         Grid.Row="2" Margin="150,40,100,0"
+                                                         Grid.Row="2" Margin="130,40,100,0"
                                                          Style="{StaticResource STextBox}">
                                         </TextBox>
                                         <Label Content="{Binding ElementName=textbox_2, Path=(Validation.Errors)/ErrorContent}"
-                                                   Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,65,95,0"
+                                                   Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,65,100,0"
                                                    Style="{StaticResource SLabelError}">
                                         </Label>
                                     </Grid>
@@ -234,7 +234,7 @@
                         <Button x:Name="button_ok" Click="Button_ok_Click"
                                 Content="Magic" ToolTip="Run"
                                 Margin="270,10,270,10"
-                                Style="{StaticResource SRectangleButton}" FontFamily="{DynamicResource SFontFamilyMain}">
+                                Style="{StaticResource SRectangleButton}">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                                     <Binding ElementName="textbox_1" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>

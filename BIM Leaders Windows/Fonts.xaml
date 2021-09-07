@@ -3,8 +3,20 @@
 
 
     <!-- FONTS -->
+    <!--
+    <FontFamily x:Key="SFontFamilyMain">Segoi UI Light</FontFamily>
+    <FontFamily x:Key="SFontFamilySemiBold">Segoi UI</FontFamily>
+    <FontFamily x:Key="SFontFamilyBold">Segoi UI</FontFamily>
+    -->
+    
     <FontFamily x:Key="SFontFamilyMain">/../BIM Leaders Resources/Fonts/Montserrat-Regular.ttf #Montserrat</FontFamily>
     <FontFamily x:Key="SFontFamilySemiBold">/../BIM Leaders Resources/Fonts/Montserrat-SemiBold.ttf #Montserrat</FontFamily>
     <FontFamily x:Key="SFontFamilyBold">/../BIM Leaders Resources/Fonts/Montserrat-Bold.ttf #Montserrat</FontFamily>
+    
+    <!--
+    <FontFamily x:Key="SFontFamilyMain">/../BIM Leaders Resources/Fonts/Montserrat-Regular.ttf #Montserrat</FontFamily>
+    <FontFamily x:Key="SFontFamilySemiBold">/../BIM Leaders Resources/Fonts/Montserrat-SemiBold.ttf #Montserrat</FontFamily>
+    <FontFamily x:Key="SFontFamilyBold">/../BIM Leaders Resources/Fonts/Montserrat-Bold.ttf #Montserrat</FontFamily>
+    -->
 
 </ResourceDictionary>

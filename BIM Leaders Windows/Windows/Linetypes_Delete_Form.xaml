@@ -13,6 +13,7 @@
         ResizeMode="NoResize"
         Background="{x:Null}"
         AllowsTransparency="True"
+        TextOptions.TextFormattingMode="Display"
         d:DataContext="{d:DesignInstance Type=local:Linetypes_Delete_Data}">
 
     <Window.Resources>
@@ -43,17 +44,15 @@
 
                             <TextBlock Text="Delete Line Patterns"
                                        Grid.Row="0"
-                                       Style="{StaticResource STextBlock}">
-                            </TextBlock>
+                                       Style="{StaticResource STextBlock}"/>
                             <Button x:Name="button_cancel" Click="Button_exit_Click" IsCancel="True"
                                     Grid.Row="0"
                                     Style="{StaticResource SRoundButton}">
                             </Button>
 
                             <Label Content="String to search:"
-                                   Grid.Row="1" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
-                            </Label>
+                                   Grid.Row="1" Margin="15,0,20,0"
+                                   Style="{StaticResource SLabelBold}"/>
                             <TextBox x:Name="textbox_1"
                                      Text="{Binding result_name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                      Grid.Row="1" Margin="20,20,20,0"

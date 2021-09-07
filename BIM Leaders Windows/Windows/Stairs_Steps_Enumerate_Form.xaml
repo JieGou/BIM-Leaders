@@ -13,6 +13,7 @@
         ResizeMode="NoResize"
         Background="{x:Null}"
         AllowsTransparency="True"
+        TextOptions.TextFormattingMode="Display"
         d:DataContext="{d:DesignInstance Type=local:Stairs_Steps_Enumerate_Data}">
 
     <Window.Resources>
@@ -50,8 +51,8 @@
                             </Button>
 
                             <Label Content="Annotation type:" 
-                                   Grid.Row="1" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
+                                   Grid.Row="1" Margin="15,0,20,0"
+                                   Style="{StaticResource SLabelBold}">
                             </Label>
                             <RadioButton x:Name="radiobutton_1" GroupName="rb_group" IsChecked="{Binding Path=result_side_right, Mode=TwoWay}"
                                          Content="Right Side"
@@ -65,8 +66,8 @@
                             </RadioButton>
 
                             <Label Content="Start number:"
-                                   Grid.Row="2" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
+                                   Grid.Row="2" Margin="15,0,20,0"
+                                   Style="{StaticResource SLabelBold}">
                             </Label>
                             <TextBox x:Name="textbox_1"
                                      Text="{Binding result_number, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"

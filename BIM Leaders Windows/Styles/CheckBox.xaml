@@ -20,4 +20,16 @@
             <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{Binding Source={StaticResource SColorControls}, Path=Color}"/>
         </Style.Resources>
     </Style>
+
+    <Style x:Key="SCheckBoxBold" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
+        <Setter Property="Foreground" Value="{StaticResource SColorText}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Style.Resources>
+            <SolidColorBrush x:Key="MaterialDesignCheckBoxOff" Color="{Binding Source={StaticResource SColorControls}, Path=Color}"/>
+            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{Binding Source={StaticResource SColorControls}, Path=Color}"/>
+        </Style.Resources>
+    </Style>
 </ResourceDictionary>

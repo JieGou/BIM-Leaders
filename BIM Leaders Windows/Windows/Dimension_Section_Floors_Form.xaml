@@ -13,6 +13,7 @@
         ResizeMode="NoResize"
         Background="{x:Null}"
         AllowsTransparency="True"
+        TextOptions.TextFormattingMode="Display"
         d:DataContext="{d:DesignInstance Type=local:Dimension_Section_Floors_Data}">
 
     <Window.Resources>
@@ -51,8 +52,8 @@
                             </Button>
 
                             <Label Content="Annotation type:" 
-                                   Grid.Row="1" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
+                                   Grid.Row="1" Margin="17,0,20,0"
+                                   Style="{StaticResource SLabelBold}">
                             </Label>
                             <RadioButton x:Name="radiobutton_1" GroupName="rb_group" IsChecked="{Binding Path=result_spots, Mode=TwoWay}"
                                          Content="Spot Elevations"
@@ -66,8 +67,8 @@
                             </RadioButton>
 
                             <Label Content="Top Floor Max Thickness (cm):"
-                                   Grid.Row="2" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
+                                   Grid.Row="2" Margin="17,0,20,0"
+                                   Style="{StaticResource SLabelBold}">
                             </Label>
                             <TextBox x:Name="textbox_1"
                                      Text="{Binding result_thickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"

@@ -31,7 +31,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                data = form.DataContext as Linetypes_IMPORT_Delete_Data;
+                data = form.DataContext as Linetypes_Delete_Data;
 
                 string name_delete = data.result_name;
                 int count = 0;
@@ -81,7 +81,7 @@ namespace BIM_Leaders_Core
         public static string GetPath()
         {
             // Return constructed namespace path
-            return typeof(Linetypes_Delete).Namespace + "." + nameof(Linetypes_IMPORT_Delete);
+            return typeof(Linetypes_Delete).Namespace + "." + nameof(Linetypes_Delete);
         }
     }
 }

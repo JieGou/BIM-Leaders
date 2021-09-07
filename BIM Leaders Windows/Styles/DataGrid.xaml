@@ -15,6 +15,7 @@
 		<Setter Property="Background" Value="{StaticResource SColorDataGridBorder}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource SColorDataGridBorder}"/>
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="FontStyle" Value="Oblique"/>
 	</Style>
 
@@ -23,6 +24,7 @@
 		<Setter Property="Background" Value="{StaticResource SColorDataGridBorder}"/>
 		<Setter Property="BorderBrush" Value="{StaticResource SColorDataGridBorder}"/>
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
+        <Setter Property="FontWeight" Value="Bold"/>
 		<Setter Property="FontStyle" Value="Oblique"/>
 	</Style>
 	
@@ -38,6 +40,7 @@
         <Setter Property="ColumnHeaderStyle" Value="{StaticResource SDataGridColumnHeader}"/>
         <Setter Property="RowHeaderStyle" Value="{StaticResource SDataGridRowHeader}"/>
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
+        <Setter Property="FontWeight" Value="Bold"/>
     </Style>
     
 </ResourceDictionary>
