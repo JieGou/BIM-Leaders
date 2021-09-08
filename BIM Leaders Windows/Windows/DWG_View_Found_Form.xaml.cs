@@ -1,6 +1,9 @@
-﻿using System.Data;
+﻿using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
+using System.Data;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BIM_Leaders_Windows
 {
@@ -16,9 +19,20 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public DWG_View_Found_Form(DataSet dwgDataSet)
         {
+            InitializeMaterialDesign();
             InitializeComponent();
 
             DataContext = new DWG_View_Found_Data(dwgDataSet);
+        }
+
+        private void InitializeMaterialDesign()
+        {
+            // Create dummy objects to force the MaterialDesign assemblies to be loaded
+            // from this assembly, which causes the MaterialDesign assemblies to be searched
+            // relative to this assembly's path. Otherwise, the MaterialDesign assemblies
+            // are searched relative to Eclipse's path, so they're not found.
+            var card = new Card();
+            var hue = new Hue("Dummy", Colors.Black, Colors.White);
         }
 
         /// <summary>

@@ -6,101 +6,84 @@
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
+        
+        Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Dimension Section Floors"
-        Height="350" Width="300"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None"
-        ResizeMode="NoResize"
-        Background="{x:Null}"
-        AllowsTransparency="True"
-        TextOptions.TextFormattingMode="Display"
-        d:DataContext="{d:DesignInstance Type=local:Dimension_Section_Floors_Data}">
+        
+        d:DataContext="{d:DesignInstance Type=local:Dimension_Section_Floors_Data}"
+        MouseLeftButtonDown="Form_MouseMove">
 
     <Window.Resources>
-        <ResourceDictionary Source="../Resources.xaml" />
+        <ResourceDictionary>
+            <Style TargetType="{x:Type Rectangle}" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card Margin="10" UniformCornerRadius="20" Background="{x:Null}" MouseLeftButtonDown="Form_MouseMove">
-            <StackPanel>
-                <StackPanel.Background>
-                    <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
-                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1"/>
-                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0"/>
-                    </LinearGradientBrush>
-                </StackPanel.Background>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="270"></RowDefinition>
-                        <RowDefinition Height="60"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="60"></RowDefinition>
-                                <RowDefinition Height="1*"></RowDefinition>
-                                <RowDefinition Height="1*"></RowDefinition>
-                            </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="89"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
 
-                            <TextBlock Text="Dimension Section Floors"
-                                       Grid.Row="0"
-                                       Style="{StaticResource STextBlock}">
-                            </TextBlock>
-                            <Button x:Name="button_cancel" IsCancel="True" 
-                                    Grid.Row="0"
-                                    Style="{StaticResource SRoundButton}">
-                            </Button>
+        <Grid Grid.Row="0">
+            <TextBlock Text="Dimension Section Floors"
+                       Style="{StaticResource STextBlock}">
+            </TextBlock>
+            <Button x:Name="button_cancel" IsCancel="True"
+                    Style="{StaticResource SRoundButton}">
 
-                            <Label Content="Annotation type:" 
-                                   Grid.Row="1" Margin="15,0,20,0"
-                                   Style="{StaticResource SLabelBold}">
-                            </Label>
-                            <RadioButton x:Name="radiobutton_1" GroupName="rb_group" IsChecked="{Binding Path=result_spots, Mode=TwoWay}"
-                                         Content="Spot Elevations"
-                                         Grid.Row="1" Margin="20,26,0,0"
-                                         Style="{StaticResource SRadioButton}">
-                            </RadioButton>
-                            <RadioButton x:Name="radiobutton_2" GroupName="rb_group"
-                                         Content="Dimensions"
-                                         Grid.Row="1" Margin="20,44,0,0"
-                                         Style="{StaticResource SRadioButton}">
-                            </RadioButton>
+            </Button>
+        </Grid>
 
-                            <Label Content="Top Floor Max Thickness:"
-                                   Grid.Row="2" Margin="15,0,20,0"
-                                   Style="{StaticResource SLabelBold}">
-                            </Label>
-                            <TextBox x:Name="textbox_1"
-                                     Text="{Binding result_thickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                                     Grid.Row="2" Margin="20,20,20,0"
-                                     Style="{StaticResource STextBox}">
-                            </TextBox>
-                            <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors).CurrentItem.ErrorContent}"
-                                   Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,45,20,0"
-                                   Style="{StaticResource SLabelError}"/>
-                        </Grid>
-                    </Grid>
-                    <Grid Grid.Row="1">
-                        <!--
-                        <Grid.Background>
-                            <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
-                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
-                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter2}, Path=Color}" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Grid.Background>
-                        -->
-                        <Button x:Name="button_ok" Click="Button_ok_Click" 
-                                Content="Magic" ToolTip="Run"
-                                Style="{StaticResource SRectangleButton}">
-                            <Button.IsEnabled>
-                                <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                                    <Binding ElementName="textbox_1" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
-                                </MultiBinding>
-                            </Button.IsEnabled>
-                        </Button>
-                    </Grid>
-                </Grid>
+        <Grid Grid.Row="1">
+            <StackPanel Height="231" Margin="20,0">
+                <Label Content="Annotation type:"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <RadioButton x:Name="radiobutton_1" GroupName="rb_group" IsChecked="{Binding Path=result_spots, Mode=TwoWay}"
+                             Content="Spot Elevations"
+                             Style="{StaticResource SRadioButton}">
+                </RadioButton>
+                <RadioButton x:Name="radiobutton_2" GroupName="rb_group"
+                             Content="Dimensions"
+                             Style="{StaticResource SRadioButton}">
+                </RadioButton>
+                
+                <Label Content="Top Floor Max Thickness:"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <TextBox x:Name="textbox_1"
+                         Text="{Binding result_thickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Style="{StaticResource STextBox}">
+                </TextBox>
+                <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                       Style="{StaticResource SLabelError}"/>
             </StackPanel>
-        </materialDesign:Card>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <!--
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter2}, Path=Color}" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            -->
+            <Button x:Name="button_ok" Click="Button_ok_Click"
+                    Content="Magic" ToolTip="Run"
+                    Style="{StaticResource SRectangleButton}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                        <Binding ElementName="textbox_1" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+        </Grid>
     </Grid>
 </Window>

@@ -6,240 +6,227 @@
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
+        
+        Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Checker"
-        Height="350" Width="800"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None"
-        ResizeMode="NoResize"
-        Background="{x:Null}"
-        AllowsTransparency="True"
-        TextOptions.TextFormattingMode="Display"
-        d:DataContext="{d:DesignInstance Type=local:Checker_Data}">
+        Width="800"
+        Height="350"
+        
+        d:DataContext="{d:DesignInstance Type=local:Checker_Data}"
+        MouseLeftButtonDown="Form_MouseMove" Closing="Window_Closing">
 
     <Window.Resources>
-        <ResourceDictionary Source="../Resources.xaml" />
+        <ResourceDictionary>
+            <Style TargetType="{x:Type Rectangle}" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card Margin="10" UniformCornerRadius="30" Background="{x:Null}" MouseLeftButtonDown="Form_MouseMove">
-            <StackPanel>
-                <StackPanel.Background>
-                    <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
-                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1"/>
-                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0"/>
-                    </LinearGradientBrush>
-                </StackPanel.Background>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="60"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="60"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    
-                    <Grid Grid.Row="0">
-                        <TextBlock Text="Checker"
-                                       Grid.Row="0"
-                                       Style="{StaticResource STextBlock}" />
-                        <Button x:Name="button_cancel" IsCancel="True"
-                                    Grid.Row="0" Grid.Column="1"
-                                    Style="{StaticResource SRoundButton}">
-                        </Button>
-                    </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="1">
-                        <TabControl Height="210" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,0,20,0"
+        <Grid Grid.Row="0">
+            <TextBlock Text="Checker"
+                   Style="{StaticResource STextBlock}" />
+            <Button x:Name="button_cancel" IsCancel="True"
+                    Style="{StaticResource SRoundButton}">
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <TabControl Height="210" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,0,20,0"
                                     Style="{StaticResource STabControl}">
 
-                            <TabItem Header=" Naming " Style="{StaticResource STabItemLeft}">
-                                <Grid Background="{x:Null}" Height="190" HorizontalAlignment ="Left" VerticalAlignment="Top">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="220"></ColumnDefinition>
-                                        <ColumnDefinition Width="520"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid Grid.Column="0">
-                                        <StackPanel VerticalAlignment="Top">
-                                            <Label Content="Names Prefix:"
-                                               Margin="-5,0,0,0"
-                                               Style="{StaticResource SLabelBold}"/>
-                                            <TextBox x:Name="textbox_1"
-                                                 Text="{Binding result_prefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                                                 Margin="0,0,20,0"
-                                                 Style="{StaticResource STextBox}">
-                                            </TextBox>
-                                            <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors)/ErrorContent}"
-                                                   HorizontalAlignment="Right" Margin="0,0,20,0"
-                                                   Style="{StaticResource SLabelError}">
-                                            </Label>
-                                        </StackPanel>
-                                    </Grid>
-                                    <Grid Grid.Column="1">
-                                        <StackPanel VerticalAlignment="Top">
-                                            <Label Content="Categories:"
+                <TabItem Header=" Naming " Style="{StaticResource STabItemLeft}">
+                    <Grid Background="{x:Null}" Height="190" HorizontalAlignment ="Left" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="220"></ColumnDefinition>
+                            <ColumnDefinition Width="520"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <StackPanel Margin="0,0,20,0">
+                                <Label Content="Names Prefix:"
+                                       Style="{StaticResource SLabelBold}"/>
+                                <TextBox x:Name="textbox_1"
+                                         Text="{Binding result_prefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                         Style="{StaticResource STextBox}">
+                                </TextBox>
+                                <Label Content="{Binding ElementName=textbox_1, Path=(Validation.Errors)/ErrorContent}"
+                                       Style="{StaticResource SLabelError}">
+                                </Label>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <StackPanel VerticalAlignment="Top">
+                                <Label Content="Categories:"
                                                Margin="5,0,0,0"
                                                Style="{StaticResource SLabelBold}">
-                                            </Label>
-                                            <Grid Background="{x:Null}" Margin="10,0,0,0">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                                </Grid.ColumnDefinitions>
+                                </Label>
+                                <Grid Background="{x:Null}" Margin="10,0,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
 
-                                                <Grid Grid.Column="0">
-                                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                        <CheckBox Content="Area Schemes"
+                                    <Grid Grid.Column="0">
+                                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                                            <CheckBox Content="Area Schemes"
                                                       IsChecked="{Binding Path=result_categories[0], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Browser Organization"
+                                            <CheckBox Content="Browser Organization"
                                                       IsChecked="{Binding Path=result_categories[1], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Building Pad Types"
+                                            <CheckBox Content="Building Pad Types"
                                                       IsChecked="{Binding Path=result_categories[2], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Ceiling Types"
+                                            <CheckBox Content="Ceiling Types"
                                                       IsChecked="{Binding Path=result_categories[3], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Curtain System Types"
+                                            <CheckBox Content="Curtain System Types"
                                                       IsChecked="{Binding Path=result_categories[4], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Dimension Types"
+                                            <CheckBox Content="Dimension Types"
                                                       IsChecked="{Binding Path=result_categories[5], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Families"
+                                            <CheckBox Content="Families"
                                                       IsChecked="{Binding Path=result_categories[6], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Filled Region Types"
+                                            <CheckBox Content="Filled Region Types"
                                                       IsChecked="{Binding Path=result_categories[7], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                                    </StackPanel>
-                                                </Grid>
-
-                                                <Grid Grid.Column="1">
-                                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                        <CheckBox Content="Grid Types"
-                                                          IsChecked="{Binding Path=result_categories[8], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Group Types"
-                                                          IsChecked="{Binding Path=result_categories[9], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Level Types"
-                                                          IsChecked="{Binding Path=result_categories[10], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Line Patterns"
-                                                          IsChecked="{Binding Path=result_categories[11], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Materials"
-                                                          IsChecked="{Binding Path=result_categories[12], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Panel Types"
-                                                          IsChecked="{Binding Path=result_categories[13], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Railing Types"
-                                                          IsChecked="{Binding Path=result_categories[14], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Roof Types"
-                                                          IsChecked="{Binding Path=result_categories[15], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                    </StackPanel>
-                                                </Grid>
-
-                                                <Grid Grid.Column="2">
-                                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                        <CheckBox Content="Spot Dimension Types"
-                                                          IsChecked="{Binding Path=result_categories[16], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Stair Types"
-                                                          IsChecked="{Binding Path=result_categories[17], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Stair Landing Types"
-                                                          IsChecked="{Binding Path=result_categories[18], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Stair Run Types"
-                                                          IsChecked="{Binding Path=result_categories[19], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Text Note Types"
-                                                          IsChecked="{Binding Path=result_categories[20], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Views"
-                                                          IsChecked="{Binding Path=result_categories[21], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Wall Types"
-                                                          IsChecked="{Binding Path=result_categories[22], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                        <CheckBox Content="Wall Foundation Types"
-                                                          IsChecked="{Binding Path=result_categories[23], Mode=TwoWay}"
-                                                          Style="{StaticResource SCheckBox}"/>
-                                                    </StackPanel>
-                                                </Grid>
-                                                
-                                            </Grid>
                                         </StackPanel>
                                     </Grid>
-                                </Grid>
-                            </TabItem>
-                            
-                            <TabItem Header=" Model " Style="{StaticResource STabItemCenter}">
-                                <Grid Background="{x:Null}" Width="740" Height="190" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                                        <Label Content="Checks:"
-                                               Margin="-6,0,0,0"
-                                               Style="{StaticResource SLabelBold}">
-                                        </Label>
-                                        <CheckBox Content="Groups"
-                                                      IsChecked="{Binding Path=result_model[0], Mode=TwoWay}"
+
+                                    <Grid Grid.Column="1">
+                                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                                            <CheckBox Content="Grid Types"
+                                                      IsChecked="{Binding Path=result_categories[8], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                        <CheckBox Content="Unused Linestyles"
-                                                      IsChecked="{Binding Path=result_model[1], Mode=TwoWay}"
+                                            <CheckBox Content="Group Types"
+                                                      IsChecked="{Binding Path=result_categories[9], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                        <CheckBox Content="Rooms"
-                                                      IsChecked="{Binding Path=result_model[2], Mode=TwoWay}"
+                                            <CheckBox Content="Level Types"
                                                       Style="{StaticResource SCheckBox}"/>
-                                        <CheckBox Content="Warnings"
-                                                      IsChecked="{Binding Path=result_model[3], Mode=TwoWay}"
+                                            <CheckBox Content="Line Patterns"
+                                                      IsChecked="{Binding Path=result_categories[11], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                        <CheckBox Content="Exterior Walls"
-                                                      IsChecked="{Binding Path=result_model[4], Mode=TwoWay}"
+                                            <CheckBox Content="Materials"
+                                                      IsChecked="{Binding Path=result_categories[12], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                    </StackPanel>
-                                </Grid>
-                            </TabItem>
-                            
-                            <TabItem Header=" Codes " Style="{StaticResource STabItemRight}">
-                                <Grid Background="{x:Null}" Width="740" Height="190" HorizontalAlignment ="Left" VerticalAlignment="Top">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="220"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid Grid.Column="0">
-                                        <StackPanel>
-                                            <Label Content="Checks:"
-                                               Margin="-6,0,0,0"
-                                               Style="{StaticResource SLabelBold}">
-                                            </Label>
-                                            <CheckBox Content="Stairs Formula"
-                                                      IsChecked="{Binding Path=result_codes[0], Mode=TwoWay}"
+                                            <CheckBox Content="Panel Types"
+                                                      IsChecked="{Binding Path=result_categories[13], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                            <CheckBox Content="Stairs Head Height:"
-                                                      IsChecked="{Binding Path=result_codes[1], Mode=TwoWay}"
+                                            <CheckBox Content="Railing Types"
+                                                      IsChecked="{Binding Path=result_categories[14], Mode=TwoWay}"
                                                       Style="{StaticResource SCheckBox}"/>
-                                            <TextBox x:Name="textbox_2"
-                                                         Text="{Binding result_height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                                                         Margin="140,-20,0,0"
-                                                         Style="{StaticResource STextBox}">
-                                            </TextBox>
-                                            <Label Content="{Binding ElementName=textbox_2, Path=(Validation.Errors)/ErrorContent}"
-                                                   Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,0,0"
-                                                   Style="{StaticResource SLabelError}">
-                                            </Label>
+                                            <CheckBox Content="Roof Types"
+                                                      IsChecked="{Binding Path=result_categories[15], Mode=TwoWay}"
+                                                      Style="{StaticResource SCheckBox}"/>
                                         </StackPanel>
                                     </Grid>
+
+                                    <Grid Grid.Column="2">
+                                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                                            <CheckBox Content="Spot Dimension Types"
+                                                      IsChecked="{Binding Path=result_categories[16], Mode=TwoWay}"
+                                                      Style="{StaticResource SCheckBox}"/>
+                                            <CheckBox Content="Stair Types"
+                                                      IsChecked="{Binding Path=result_categories[17], Mode=TwoWay}"
+                                                      Style="{StaticResource SCheckBox}"/>
+                                            <CheckBox Content="Stair Landing Types"
+                                                      IsChecked="{Binding Path=result_categories[18], Mode=TwoWay}"
+                                                      Style="{StaticResource SCheckBox}"/>
+                                            <CheckBox Content="Stair Run Types"
+                                                      IsChecked="{Binding Path=result_categories[19], Mode=TwoWay}"
+                                                      Style="{StaticResource SCheckBox}"/>
+                                            <CheckBox Content="Text Note Types"
+                                                      IsChecked="{Binding Path=result_categories[20], Mode=TwoWay}"
+                                                      Style="{StaticResource SCheckBox}"/>
+                                            <CheckBox Content="Views"
+                                                      IsChecked="{Binding Path=result_categories[21], Mode=TwoWay}"
+                                                      Style="{StaticResource SCheckBox}"/>
+                                            <CheckBox Content="Wall Types"
+                                                      IsChecked="{Binding Path=result_categories[22], Mode=TwoWay}"
+                                                      Style="{StaticResource SCheckBox}"/>
+                                            <CheckBox Content="Wall Foundation Types"
+                                                      IsChecked="{Binding Path=result_categories[23], Mode=TwoWay}"
+                                                      Style="{StaticResource SCheckBox}"/>
+                                        </StackPanel>
+                                    </Grid>
+
                                 </Grid>
-                            </TabItem>
-                            
-                        </TabControl>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
-                    <Grid Grid.Row="2">
-                        <!--
+                </TabItem>
+
+                <TabItem Header=" Model " Style="{StaticResource STabItemCenter}">
+                    <Grid Background="{x:Null}" Width="740" Height="190" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <Label Content="Checks:"
+                                   Style="{StaticResource SLabelBold}">
+                            </Label>
+                            <CheckBox Content="Groups"
+                                      IsChecked="{Binding Path=result_model[0], Mode=TwoWay}"
+                                      Style="{StaticResource SCheckBox}"/>
+                            <CheckBox Content="Unused Linestyles"
+                                      IsChecked="{Binding Path=result_model[1], Mode=TwoWay}"
+                                      Style="{StaticResource SCheckBox}"/>
+                            <CheckBox Content="Rooms"
+                                      IsChecked="{Binding Path=result_model[2], Mode=TwoWay}"
+                                      Style="{StaticResource SCheckBox}"/>
+                            <CheckBox Content="Warnings"
+                                      IsChecked="{Binding Path=result_model[3], Mode=TwoWay}"
+                                      Style="{StaticResource SCheckBox}"/>
+                            <CheckBox Content="Exterior Walls"
+                                      IsChecked="{Binding Path=result_model[4], Mode=TwoWay}"
+                                      Style="{StaticResource SCheckBox}"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header=" Codes " Style="{StaticResource STabItemRight}">
+                    <Grid Background="{x:Null}" Width="740" Height="190" HorizontalAlignment ="Left" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <StackPanel>
+                                <Label Content="Checks:"
+                                       Style="{StaticResource SLabelBold}">
+                                </Label>
+                                <CheckBox Content="Stairs Formula"
+                                          IsChecked="{Binding Path=result_codes[0], Mode=TwoWay}"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Stairs Head Height:"
+                                          IsChecked="{Binding Path=result_codes[1], Mode=TwoWay}"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <TextBox x:Name="textbox_2"
+                                         Text="{Binding result_height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                         Margin="140,-20,0,0"
+                                         Style="{StaticResource STextBox}">
+                                </TextBox>
+                                <Label Content="{Binding ElementName=textbox_2, Path=(Validation.Errors)/ErrorContent}"
+                                       Style="{StaticResource SLabelError}">
+                                </Label>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
+            </TabControl>
+        </Grid>
+        <Grid Grid.Row="2">
+            <!--
                         <Grid.Background>
                             <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
                                 <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
@@ -247,20 +234,18 @@
                             </LinearGradientBrush>
                         </Grid.Background>
                         -->
-                        <Button x:Name="button_ok" Click="Button_ok_Click"
+            <Button x:Name="button_ok" Click="Button_ok_Click"
                                 Content="Magic" ToolTip="Run"
                                 Margin="270,10,270,10"
                                 Style="{StaticResource SRectangleButton}">
-                            <Button.IsEnabled>
-                                <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                                    <Binding ElementName="textbox_1" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
-                                    <Binding ElementName="textbox_2" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
-                                </MultiBinding>
-                            </Button.IsEnabled>
-                        </Button>
-                    </Grid>
-                </Grid>
-            </StackPanel>
-        </materialDesign:Card>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                        <Binding ElementName="textbox_1" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                        <Binding ElementName="textbox_2" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+        </Grid>
+
     </Grid>
 </Window>

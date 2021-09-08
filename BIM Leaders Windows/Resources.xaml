@@ -16,6 +16,7 @@
         <ResourceDictionary Source="Styles/TabControl.xaml" />
         <ResourceDictionary Source="Styles/TextBlock.xaml" />
         <ResourceDictionary Source="Styles/TextBox.xaml" />
+        <ResourceDictionary Source="Styles/Window.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <local:MultivalueBoolInvertConverter  x:Key="MultivalueBoolInvert" />

@@ -6,6 +6,7 @@ using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using System.Data;
 
 namespace BIM_Leaders_Core
 {
@@ -843,106 +844,141 @@ namespace BIM_Leaders_Core
 
                         trans.Commit();
 
-                        if (count_prefixes == 0 && count_groups_unused == 0 && count_groups_unpinned == 0 && count_groups_excluded == 0)
-                        {
-                            TaskDialog.Show("Check", "No issues found");
-                        }
-                        else
-                        {
-                            string mes = "";
-                            if (!(count_prefixes == 0))
-                            {
-                                mes += string.Format("{0} prefixes wrong.", count_prefixes.ToString());
-                            }
-                            if (!(count_groups_unused == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} of {1} groups are not pinned.", count_groups_unused.ToString(), count_groups.ToString());
-                            }
-                            if (!(count_groups_unpinned == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} of {1} groups are not used.", count_groups_unpinned.ToString(), count_groups.ToString());
-                            }
-                            if (!(count_groups_excluded == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} of {1} group instances are with excluded elements.", count_groups_excluded.ToString(), count_groups.ToString());
-                            }
-                            if (!(count_linestyles == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} line styles are unused.", count_linestyles.ToString());
-                            }
-                            if (!(count_rooms_placement == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} rooms are not placed.", count_rooms_placement.ToString());
-                            }
-                            if (!(count_rooms_intersect == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} rooms overlap.", count_rooms_intersect.ToString());
-                            }
-                            if (!(count_warnings == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} warnings in the project.", count_warnings.ToString());
-                            }
-                            if (!(count_walls_interior == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} exterior walls have interior type.", count_walls_interior.ToString());
-                            }
-                            if (!(count_stairs_formula == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} stairs have bad formula.", count_stairs_formula.ToString());
-                            }
-                            if (!(count_height_landings == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} stairs landings have too low head height.", count_height_landings.ToString());
-                            }
-                            if (!(count_height_runs == 0))
-                            {
-                                if (!(mes.Length == 0))
-                                {
-                                    mes += " ";
-                                }
-                                mes += string.Format("{0} stairs runs have too low head height.", count_height_runs.ToString());
-                            }
-                        }
+
+                        // Export to Excel
+                        // ...
+
+                        // Create a DataSet
+                        DataSet reportDataSet = new DataSet("reportDataSet");
+                        // Create DataTable
+                        DataTable reportDataTable = new DataTable("Report");
+                        // Create 4 columns, and add them to the table
+                        DataColumn reportColumnCheck = new DataColumn("Check", typeof(string));
+                        DataColumn reportColumnResult = new DataColumn("Result", typeof(string));
+
+                        reportDataTable.Columns.Add(reportColumnCheck);
+                        reportDataTable.Columns.Add(reportColumnResult);
+
+                        // Add the table to the DataSet
+                        reportDataSet.Tables.Add(reportDataTable);
+
+                        // Fill the table
+
+                        // Prefixes
+                        string i_check = "Prefixes";
+                        string i_result = "-";
+                        if (count_prefixes != 0) { string.Format("{0} prefixes wrong.", count_prefixes.ToString()); }
+                        DataRow newRow1 = reportDataTable.NewRow();
+                        newRow1["Check"] = i_check;
+                        newRow1["Result"] = i_result;
+
+                        // Groups Unused
+                        i_check = "Unused Groups";
+                        i_result = "-";
+                        if (count_groups_unused != 0) { string.Format("{0} of {1} groups are not used.", count_groups_unused.ToString(), count_groups.ToString()); }
+                        DataRow newRow2 = reportDataTable.NewRow();
+                        newRow2["Check"] = i_check;
+                        newRow2["Result"] = i_result;
+
+                        // Groups Unpined
+                        i_check = "Unpinned Groups";
+                        i_result = "-";
+                        if (count_groups_unpinned != 0) { string.Format("{0} of {1} groups are not pinned.", count_groups_unpinned.ToString(), count_groups.ToString()); }
+                        DataRow newRow3 = reportDataTable.NewRow();
+                        newRow3["Check"] = i_check;
+                        newRow3["Result"] = i_result;
+
+                        // Groups Excluded
+                        i_check = "Excluded Groups";
+                        i_result = "-";
+                        if (count_groups_excluded != 0) { string.Format("{0} of {1} group instances are with excluded elements.", count_groups_excluded.ToString(), count_groups.ToString()); }
+                        DataRow newRow4 = reportDataTable.NewRow();
+                        newRow4["Check"] = i_check;
+                        newRow4["Result"] = i_result;
+
+                        // Linestyles
+                        i_check = "Line Styles";
+                        i_result = "-";
+                        if (count_linestyles != 0) { string.Format("{0} line styles are unused.", count_linestyles.ToString()); }
+                        DataRow newRow5 = reportDataTable.NewRow();
+                        newRow5["Check"] = i_check;
+                        newRow5["Result"] = i_result;
+
+                        // Rooms Placed
+                        i_check = "Rooms Placement";
+                        i_result = "-";
+                        if (count_rooms_placement != 0) { string.Format("{0} rooms are not placed.", count_rooms_placement.ToString()); }
+                        DataRow newRow6 = reportDataTable.NewRow();
+                        newRow6["Check"] = i_check;
+                        newRow6["Result"] = i_result;
+
+                        // Rooms Overlap
+                        i_check = "Rooms Overlap";
+                        i_result = "-";
+                        if (count_rooms_intersect != 0) { string.Format("{0} rooms overlap.", count_rooms_intersect.ToString()); }
+                        DataRow newRow7 = reportDataTable.NewRow();
+                        newRow7["Check"] = i_check;
+                        newRow7["Result"] = i_result;
+
+                        // Warnings
+                        i_check = "Warnings";
+                        i_result = "-";
+                        if (count_warnings != 0) { string.Format("{0} warnings in the project.", count_warnings.ToString()); }
+                        DataRow newRow8 = reportDataTable.NewRow();
+                        newRow8["Check"] = i_check;
+                        newRow8["Result"] = i_result;
+
+                        // Walls Interior
+                        i_check = "Walls";
+                        i_result = "-";
+                        if (count_walls_interior != 0) { string.Format("{0} exterior walls have interior type.", count_walls_interior.ToString()); }
+                        DataRow newRow9 = reportDataTable.NewRow();
+                        newRow9["Check"] = i_check;
+                        newRow9["Result"] = i_result;
+
+                        // Stairs Formula
+                        i_check = "Stairs Formula";
+                        i_result = "-";
+                        if (count_stairs_formula != 0) { string.Format("{0} stairs have bad formula.", count_stairs_formula.ToString()); }
+                        DataRow newRow10 = reportDataTable.NewRow();
+                        newRow10["Check"] = i_check;
+                        newRow10["Result"] = i_result;
+
+                        // Stairs Landings
+                        i_check = "Stairs Formula";
+                        i_result = "-";
+                        if (count_height_landings != 0) { string.Format("{0} stairs landings have too low head height.", count_height_landings.ToString()); }
+                        DataRow newRow11 = reportDataTable.NewRow();
+                        newRow11["Check"] = i_check;
+                        newRow11["Result"] = i_result;
+
+                        // Stairs Runs
+                        i_check = "Stairs Formula";
+                        i_result = "-";
+                        if (count_height_runs != 0) { string.Format("{0} stairs runs have too low head height.", count_height_runs.ToString()); }
+                        DataRow newRow12 = reportDataTable.NewRow();
+                        newRow12["Check"] = i_check;
+                        newRow12["Result"] = i_result;
+
+                        // Add the rows to the Report table
+                        reportDataTable.Rows.Add(newRow1);
+                        reportDataTable.Rows.Add(newRow2);
+                        reportDataTable.Rows.Add(newRow3);
+                        reportDataTable.Rows.Add(newRow4);
+                        reportDataTable.Rows.Add(newRow5);
+                        reportDataTable.Rows.Add(newRow6);
+                        reportDataTable.Rows.Add(newRow7);
+                        reportDataTable.Rows.Add(newRow8);
+                        reportDataTable.Rows.Add(newRow9);
+                        reportDataTable.Rows.Add(newRow10);
+                        reportDataTable.Rows.Add(newRow11);
+                        reportDataTable.Rows.Add(newRow12);
+
+                        // Show result
+                        DWG_View_Found_Data data_report = new DWG_View_Found_Data(reportDataSet);
+                        DWG_View_Found_Form form_report = new DWG_View_Found_Form(reportDataSet);
+                        
+                        form.ShowDialog();
                     }
                     return Result.Succeeded;
                 }

@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BIM_Leaders_Windows
 {
@@ -15,9 +18,20 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public Checker_Form()
         {
+            InitializeMaterialDesign();
             InitializeComponent();
 
             DataContext = new Checker_Data();
+        }
+
+        private void InitializeMaterialDesign()
+        {
+            // Create dummy objects to force the MaterialDesign assemblies to be loaded
+            // from this assembly, which causes the MaterialDesign assemblies to be searched
+            // relative to this assembly's path. Otherwise, the MaterialDesign assemblies
+            // are searched relative to Eclipse's path, so they're not found.
+            var card = new Card();
+            var hue = new Hue("Dummy", Colors.Black, Colors.White);
         }
 
         /// <summary>
@@ -39,7 +53,7 @@ namespace BIM_Leaders_Windows
         private void Button_ok_Click(object sender, System.EventArgs e)
         {
             DialogResult = true;
-            Close();
+            //Close();
         }
 
         // Move the window
@@ -47,6 +61,12 @@ namespace BIM_Leaders_Windows
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Visibility = Visibility.Hidden;
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using System.Windows;
+﻿using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
+using System.Data;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Autodesk.Revit.UI;
-using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
 
 namespace BIM_Leaders_Windows
 {
@@ -11,18 +11,18 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class DWG_Name_Delete_Form : Window
+    public partial class Checker_Report_Form : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="DWG_Name_Delete_Form"/>
+        /// Initializes a new instance of the <see cref="Checker_Report_Form"/>
         /// </summary>
-        public DWG_Name_Delete_Form(UIDocument uidoc)
+        public Checker_Report_Form(DataSet reportDataSet)
         {
             InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new DWG_Name_Delete_Data(uidoc);
+            DataContext = new Checker_Report_Data(reportDataSet);
         }
 
         private void InitializeMaterialDesign()
