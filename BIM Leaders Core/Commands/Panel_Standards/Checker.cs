@@ -29,6 +29,8 @@ namespace BIM_Leaders_Core
                 IncludeNonVisibleObjects = true
             };
 
+            string test = "";
+
             try
             {
                 // Collector for data provided in window
@@ -614,8 +616,16 @@ namespace BIM_Leaders_Core
                     if (model[4])
                     {
                         FilteredElementCollector collector_views = new FilteredElementCollector(doc);
-                        View3D v = collector_views.OfClass(typeof(View3D)).ToElements().Cast<View3D>().First();
-                        ElementId v_id = v.GetTypeId();
+                        IEnumerable<ViewFamilyType> vv = collector_views.OfClass(typeof(ViewFamilyType)).ToElements().Cast<ViewFamilyType>();
+                        ElementId v_id = vv.First().Id;
+                        foreach (ViewFamilyType v in vv)
+                        {
+                            if (v.ViewFamily == ViewFamily.ThreeDimensional)
+                            {
+                                v_id = v.Id;
+                                break;
+                            }
+                        }
                         View3D view_new = View3D.CreateIsometric(doc, v_id);
 
                         BoundingBoxXYZ box = view_new.GetSectionBox(); // CHECK !!!
@@ -652,7 +662,7 @@ namespace BIM_Leaders_Core
                         foreach (Line l in curve)
                         {
                             Wall w = Wall.Create(doc, l, level_id, false);
-                            Parameter p = w.get_Parameter(BuiltInParameter.WALL_TOP_OFFSET);
+                            Parameter p = w.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM);
                             p.Set(1000);
                             walls_to_delete.Add(w); // For deleting
                         }
@@ -673,14 +683,9 @@ namespace BIM_Leaders_Core
                                 try
                                 {
                                     if (element.Category.Name == "Walls")
-                                    {
                                         walls.Add(element);
-                                    }
                                 }
-                                catch
-                                {
-
-                                }
+                                catch { }
                             }
                         }
 
@@ -688,23 +693,17 @@ namespace BIM_Leaders_Core
                         foreach (Wall w in walls)
                         {
                             if (w.WallType.Function == WallFunction.Interior)
-                            {
                                 count_walls_interior++;
-                            }
                         }
 
                         // Remove created 4 walls if needed
                         if (walls_to_delete[0].WallType.Function == WallFunction.Interior)
-                        {
                             count_walls_interior -= 4;
-                        }
 
                         // Deleting
                         doc.Delete(room.Id);
                         foreach (Wall i in walls_to_delete)
-                        {
                             doc.Delete(i.Id);
-                        }
                     }
 
                     // Checking stairs formula
@@ -716,15 +715,13 @@ namespace BIM_Leaders_Core
                         // Check if stairs steps are right height and depth
                         foreach (Stairs s in stairs)
                         {
-                            double step_height = UnitUtils.ConvertToInternalUnits(s.ActualRiserHeight, DisplayUnitType.DUT_CENTIMETERS);
-                            double step_depth = UnitUtils.ConvertToInternalUnits(s.ActualTreadDepth, DisplayUnitType.DUT_CENTIMETERS);
+                            double step_height = UnitUtils.ConvertFromInternalUnits(s.ActualRiserHeight, DisplayUnitType.DUT_CENTIMETERS);
+                            double step_depth = UnitUtils.ConvertFromInternalUnits(s.ActualTreadDepth, DisplayUnitType.DUT_CENTIMETERS);
 
                             double r = 2 * step_height + step_depth;
 
-                            if (r < 61 | r > 63 | step_height < 10 | step_height > 17.5 | step_depth < 26)
-                            {
+                            if (r < 61 | r > 63 || step_height < 10 || step_height > 17.5 || step_depth < 26)
                                 count_stairs_formula++;
-                            }
                         }
                     }
 
@@ -733,6 +730,7 @@ namespace BIM_Leaders_Core
                     {
                         double height_offset = UnitUtils.ConvertToInternalUnits(10, DisplayUnitType.DUT_CENTIMETERS);
                         double height = UnitUtils.ConvertToInternalUnits(head_height, DisplayUnitType.DUT_CENTIMETERS) - height_offset;
+                        double plan_offset = UnitUtils.ConvertToInternalUnits(1, DisplayUnitType.DUT_CENTIMETERS);
 
                         FilteredElementCollector collector_stairs = new FilteredElementCollector(doc);
                         IEnumerable<Stairs> stairs = collector_stairs.OfClass(typeof(Stairs)).ToElements().Cast<Stairs>();
@@ -754,9 +752,11 @@ namespace BIM_Leaders_Core
                                 double landing_z = l.get_BoundingBox(doc.ActiveView).Max.Z;
                                 double landing_elev = l.BaseElevation;
                                 CurveLoop landing_p = l.GetFootprintBoundary();
+                                // Offset the curve loop for not intersect walls
+                                CurveLoop landing_p_offset = CurveLoop.CreateViaOffset(landing_p, -plan_offset, new XYZ(0, 0, 1));
                                 List<CurveLoop> looplist = new List<CurveLoop>
                                 {
-                                    landing_p
+                                    landing_p_offset
                                 };
 
                                 // Get extrusion vector, only direction is needed but for sure the point is on 0 point of solid bottom but Z is on solid top
@@ -775,7 +775,7 @@ namespace BIM_Leaders_Core
 
                                 count_height_landings += el.Count;
                             }
-
+                            
                             // Get runs
                             ICollection<ElementId> runs_ids = s.GetStairsRuns();
                             List<StairsRun> runs = new List<StairsRun>();
@@ -787,48 +787,53 @@ namespace BIM_Leaders_Core
                             // Check runs geometry
                             foreach (StairsRun r in runs)
                             {
+                                double count_height_steps = 0;
+
                                 GeometryElement run_geom = r.get_Geometry(opt);
 
-                                // Get run solid that on top (in run might be second solid for topping)
-                                double g_bb_prev = -10000;
-                                List<FaceArray> face_arrays = new List<FaceArray>();
-                                foreach (Solid g in run_geom)
+                                List<Solid> solids = new List<Solid>();
+                                List<double> heights = new List<double>();
+
+                                foreach (Solid g in run_geom.OfType<Solid>())
                                 {
                                     if (g.Volume > 0)
                                     {
-                                        double g_bb = g.GetBoundingBox().Max.Z;
-                                        if (g_bb > g_bb_prev)
-                                        {
-                                            face_arrays.Add(g.Faces);
-                                        }
+                                        solids.Add(g);
+                                        heights.Add(g.GetBoundingBox().Max.Z);
                                     }
                                 }
 
+                                FaceArray run_faces_all = solids[heights.IndexOf(heights.Max())].Faces;
+
                                 // Filter faces by normal going up
                                 List<Face> run_faces = new List<Face>();
-                                foreach (FaceArray f_a in face_arrays)
+                                foreach (PlanarFace f in run_faces_all)
                                 {
-                                    foreach (PlanarFace f in f_a)
-                                    {
-                                        double f_n_x = f.FaceNormal.X;
-                                        double f_n_y = f.FaceNormal.Y;
-                                        double f_n_z = f.FaceNormal.Z;
-                                        if (f_n_x == 0 && f_n_y == 0 && f_n_z == 1)
-                                        {
-                                            run_faces.Add(f);
-                                        }
-                                    }
+                                    double f_n_x = f.FaceNormal.X;
+                                    double f_n_y = f.FaceNormal.Y;
+                                    double f_n_z = f.FaceNormal.Z;
+                                    if (f_n_x == 0 && f_n_y == 0 && f_n_z == 1)
+                                        run_faces.Add(f);
                                 }
 
                                 // Making solid and check
                                 foreach (PlanarFace r_f in run_faces)
                                 {
                                     IList<CurveLoop> run_p = r_f.GetEdgesAsCurveLoops();
-                                    XYZ extrusion_dir = new XYZ(0, 0, 1);
+                                    // Offset for not to touch walls
+                                    List<CurveLoop> run_p_offset = new List<CurveLoop>();
+                                    foreach (CurveLoop cl in run_p)
+                                    {
+                                        CurveLoop cl_offset = CurveLoop.CreateViaOffset(run_p[0], -plan_offset, r_f.FaceNormal);
+                                        run_p_offset.Add(cl_offset);
+                                    }
 
+                                    XYZ extrusion_dir = new XYZ(0, 0, 1);
+                                    
                                     // Create solid on "height" height from landing, with solid height of "height_offset"
-                                    Solid solid_run = GeometryCreationUtilities.CreateExtrusionGeometry(run_p, extrusion_dir, height_offset);
+                                    Solid solid_run = GeometryCreationUtilities.CreateExtrusionGeometry(run_p_offset, extrusion_dir, height_offset);
                                     // Transform solid to the needed height
+
                                     Transform t_f = Transform.CreateTranslation(new XYZ(0, 0, height));
                                     Solid transformed = SolidUtils.CreateTransformed(solid_run, t_f);
 
@@ -837,8 +842,12 @@ namespace BIM_Leaders_Core
                                     FilteredElementCollector collector_intersect = new FilteredElementCollector(doc);
                                     IList<Element> er = collector_intersect.WherePasses(face_filter).ToElements();
 
-                                    count_height_runs += er.Count;
+                                    if (er.Count > 0)
+                                        count_height_steps++;
                                 }
+
+                                if (count_height_steps > 0)
+                                    count_height_runs++;
                             }
                         }
 
@@ -867,7 +876,8 @@ namespace BIM_Leaders_Core
                         // Prefixes
                         string i_check = "Prefixes";
                         string i_result = "-";
-                        if (count_prefixes != 0) { string.Format("{0} prefixes wrong.", count_prefixes.ToString()); }
+                        if (count_prefixes != 0)
+                            i_result = string.Format("{0} prefixes wrong.", count_prefixes.ToString());
                         DataRow newRow1 = reportDataTable.NewRow();
                         newRow1["Check"] = i_check;
                         newRow1["Result"] = i_result;
@@ -875,7 +885,8 @@ namespace BIM_Leaders_Core
                         // Groups Unused
                         i_check = "Unused Groups";
                         i_result = "-";
-                        if (count_groups_unused != 0) { string.Format("{0} of {1} groups are not used.", count_groups_unused.ToString(), count_groups.ToString()); }
+                        if (count_groups_unused != 0)
+                            i_result = string.Format("{0} of {1} groups are not used.", count_groups_unused.ToString(), count_groups.ToString());
                         DataRow newRow2 = reportDataTable.NewRow();
                         newRow2["Check"] = i_check;
                         newRow2["Result"] = i_result;
@@ -883,7 +894,8 @@ namespace BIM_Leaders_Core
                         // Groups Unpined
                         i_check = "Unpinned Groups";
                         i_result = "-";
-                        if (count_groups_unpinned != 0) { string.Format("{0} of {1} groups are not pinned.", count_groups_unpinned.ToString(), count_groups.ToString()); }
+                        if (count_groups_unpinned != 0)
+                            i_result = string.Format("{0} of {1} groups are not pinned.", count_groups_unpinned.ToString(), count_groups.ToString());
                         DataRow newRow3 = reportDataTable.NewRow();
                         newRow3["Check"] = i_check;
                         newRow3["Result"] = i_result;
@@ -891,7 +903,8 @@ namespace BIM_Leaders_Core
                         // Groups Excluded
                         i_check = "Excluded Groups";
                         i_result = "-";
-                        if (count_groups_excluded != 0) { string.Format("{0} of {1} group instances are with excluded elements.", count_groups_excluded.ToString(), count_groups.ToString()); }
+                        if (count_groups_excluded != 0)
+                            i_result = string.Format("{0} of {1} group instances are with excluded elements.", count_groups_excluded.ToString(), count_groups.ToString());
                         DataRow newRow4 = reportDataTable.NewRow();
                         newRow4["Check"] = i_check;
                         newRow4["Result"] = i_result;
@@ -899,7 +912,8 @@ namespace BIM_Leaders_Core
                         // Linestyles
                         i_check = "Line Styles";
                         i_result = "-";
-                        if (count_linestyles != 0) { string.Format("{0} line styles are unused.", count_linestyles.ToString()); }
+                        if (count_linestyles != 0)
+                            i_result = string.Format("{0} line styles are unused.", count_linestyles.ToString());
                         DataRow newRow5 = reportDataTable.NewRow();
                         newRow5["Check"] = i_check;
                         newRow5["Result"] = i_result;
@@ -907,7 +921,8 @@ namespace BIM_Leaders_Core
                         // Rooms Placed
                         i_check = "Rooms Placement";
                         i_result = "-";
-                        if (count_rooms_placement != 0) { string.Format("{0} rooms are not placed.", count_rooms_placement.ToString()); }
+                        if (count_rooms_placement != 0)
+                            i_result = string.Format("{0} rooms are not placed.", count_rooms_placement.ToString());
                         DataRow newRow6 = reportDataTable.NewRow();
                         newRow6["Check"] = i_check;
                         newRow6["Result"] = i_result;
@@ -915,7 +930,8 @@ namespace BIM_Leaders_Core
                         // Rooms Overlap
                         i_check = "Rooms Overlap";
                         i_result = "-";
-                        if (count_rooms_intersect != 0) { string.Format("{0} rooms overlap.", count_rooms_intersect.ToString()); }
+                        if (count_rooms_intersect != 0)
+                            i_result = string.Format("{0} rooms overlap.", count_rooms_intersect.ToString());
                         DataRow newRow7 = reportDataTable.NewRow();
                         newRow7["Check"] = i_check;
                         newRow7["Result"] = i_result;
@@ -923,7 +939,8 @@ namespace BIM_Leaders_Core
                         // Warnings
                         i_check = "Warnings";
                         i_result = "-";
-                        if (count_warnings != 0) { string.Format("{0} warnings in the project.", count_warnings.ToString()); }
+                        if (count_warnings != 0)
+                            i_result = string.Format("{0} warnings in the project.", count_warnings.ToString());
                         DataRow newRow8 = reportDataTable.NewRow();
                         newRow8["Check"] = i_check;
                         newRow8["Result"] = i_result;
@@ -931,7 +948,8 @@ namespace BIM_Leaders_Core
                         // Walls Interior
                         i_check = "Walls";
                         i_result = "-";
-                        if (count_walls_interior != 0) { string.Format("{0} exterior walls have interior type.", count_walls_interior.ToString()); }
+                        if (count_walls_interior != 0)
+                            i_result = string.Format("{0} exterior walls have interior type.", count_walls_interior.ToString());
                         DataRow newRow9 = reportDataTable.NewRow();
                         newRow9["Check"] = i_check;
                         newRow9["Result"] = i_result;
@@ -939,23 +957,26 @@ namespace BIM_Leaders_Core
                         // Stairs Formula
                         i_check = "Stairs Formula";
                         i_result = "-";
-                        if (count_stairs_formula != 0) { string.Format("{0} stairs have bad formula.", count_stairs_formula.ToString()); }
+                        if (count_stairs_formula != 0)
+                            i_result = string.Format("{0} stairs have bad formula.", count_stairs_formula.ToString());
                         DataRow newRow10 = reportDataTable.NewRow();
                         newRow10["Check"] = i_check;
                         newRow10["Result"] = i_result;
 
                         // Stairs Landings
-                        i_check = "Stairs Formula";
+                        i_check = "Stairs Head Height - Landings";
                         i_result = "-";
-                        if (count_height_landings != 0) { string.Format("{0} stairs landings have too low head height.", count_height_landings.ToString()); }
+                        if (count_height_landings != 0)
+                            i_result = string.Format("{0} stairs landings have too low head height.", count_height_landings.ToString());
                         DataRow newRow11 = reportDataTable.NewRow();
                         newRow11["Check"] = i_check;
                         newRow11["Result"] = i_result;
 
                         // Stairs Runs
-                        i_check = "Stairs Formula";
+                        i_check = "Stairs Head Height - Runs";
                         i_result = "-";
-                        if (count_height_runs != 0) { string.Format("{0} stairs runs have too low head height.", count_height_runs.ToString()); }
+                        if (count_height_runs != 0)
+                            i_result = string.Format("{0} stairs runs have too low head height.", count_height_runs.ToString());
                         DataRow newRow12 = reportDataTable.NewRow();
                         newRow12["Check"] = i_check;
                         newRow12["Result"] = i_result;
@@ -975,10 +996,13 @@ namespace BIM_Leaders_Core
                         reportDataTable.Rows.Add(newRow12);
 
                         // Show result
-                        DWG_View_Found_Data data_report = new DWG_View_Found_Data(reportDataSet);
-                        DWG_View_Found_Form form_report = new DWG_View_Found_Form(reportDataSet);
-                        
-                        form.ShowDialog();
+                        Checker_Report_Data data_report = new Checker_Report_Data(reportDataSet);
+                        Checker_Report_Form form_report = new Checker_Report_Form(reportDataSet);
+
+                        form_report.ShowDialog();
+
+                        if (form_report.DialogResult == false)
+                            return Result.Cancelled;
                     }
                     return Result.Succeeded;
                 }

@@ -11,7 +11,7 @@
         Title="BIM Leaders - Find DWG"
         WindowStartupLocation="CenterScreen"
         Width="800"
-        Height="350"
+        Height="560"
         
         d:DataContext="{d:DesignInstance Type=local:DWG_View_Found_Data}"
         MouseLeftButtonDown="Form_MouseMove">
@@ -44,10 +44,10 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <StackPanel Height="210" Margin="20,0">
+            <StackPanel Height="420" Margin="20,0">
                 <DataGrid x:Name="datagrid_report"
                           ItemsSource="{Binding check_report.Tables[0]}" IsReadOnly="True"
-                          Style="{StaticResource SDataGrid}"/>
+                          Style="{StaticResource SDataGridSimple}"/>
             </StackPanel>
         </Grid>
 

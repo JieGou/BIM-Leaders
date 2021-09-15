@@ -15,6 +15,7 @@
     <SolidColorBrush x:Key="SColorControls" Color="#0062BB" />
 
     <SolidColorBrush x:Key="SColorDataGridBackground" Color="White" />
+    <SolidColorBrush x:Key="SColorDataGridBackgroundAlt" Color="#F0F0F0" />
     <SolidColorBrush x:Key="SColorDataGridText" Color="Black" />
     <SolidColorBrush x:Key="SColorDataGridBorder" Color="#0060AA" />
 

@@ -17,9 +17,9 @@ namespace BIM_Leaders_Windows
         public Checker_Data()
         {
             result_prefix = "PRE_";
-            result_categories = Enumerable.Repeat(true, 24).ToList();
-            result_model = Enumerable.Repeat(true, 5).ToList();
-            result_codes = Enumerable.Repeat(true, 2).ToList();
+            result_categories = Enumerable.Repeat(false, 24).ToList();
+            result_model = Enumerable.Repeat(false, 5).ToList();
+            result_codes = Enumerable.Repeat(false, 2).ToList();
             result_height = 210;
         }
 

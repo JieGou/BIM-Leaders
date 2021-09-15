@@ -14,7 +14,7 @@
         Height="350"
         
         d:DataContext="{d:DesignInstance Type=local:Checker_Data}"
-        MouseLeftButtonDown="Form_MouseMove" Closing="Window_Closing">
+        MouseLeftButtonDown="Form_MouseMove">
 
     <Window.Resources>
         <ResourceDictionary>
