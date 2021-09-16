@@ -77,7 +77,7 @@
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Grids_Align.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Levels_Align.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Linestyles_Unused_Delete.png" />
-    <EmbeddedResource Include="Images\Icons\BIM_Leaders_Linetypes_IMPORT_Delete.png" />
+    <EmbeddedResource Include="Images\Icons\BIM_Leaders_Linetypes_Delete.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Names_Prefix_Change.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Stairs_Steps_Enumerate.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Walls_Parallel.png" />

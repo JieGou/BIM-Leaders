@@ -68,7 +68,7 @@ namespace BIM_Leaders
                 ToolTip = "Delete all line patterns that contains input string.",
                 LongDescription = "Can be useful to delete IMPORT line patterns after importing DWG files.",
                 CommandNamespacePath = Linetypes_Delete.GetPath(),
-                IconImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png",
+                IconImageName = "BIM_Leaders_Linetypes_Delete.png",
                 //TooltipImageName = "BIM_Leaders_Linetypes_Delete.png"
             };
             // Create button from provided data
@@ -315,6 +315,7 @@ namespace BIM_Leaders
                 CommandNamespacePath = Grids_Align.GetPath(),
                 IconImageName = "BIM_Leaders_Grids_Align.png",
                 //TooltipImageName = "BIM_Leaders_Grids_Align.png"
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsSectionOrElevation"
             };
             // Create button from provided data
             RevitPushButton.Create(button_5_5_data);
