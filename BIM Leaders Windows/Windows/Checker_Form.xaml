@@ -51,8 +51,8 @@
                             <ColumnDefinition Width="520"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
-                            <StackPanel Margin="0,0,20,0">
-                                <Label Content="Names Prefix:"
+                            <StackPanel Margin="0,10,20,0">
+                                <Label Content="Names Prefix"
                                        Style="{StaticResource SLabelBold}"/>
                                 <TextBox x:Name="textbox_1"
                                          Text="{Binding result_prefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
@@ -64,8 +64,8 @@
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="1">
-                            <StackPanel VerticalAlignment="Top">
-                                <Label Content="Categories:"
+                            <StackPanel VerticalAlignment="Top" Margin="0,10,0,0">
+                                <Label Content="Categories"
                                                Margin="5,0,0,0"
                                                Style="{StaticResource SLabelBold}">
                                 </Label>
@@ -170,8 +170,8 @@
 
                 <TabItem Header=" Model " Style="{StaticResource STabItemCenter}">
                     <Grid Background="{x:Null}" Width="740" Height="190" HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                            <Label Content="Checks:"
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0">
+                            <Label Content="Checks"
                                    Style="{StaticResource SLabelBold}">
                             </Label>
                             <CheckBox Content="Groups"
@@ -200,8 +200,8 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
-                            <StackPanel>
-                                <Label Content="Checks:"
+                            <StackPanel Margin="0,10,0,0">
+                                <Label Content="Checks"
                                        Style="{StaticResource SLabelBold}">
                                 </Label>
                                 <CheckBox Content="Stairs Formula"
@@ -212,7 +212,7 @@
                                           Style="{StaticResource SCheckBox}"/>
                                 <TextBox x:Name="textbox_2"
                                          Text="{Binding result_height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                                         Margin="140,-20,0,0"
+                                         Margin="140,-24,0,0"
                                          Style="{StaticResource STextBox}">
                                 </TextBox>
                                 <Label Content="{Binding ElementName=textbox_2, Path=(Validation.Errors)/ErrorContent}"
@@ -225,7 +225,7 @@
 
             </TabControl>
         </Grid>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" VerticalAlignment="Top">
             <!--
                         <Grid.Background>
                             <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
@@ -236,7 +236,7 @@
                         -->
             <Button x:Name="button_ok" Click="Button_ok_Click"
                                 Content="Magic" ToolTip="Run"
-                                Margin="270,10,270,10"
+                                Margin="270,0"
                                 Style="{StaticResource SRectangleButton}">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">

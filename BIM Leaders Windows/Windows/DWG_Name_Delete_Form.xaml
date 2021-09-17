@@ -42,7 +42,7 @@
 
         <Grid Grid.Row="1">
             <StackPanel Height="231" Margin="20,0">
-                <Label Content="DWG:"
+                <Label Content="DWG"
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <ComboBox x:Name="combobox_1" SelectedValue="{Binding dwg_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
@@ -52,7 +52,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" VerticalAlignment="Top">
             <Button x:Name="button_ok" Click="Button_ok_Click"
                     Content="Magic" ToolTip="Run"
                     Style="{StaticResource SRectangleButton}">

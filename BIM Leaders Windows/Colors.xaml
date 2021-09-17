@@ -8,18 +8,20 @@
     <SolidColorBrush x:Key="SColorBackgroundFooter1" Color="#FFBFBFBF" />
     <SolidColorBrush x:Key="SColorBackgroundFooter2" Color="#CFCFCF" />
 
-    <SolidColorBrush x:Key="SColorButtonBackground" Color="#0062BB" />
+    <SolidColorBrush x:Key="SColorButtonBackground" Color="#007AFF" />
     <SolidColorBrush x:Key="SColorButtonBackgroundDisabled" Color="#4E4E53" />
-    <SolidColorBrush x:Key="SColorButtonBorder" Color="#0060AA" />
+    <SolidColorBrush x:Key="SColorButtonBorder" Color="#007AFF" />
 
-    <SolidColorBrush x:Key="SColorControls" Color="#0062BB" />
+    <SolidColorBrush x:Key="SColorControlsGray" Color="#787880" />
+    <SolidColorBrush x:Key="SColorControlsOver" Color="#FFBFBFBF" />
+    <SolidColorBrush x:Key="SColorControls" Color="#007AFF" />
 
     <SolidColorBrush x:Key="SColorDataGridBackground" Color="White" />
     <SolidColorBrush x:Key="SColorDataGridBackgroundAlt" Color="#F0F0F0" />
     <SolidColorBrush x:Key="SColorDataGridText" Color="Black" />
-    <SolidColorBrush x:Key="SColorDataGridBorder" Color="#0060AA" />
+    <SolidColorBrush x:Key="SColorDataGridBorder" Color="#007AFF" />
 
     <SolidColorBrush x:Key="SColorText" Color="White" />
-    <SolidColorBrush x:Key="SColorTextError" Color="Orange" />
+    <SolidColorBrush x:Key="SColorTextError" Color="#FF453A" />
 
 </ResourceDictionary>

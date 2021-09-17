@@ -25,8 +25,8 @@
 
     <Grid Background="{x:Null}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="89"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="260"></RowDefinition>
             <RowDefinition Height="60"></RowDefinition>
         </Grid.RowDefinitions>
 
@@ -40,7 +40,7 @@
 
         <Grid Grid.Row="1">
             <StackPanel Height="231" Margin="20,0">
-                <Label Content="String to search:"
+                <Label Content="String to search"
                        Style="{StaticResource SLabelBold}"/>
                 <TextBox x:Name="textbox_1"
                          Text="{Binding result_name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
@@ -51,7 +51,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" VerticalAlignment="Top">
             <Button x:Name="button_ok" Click="Button_ok_Click"
                     Content="Magic" ToolTip="Run"
                     Style="{StaticResource SRectangleButton}">

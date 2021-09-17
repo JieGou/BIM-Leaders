@@ -50,7 +50,7 @@
 
                 <Grid Grid.Column="0">
                     <StackPanel Height="210" Margin="20,0">
-                        <Label Content="Old Prefix:"
+                        <Label Content="Old Prefix"
                                Style="{StaticResource SLabelBold}">
                         </Label>
                         <TextBox x:Name="textbox_1"
@@ -61,7 +61,7 @@
                                Style="{StaticResource SLabelError}">
                         </Label>
 
-                        <Label Content="New Prefix:"
+                        <Label Content="New Prefix"
                                Style="{StaticResource SLabelBold}">
                         </Label>
                         <TextBox x:Name="textbox_2"
@@ -75,7 +75,7 @@
                 </Grid>
                 <Grid Grid.Column="1">
                     <StackPanel Margin="20,0">
-                        <Label Content="Categories:"
+                        <Label Content="Categories"
                                Style="{StaticResource SLabelBold}">
                         </Label>
                         <Label Content="{Binding ElementName=categories, Path=(Validation.Errors).CurrentItem.ErrorContent}"
@@ -180,11 +180,11 @@
 
             </Grid>
         </Grid>
-        
-        <Grid Grid.Row="2">
+
+        <Grid Grid.Row="2" VerticalAlignment="Top">
             <Button x:Name="button_ok" Click="Button_ok_Click"
                     Content="Magic" ToolTip="Run"
-                    Margin="270,10,270,10"
+                    Margin="270,0"
                     Style="{StaticResource SRectangleButton}">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">

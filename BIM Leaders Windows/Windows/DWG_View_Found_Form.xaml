@@ -52,10 +52,10 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" VerticalAlignment="Top">
             <Button x:Name="button_ok" Click="Button_ok_Click"
                     Content="OK" ToolTip="Run"
-                    Margin="270,10,270,10"
+                    Margin="270,0"
                     Style="{StaticResource SRectangleButton}">
             </Button>
         </Grid>

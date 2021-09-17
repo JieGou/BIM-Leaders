@@ -41,7 +41,7 @@
 
         <Grid Grid.Row="1">
             <StackPanel Height="260" Margin="20,0">
-                <Label Content="Bubbles Side:"
+                <Label Content="Billing address"
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <RadioButton x:Name="rb_1" GroupName="rb_group" IsChecked="{Binding Path=result_side, Mode=TwoWay}"
@@ -59,7 +59,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" VerticalAlignment="Top">
             <!--
                         <Grid.Background>
                             <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
