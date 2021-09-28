@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Autodesk.Revit.UI;
+﻿using Autodesk.Revit.UI;
 using BIM_Leaders_UI;
 using BIM_Leaders_Core;
 
@@ -7,10 +6,7 @@ namespace BIM_Leaders
 {
     public class SetupInterface
     {
-        public SetupInterface()
-        {
-            
-        }
+        public SetupInterface() { }
         public void Initialize(UIControlledApplication application)
         {
             // Create Ribbon Tab
@@ -67,13 +63,13 @@ namespace BIM_Leaders
             // Populate button data model
             var button_1_4_data = new RevitPushButtonDataModel
             {
-                Label = "Delete IMPORT\r\nLine Patterns",
+                Label = "Delete \r\nLine Patterns",
                 Panel = panel_1,
                 ToolTip = "Delete all line patterns that contains input string.",
                 LongDescription = "Can be useful to delete IMPORT line patterns after importing DWG files.",
-                CommandNamespacePath = Linetypes_IMPORT_Delete.GetPath(),
-                IconImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png",
-                //TooltipImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png"
+                CommandNamespacePath = Linetypes_Delete.GetPath(),
+                IconImageName = "BIM_Leaders_Linetypes_Delete.png",
+                //TooltipImageName = "BIM_Leaders_Linetypes_Delete.png"
             };
             // Create button from provided data
             RevitPushButton.Create(button_1_4_data);
@@ -297,6 +293,21 @@ namespace BIM_Leaders
             // Populate button data model
             var button_5_4_data = new RevitPushButtonDataModel
             {
+                Label = "Steps\r\nEnumerate",
+                Panel = panel_5,
+                ToolTip = "Enumerate Stairs Steps.",
+                LongDescription = "Can be useful on section views. Note that only one staircase need to be visible, so check view depth before run.",
+                CommandNamespacePath = Stairs_Steps_Enumerate.GetPath(),
+                IconImageName = "BIM_Leaders_Stairs_Steps_Enumerate.png",
+                //TooltipImageName = "BIM_Leaders_Stairs_Steps_Enumerate.png",
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
+            };
+            // Create button from provided data
+            RevitPushButton.Create(button_5_4_data);
+
+            // Populate button data model
+            var button_5_5_data = new RevitPushButtonDataModel
+            {
                 Label = "Align\r\nGrids",
                 Panel = panel_5,
                 ToolTip = "Align Grid Ends.",
@@ -304,12 +315,13 @@ namespace BIM_Leaders
                 CommandNamespacePath = Grids_Align.GetPath(),
                 IconImageName = "BIM_Leaders_Grids_Align.png",
                 //TooltipImageName = "BIM_Leaders_Grids_Align.png"
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsSectionOrElevation"
             };
             // Create button from provided data
-            RevitPushButton.Create(button_5_4_data);
+            RevitPushButton.Create(button_5_5_data);
 
             // Populate button data model
-            var button_5_5_data = new RevitPushButtonDataModel
+            var button_5_6_data = new RevitPushButtonDataModel
             {
                 Label = "Align\r\nLevels",
                 Panel = panel_5,
@@ -319,21 +331,6 @@ namespace BIM_Leaders
                 IconImageName = "BIM_Leaders_Levels_Align.png",
                 //TooltipImageName = "BIM_Leaders_Levels_Align.png"
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsSectionOrElevation"
-            };
-            // Create button from provided data
-            RevitPushButton.Create(button_5_5_data);
-
-            // Populate button data model
-            var button_5_6_data = new RevitPushButtonDataModel
-            {
-                Label = "Steps\r\nEnumerate",
-                Panel = panel_5,
-                ToolTip = "Enumerate Stairs Steps.",
-                LongDescription = "Can be useful on section views. Note that only one staircase need to be visible, so check view depth before run.",
-                CommandNamespacePath = Stairs_Steps_Enumerate.GetPath(),
-                IconImageName = "BIM_Leaders_Stairs_Steps_Enumerate.png",
-                //TooltipImageName = "BIM_Leaders_Stairs_Steps_Enumerate.png",
-                AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
             };
             // Create button from provided data
             RevitPushButton.Create(button_5_6_data);

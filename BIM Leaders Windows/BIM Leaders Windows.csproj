@@ -40,10 +40,12 @@
   <ItemGroup>
     <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.2.0.1\lib\net452\MaterialDesignColors.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.1.0.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.1.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI">
@@ -71,10 +73,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MultivalueTextBoxesConverter.cs" />
+    <Compile Include="Windows\Checker_Report_Data.cs" />
     <Compile Include="Windows\DWG_View_Found_Data.cs" />
     <Compile Include="Windows\Checker_Data.cs" />
+    <Compile Include="Windows\Checker_Report_Form.xaml.cs">
+      <DependentUpon>Checker_Report_Form.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Names_Prefix_Change_Data.cs" />
-    <Compile Include="Windows\Linetypes_IMPORT_Delete_Data.cs" />
+    <Compile Include="Windows\Linetypes_Delete_Data.cs" />
     <Compile Include="Windows\DWG_View_Found_Form.xaml.cs">
       <DependentUpon>DWG_View_Found_Form.xaml</DependentUpon>
     </Compile>
@@ -84,8 +90,8 @@
     <Compile Include="Windows\Names_Prefix_Change_Form.xaml.cs">
       <DependentUpon>Names_Prefix_Change_Form.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Linetypes_IMPORT_Delete_Form.xaml.cs">
-      <DependentUpon>Linetypes_IMPORT_Delete_Form.xaml</DependentUpon>
+    <Compile Include="Windows\Linetypes_Delete_Form.xaml.cs">
+      <DependentUpon>Linetypes_Delete_Form.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\DWG_Name_Delete_Data.cs" />
     <Compile Include="Windows\Walls_Compare_Data.cs" />
@@ -112,7 +118,15 @@
       <DependentUpon>Grids_Align_Form.xaml</DependentUpon>
     </Compile>
     <Compile Include="MultivalueBoolInvertConverter.cs" />
+    <Page Include="Fonts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -160,6 +174,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Windows\Checker_Report_Form.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\DWG_View_Found_Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -172,7 +190,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Linetypes_IMPORT_Delete_Form.xaml">
+    <Page Include="Windows\Linetypes_Delete_Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

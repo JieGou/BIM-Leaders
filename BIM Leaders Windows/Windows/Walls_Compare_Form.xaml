@@ -6,92 +6,72 @@
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
+        
+        Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Walls Compare"
-        Height="350" Width="250"
         WindowStartupLocation="CenterScreen"
-        WindowStyle="None"
-        ResizeMode="NoResize"
-        Background="{x:Null}"
-        AllowsTransparency="True"
-        d:DataContext="{d:DesignInstance Type=local:Walls_Compare_Data}">
+        
+        d:DataContext="{d:DesignInstance Type=local:Walls_Compare_Data}"
+        MouseLeftButtonDown="Form_MouseMove">
 
     <Window.Resources>
-        <ResourceDictionary Source="../Resources.xaml" />
+        <ResourceDictionary>
+            <Style TargetType="{x:Type Rectangle}" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card Margin="10" UniformCornerRadius="20" Background="{x:Null}" MouseLeftButtonDown="Form_MouseMove">
-            <StackPanel>
-                <StackPanel.Background>
-                    <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
-                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1"/>
-                        <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0"/>
-                    </LinearGradientBrush>
-                </StackPanel.Background>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="270"></RowDefinition>
-                        <RowDefinition Height="60"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="60"></RowDefinition>
-                                <RowDefinition Height="1*"></RowDefinition>
-                                <RowDefinition Height="1*"></RowDefinition>
-                            </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
 
-                            <TextBlock Text="Walls Compare"
-                                       Grid.Row="0" Style="{StaticResource STextBlock}">
-                            </TextBlock>
-                            <Button x:Name="button_cancel" Click="Button_exit_Click" IsCancel="True"
-                                    Grid.Row="0"
-                                    Style="{StaticResource SRoundButton}">
-                            </Button>
+        <Grid Grid.Row="0">
+            <TextBlock Text="Walls Compare"
+                       Style="{StaticResource STextBlock}">
+            </TextBlock>
+            <Button x:Name="button_cancel" Click="Button_exit_Click" IsCancel="True"
+                    Style="{StaticResource SRoundButton}">
+            </Button>
+        </Grid>
 
-                            <Label Content="Wall Material:" 
-                                   Grid.Row="1" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
-                            </Label>
-                            <ComboBox x:Name="combobox_1" SelectedValue="{Binding mats_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                      ItemsSource="{Binding mats_list, Mode=OneWay}"
-                                      Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="190"
-                                      Style="{StaticResource SComboBox}">
-                            </ComboBox>
-
-                            <Label Content="Fill Type:"
-                                   Grid.Row="2" Margin="20,0,0,0"
-                                   Style="{StaticResource SLabel}">
-                            </Label>
-                            <ComboBox x:Name="combobox_2" SelectedValue="{Binding fill_types_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                      ItemsSource="{Binding fill_types_list, Mode=OneWay}"
-                                      Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,26,0,0" Width="190"
-                                      Style="{StaticResource SComboBox}">
-                            </ComboBox>
-                            
-                        </Grid>
-                    </Grid>
-                    <Grid Grid.Row="1">
-                        <Grid.Background>
-                            <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
-                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
-                                <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter2}, Path=Color}" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Grid.Background>
-                        <Button x:Name="button_ok" Click="Button_ok_Click"
-                                Content="Magic" ToolTip="Run"
-                                Margin="30,10,30,10"
-                                Style="{StaticResource SRectangleButton}">
-                            <Button.IsEnabled>
-                                <MultiBinding Converter="{StaticResource MultivalueTextBoxes}" Mode="TwoWay">
-                                    <Binding ElementName="combobox_1" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
-                                    <Binding ElementName="combobox_2" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
-                                </MultiBinding>
-                            </Button.IsEnabled>
-                        </Button>
-                    </Grid>
-                </Grid>
+        <Grid Grid.Row="1">
+            <StackPanel Height="260" Margin="20,0">
+                <Label Content="Wall Material"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <ComboBox x:Name="combobox_1" SelectedValue="{Binding mats_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                          ItemsSource="{Binding mats_list, Mode=OneWay}"
+                          Style="{StaticResource SComboBox}">
+                </ComboBox>
+                
+                <Label Content="Fill Type"
+                       Margin="0,20,0,0"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <ComboBox x:Name="combobox_2" SelectedValue="{Binding fill_types_list_sel, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                          ItemsSource="{Binding fill_types_list, Mode=OneWay}"
+                          Style="{StaticResource SComboBox}">
+                </ComboBox>
             </StackPanel>
-        </materialDesign:Card>
+        </Grid>
+
+        <Grid Grid.Row="2" VerticalAlignment="Top">
+            <Button x:Name="button_ok" Click="Button_ok_Click"
+                    Content="Magic" ToolTip="Run"
+                    Style="{StaticResource SRectangleButton}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource MultivalueTextBoxes}" Mode="TwoWay">
+                        <Binding ElementName="combobox_1" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding ElementName="combobox_2" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+        </Grid>
+        
     </Grid>
 </Window>

@@ -7,18 +7,22 @@
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
         <ResourceDictionary Source="..\Colors.xaml" />
+        <ResourceDictionary Source="..\Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="SRadioButton" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource MaterialDesignRadioButton}">
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Foreground" Value="{StaticResource SColorText}" />
-        <Setter Property="Background" Value="{StaticResource SColorControls}" />
-        <Setter Property="BorderBrush" Value="{StaticResource SColorControls}" />
         <Style.Resources>
             <SolidColorBrush x:Key="MaterialDesignCheckBoxOff" Color="{Binding Source={StaticResource SColorControls}, Path=Color}"/>
             <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="{Binding Source={StaticResource SColorControls}, Path=Color}"/>
         </Style.Resources>
+        <Setter Property="Foreground" Value="{StaticResource SColorText}" />
+        <Setter Property="Background" Value="{StaticResource SColorControls}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SColorControls}" />
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
+        
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Margin" Value="0,0,0,5" />
     </Style>
     
 </ResourceDictionary>

@@ -40,10 +40,12 @@
   <ItemGroup>
     <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.2.0.1\lib\net452\MaterialDesignColors.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.1.0.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.1.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -75,7 +77,7 @@
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Grids_Align.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Levels_Align.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Linestyles_Unused_Delete.png" />
-    <EmbeddedResource Include="Images\Icons\BIM_Leaders_Linetypes_IMPORT_Delete.png" />
+    <EmbeddedResource Include="Images\Icons\BIM_Leaders_Linetypes_Delete.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Names_Prefix_Change.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Stairs_Steps_Enumerate.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Walls_Parallel.png" />
@@ -87,6 +89,9 @@
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Dimensions_Stairs_Landings.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Fonts\Montserrat-Regular.ttf" />
+    <Resource Include="Fonts\Montserrat-Bold.ttf" />
+    <Resource Include="Fonts\Montserrat-SemiBold.ttf" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

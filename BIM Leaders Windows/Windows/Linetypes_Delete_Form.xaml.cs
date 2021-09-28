@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace BIM_Leaders_Windows
 {
@@ -7,17 +10,28 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class Linetypes_IMPORT_Delete_Form : Window
+    public partial class Linetypes_Delete_Form : Window
     {
         /// <summary>
         /// Default constructor.
         /// Initializes a new instance of the <see cref="Linetypes_IMPORT_Delete_Form"/>
         /// </summary>
-        public Linetypes_IMPORT_Delete_Form()
+        public Linetypes_Delete_Form()
         {
+            InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new Linetypes_IMPORT_Delete_Data();
+            DataContext = new Linetypes_Delete_Data();
+        }
+
+        private void InitializeMaterialDesign()
+        {
+            // Create dummy objects to force the MaterialDesign assemblies to be loaded
+            // from this assembly, which causes the MaterialDesign assemblies to be searched
+            // relative to this assembly's path. Otherwise, the MaterialDesign assemblies
+            // are searched relative to Eclipse's path, so they're not found.
+            var card = new Card();
+            var hue = new Hue("Dummy", Colors.Black, Colors.White);
         }
 
         /// <summary>

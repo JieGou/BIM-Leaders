@@ -5,14 +5,14 @@ namespace BIM_Leaders_Windows
     /// <summary>
     /// Information and data model for command "Linetypes_IMPORT_Delete"
     /// </summary>
-    public class Linetypes_IMPORT_Delete_Data : INotifyPropertyChanged, IDataErrorInfo
+    public class Linetypes_Delete_Data : INotifyPropertyChanged, IDataErrorInfo
     {
         public string Error { get { return null; } }
         /// <summary>
         /// Default constructor
-        /// Initializing a new instance of the <see cref="Linetypes_IMPORT_Delete_Data"/> class.
+        /// Initializing a new instance of the <see cref="Linetypes_Delete_Data"/> class.
         /// </summary>
-        public Linetypes_IMPORT_Delete_Data()
+        public Linetypes_Delete_Data()
         {
             result_name = "IMPORT";
         }

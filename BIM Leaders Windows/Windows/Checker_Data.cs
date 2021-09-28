@@ -17,9 +17,9 @@ namespace BIM_Leaders_Windows
         public Checker_Data()
         {
             result_prefix = "PRE_";
-            result_categories = Enumerable.Repeat(true, 24).ToList();
-            result_model = Enumerable.Repeat(true, 5).ToList();
-            result_codes = Enumerable.Repeat(true, 2).ToList();
+            result_categories = Enumerable.Repeat(false, 24).ToList();
+            result_model = Enumerable.Repeat(false, 5).ToList();
+            result_codes = Enumerable.Repeat(false, 2).ToList();
             result_height = 210;
         }
 
@@ -107,11 +107,11 @@ namespace BIM_Leaders_Windows
         private string Validate_result_prefix()
         {
             if (string.IsNullOrEmpty(result_prefix))
-                return "Naming tab - Input is empty";
+                return "Input is empty";
             else
             {
                 if (result_prefix.Length < 2)
-                    return "Naming tab - From 2 symbols";
+                    return "From 2 symbols";
             }
             return null;
         }
@@ -126,7 +126,7 @@ namespace BIM_Leaders_Windows
         private string Validate_result_codes()
         {
             if (result_height < 200)
-                return "Codes tab - Height check must be over 200 cm";
+                return "Must be over 200 cm";
             return null;
         }
 

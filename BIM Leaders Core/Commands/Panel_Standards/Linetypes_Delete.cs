@@ -9,7 +9,7 @@ using BIM_Leaders_Windows;
 namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
-    public class Linetypes_IMPORT_Delete : IExternalCommand
+    public class Linetypes_Delete : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -22,16 +22,16 @@ namespace BIM_Leaders_Core
             try
             {
                 // Collector for data provided in window
-                Linetypes_IMPORT_Delete_Data data = new Linetypes_IMPORT_Delete_Data();
+                Linetypes_Delete_Data data = new Linetypes_Delete_Data();
 
-                Linetypes_IMPORT_Delete_Form form = new Linetypes_IMPORT_Delete_Form();
+                Linetypes_Delete_Form form = new Linetypes_Delete_Form();
                 form.ShowDialog();
 
                 if (form.DialogResult == false)
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                data = form.DataContext as Linetypes_IMPORT_Delete_Data;
+                data = form.DataContext as Linetypes_Delete_Data;
 
                 string name_delete = data.result_name;
                 int count = 0;
@@ -81,7 +81,7 @@ namespace BIM_Leaders_Core
         public static string GetPath()
         {
             // Return constructed namespace path
-            return typeof(Linetypes_IMPORT_Delete).Namespace + "." + nameof(Linetypes_IMPORT_Delete);
+            return typeof(Linetypes_Delete).Namespace + "." + nameof(Linetypes_Delete);
         }
     }
 }

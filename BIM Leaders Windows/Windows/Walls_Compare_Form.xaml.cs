@@ -1,6 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Autodesk.Revit.UI;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 
 namespace BIM_Leaders_Windows
 {
@@ -16,9 +19,20 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public Walls_Compare_Form(UIDocument uidoc)
         {
+            InitializeMaterialDesign();
             InitializeComponent();
 
             DataContext = new Walls_Compare_Data(uidoc);
+        }
+
+        private void InitializeMaterialDesign()
+        {
+            // Create dummy objects to force the MaterialDesign assemblies to be loaded
+            // from this assembly, which causes the MaterialDesign assemblies to be searched
+            // relative to this assembly's path. Otherwise, the MaterialDesign assemblies
+            // are searched relative to Eclipse's path, so they're not found.
+            var card = new Card();
+            var hue = new Hue("Dummy", Colors.Black, Colors.White);
         }
 
         /// <summary>

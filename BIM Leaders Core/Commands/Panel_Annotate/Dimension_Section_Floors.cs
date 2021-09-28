@@ -27,6 +27,9 @@ namespace BIM_Leaders_Core
             // Get View
             View view = doc.ActiveView;
 
+            // Get length units
+            DisplayUnitType units = doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
+
             try
             {
                 Options options = new Options
@@ -92,7 +95,7 @@ namespace BIM_Leaders_Core
 
                 bool input_spots = data.result_spots;
                 double input_thickness_cm = double.Parse(data.result_thickness);
-                double input_thickness = UnitUtils.ConvertToInternalUnits(input_thickness_cm, DisplayUnitType.DUT_CENTIMETERS);
+                double input_thickness = UnitUtils.ConvertToInternalUnits(input_thickness_cm, units);
                 double scale = view.Scale;
                 XYZ zero = new XYZ(0,0,0);
                 int count = 0;
@@ -329,7 +332,7 @@ namespace BIM_Leaders_Core
                             {
                                 if (ds.IsTextPositionAdjustable())
                                 {
-                                    double value = UnitUtils.ConvertFromInternalUnits(ds.Value.Value, DisplayUnitType.DUT_CENTIMETERS);
+                                    double value = UnitUtils.ConvertFromInternalUnits(ds.Value.Value, units);
 
                                     double ratio = 0.7; // Ratio of dimension text height to width
                                     if (value > 9)
@@ -338,7 +341,7 @@ namespace BIM_Leaders_Core
                                         ratio = 2.5; // For 3-digit dimensions
 
                                     double dim_size_d = d.DimensionType.get_Parameter(BuiltInParameter.TEXT_SIZE).AsDouble();
-                                    double dim_size = UnitUtils.ConvertFromInternalUnits(dim_size_d, DisplayUnitType.DUT_CENTIMETERS) * ratio; // Size of the dimension along dimension line
+                                    double dim_size = UnitUtils.ConvertFromInternalUnits(dim_size_d, units) * ratio; // Size of the dimension along dimension line
 
                                     double factor = value / (scale * dim_size); // Factor calculated if dimension should be moved to the side
                                     
@@ -347,7 +350,7 @@ namespace BIM_Leaders_Core
                                         // Get the current text XYZ position
                                         XYZ currentTextPosition = ds.TextPosition;
                                         // Calculate moving offset
-                                        double translation_z = UnitUtils.ConvertToInternalUnits((value + dim_size * scale) / 2 + 3, DisplayUnitType.DUT_CENTIMETERS);
+                                        double translation_z = UnitUtils.ConvertToInternalUnits((value + dim_size * scale) / 2 + 3, units);
                                         // Calculate a new XYZ position by transforming the current text position
                                         XYZ newTextPosition = Transform.CreateTranslation(new XYZ(0, 0, translation_z)).OfPoint(currentTextPosition);
                                         // Set the new text position for the segment's text

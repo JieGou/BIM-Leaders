@@ -7,14 +7,24 @@
         <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Grey" SecondaryColor="Teal" />
         <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
         <ResourceDictionary Source="..\Colors.xaml" />
+        <ResourceDictionary Source="..\Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="STextBlock" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyBold}" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="{StaticResource SColorText}" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="Margin" Value="20,0,50,0" />
+        <Setter Property="Margin" Value="20,0,60,0" />
         <Setter Property="VerticalAlignment" Value="Center" />
+
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="0.9"/>
+            </Setter.Value>
+        </Setter>
+
     </Style>
 
 </ResourceDictionary>

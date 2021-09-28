@@ -12,7 +12,7 @@
 
 	<!-- Some info -->
 	<?define Company = "BIM Leaders"?>
-	<?define Description = "Revit Add-In"?>
+	<?define Description = "Revit Addin"?>
 	<?define Keywords = "revit, addin, plugin"?>
 	<?define Comments = "Developed in 2021 to make work easy"?>
 	
@@ -51,6 +51,8 @@
 		<WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\Assets\Background.bmp" />
 		<!-- Banner image -->
 		<WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\Assets\Banner.bmp" />
+		<!-- Agreement -->
+		<WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\Assets\Agreement.rtf" />
 
 		<!-- Registry entries, shortcuts, logs, etc. -->
 		<Feature Id="ProductFeature" Title="BIM Leaders Setup" Level="1">
