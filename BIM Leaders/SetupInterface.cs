@@ -35,6 +35,20 @@ namespace BIM_Leaders
             // Populate button data model
             var button_1_2_data = new RevitPushButtonDataModel
             {
+                Label = "Solve\r\nWarnings",
+                Panel = panel_1,
+                ToolTip = "Solve warnings automatically.",
+                LongDescription = "Usable for only warnings that don't need user's decision.",
+                CommandNamespacePath = Warnings_Solve.GetPath(),
+                IconImageName = "BIM_Leaders_Names_Prefix_Change.png",
+                //TooltipImageName = "BIM_Leaders_Names_Prefix_Change.png"
+            };
+            // Create button from provided data
+            RevitPushButton.Create(button_1_2_data);
+
+            // Populate button data model
+            var button_1_3_data = new RevitPushButtonDataModel
+            {
                 Label = "Names Prefix\r\nChange",
                 Panel = panel_1,
                 ToolTip = "Change all names prefixes.",
@@ -44,10 +58,10 @@ namespace BIM_Leaders
                 //TooltipImageName = "BIM_Leaders_Names_Prefix_Change.png"
             };
             // Create button from provided data
-            RevitPushButton.Create(button_1_2_data);
+            RevitPushButton.Create(button_1_3_data);
 
             // Populate button data model
-            var button_1_3_data = new RevitPushButtonDataModel
+            var button_1_4_data = new RevitPushButtonDataModel
             {
                 Label = "Delete Unused\r\nLine Styles",
                 Panel = panel_1,
@@ -58,10 +72,10 @@ namespace BIM_Leaders
                 //TooltipImageName = "BIM_Leaders_Linestyles_Unused_Delete.png"
             };
             // Create button from provided data
-            RevitPushButton.Create(button_1_3_data);
+            RevitPushButton.Create(button_1_4_data);
 
             // Populate button data model
-            var button_1_4_data = new RevitPushButtonDataModel
+            var button_1_5_data = new RevitPushButtonDataModel
             {
                 Label = "Delete \r\nLine Patterns",
                 Panel = panel_1,
@@ -72,10 +86,10 @@ namespace BIM_Leaders
                 //TooltipImageName = "BIM_Leaders_Linetypes_Delete.png"
             };
             // Create button from provided data
-            RevitPushButton.Create(button_1_4_data);
+            RevitPushButton.Create(button_1_5_data);
 
             // Create Pull-down button
-            var button_1_5_data = new RevitPulldownButtonDataModel
+            var button_1_6_data = new RevitPulldownButtonDataModel
             {
                 Label = "Walls\r\nCheck",
                 Panel = panel_1,
@@ -85,9 +99,9 @@ namespace BIM_Leaders
                 //TooltipImageName = "BIM_Leaders_Walls_Parallel.png"
             };
             // Create button from provided data
-            var button_1_5 = RevitPulldownButton.Create(button_1_5_data);
+            var button_1_5 = RevitPulldownButton.Create(button_1_6_data);
 
-            var button_1_5_1_data = new RevitPushButtonDataModel
+            var button_1_6_1_data = new RevitPushButtonDataModel
             {
                 Label = "Walls\r\nParallel",
                 Panel = panel_1,
@@ -99,10 +113,10 @@ namespace BIM_Leaders
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsPlan"
             };
             // Create button from provided data
-            RevitPushButton.CreateInPulldown(button_1_5_1_data, button_1_5);
+            RevitPushButton.CreateInPulldown(button_1_6_1_data, button_1_5);
 
             // Populate button data model
-            var button_1_5_2_data = new RevitPushButtonDataModel
+            var button_1_6_2_data = new RevitPushButtonDataModel
             {
                 Label = "Walls\r\nArranged",
                 Panel = panel_1,
@@ -114,12 +128,12 @@ namespace BIM_Leaders
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsPlan"
             };
             // Create button from provided data
-            RevitPushButton.CreateInPulldown(button_1_5_2_data, button_1_5);
+            RevitPushButton.CreateInPulldown(button_1_6_2_data, button_1_5);
 
             panel_1.AddSeparator();
 
             // Populate button data model
-            var button_1_6_data = new RevitPushButtonDataModel
+            var button_1_7_data = new RevitPushButtonDataModel
             {
                 Label = "Help\r\nStandards",
                 Panel = panel_1,
@@ -130,7 +144,7 @@ namespace BIM_Leaders
                 //TooltipImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png"
             };
             // Create button from provided data
-            RevitPushButton.Create(button_1_6_data);
+            RevitPushButton.Create(button_1_7_data);
 
 
             // Create Ribbon Panel
