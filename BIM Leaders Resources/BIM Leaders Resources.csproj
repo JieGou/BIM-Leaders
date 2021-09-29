@@ -105,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BIM_Leaders.ico" />
+    <EmbeddedResource Include="Images\Icons\BIM_Leaders_Warnings.png" />
     <Content Include="Revit.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
