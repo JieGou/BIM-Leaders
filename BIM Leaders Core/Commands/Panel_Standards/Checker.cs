@@ -732,6 +732,9 @@ namespace BIM_Leaders_Core
                         double height = UnitUtils.ConvertToInternalUnits(head_height, DisplayUnitType.DUT_CENTIMETERS) - height_offset;
                         double plan_offset = UnitUtils.ConvertToInternalUnits(1, DisplayUnitType.DUT_CENTIMETERS);
 
+                        // Get extrusion vector, only direction is needed but for sure the point is on 0 point of solid bottom but Z is on solid top
+                        XYZ extrusion_dir = new XYZ(0, 0, 1);
+
                         FilteredElementCollector collector_stairs = new FilteredElementCollector(doc);
                         IEnumerable<Stairs> stairs = collector_stairs.OfClass(typeof(Stairs)).ToElements().Cast<Stairs>();
 
@@ -742,9 +745,7 @@ namespace BIM_Leaders_Core
                             ICollection<ElementId> landings_ids = s.GetStairsLandings();
                             List<StairsLanding> landings = new List<StairsLanding>();
                             foreach (ElementId i in landings_ids)
-                            {
                                 landings.Add(doc.GetElement(i) as StairsLanding);
-                            }
 
                             // Check landings geometry
                             foreach (StairsLanding l in landings)
@@ -758,9 +759,6 @@ namespace BIM_Leaders_Core
                                 {
                                     landing_p_offset
                                 };
-
-                                // Get extrusion vector, only direction is needed but for sure the point is on 0 point of solid bottom but Z is on solid top
-                                XYZ extrusion_dir = new XYZ(0, 0, 1);
 
                                 // Create solid, with solid height of "height_offset"
                                 Solid solid_landing = GeometryCreationUtilities.CreateExtrusionGeometry(looplist, extrusion_dir, height_offset);
@@ -827,8 +825,6 @@ namespace BIM_Leaders_Core
                                         CurveLoop cl_offset = CurveLoop.CreateViaOffset(run_p[0], -plan_offset, r_f.FaceNormal);
                                         run_p_offset.Add(cl_offset);
                                     }
-
-                                    XYZ extrusion_dir = new XYZ(0, 0, 1);
                                     
                                     // Create solid on "height" height from landing, with solid height of "height_offset"
                                     Solid solid_run = GeometryCreationUtilities.CreateExtrusionGeometry(run_p_offset, extrusion_dir, height_offset);

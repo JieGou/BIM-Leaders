@@ -40,7 +40,7 @@ namespace BIM_Leaders
                 ToolTip = "Solve warnings automatically.",
                 LongDescription = "Usable for only warnings that don't need user's decision.",
                 CommandNamespacePath = Warnings_Solve.GetPath(),
-                IconImageName = "BIM_Leaders_Names_Prefix_Change.png",
+                IconImageName = "BIM_Leaders_Warnings.png",
                 //TooltipImageName = "BIM_Leaders_Names_Prefix_Change.png"
             };
             // Create button from provided data

@@ -131,12 +131,8 @@ namespace BIM_Leaders_Core
                     IEnumerable<Element> patterns = new FilteredElementCollector(doc).OfClass(typeof(FillPatternElement)).ToElements();
                     ElementId pattern = patterns.First().Id;
                     foreach(Element e in patterns)
-                    {
                         if(e.Name == "<Solid fill>")
-                        {
                             pattern = e.Id;
-                        }
-                    }
 
                     // Use the existing graphics settings, and change the color to Orange
                     OverrideGraphicSettings overrideSettings = view.GetFilterOverrides(filterId);
