@@ -51,7 +51,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="2" VerticalAlignment="Top">
+        <Grid Grid.Row="2" VerticalAlignment="Center">
             <Button x:Name="button_ok" Click="Button_ok_Click"
                     Content="OK" ToolTip="Run"
                     Margin="270,0"

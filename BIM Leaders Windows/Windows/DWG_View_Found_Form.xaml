@@ -47,12 +47,12 @@
             <StackPanel Height="210" Margin="20,0">
                 <DataGrid x:Name="datagrid"
                           ItemsSource="{Binding dwg.Tables[0]}" IsReadOnly="True"
-                          Style="{StaticResource SDataGrid}">
+                          Style="{StaticResource SDataGridSimple}">
                 </DataGrid>
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="2" VerticalAlignment="Top">
+        <Grid Grid.Row="2" VerticalAlignment="Center">
             <Button x:Name="button_ok" Click="Button_ok_Click"
                     Content="OK" ToolTip="Run"
                     Margin="270,0"
