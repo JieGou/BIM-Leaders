@@ -43,12 +43,11 @@
             
         </Grid>
 
-        <Grid Grid.Row="1">
-            <StackPanel Height="420" Margin="20,0">
-                <DataGrid x:Name="datagrid_report"
+        <Grid Grid.Row="1" Height="420">
+            <DataGrid x:Name="datagrid_report"
                           ItemsSource="{Binding check_report.Tables[0]}" IsReadOnly="True"
+                          Margin="20,0"
                           Style="{StaticResource SDataGridSimple}"/>
-            </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Center">
