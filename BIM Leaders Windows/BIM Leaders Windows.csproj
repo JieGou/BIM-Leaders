@@ -74,6 +74,10 @@
   <ItemGroup>
     <Compile Include="MultivalueTextBoxesConverter.cs" />
     <Compile Include="Windows\Checker_Report_Data.cs" />
+    <Compile Include="Windows\Family_Parameter_Set_Data.cs" />
+    <Compile Include="Windows\Family_Parameter_Set_Form.xaml.cs">
+      <DependentUpon>Family_Parameter_Set_Form.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\DWG_View_Found_Data.cs" />
     <Compile Include="Windows\Checker_Data.cs" />
     <Compile Include="Windows\Checker_Report_Form.xaml.cs">
@@ -175,6 +179,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Checker_Report_Form.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Family_Parameter_Set_Form.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

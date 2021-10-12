@@ -21,6 +21,24 @@ namespace BIM_Leaders_Windows
         public Walls_Compare_Data(UIDocument uidoc)
         {
             this.uidoc = uidoc;
+            result_links = true;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating picked side for <see cref="Levels_Align_Data"/> annotations.
+        /// </summary>
+        /// /// <value>
+        ///     <c>true</c> if side 1 is chosen, if side 2 is chosen, then <c>false</c>.
+        /// </value>
+        private bool _result_links;
+        public bool result_links
+        {
+            get { return _result_links; }
+            set
+            {
+                _result_links = value;
+                OnPropertyChanged(nameof(result_links));
+            }
         }
 
         /// <summary>

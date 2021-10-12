@@ -252,6 +252,21 @@ namespace BIM_Leaders
             // Create button from provided data
             RevitPushButton.Create(button_4_2_data);
 
+            // Populate button data model
+            var button_4_3_data = new RevitPushButtonDataModel
+            {
+                Label = "Set\r\nParameter",
+                Panel = panel_4,
+                ToolTip = "Batch set parameter values to all types.",
+                LongDescription = "Usable if family has many types, and the same value need to be set to all of them.",
+                CommandNamespacePath = Family_Parameter_Set.GetPath(),
+                IconImageName = "BIM_Leaders_Family_Zero_Coordinates.png",
+                //TooltipImageName = "BIM_Leaders_Family_Zero_Coordinates.png",
+                AvailabilityClassName = "BIM_Leaders_Core.DocumentIsFamily"
+            };
+            // Create button from provided data
+            RevitPushButton.Create(button_4_3_data);
+
 
 
 

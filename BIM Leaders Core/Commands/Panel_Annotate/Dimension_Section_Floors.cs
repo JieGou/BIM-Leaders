@@ -11,7 +11,7 @@ namespace BIM_Leaders_Core
     [TransactionAttribute(TransactionMode.Manual)]
     public class Dimension_Section_Floors : IExternalCommand
     {
-        public static Reference GetLineRef(UIDocument uidoc)
+        private static Reference GetLineRef(UIDocument uidoc)
         {
             Reference line_ref = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select line");
             return line_ref;
@@ -43,34 +43,33 @@ namespace BIM_Leaders_Core
                 Selection sel = uidoc.Selection;
                 IList<ElementId> selectedIds = uidoc.Selection.GetElementIds() as IList<ElementId>;
                 List<Line> line = new List<Line>();
-                if (selectedIds.Count == 0)
+
+
+                // Validating the input line
+                if (selectedIds.Count == 0) // If no elements selected
                 {
-                    // If no elements selected.
                     TaskDialog.Show("Section Annotations", "You haven't selected any lines.");
                     return Result.Failed;
                 }
-                else if (selectedIds.Count > 1)
+                else if (selectedIds.Count > 1) // If more than 1 element is selected.
                 {
-                    // If no elements selected.
                     TaskDialog.Show("Section Annotations", "Select only one vertical line.");
                     return Result.Failed;
                 }
-                else
+                else // If one element selected.
                 {
-                    // If one element selected.
                     Element elem = doc.GetElement(selectedIds[0]);
+
+                    // If no line selected.
                     if (elem.Category.Name != "Lines")
                     {
-                        // If no line selected.
                         TaskDialog.Show("Section Annotations", "Select element is not a line.");
                         return Result.Failed;
                     }
                     else
                     {
                         foreach (Line l in elem.get_Geometry(options))
-                        {
                             line.Add(l);
-                        }
                         // Checking if not vertical
                         double d = line[0].Direction.Z;
                         if (d != 1 && d != -1)
@@ -130,13 +129,9 @@ namespace BIM_Leaders_Core
                     double f_thick = f_type.get_Parameter(BuiltInParameter.FLOOR_ATTR_DEFAULT_THICKNESS_PARAM).AsDouble();
 
                     if(f_thick > input_thickness)
-                    {
                         floors_thick.Add(f);
-                    }
                     else
-                    {
                         floors_thin.Add(f);
-                    }
                 }
 
                 IntersectionResultArray ira = new IntersectionResultArray();
@@ -157,7 +152,7 @@ namespace BIM_Leaders_Core
                             // Some faces are cylidrical so pass them
                             try
                             {
-                                // Check if faces are horisontal
+                                // Check if faces are horizontal
                                 UV p = new UV(0,0);
                                 if(Math.Round(face.ComputeNormal(p).X) == 0)
                                 {
@@ -184,10 +179,7 @@ namespace BIM_Leaders_Core
                                     }
                                 }
                             }
-                            catch(Exception e)
-                            {
-                                
-                            }
+                            catch { }
                         }
                     }
                 }
@@ -224,10 +216,7 @@ namespace BIM_Leaders_Core
                                     }
                                 }
                             }
-                            catch (Exception e)
-                            {
-
-                            }
+                            catch { }
                         }
                     }
                 }
@@ -238,35 +227,30 @@ namespace BIM_Leaders_Core
                 foreach (Reference p in intersections_thick_top)
                 {
                     references.Append(p);
-
                     count++;
                 }
                 foreach (Reference p in intersections_thick_bot)
                 {
                     references.Append(p);
-
                     count++;
                 }
                 foreach (Reference p in intersections_thin_top)
                 {
                     references.Append(p);
-
                     count++;
                 }
 
                 if(count > 0)
-                {
                     count--;
-                }
 
                 // Create annotations
                 using (Transaction trans = new Transaction(doc, "Section Dimensions"))
                 {
                     trans.Start();
 
-                    if(input_spots)
+                    if (input_spots)
                     {
-                        for(int i = 0; i < intersections_thick_top.Count; i++)
+                        for (int i = 0; i < intersections_thick_top.Count; i++)
                         {
                             double x = line[0].GetEndPoint(0).X;
                             double y = line[0].GetEndPoint(0).Y;

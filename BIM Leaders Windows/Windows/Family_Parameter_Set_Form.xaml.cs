@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 
@@ -14,18 +11,18 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class Walls_Compare_Form : Window
+    public partial class Family_Parameter_Set_Form : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="Walls_Compare_Form"/>
+        /// Initializes a new instance of the <see cref="Family_Parameter_Set_Form"/>
         /// </summary>
-        public Walls_Compare_Form(UIDocument uidoc)
+        public Family_Parameter_Set_Form(UIDocument uidoc)
         {
             InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new Walls_Compare_Data(uidoc);
+            DataContext = new Family_Parameter_Set_Data(uidoc);
         }
 
         private void InitializeMaterialDesign()

@@ -78,6 +78,7 @@
     <Compile Include="Commands\Helpers\Message.cs" />
     <Compile Include="Commands\Panel_Annotate\Dimensions_Plan_Check.cs" />
     <Compile Include="Commands\Panel_Element\Elements_Join.cs" />
+    <Compile Include="Commands\Panel_Family\Family_Parameter_Set.cs" />
     <Compile Include="Commands\Panel_Standards\Warnings_Solve.cs" />
     <Compile Include="Commands\Panel_Standards\Walls_Arranged.cs" />
     <Compile Include="Commands\Panel_Standards\Help_Standards.cs" />
