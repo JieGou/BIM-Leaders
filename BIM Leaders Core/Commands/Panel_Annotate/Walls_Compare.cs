@@ -27,97 +27,93 @@ namespace BIM_Leaders_Core
                 catch (System.NullReferenceException) { return false; }
             }
 
-            public bool AllowReference(Reference refer, XYZ point)
+            public bool AllowReference(Reference reference, XYZ point)
             {
                 return false;
             }
         }
         /// <summary>
-        /// Get walls from document, that has level with given elevation and have material with given name
+        /// Get walls from document, that have level with given elevation and have material with given name.
         /// </summary>
         /// <param name="doc">Document (current Revit file or link).</param>
-        /// <param name="elevation">Elevation of the needed walls, calculating as current plan view level elevation.</param>
-        /// <param name="mat_name">If wall will have material with given name, it will be filtered in.</param>
-        /// <returns></returns>
-        private static List<Wall> GetWalls(Document doc, double elevation, string mat_name)
+        /// <param name="elevation">Elevation of the needed walls, input the current plan view level elevation.</param>
+        /// <param name="material">If wall will have material with given name, it will be filtered in.</param>
+        /// <returns>A list of walls from the document.</returns>
+        private static List<Wall> GetWalls(Document doc, double elevation, string material)
         {
             List<Wall> walls = new List<Wall>();
 
-            FilteredElementCollector collector_0 = new FilteredElementCollector(doc);
-            FilteredElementCollector collector_1 = new FilteredElementCollector(doc);
+            FilteredElementCollector collector0 = new FilteredElementCollector(doc);
+            FilteredElementCollector collector1 = new FilteredElementCollector(doc);
 
             // Selecting all walls from doc 0
-            IEnumerable<Wall> walls_all = collector_0.OfCategory(BuiltInCategory.OST_Walls)
+            IEnumerable<Wall> wallsAll = collector0.OfCategory(BuiltInCategory.OST_Walls)
                 .WhereElementIsNotElementType()
                 .Cast<Wall>(); //LINQ function
 
             // Selecting all levels from doc 0
-            IEnumerable<Level> levels_all = collector_1.OfCategory(BuiltInCategory.OST_Levels)
+            IEnumerable<Level> levelsAll = collector1.OfCategory(BuiltInCategory.OST_Levels)
                 .WhereElementIsNotElementType()
                 .Cast<Level>(); //LINQ function
 
             // Getting closest level in the document
-            double level_0 = levels_all.First().Elevation;
-            foreach (Level i in levels_all)
-                if (Math.Abs(i.ProjectElevation - elevation) < 1)
-                    level_0 = i.ProjectElevation;
+            double level0 = levelsAll.First().Elevation;
+            foreach (Level level in levelsAll)
+                if (Math.Abs(level.ProjectElevation - elevation) < 1)
+                    level0 = level.ProjectElevation;
 
             // Filtering needed walls for materials and height
-            foreach (Wall w in walls_all)
+            foreach (Wall wall in wallsAll)
             {
-                CompoundStructure cs = w.WallType.GetCompoundStructure();
-                if (cs != null)
+                CompoundStructure wallStructure = wall.WallType.GetCompoundStructure();
+                if (wallStructure != null)
                 {
-                    IList<CompoundStructureLayer> mats = cs.GetLayers();
-                    List<ElementId> mats_id = new List<ElementId>();
-                    List<string> mats_name = new List<string>();
-                    foreach (CompoundStructureLayer m in mats)
-                        mats_name.Add(doc.GetElement(m.MaterialId).Name);
-                    if (mats_name.Contains(mat_name)) // Filtering  for materials
+                    IList<CompoundStructureLayer> layers = wallStructure.GetLayers();
+                    List<string> materialNames = new List<string>();
+                    foreach (CompoundStructureLayer layer in layers)
+                        materialNames.Add(doc.GetElement(layer.MaterialId).Name);
+                    if (materialNames.Contains(material)) // Filtering  for materials
                     {
-                        LocationCurve wall_lc = w.Location as LocationCurve;
-                        double diff = Math.Abs(wall_lc.Curve.GetEndPoint(0).Z - level_0);
+                        LocationCurve wallLocation = wall.Location as LocationCurve;
+                        double diff = Math.Abs(wallLocation.Curve.GetEndPoint(0).Z - level0);
                         if (diff < 1)
-                            walls.Add(w);
+                            walls.Add(wall);
                     }
                 }
             }
             return walls;
         }
-        private static Reference GetLinkRef(UIDocument doc)
-        {
-            Reference link_ref = doc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select Link");
-            return link_ref;
-        }
+        /// <summary>
+        /// Convert walls contours to list of CurveLoop items.
+        /// </summary>
+        /// <param name="wall">Wall element.</param>
+        /// <returns>List of CurveLoops.</returns>
         private static List<CurveLoop> GetWallsLoops(Wall wall)
         {
-            Options opt = new Options();
+            Options options = new Options();
 
             List<CurveLoop> loops = new List<CurveLoop>();
-            GeometryElement geom_elem = wall.get_Geometry(opt);
-            foreach(Solid geom_solid in geom_elem)
+            GeometryElement geometryElement = wall.get_Geometry(options);
+            foreach(Solid geometrySolid in geometryElement)
             {
-                foreach(Face face in geom_solid.Faces)
+                foreach(Face face in geometrySolid.Faces)
                 {
                     if (face is PlanarFace)
                     {
-                        PlanarFace face_pl = face as PlanarFace;
-                        if (face_pl.FaceNormal.Z == -1)
+                        PlanarFace facePlanar = face as PlanarFace;
+                        if (facePlanar.FaceNormal.Z == -1)
                         {
-                            double h = face_pl.Origin.Z;
-                            double h_lowest = h;
+                            double height = facePlanar.Origin.Z;
+                            double heightLowest = height;
                             // Get the lowest face
                             if (loops.Count == 0)
-                            {
-                                loops = face_pl.GetEdgesAsCurveLoops() as List<CurveLoop>;
-                                // h_lowest = h;
-                            }
+                                loops = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
                             else
                             {
-                                if (h < h_lowest)
+                                if (height < heightLowest)
                                 {
-                                    loops = face_pl.GetEdgesAsCurveLoops() as List<CurveLoop>;
-                                    h_lowest = h;
+                                    loops = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
+                                    heightLowest = height;
                                 }
                             }
                         }
@@ -173,8 +169,8 @@ namespace BIM_Leaders_Core
                     data = form.DataContext as Walls_Compare_Data;
                 }
                 
-                bool result_links = data.result_links;
-                string mat_name = doc.GetElement(data.mats_list_sel).Name;
+                bool inputLinks = data.result_links;
+                string materialName = doc.GetElement(data.mats_list_sel).Name;
                 FilledRegionType fill = doc.GetElement(data.fill_types_list_sel) as FilledRegionType;
                 
                 double elevation = view.GenLevel.Elevation;
@@ -183,76 +179,76 @@ namespace BIM_Leaders_Core
                 
                 // Links selection
 
-                ISelectionFilter isf = new LinkSelectionFilter();
-                List<Wall> walls_file_1 = new List<Wall>();
-                List<Wall> walls_file_2 = new List<Wall>();
-                Transform file_1_transform = view.CropBox.Transform; // Just new transform, view is dummy
-                Transform file_2_transform = view.CropBox.Transform; // Just new transform, view is dummy
+                ISelectionFilter selFilter = new LinkSelectionFilter();
+                List<Wall> walls1 = new List<Wall>();
+                List<Wall> walls2 = new List<Wall>();
+                Transform transform1 = view.CropBox.Transform; // Just new transform, view is dummy
+                Transform transform2 = view.CropBox.Transform; // Just new transform, view is dummy
 
-                if (result_links)
+                if (inputLinks)
                 {
-                    Reference link_ref = uidoc.Selection.PickObject(ObjectType.Element, isf, "Select Link");
-                    RevitLinkInstance link_1 = doc.GetElement(link_ref.ElementId) as RevitLinkInstance;
+                    Reference linkReference = uidoc.Selection.PickObject(ObjectType.Element, selFilter, "Select Link");
+                    RevitLinkInstance link1 = doc.GetElement(linkReference.ElementId) as RevitLinkInstance;
 
-                    walls_file_1 = GetWalls(link_1.GetLinkDocument(), elevation, mat_name);
-                    walls_file_2 = GetWalls(doc, elevation, mat_name);
+                    walls1 = GetWalls(link1.GetLinkDocument(), elevation, materialName);
+                    walls2 = GetWalls(doc, elevation, materialName);
 
-                    file_1_transform = link_1.GetTotalTransform();
-                    file_2_transform = file_1_transform; // Don't need this because its doc file itself
+                    transform1 = link1.GetTotalTransform();
+                    transform2 = transform1; // Don't need this because its doc file itself
                 }
                 else
                 {
-                    IList<Reference> links_ref = uidoc.Selection.PickObjects(ObjectType.Element, isf, "Select 2 Links");
-                    Reference link_ref_1 = links_ref.First();
-                    Reference link_ref_2 = links_ref.Last();
-                    RevitLinkInstance link_1 = doc.GetElement(link_ref_1.ElementId) as RevitLinkInstance;
-                    RevitLinkInstance link_2 = doc.GetElement(link_ref_2.ElementId) as RevitLinkInstance;
+                    IList<Reference> linkReferences = uidoc.Selection.PickObjects(ObjectType.Element, selFilter, "Select 2 Links");
+                    Reference linkReference1 = linkReferences.First();
+                    Reference linkReference2 = linkReferences.Last();
+                    RevitLinkInstance link1 = doc.GetElement(linkReference1.ElementId) as RevitLinkInstance;
+                    RevitLinkInstance link2 = doc.GetElement(linkReference2.ElementId) as RevitLinkInstance;
 
-                    walls_file_1 = GetWalls(link_1.GetLinkDocument(), elevation, mat_name);
-                    walls_file_2 = GetWalls(link_2.GetLinkDocument(), elevation, mat_name);
+                    walls1 = GetWalls(link1.GetLinkDocument(), elevation, materialName);
+                    walls2 = GetWalls(link2.GetLinkDocument(), elevation, materialName);
 
-                    file_1_transform = link_1.GetTotalTransform();
-                    file_2_transform = link_2.GetTotalTransform();
+                    transform1 = link1.GetTotalTransform();
+                    transform2 = link2.GetTotalTransform();
                 }
 
                 // Getting plan loops of walls
-                List<CurveLoop> loops_file_1 = new List<CurveLoop>();
-                foreach (Wall w in walls_file_1)
-                    if (GetWallsLoops(w).Count > 0)
-                        loops_file_1.AddRange(GetWallsLoops(w));
+                List<CurveLoop> loops1 = new List<CurveLoop>();
+                foreach (Wall wall in walls1)
+                    if (GetWallsLoops(wall).Count > 0)
+                        loops1.AddRange(GetWallsLoops(wall));
 
-                List<CurveLoop> loops_file_2 = new List<CurveLoop>();
-                foreach (Wall w in walls_file_2)
-                    if (GetWallsLoops(w).Count > 0)
-                        loops_file_2.AddRange(GetWallsLoops(w));
+                List<CurveLoop> loops2 = new List<CurveLoop>();
+                foreach (Wall wall in walls2)
+                    if (GetWallsLoops(wall).Count > 0)
+                        loops2.AddRange(GetWallsLoops(wall));
                 
                 // Getting plan loops of wall sets
-                Solid loop_file_1 = GetWallsLoop(loops_file_1);
-                Solid loop_file_2 = GetWallsLoop(loops_file_2);
+                Solid loop1 = GetWallsLoop(loops1);
+                Solid loop2 = GetWallsLoop(loops2);
 
                 // Transform solids
-                Solid loop_file_1_t = SolidUtils.CreateTransformed(loop_file_1, file_1_transform);
-                Solid loop_file_2_t = loop_file_2;
-                if (!result_links)
-                    loop_file_2_t = SolidUtils.CreateTransformed(loop_file_2, file_2_transform);
+                Solid loop1T = SolidUtils.CreateTransformed(loop1, transform1);
+                Solid loop2T = loop2;
+                if (!inputLinks)
+                    loop2T = SolidUtils.CreateTransformed(loop2, transform2);
 
                 
                 IList<CurveLoop> loop = new List<CurveLoop>();
-                List<IList<CurveLoop>> loop_list = new List<IList<CurveLoop>>();
-                if (loop_file_1_t.Volume > 0 && loop_file_2_t.Volume > 0)
+                List<IList<CurveLoop>> loopList = new List<IList<CurveLoop>>();
+                if (loop1T.Volume > 0 && loop2T.Volume > 0)
                 {
-                    Solid boolean = BooleanOperationsUtils.ExecuteBooleanOperation(loop_file_1_t, loop_file_2_t, BooleanOperationsType.Intersect);
+                    Solid boolean = BooleanOperationsUtils.ExecuteBooleanOperation(loop1T, loop2T, BooleanOperationsType.Intersect);
 
                     // Create CurveLoop from intersection
                     foreach (Face face in boolean.Faces)
                     {
                         try
                         {
-                            PlanarFace face_planar = face as PlanarFace;
-                            if (face_planar.FaceNormal.Z == 1)
+                            PlanarFace facePlanar = face as PlanarFace;
+                            if (facePlanar.FaceNormal.Z == 1)
                             {
                                 loop = face.GetEdgesAsCurveLoops();
-                                loop_list.Add(loop);
+                                loopList.Add(loop);
                             }
                         }
                         catch { }
@@ -262,7 +258,7 @@ namespace BIM_Leaders_Core
                         trans.Start();
 
                         // Drawing filled region
-                        foreach (IList<CurveLoop> l in loop_list)
+                        foreach (IList<CurveLoop> l in loopList)
                         {
                             FilledRegion region = FilledRegion.Create(doc, fill.Id, view.Id, l);
                             count++;

@@ -39,20 +39,20 @@ namespace BIM_Leaders_Core
                 data = form.DataContext as Stairs_Steps_Enumerate_Data;
 
                 // Getting input from user
-                bool right_side = data.result_side_right;
-                double start_number = double.Parse(data.result_number);
+                bool inputRightSide = data.result_side_right;
+                double inputStartNumber = double.Parse(data.result_number);
                 int count = 0;
                 int grouped = 0;
                 int unpinned = 0;
 
                 // Get Floors
-                IEnumerable<MultistoryStairs> stairs_ms_all = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_MultistoryStairs)
+                IEnumerable<MultistoryStairs> stairsMultiAll = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_MultistoryStairs)
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<MultistoryStairs>();
 
                 // Selecting all levels in the view
-                IEnumerable<ElementId> levels_all = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Levels)
+                IEnumerable<ElementId> levelsAll = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Levels)
                     .WhereElementIsNotElementType()
                     .ToElementIds();
 
@@ -63,43 +63,35 @@ namespace BIM_Leaders_Core
                     .Cast<StairsRun>();
 
                 // Selecting all stairs in the view
-                IEnumerable<Stairs> stairs_all = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Stairs)
+                IEnumerable<Stairs> stairsAll = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Stairs)
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<Stairs>();
 
                 // Filtering for multistairs that are in groups
-                List<MultistoryStairs> stairs_ms = new List<MultistoryStairs>();
-                foreach (MultistoryStairs m in stairs_ms_all)
+                List<MultistoryStairs> stairsMulti = new List<MultistoryStairs>();
+                foreach (MultistoryStairs stairMulti in stairsMultiAll)
                 {
-                    if (m.GroupId == ElementId.InvalidElementId)
-                    {
-                        stairs_ms.Add(m);
-                    }
+                    if (stairMulti.GroupId == ElementId.InvalidElementId)
+                        stairsMulti.Add(stairMulti);
                     else
-                    {
                         grouped++;
-                    }
                 }
 
                 // Filtering for stairs that are in groups
-                List<Stairs> stairs_temp = new List<Stairs>();
-                foreach (Stairs s in stairs_all)
+                List<Stairs> stairsTemp = new List<Stairs>();
+                foreach (Stairs stair in stairsAll)
                 {
-                    if (s.GroupId == ElementId.InvalidElementId)
-                    {
-                        stairs_temp.Add(s);
-                    }
+                    if (stair.GroupId == ElementId.InvalidElementId)
+                        stairsTemp.Add(stair);
                     else
-                    {
                         grouped++;
-                    }
                 }
 
                 // Creating list of stairs levels and filtering for Model-In-Place
                 List<Stairs> stairs = new List<Stairs>();
                 List<double> levels = new List<double>();
-                foreach (Stairs stair in stairs_temp)
+                foreach (Stairs stair in stairsTemp)
                 {
                     try
                     {
@@ -107,14 +99,11 @@ namespace BIM_Leaders_Core
                         stairs.Add(stair);
 
                     }
-                    catch
-                    {
-
-                    }
+                    catch { }
                 }
 
                 // Changing stairs order in a list according to base height
-                IOrderedEnumerable<Stairs> stairs_sorted = stairs.OrderBy(d => d.BaseElevation);
+                IOrderedEnumerable<Stairs> stairsSorted = stairs.OrderBy(x => x.BaseElevation);
 
                 // Create annotations
                 using (Transaction trans = new Transaction(doc, "Enumerate stairs"))
@@ -122,51 +111,43 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     // Unpinning groups (stairs) in multistairs
-                    foreach (MultistoryStairs m in stairs_ms)
+                    foreach (MultistoryStairs stairMulti in stairsMulti)
                     {
-                        foreach (ElementId l in levels_all)
+                        foreach (ElementId level in levelsAll)
                         {
                             try
                             {
-                                m.Unpin(l);
+                                stairMulti.Unpin(level);
                                 unpinned++;
                             }
-                            catch
-                            {
-
-                            }
+                            catch { }
                         }
                     }
 
                     // Changing thread numbers
-                    foreach (Stairs s in stairs_sorted)
+                    foreach (Stairs stair in stairsSorted)
                     {
-                        Parameter p = s.get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX);
-                        p.Set(start_number);
-                        start_number += s.ActualRisersNumber;
+                        Parameter parameter = stair.get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX);
+                        parameter.Set(inputStartNumber);
+                        inputStartNumber += stair.ActualRisersNumber;
                     }
 
                     // Creating thread numbers on the view
-                    foreach (StairsRun r in runs)
+                    foreach (StairsRun run in runs)
                     {
-                        Reference refer = r.GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter);
+                        Reference refer = run.GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter);
 
-                        if (right_side)
-                        {
-                            refer = r.GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter);
-                        }
+                        if (inputRightSide)
+                            refer = run.GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter);
 
-                        LinkElementId run_id = new LinkElementId(r.Id);
+                        LinkElementId runId = new LinkElementId(run.Id);
 
                         try
                         {
-                            NumberSystem.Create(doc, view.Id, run_id, refer);
+                            NumberSystem.Create(doc, view.Id, runId, refer);
                             count++;
                         }
-                        catch
-                        {
-                            count++;
-                        }
+                        catch { count++; }
                     }
 
                     trans.Commit();
@@ -179,7 +160,7 @@ namespace BIM_Leaders_Core
                     }
                     text += count.ToString();
                     text += " runs with ";
-                    text += (start_number - 1).ToString();
+                    text += (inputStartNumber - 1).ToString();
                     text += " threads was numbered. ";
                     if (unpinned > 0)
                     {
@@ -195,13 +176,9 @@ namespace BIM_Leaders_Core
                     */
 
                     if (count == 0)
-                    {
                         TaskDialog.Show("Section Annotations", "No annotations created");
-                    }
                     else
-                    {
                         TaskDialog.Show("Section Annotations", text);
-                    }
                 }
                 return Result.Succeeded;
             }

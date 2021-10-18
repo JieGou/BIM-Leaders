@@ -24,19 +24,19 @@ namespace BIM_Leaders_Core
             Levels_Align_Data data = form.DataContext as Levels_Align_Data;
 
             // Getting input from user
-            bool condition_switch = data.result_switch;
-            bool condition_side_1 = data.result_side;
-            bool condition_side_2 = false;
-            if (!condition_side_1)
-                condition_side_2 = true;
-            int count_2D = 0;
+            bool inputSwitch = data.result_switch;
+            bool inputSide1 = data.result_side;
+            bool inputSide2 = false;
+            if (!inputSide1)
+                inputSide2 = true;
+            int count2D = 0;
             int count = 0;
 
             // Get UIDocument
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
 
             // Get Document
-            Autodesk.Revit.DB.Document doc = uidoc.Document;
+            Document doc = uidoc.Document;
 
             // Get View
             View view = doc.ActiveView;
@@ -45,65 +45,51 @@ namespace BIM_Leaders_Core
             {
                 IEnumerable<Level> levels = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Levels).ToElements().Cast<Level>();
 
-                DatumExtentType extent_mode = DatumExtentType.ViewSpecific;
+                DatumExtentType extentMode = DatumExtentType.ViewSpecific;
 
                 // Edit extents
                 using (Transaction trans = new Transaction(doc, "Align Levels"))
                 {
                     trans.Start();
 
-                    Curve curve = levels.First().GetCurvesInView(extent_mode, view)[0];
-                    double curve_1_x = curve.GetEndPoint(0).X;
-                    double curve_1_y = curve.GetEndPoint(0).Y;
-                    double curve_2_x = curve.GetEndPoint(1).X;
-                    double curve_2_y = curve.GetEndPoint(1).Y;
+                    Curve curve = levels.First().GetCurvesInView(extentMode, view)[0];
 
-                    foreach (Level l in levels)
+                    foreach (Level level in levels)
                     {
-                        if (condition_switch)
+                        if (inputSwitch)
                         {
-                            l.SetDatumExtentType(DatumEnds.End0, view, extent_mode);
-                            l.SetDatumExtentType(DatumEnds.End1, view, extent_mode);
+                            level.SetDatumExtentType(DatumEnds.End0, view, extentMode);
+                            level.SetDatumExtentType(DatumEnds.End1, view, extentMode);
 
                             if (view.ViewType == ViewType.Elevation | view.ViewType == ViewType.Section)
                             {
-                                Curve c = l.GetCurvesInView(extent_mode, view)[0];
-                                XYZ p_0 = new XYZ(curve.GetEndPoint(0).X, curve.GetEndPoint(0).Y, c.GetEndPoint(0).Z);
-                                XYZ p_1 = new XYZ(curve.GetEndPoint(1).X, curve.GetEndPoint(1).Y, c.GetEndPoint(1).Z);
-                                Line line = Line.CreateBound(p_0, p_1);
-                                l.SetCurveInView(extent_mode, view, line);
+                                Curve levelCurve = level.GetCurvesInView(extentMode, view)[0];
+                                XYZ point0 = new XYZ(curve.GetEndPoint(0).X, curve.GetEndPoint(0).Y, levelCurve.GetEndPoint(0).Z);
+                                XYZ point1 = new XYZ(curve.GetEndPoint(1).X, curve.GetEndPoint(1).Y, levelCurve.GetEndPoint(1).Z);
+                                Line line = Line.CreateBound(point0, point1);
+                                level.SetCurveInView(extentMode, view, line);
                             }
-                            count_2D++;
+                            count2D++;
                         }
-                        if (condition_side_1)
-                        {
-                            l.ShowBubbleInView(DatumEnds.End0, view);
-                        }
-                        if (!condition_side_1)
-                        {
-                            l.HideBubbleInView(DatumEnds.End0, view);
-                        }
-                        if (condition_side_2)
-                        {
-                            l.ShowBubbleInView(DatumEnds.End1, view);
-                        }
-                        if (!condition_side_2)
-                        {
-                            l.HideBubbleInView(DatumEnds.End1, view);
-                        }
+                        if (inputSide1)
+                            level.ShowBubbleInView(DatumEnds.End0, view);
+                        if (!inputSide1)
+                            level.HideBubbleInView(DatumEnds.End0, view);
+                        if (inputSide2)
+                            level.ShowBubbleInView(DatumEnds.End1, view);
+                        if (!inputSide2)
+                            level.HideBubbleInView(DatumEnds.End1, view);
                         count++;
                     }
                     trans.Commit();
 
                     if (count == 0)
-                    {
                         TaskDialog.Show("Levels Align", "No levels aligned");
-                    }
                     else
                     {
                         TaskDialog.Show("Levels Align", string.Format("{0} levels switched to 2D and aligned." + Environment.NewLine + 
                                                                       "{1} levels changed tags",
-                                                                      count_2D.ToString(), count.ToString()));
+                                                                      count2D.ToString(), count.ToString()));
                     }
                 }
                 return Result.Succeeded;

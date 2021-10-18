@@ -39,63 +39,59 @@ namespace BIM_Leaders_Core
 
                 // Get Walls
                 FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                IEnumerable<Wall> walls_all = collector.OfClass(typeof(Wall))
+                IEnumerable<Wall> wallsAll = collector.OfClass(typeof(Wall))
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<Wall>();
 
                 // Get Dimensions
-                FilteredElementCollector collector_d = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                IEnumerable<Dimension> dimensions_all = collector_d.OfClass(typeof(Dimension))
+                FilteredElementCollector collector1 = new FilteredElementCollector(doc, doc.ActiveView.Id);
+                IEnumerable<Dimension> dimensionsAll = collector1.OfClass(typeof(Dimension))
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<Dimension>();
 
                 // List for creating a filter
-                List<ElementId> wall_filter_ids = new List<ElementId>();
+                List<ElementId> wallFilterIds = new List<ElementId>();
 
                 // Iterate walls
-                foreach (Wall w in walls_all)
+                foreach (Wall wall in wallsAll)
                 {
-                    XYZ normal_wall = new XYZ(0,0,0);
+                    XYZ normalWall = new XYZ(0,0,0);
                     try
                     {
-                        normal_wall = w.Orientation;
+                        normalWall = wall.Orientation;
                     }
                     catch { continue; }
-                    // List for intersectins count for each dimansion
-                    List<int> count_ints = new List<int>();
+                    // List for intersections count for each dimansion
+                    List<int> countIntersections = new List<int>();
                     // Iterate dimensions
-                    foreach (Dimension d in dimensions_all)
+                    foreach (Dimension dimension in dimensionsAll)
                     {
-                        Line dim_line = d.Curve as Line;
-                        if (dim_line != null)
+                        Line dimensionLine = dimension.Curve as Line;
+                        if (dimensionLine != null)
                         {
-                            dim_line.MakeBound(0, 1);
-                            XYZ pt1 = dim_line.GetEndPoint(0);
-                            XYZ pt2 = dim_line.GetEndPoint(1);
-                            XYZ dim_loc = pt2.Subtract(pt1).Normalize();
+                            dimensionLine.MakeBound(0, 1);
+                            XYZ point0 = dimensionLine.GetEndPoint(0);
+                            XYZ point1 = dimensionLine.GetEndPoint(1);
+                            XYZ dimensionLoc = point1.Subtract(point0).Normalize();
                             // Intersections count
-                            int count_int = 0;
+                            int countIntersection = 0;
 
-                            ReferenceArray ref_array = d.References;
+                            ReferenceArray referenceArray = dimension.References;
                             // Iterate dimension references
-                            foreach (Reference r in ref_array)
-                            {
-                                if (r.ElementId == w.Id)
-                                    count_int++;
-                            }
+                            foreach (Reference reference in referenceArray)
+                                if (reference.ElementId == wall.Id)
+                                    countIntersection++;
                             // If 2 dimensions on a wall so check if dimansion is parallel to wall normal
-                            if (count_int >= 2)
-                            {
-                                if (Math.Round(Math.Abs((dim_loc.AngleTo(normal_wall) / Math.PI - 0.5) * 2)) == 1) // Angle is from 0 to PI, so divide by PI - from 0 to 1, then...
-                                    count_ints.Add(count_int);
-                            }
+                            if (countIntersection >= 2)
+                                if (Math.Round(Math.Abs((dimensionLoc.AngleTo(normalWall) / Math.PI - 0.5) * 2)) == 1) // Angle is from 0 to PI, so divide by PI - from 0 to 1, then...
+                                    countIntersections.Add(countIntersection);
                         }
                     }
                     // Check if no dimensions left
-                    if (count_ints.Count == 0)
-                        wall_filter_ids.Add(w.Id);
+                    if (countIntersections.Count == 0)
+                        wallFilterIds.Add(wall.Id);
                 }
 
                 using (Transaction trans = new Transaction(doc, "Create Filter for non-dimensioned Walls"))
@@ -104,16 +100,12 @@ namespace BIM_Leaders_Core
 
                     // Checking if filter already exists
                     IEnumerable<Element> filters = new FilteredElementCollector(doc).OfClass(typeof(SelectionFilterElement)).ToElements();
-                    foreach (Element e in filters)
-                    {
-                        if (e.Name == "Walls dimension filter")
-                        {
-                            doc.Delete(e.Id);
-                        }
-                    }
+                    foreach (Element f in filters)
+                        if (f.Name == "Walls dimension filter")
+                            doc.Delete(f.Id);
 
                     SelectionFilterElement filter = SelectionFilterElement.Create(doc, "Walls dimension filter");
-                    filter.SetElementIds(wall_filter_ids);
+                    filter.SetElementIds(wallFilterIds);
 
                     // Add the filter to the view
                     ElementId filterId = filter.Id;
@@ -123,13 +115,9 @@ namespace BIM_Leaders_Core
                     // Get solid pattern
                     IEnumerable<Element> patterns = new FilteredElementCollector(doc).OfClass(typeof(FillPatternElement)).ToElements();
                     ElementId pattern = patterns.First().Id;
-                    foreach (Element e in patterns)
-                    {
-                        if (e.Name == "<Solid fill>")
-                        {
-                            pattern = e.Id;
-                        }
-                    }
+                    foreach (Element p in patterns)
+                        if (p.Name == "<Solid fill>")
+                            pattern = p.Id;
 
                     // Use the existing graphics settings, and change the color to Orange
                     OverrideGraphicSettings overrideSettings = view.GetFilterOverrides(filterId);
@@ -141,14 +129,10 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                if (wall_filter_ids.Count == 0)
-                {
+                if (wallFilterIds.Count == 0)
                     TaskDialog.Show("Dimension Plan Check", "All walls are dimensioned");
-                }
                 else
-                {
-                    TaskDialog.Show("Dimension Plan Check", string.Format("{0} walls added to Walls dimension filter", wall_filter_ids.Count.ToString()));
-                }
+                    TaskDialog.Show("Dimension Plan Check", string.Format("{0} walls added to Walls dimension filter", wallFilterIds.Count.ToString()));
 
                 return Result.Succeeded;
             }

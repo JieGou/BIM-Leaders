@@ -24,12 +24,12 @@ namespace BIM_Leaders_Core
             Grids_Align_Data data = form.DataContext as Grids_Align_Data;
 
             // Getting input from user
-            bool condition_switch = data.result_switch;
-            bool condition_side_1 = data.result_side;
-            bool condition_side_2 = false;
-            if (!condition_side_1)
-                condition_side_2 = true;
-            int count_2D = 0;
+            bool inputSwitch = data.result_switch;
+            bool inputSide1 = data.result_side;
+            bool inputSide2 = false;
+            if (!inputSide1)
+                inputSide2 = true;
+            int count2D = 0;
             int count = 0;
 
             // Get UIDocument
@@ -45,14 +45,14 @@ namespace BIM_Leaders_Core
             {
                 IEnumerable<Grid> grids = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Grids).ToElements().Cast<Grid>();
 
-                DatumExtentType extent_mode = DatumExtentType.ViewSpecific;
+                DatumExtentType extentMode = DatumExtentType.ViewSpecific;
 
                 // Edit extents
                 using (Transaction trans = new Transaction(doc, "Align Grids"))
                 {
                     trans.Start();
 
-                    Curve curve = grids.First().GetCurvesInView(extent_mode, view)[0];
+                    Curve curve = grids.First().GetCurvesInView(extentMode, view)[0];
                     double curve_1_x = curve.GetEndPoint(0).X;
                     double curve_1_y = curve.GetEndPoint(0).Y;
                     double curve_1_z = curve.GetEndPoint(0).Z;
@@ -60,52 +60,42 @@ namespace BIM_Leaders_Core
                     double curve_2_y = curve.GetEndPoint(1).Y;
                     double curve_2_z = curve.GetEndPoint(1).Z;
 
-                    foreach (Grid g in grids)
+                    foreach (Grid grid in grids)
                     {
-                        if(condition_switch)
+                        if(inputSwitch)
                         {
-                            g.SetDatumExtentType(DatumEnds.End0, view, extent_mode);
-                            g.SetDatumExtentType(DatumEnds.End1, view, extent_mode);
+                            grid.SetDatumExtentType(DatumEnds.End0, view, extentMode);
+                            grid.SetDatumExtentType(DatumEnds.End1, view, extentMode);
 
                             if (view.ViewType == ViewType.Elevation | view.ViewType == ViewType.Section)
                             {
-                                Curve c = g.GetCurvesInView(extent_mode, view)[0];
-                                XYZ p_0 = new XYZ(c.GetEndPoint(0).X, c.GetEndPoint(0).Y, curve.GetEndPoint(0).Z);
-                                XYZ p_1 = new XYZ(c.GetEndPoint(1).X, c.GetEndPoint(1).Y, curve.GetEndPoint(1).Z);
-                                Line l = Line.CreateBound(p_0, p_1);
-                                g.SetCurveInView(extent_mode, view, l);
+                                Curve gridCurve = grid.GetCurvesInView(extentMode, view)[0];
+                                XYZ point0 = new XYZ(gridCurve.GetEndPoint(0).X, gridCurve.GetEndPoint(0).Y, curve.GetEndPoint(0).Z);
+                                XYZ point1 = new XYZ(gridCurve.GetEndPoint(1).X, gridCurve.GetEndPoint(1).Y, curve.GetEndPoint(1).Z);
+                                Line line = Line.CreateBound(point0, point1);
+                                grid.SetCurveInView(extentMode, view, line);
                             }
-                            count_2D++;
+                            count2D++;
                         }
-                        if(condition_side_1)
-                        {
-                            g.ShowBubbleInView(DatumEnds.End0, view);
-                        }
-                        if(!condition_side_1)
-                        {
-                            g.HideBubbleInView(DatumEnds.End0, view);
-                        }
-                        if (condition_side_2)
-                        {
-                            g.ShowBubbleInView(DatumEnds.End1, view);
-                        }
-                        if (!condition_side_2)
-                        {
-                            g.HideBubbleInView(DatumEnds.End1, view);
-                        }
+                        if(inputSide1)
+                            grid.ShowBubbleInView(DatumEnds.End0, view);
+                        if(!inputSide1)
+                            grid.HideBubbleInView(DatumEnds.End0, view);
+                        if (inputSide2)
+                            grid.ShowBubbleInView(DatumEnds.End1, view);
+                        if (!inputSide2)
+                            grid.HideBubbleInView(DatumEnds.End1, view);
                         count++;
                     }
                     trans.Commit();
 
                     if (count == 0)
-                    {
                         TaskDialog.Show("Grids Align", "No grids aligned");
-                    }
                     else
                     {
                         TaskDialog.Show("Grids Align", string.Format("{0} grids switched to 2D and aligned." + Environment.NewLine + 
                                                                      "{1} grids changed bubbles",
-                                                                     count_2D.ToString(), count.ToString()));
+                                                                     count2D.ToString(), count.ToString()));
                     }
                 }
                 return Result.Succeeded;

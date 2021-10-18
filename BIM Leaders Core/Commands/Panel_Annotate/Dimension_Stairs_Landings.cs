@@ -26,80 +26,77 @@ namespace BIM_Leaders_Core
             try
             {
                 // Selecting all runs in the view
-                IEnumerable<StairsLanding> landings_all = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_StairsLandings)
+                IEnumerable<StairsLanding> landingsAll = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_StairsLandings)
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<StairsLanding>();
 
                 int count = 0;
-                int count_i = 0;
-                int count_spots = 0;
+                int countIntersections = 0;
+                int countSpots = 0;
 
                 // Ffiltering for Model-In-Place
-                List<StairsLanding> landings_unsorted = new List<StairsLanding>();
-                foreach (StairsLanding l in landings_all)
+                List<StairsLanding> landingsUnsorted = new List<StairsLanding>();
+                foreach (StairsLanding landing in landingsAll)
                 {
                     try
                     {
-                        double elev = l.BaseElevation;
-                        landings_unsorted.Add(l);
+                        double elevation = landing.BaseElevation;
+                        landingsUnsorted.Add(landing);
                     }
-                    catch
-                    {
-
-                    }
+                    catch { }
                 }
 
                 // Sort landings in groups by coordinates, each group have landings with same locations but different heights
-                double threshold_cm = 150;
-                double threshold = UnitUtils.ConvertToInternalUnits(threshold_cm, DisplayUnitType.DUT_CENTIMETERS);
+                double thresholdCm = 150;
+                double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, DisplayUnitType.DUT_CENTIMETERS);
 
-                List<List<StairsLanding>> landings_sorted = new List<List<StairsLanding>>();
+                List<List<StairsLanding>> landingsSorted = new List<List<StairsLanding>>();
                 int i = 0;
                 int j = 0;
-                while (i < landings_unsorted.Count)
+                while (i < landingsUnsorted.Count)
                 {
                     // Get unsorted landing
-                    StairsLanding landing_unsorted = landings_unsorted[i];
-                    BoundingBoxXYZ bb_unsorted = landing_unsorted.get_BoundingBox(view);
-                    double x_unsorted = (bb_unsorted.Max.X + bb_unsorted.Min.X) / 2;
-                    double y_unsorted = (bb_unsorted.Max.Y + bb_unsorted.Min.Y) / 2;
+                    StairsLanding landingUnsorted = landingsUnsorted[i];
+                    BoundingBoxXYZ unsortedBB = landingUnsorted.get_BoundingBox(view);
+                    double unsortedX = (unsortedBB.Max.X + unsortedBB.Min.X) / 2;
+                    double unsortedY = (unsortedBB.Max.Y + unsortedBB.Min.Y) / 2;
                     j = 0;
-                    while (j < landings_sorted.Count)
+                    while (j < landingsSorted.Count)
                     {
                         // Compare coordinates with sorted landings
-                        StairsLanding landing_sorted = landings_sorted[j][0];
-                        BoundingBoxXYZ bb_sorted = landing_sorted.get_BoundingBox(view);
-                        double x_sorted = (bb_sorted.Max.X + bb_sorted.Min.X) / 2;
-                        double y_sorted = (bb_sorted.Max.Y + bb_sorted.Min.Y) / 2;
-                        double x_x = x_unsorted - x_sorted;
-                        double y_y = y_unsorted - y_sorted;
-                        double c = Math.Abs(Math.Sqrt(x_x * x_x + y_y * y_y));
-                        if (c < threshold)
+                        StairsLanding landingSorted = landingsSorted[j][0];
+                        BoundingBoxXYZ sortedBB = landingSorted.get_BoundingBox(view);
+                        double sortedX = (sortedBB.Max.X + sortedBB.Min.X) / 2;
+                        double sortedY = (sortedBB.Max.Y + sortedBB.Min.Y) / 2;
+                        double distanceX = unsortedX - sortedX;
+                        double distanceY = unsortedY - sortedY;
+                        double distance = Math.Abs(Math.Sqrt(distanceX * distanceX + distanceY * distanceY));
+                        if (distance < threshold)
                         {
-                            landings_sorted[j].Add(landing_unsorted);
+                            landingsSorted[j].Add(landingUnsorted);
                             i++;
                         }
                         j++;
                     }
                     // Adding first landing to sorted landings
-                    if (!landings_sorted.SelectMany(f => f).Contains(landing_unsorted))
+                    if (!landingsSorted.SelectMany(x => x).Contains(landingUnsorted))
                     {
-                        landings_sorted.Add(new List<StairsLanding>());
-                        landings_sorted.Last().Add(landing_unsorted);
+                        landingsSorted.Add(new List<StairsLanding>());
+                        landingsSorted.Last().Add(landingUnsorted);
                         i++;
                     }
                 }
                 // Create lines for dimensions
                 List<Line> lines = new List<Line>();
-                for(i = 0; i < landings_sorted.Count; i++)
+                for(i = 0; i < landingsSorted.Count; i++)
                 {
-                    BoundingBoxXYZ bb = landings_sorted[i][0].get_BoundingBox(view);
-                    double line_x = (bb.Max.X + bb.Min.X) / 2;
-                    double line_y = (bb.Max.Y + bb.Min.Y) / 2;
-                    XYZ p_1 = new XYZ(line_x, line_y, -100);
-                    XYZ p_2 = new XYZ(line_x, line_y, 1000);
-                    Line line = Line.CreateBound(p_1, p_2);
+                    BoundingBoxXYZ bb = landingsSorted[i][0].get_BoundingBox(view);
+                    double lineX = (bb.Max.X + bb.Min.X) / 2;
+                    double lineY = (bb.Max.Y + bb.Min.Y) / 2;
+                    XYZ point1 = new XYZ(lineX, lineY, -100);
+                    XYZ point2 = new XYZ(lineX, lineY, 1000);
+                    Line line = Line.CreateBound(point1, point2);
                     lines.Add(line);
                 }
 
@@ -112,18 +109,18 @@ namespace BIM_Leaders_Core
 
                 // List for all intersection points
                 List<ReferenceArray> intersections = new List<ReferenceArray>();
-                List<List<Face>> intersection_faces = new List<List<Face>>();
+                List<List<Face>> intersectionFaces = new List<List<Face>>();
 
                 // Iterate through landings solids and get references and faces
-                for (i=0; i<landings_sorted.Count; i++)
+                for (i = 0; i < landingsSorted.Count; i++)
                 {
-                    ReferenceArray intersections_i = new ReferenceArray();
-                    List<Face> intersection_faces_i = new List<Face>();
-                    foreach (StairsLanding l in landings_sorted[i])
+                    ReferenceArray iIntersections = new ReferenceArray();
+                    List<Face> iIntersectionFaces = new List<Face>();
+                    foreach (StairsLanding landing in landingsSorted[i])
                     {
-                        foreach (Solid s in l.get_Geometry(options))
+                        foreach (Solid solid in landing.get_Geometry(options))
                         {
-                            foreach (Face face in s.Faces)
+                            foreach (Face face in solid.Faces)
                             {
                                 // Some faces are curved so pass them
                                 try
@@ -135,9 +132,9 @@ namespace BIM_Leaders_Core
                                     {
                                         if (Math.Round(normal.Z) == 1 || Math.Round(normal.Z) == -1)
                                         {
-                                            intersections_i.Append(face.Reference);
-                                            intersection_faces_i.Add(face);
-                                            count_i++;
+                                            iIntersections.Append(face.Reference);
+                                            iIntersectionFaces.Add(face);
+                                            countIntersections++;
                                         }
                                     }
                                 }
@@ -145,8 +142,8 @@ namespace BIM_Leaders_Core
                             }
                         }
                     }
-                    intersections.Add(intersections_i);
-                    intersection_faces.Add(intersection_faces_i);
+                    intersections.Add(iIntersections);
+                    intersectionFaces.Add(iIntersectionFaces);
                 }
 
                 // Create annotations
@@ -156,11 +153,11 @@ namespace BIM_Leaders_Core
 
                     XYZ zero = new XYZ(0, 0, 0);
 
-                    for (i=0; i<lines.Count; i++)
+                    for (i = 0; i < lines.Count; i++)
                     {
                         Dimension dimension = doc.Create.NewDimension(view, lines[i], intersections[i]);
                         count++;
-                        for (j=0; j<intersections[i].Size; j++)
+                        for (j = 0; j < intersections[i].Size; j++)
                         {
                             /*
                             double x_1 = intersection_faces[i][j].EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).X;
@@ -175,26 +172,26 @@ namespace BIM_Leaders_Core
 
                             // Get the center of the face
                             //EdgeArray edges = intersection_faces[i][j].EdgeLoops.get_Item(0);
-                            EdgeArray edges = intersection_faces[i][0].EdgeLoops.get_Item(0);
-                            double coordinates_total_x = 0;
-                            double coordinates_total_y = 0;
+                            EdgeArray edges = intersectionFaces[i][0].EdgeLoops.get_Item(0);
+                            double coordinatesTotalX = 0;
+                            double coordinatesTotalY = 0;
                             // Average coordinates for X and Y
-                            foreach (Edge ed in edges)
+                            foreach (Edge edge in edges)
                             {
-                                coordinates_total_x += ed.AsCurve().GetEndPoint(0).X;
-                                coordinates_total_y += ed.AsCurve().GetEndPoint(0).Y;
+                                coordinatesTotalX += edge.AsCurve().GetEndPoint(0).X;
+                                coordinatesTotalY += edge.AsCurve().GetEndPoint(0).Y;
                             }
-                            double x = coordinates_total_x / edges.Size;
-                            double y = coordinates_total_y / edges.Size;
+                            double x = coordinatesTotalX / edges.Size;
+                            double y = coordinatesTotalY / edges.Size;
                             // Z coordinate
-                            double z = intersection_faces[i][j].EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Z;
+                            double z = intersectionFaces[i][j].EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Z;
                             // Center point
                             XYZ origin = new XYZ(x, y, z);
 
                             try
                             {
-                                SpotDimension sd = doc.Create.NewSpotElevation(view, intersection_faces[i][j].Reference, origin, zero, zero, origin, false);
-                                count_spots++;
+                                SpotDimension sd = doc.Create.NewSpotElevation(view, intersectionFaces[i][j].Reference, origin, zero, zero, origin, false);
+                                countSpots++;
                             }
                             catch { }
                         }
@@ -203,15 +200,11 @@ namespace BIM_Leaders_Core
                     trans.Commit();
                     string text = string.Format("{0} dimension lines with {1} references were created. {1} spot elevations were created.",
                         count.ToString(),
-                        count_i.ToString());
-                    if (count == 0 && count_i == 0)
-                    {
+                        countIntersections.ToString());
+                    if (count == 0 && countIntersections == 0)
                         TaskDialog.Show("Dimension Stairs", "No annotations created");
-                    }
                     else
-                    {
                         TaskDialog.Show("Dimension Stairs", text);
-                    }
                 }
                 return Result.Succeeded;
             }

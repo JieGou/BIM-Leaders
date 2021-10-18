@@ -11,11 +11,6 @@ namespace BIM_Leaders_Core
     [TransactionAttribute(TransactionMode.Manual)]
     public class Dimension_Section_Floors : IExternalCommand
     {
-        private static Reference GetLineRef(UIDocument uidoc)
-        {
-            Reference line_ref = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select line");
-            return line_ref;
-        }
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get UIDocument
@@ -40,9 +35,8 @@ namespace BIM_Leaders_Core
                 };
 
                 // Get the line from user selection
-                Selection sel = uidoc.Selection;
                 IList<ElementId> selectedIds = uidoc.Selection.GetElementIds() as IList<ElementId>;
-                List<Line> line = new List<Line>();
+                List<Line> lines = new List<Line>();
 
 
                 // Validating the input line
@@ -58,20 +52,20 @@ namespace BIM_Leaders_Core
                 }
                 else // If one element selected.
                 {
-                    Element elem = doc.GetElement(selectedIds[0]);
+                    Element element = doc.GetElement(selectedIds[0]);
 
                     // If no line selected.
-                    if (elem.Category.Name != "Lines")
+                    if (element.Category.Name != "Lines")
                     {
                         TaskDialog.Show("Section Annotations", "Select element is not a line.");
                         return Result.Failed;
                     }
                     else
                     {
-                        foreach (Line l in elem.get_Geometry(options))
-                            line.Add(l);
+                        foreach (Line l in element.get_Geometry(options))
+                            lines.Add(l);
                         // Checking if not vertical
-                        double d = line[0].Direction.Z;
+                        double d = lines[0].Direction.Z;
                         if (d != 1 && d != -1)
                         {
                             TaskDialog.Show("Section Annotations", "Selected line is not vertical.");
@@ -92,17 +86,17 @@ namespace BIM_Leaders_Core
                 // Get user provided information from window
                 data = form.DataContext as Dimension_Section_Floors_Data;
 
-                bool input_spots = data.result_spots;
-                double input_thickness_cm = double.Parse(data.result_thickness);
-                double input_thickness = UnitUtils.ConvertToInternalUnits(input_thickness_cm, units);
+                bool inputSpots = data.result_spots;
+                double inputThicknessCm = double.Parse(data.result_thickness);
+                double inputThickness = UnitUtils.ConvertToInternalUnits(inputThicknessCm, units);
                 double scale = view.Scale;
                 XYZ zero = new XYZ(0,0,0);
                 int count = 0;
-                int count_spots = 0;
+                int countSpots = 0;
 
                 // Get Floors
                 FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                IEnumerable<Element> floors_all = collector.OfClass(typeof(Floor))
+                IEnumerable<Element> floorsAll = collector.OfClass(typeof(Floor))
                     .WhereElementIsNotElementType()
                     .ToElements();
 
@@ -120,34 +114,34 @@ namespace BIM_Leaders_Core
 
 
                 // Divide Floors to thick and thin tor spot elevations arrangement
-                List<Floor> floors_thin = new List<Floor>();
-                List<Floor> floors_thick = new List<Floor>();
-                foreach (Floor f in floors_all)
+                List<Floor> floorsThin = new List<Floor>();
+                List<Floor> floorsThick = new List<Floor>();
+                foreach (Floor floor in floorsAll)
                 {
-                    FloorType f_type = f.FloorType;
+                    FloorType floorType = floor.FloorType;
 
-                    double f_thick = f_type.get_Parameter(BuiltInParameter.FLOOR_ATTR_DEFAULT_THICKNESS_PARAM).AsDouble();
+                    double floorThickness = floorType.get_Parameter(BuiltInParameter.FLOOR_ATTR_DEFAULT_THICKNESS_PARAM).AsDouble();
 
-                    if(f_thick > input_thickness)
-                        floors_thick.Add(f);
+                    if(floorThickness > inputThickness)
+                        floorsThick.Add(floor);
                     else
-                        floors_thin.Add(f);
+                        floorsThin.Add(floor);
                 }
 
                 IntersectionResultArray ira = new IntersectionResultArray();
 
                 // List for intersection points
-                List<Reference> intersections_thick_top = new List<Reference>();
-                List<Reference> intersections_thick_bot = new List<Reference>();
-                List<Face> intersection_faces_thick_top = new List<Face>();
-                List<Face> intersection_faces_thick_bot = new List<Face>();
+                List<Reference> intersectionsThickTop = new List<Reference>();
+                List<Reference> intersectionsThickBot = new List<Reference>();
+                List<Face> intersectionFacesThickTop = new List<Face>();
+                List<Face> intersectionFacesThickBot = new List<Face>();
 
                 // Iterate through floors solids and get faces
-                foreach (Floor floor in floors_thick)
+                foreach (Floor floor in floorsThick)
                 {
-                    foreach(Solid s in floor.get_Geometry(options))
+                    foreach(Solid solid in floor.get_Geometry(options))
                     {
-                        foreach(Face face in s.Faces)
+                        foreach(Face face in solid.Faces)
                         {
                             // Some faces are cylidrical so pass them
                             try
@@ -160,20 +154,20 @@ namespace BIM_Leaders_Core
                                     {
                                         if(Math.Round(face.ComputeNormal(p).Z) == 1)
                                         {
-                                            SetComparisonResult intersection = face.Intersect(line[0], out ira);
+                                            SetComparisonResult intersection = face.Intersect(lines[0], out ira);
                                             if(intersection == SetComparisonResult.Overlap)
                                             {
-                                                intersections_thick_top.Add(face.Reference);
-                                                intersection_faces_thick_top.Add(face);
+                                                intersectionsThickTop.Add(face.Reference);
+                                                intersectionFacesThickTop.Add(face);
                                             }
                                         }
                                         if (Math.Round(face.ComputeNormal(p).Z) == -1)
                                         {
-                                            SetComparisonResult intersection = face.Intersect(line[0], out ira);
+                                            SetComparisonResult intersection = face.Intersect(lines[0], out ira);
                                             if (intersection == SetComparisonResult.Overlap)
                                             {
-                                                intersections_thick_bot.Add(face.Reference);
-                                                intersection_faces_thick_bot.Add(face);
+                                                intersectionsThickBot.Add(face.Reference);
+                                                intersectionFacesThickBot.Add(face);
                                             }
                                         }
                                     }
@@ -185,15 +179,15 @@ namespace BIM_Leaders_Core
                 }
 
                 // List for intersection points
-                List<Reference> intersections_thin_top = new List<Reference>();
-                List<Face> intersection_faces_thin_top = new List<Face>();
+                List<Reference> intersectionsThinTop = new List<Reference>();
+                List<Face> intersectionFacesThinTop = new List<Face>();
 
                 // Iterate through floors solids and get faces
-                foreach (Floor floor in floors_thin)
+                foreach (Floor floor in floorsThin)
                 {
-                    foreach (Solid s in floor.get_Geometry(options))
+                    foreach (Solid solid in floor.get_Geometry(options))
                     {
-                        foreach (Face face in s.Faces)
+                        foreach (Face face in solid.Faces)
                         {
                             // Some faces are cylidrical so pass them
                             try
@@ -206,11 +200,11 @@ namespace BIM_Leaders_Core
                                     {
                                         if (Math.Round(face.ComputeNormal(p).Z) == 1)
                                         {
-                                            SetComparisonResult intersection = face.Intersect(line[0], out ira);
+                                            SetComparisonResult intersection = face.Intersect(lines[0], out ira);
                                             if (intersection == SetComparisonResult.Overlap)
                                             {
-                                                intersections_thin_top.Add(face.Reference);
-                                                intersection_faces_thin_top.Add(face);
+                                                intersectionsThinTop.Add(face.Reference);
+                                                intersectionFacesThinTop.Add(face);
                                             }
                                         }
                                     }
@@ -224,19 +218,19 @@ namespace BIM_Leaders_Core
                 // Convert lists to ReferenceArrays
                 ReferenceArray references = new ReferenceArray();
 
-                foreach (Reference p in intersections_thick_top)
+                foreach (Reference reference in intersectionsThickTop)
                 {
-                    references.Append(p);
+                    references.Append(reference);
                     count++;
                 }
-                foreach (Reference p in intersections_thick_bot)
+                foreach (Reference reference in intersectionsThickBot)
                 {
-                    references.Append(p);
+                    references.Append(reference);
                     count++;
                 }
-                foreach (Reference p in intersections_thin_top)
+                foreach (Reference reference in intersectionsThinTop)
                 {
-                    references.Append(p);
+                    references.Append(reference);
                     count++;
                 }
 
@@ -248,47 +242,47 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    if (input_spots)
+                    if (inputSpots)
                     {
-                        for (int i = 0; i < intersections_thick_top.Count; i++)
+                        for (int i = 0; i < intersectionsThickTop.Count; i++)
                         {
-                            double x = line[0].GetEndPoint(0).X;
-                            double y = line[0].GetEndPoint(0).Y;
-                            double z = intersection_faces_thick_top[i].EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Z;
+                            double x = lines[0].GetEndPoint(0).X;
+                            double y = lines[0].GetEndPoint(0).Y;
+                            double z = intersectionFacesThickTop[i].EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Z;
                             XYZ origin = new XYZ(x, y, z);
 
                             try
                             {
-                                SpotDimension sd = doc.Create.NewSpotElevation(view, intersections_thick_top[i], origin, zero, zero, origin, false);
-                                count_spots++;
+                                SpotDimension sd = doc.Create.NewSpotElevation(view, intersectionsThickTop[i], origin, zero, zero, origin, false);
+                                countSpots++;
                             }
                             catch { }
                         }
-                        for (int i = 0; i < intersections_thick_bot.Count; i++)
+                        for (int i = 0; i < intersectionsThickBot.Count; i++)
                         {
-                            double x = line[0].GetEndPoint(0).X;
-                            double y = line[0].GetEndPoint(0).Y;
-                            double z = intersection_faces_thick_top[i].EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Z;
+                            double x = lines[0].GetEndPoint(0).X;
+                            double y = lines[0].GetEndPoint(0).Y;
+                            double z = intersectionFacesThickTop[i].EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Z;
                             XYZ origin = new XYZ(x, y, z);
 
                             try
                             {
-                                SpotDimension sd = doc.Create.NewSpotElevation(view, intersections_thick_bot[i], origin, zero, zero, origin, false);
-                                count_spots++;
+                                SpotDimension sd = doc.Create.NewSpotElevation(view, intersectionsThickBot[i], origin, zero, zero, origin, false);
+                                countSpots++;
                             }
                             catch { }
                         }
-                        for (int i = 0; i < intersections_thin_top.Count; i++)
+                        for (int i = 0; i < intersectionsThinTop.Count; i++)
                         {
-                            double x = line[0].GetEndPoint(0).X;
-                            double y = line[0].GetEndPoint(0).Y;
-                            double z = intersection_faces_thick_top[i].EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Z;
+                            double x = lines[0].GetEndPoint(0).X;
+                            double y = lines[0].GetEndPoint(0).Y;
+                            double z = intersectionFacesThickTop[i].EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Z;
                             XYZ origin = new XYZ(x, y, z);
 
                             try
                             {
-                                SpotDimension sd = doc.Create.NewSpotElevation(view, intersections_thin_top[i], origin, zero, zero, origin, false);
-                                count_spots++;
+                                SpotDimension sd = doc.Create.NewSpotElevation(view, intersectionsThinTop[i], origin, zero, zero, origin, false);
+                                countSpots++;
                             }
                             catch { }
                         }
@@ -297,26 +291,26 @@ namespace BIM_Leaders_Core
                     {
                         try
                         {
-                            Dimension d = doc.Create.NewDimension(view, line[0], references);
+                            Dimension dimension = doc.Create.NewDimension(view, lines[0], references);
 
-                            ElementTransformUtils.MoveElement(doc, d.Id, XYZ.BasisZ);
-                            ElementTransformUtils.MoveElement(doc, d.Id, -XYZ.BasisZ);
+                            ElementTransformUtils.MoveElement(doc, dimension.Id, XYZ.BasisZ);
+                            ElementTransformUtils.MoveElement(doc, dimension.Id, -XYZ.BasisZ);
                             doc.Regenerate();
 
                             // Remove leaders
-                            d.get_Parameter(BuiltInParameter.DIM_LEADER).SetValueString("No");
+                            dimension.get_Parameter(BuiltInParameter.DIM_LEADER).SetValueString("No");
 
-                            ElementTransformUtils.MoveElement(doc, d.Id, XYZ.BasisZ);
-                            ElementTransformUtils.MoveElement(doc, d.Id, -XYZ.BasisZ);
+                            ElementTransformUtils.MoveElement(doc, dimension.Id, XYZ.BasisZ);
+                            ElementTransformUtils.MoveElement(doc, dimension.Id, -XYZ.BasisZ);
                             doc.Regenerate();
 
                             // Move little segments text
-                            DimensionSegmentArray dsa = d.Segments;
-                            foreach (DimensionSegment ds in dsa)
+                            DimensionSegmentArray dimensionSegments = dimension.Segments;
+                            foreach (DimensionSegment dimensionSegment in dimensionSegments)
                             {
-                                if (ds.IsTextPositionAdjustable())
+                                if (dimensionSegment.IsTextPositionAdjustable())
                                 {
-                                    double value = UnitUtils.ConvertFromInternalUnits(ds.Value.Value, units);
+                                    double value = UnitUtils.ConvertFromInternalUnits(dimensionSegment.Value.Value, units);
 
                                     double ratio = 0.7; // Ratio of dimension text height to width
                                     if (value > 9)
@@ -324,47 +318,38 @@ namespace BIM_Leaders_Core
                                     if (value > 99)
                                         ratio = 2.5; // For 3-digit dimensions
 
-                                    double dim_size_d = d.DimensionType.get_Parameter(BuiltInParameter.TEXT_SIZE).AsDouble();
-                                    double dim_size = UnitUtils.ConvertFromInternalUnits(dim_size_d, units) * ratio; // Size of the dimension along dimension line
+                                    double dimensionSizeD = dimension.DimensionType.get_Parameter(BuiltInParameter.TEXT_SIZE).AsDouble();
+                                    double dimensionSize = UnitUtils.ConvertFromInternalUnits(dimensionSizeD, units) * ratio; // Size of the dimension along dimension line
 
-                                    double factor = value / (scale * dim_size); // Factor calculated if dimension should be moved to the side
+                                    double factor = value / (scale * dimensionSize); // Factor calculated if dimension should be moved to the side
                                     
                                     if (factor < 1)
                                     {
                                         // Get the current text XYZ position
-                                        XYZ currentTextPosition = ds.TextPosition;
+                                        XYZ currentTextPosition = dimensionSegment.TextPosition;
                                         // Calculate moving offset
-                                        double translation_z = UnitUtils.ConvertToInternalUnits((value + dim_size * scale) / 2 + 3, units);
+                                        double translationZ = UnitUtils.ConvertToInternalUnits((value + dimensionSize * scale) / 2 + 3, units);
                                         // Calculate a new XYZ position by transforming the current text position
-                                        XYZ newTextPosition = Transform.CreateTranslation(new XYZ(0, 0, translation_z)).OfPoint(currentTextPosition);
+                                        XYZ newTextPosition = Transform.CreateTranslation(new XYZ(0, 0, translationZ)).OfPoint(currentTextPosition);
                                         // Set the new text position for the segment's text
-                                        ds.TextPosition = newTextPosition;
+                                        dimensionSegment.TextPosition = newTextPosition;
                                     }
                                 }
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            TaskDialog.Show("Section Annotations", ex.ToString());
-                        }
+                        catch (Exception ex) { TaskDialog.Show("Section Annotations", ex.ToString()); }
                     }
 
                     trans.Commit();
 
                     if(count == 0)
-                    {
                         TaskDialog.Show("Section Annotations", "No annotations created");
-                    }
                     else
                     {
-                        if(count_spots == 0)
-                        {
+                        if(countSpots == 0)
                             TaskDialog.Show("Section Annotations", string.Format("Dimension with {0} segments created", count.ToString()));
-                        }
                         else
-                        {
-                            TaskDialog.Show("Section Annotations", string.Format("{0} spot elevations created", count_spots.ToString()));
-                        }
+                            TaskDialog.Show("Section Annotations", string.Format("{0} spot elevations created", countSpots.ToString()));
                     }
                 }
 

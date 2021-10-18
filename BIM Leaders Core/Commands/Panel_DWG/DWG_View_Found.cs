@@ -28,22 +28,10 @@ namespace BIM_Leaders_Core
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>(); //LINQ function;
 
-                List<string> imports_names = new List<string>
-                {
-                    "File"
-                };
-                List<string> views = new List<string>
-                {
-                    "View"
-                };
-                List<string> ids = new List<string>
-                {
-                    "Id"
-                };
-                List<string> islink = new List<string>
-                {
-                    "Import Type"
-                };
+                List<string> imports_names = new List<string> { "File" };
+                List<string> views = new List<string> { "View" };
+                List<string> ids = new List<string> { "Id" };
+                List<string> islink = new List<string> { "Import Type" };
 
                 foreach (ImportInstance i in imports)
                 {
@@ -58,22 +46,15 @@ namespace BIM_Leaders_Core
                     
                     // Checking if 2D or 3D
                     if(i.ViewSpecific)
-                    {
                         views.Add(doc.GetElement(i.OwnerViewId).Name);
-                    }
                     else
-                    {
                         views.Add("Not a view specific import");
-                    }
                     // Checking if link or import
                     if (i.IsLinked)
-                    {
                         islink.Add("Link");
-                    }
                     else
-                    {
                         islink.Add("Import");
-                    }
+
                     ids.Add(i.Id.ToString());
                 }
 
