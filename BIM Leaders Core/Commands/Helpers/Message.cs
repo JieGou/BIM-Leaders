@@ -42,8 +42,8 @@ namespace BIM_Leaders_Core
                 MainContent = message,
                 MainIcon = icon,
                 CommonButtons = TaskDialogCommonButtons.Ok
-
             };
+
             window.Show();
         }
     }

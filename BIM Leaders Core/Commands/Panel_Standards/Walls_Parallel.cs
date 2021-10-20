@@ -14,8 +14,8 @@ namespace BIM_Leaders_Core
     {
         public static Reference GetRefRef(UIDocument doc)
         {
-            Reference line_ref = doc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Reference Plane");
-            return line_ref;
+            Reference lineReference = doc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Reference Plane");
+            return lineReference;
         }
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -45,65 +45,54 @@ namespace BIM_Leaders_Core
 
                 // Get Walls
                 FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                IEnumerable<Element> walls_all = collector.OfClass(typeof(Wall))
+                IEnumerable<Element> wallsAll = collector.OfClass(typeof(Wall))
                     .WhereElementIsNotElementType()
                     .ToElements();
 
                 // Filter walls with no need to check
                 List<Wall> walls = new List<Wall>();
-                foreach(Wall w in walls_all)
+                foreach(Wall wall in wallsAll)
                 {
                     try
                     {
-                        XYZ temp = w.Orientation;
-                        walls.Add(w);
+                        XYZ temp = wall.Orientation;
+                        walls.Add(wall);
                     }
-                    catch
-                    {
-
-                    }
+                    catch { }
                 }
 
                 // Get direction of reference plane
-                double ref_ox = Math.Abs(reference.Direction.Y);
-                double ref_oy = Math.Abs(reference.Direction.X);
+                double referenceX = Math.Abs(reference.Direction.X);
+                double referenceY = Math.Abs(reference.Direction.Y);
 
                 // Get lists of walls that are parallel and perpendicular
-                List<Wall> walls_par = new List<Wall>();
-                List<Wall> walls_per = new List<Wall>(); 
-                foreach(Wall w in walls)
+                List<Wall> wallsPar = new List<Wall>();
+                List<Wall> wallsPer = new List<Wall>(); 
+                foreach(Wall wall in walls)
                 {
-                    double ox = Math.Abs(w.Orientation.X);
-                    double oy = Math.Abs(w.Orientation.Y);
+                    double wallX = Math.Abs(wall.Orientation.X);
+                    double wallY = Math.Abs(wall.Orientation.Y);
 
                     // Checking if parallel
-                    if(Math.Abs(ox-ref_ox) <= tolerance && Math.Abs(oy-ref_oy) <= tolerance)
-                    {
-                        walls_par.Add(w);
-                    }
-                    if (Math.Abs(ox - ref_oy) <= tolerance && Math.Abs(oy - ref_ox) <= tolerance)
-                    {
-                        walls_per.Add(w);
-                    }
+                    if(Math.Abs(wallX - referenceY) <= tolerance && Math.Abs(wallY - referenceX) <= tolerance)
+                        wallsPar.Add(wall);
+                    if (Math.Abs(wallX - referenceX) <= tolerance && Math.Abs(wallY - referenceY) <= tolerance)
+                        wallsPer.Add(wall);
                 }
 
                 // Subtracting the lists from all walls list via set operation
-                List<Wall> walls_filter = new List<Wall>();
-                foreach (Wall w in walls)
+                List<Wall> wallsFilter = new List<Wall>();
+                foreach (Wall wall in walls)
                 {
-                    if (walls_par.Contains(w) | walls_per.Contains(w)) { }
+                    if (wallsPar.Contains(wall) | wallsPer.Contains(wall)) { }
                     else
-                    {
-                        walls_filter.Add(w);
-                    }
+                        wallsFilter.Add(wall);
                 }
 
                 // Converting to ICollection of Element Ids
-                List<ElementId> walls_filter_ids = new List<ElementId>();
-                foreach(Wall w in walls_filter)
-                {
-                    walls_filter_ids.Add(w.Id);
-                }
+                List<ElementId> wallsFilterIds = new List<ElementId>();
+                foreach(Wall wall in wallsFilter)
+                    wallsFilterIds.Add(wall.Id);
 
                 using (Transaction trans = new Transaction(doc, "Create Filter for non-parallel Walls"))
                 {
@@ -111,16 +100,12 @@ namespace BIM_Leaders_Core
 
                     // Checking if filter already exists
                     IEnumerable<Element> filters = new FilteredElementCollector(doc).OfClass(typeof(SelectionFilterElement)).ToElements();
-                    foreach(Element e in filters)
-                    {
-                        if(e.Name == "Walls parallel filter")
-                        {
-                            doc.Delete(e.Id);
-                        }
-                    }
+                    foreach(Element element in filters)
+                        if(element.Name == "Walls parallel filter")
+                            doc.Delete(element.Id);
 
                     SelectionFilterElement filter = SelectionFilterElement.Create(doc, "Walls parallel filter");
-                    filter.SetElementIds(walls_filter_ids);
+                    filter.SetElementIds(wallsFilterIds);
 
                     // Add the filter to the view
                     ElementId filterId = filter.Id;
@@ -130,9 +115,9 @@ namespace BIM_Leaders_Core
                     // Get solid pattern
                     IEnumerable<Element> patterns = new FilteredElementCollector(doc).OfClass(typeof(FillPatternElement)).ToElements();
                     ElementId pattern = patterns.First().Id;
-                    foreach(Element e in patterns)
-                        if(e.Name == "<Solid fill>")
-                            pattern = e.Id;
+                    foreach(Element element in patterns)
+                        if(element.Name == "<Solid fill>")
+                            pattern = element.Id;
 
                     // Use the existing graphics settings, and change the color to Orange
                     OverrideGraphicSettings overrideSettings = view.GetFilterOverrides(filterId);
@@ -144,14 +129,10 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                if (walls_filter.Count == 0)
-                {
+                if (wallsFilter.Count == 0)
                     TaskDialog.Show("Walls parallel filter", "All walls are clear");
-                }
                 else
-                {
-                    TaskDialog.Show("Walls parallel filter", string.Format("{0} walls added to Walls parallel filter", walls_filter.Count.ToString()));
-                }
+                    TaskDialog.Show("Walls parallel filter", string.Format("{0} walls added to Walls parallel filter", wallsFilter.Count.ToString()));
 
                 return Result.Succeeded;
             }

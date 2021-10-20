@@ -33,11 +33,11 @@ namespace BIM_Leaders_Core
                 // Get user provided information from window
                 data = form.DataContext as Linetypes_Delete_Data;
 
-                string name_delete = data.result_name;
+                string nameDelete = data.result_name;
                 int count = 0;
 
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
-                IEnumerable<LinePatternElement> line_patterns = collector.OfClass(typeof(LinePatternElement))
+                IEnumerable<LinePatternElement> linePatterns = collector.OfClass(typeof(LinePatternElement))
                     .WhereElementIsNotElementType().ToElements().Cast<LinePatternElement>();
 
                 using (Transaction trans = new Transaction(doc, "Delete Line Patterns"))
@@ -45,14 +45,14 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     // Deleting unused line patterns
-                    foreach (LinePatternElement l in line_patterns)
+                    foreach (LinePatternElement linePattern in linePatterns)
                     {
-                        string name = l.Name;
+                        string linePatternName = linePattern.Name;
 
-                        if (name.Contains(name_delete))
+                        if (linePatternName.Contains(nameDelete))
                         {
-                            ElementId id = l.Id;
-                            doc.Delete(id);
+                            ElementId linePatternId = linePattern.Id;
+                            doc.Delete(linePatternId);
                             count++;
                         }
                     }
@@ -62,13 +62,9 @@ namespace BIM_Leaders_Core
 
                 // Show result
                 if (count == 0)
-                {
                     TaskDialog.Show("Delete Line Patterns", "No line patterns deleted");
-                }
                 else
-                {
                     TaskDialog.Show("Delete Line Patterns", string.Format("{0} line patterns deleted", count.ToString()));
-                }
 
                 return Result.Succeeded;
             }

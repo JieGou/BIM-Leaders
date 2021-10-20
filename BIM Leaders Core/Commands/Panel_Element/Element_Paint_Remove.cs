@@ -27,8 +27,8 @@ namespace BIM_Leaders_Core
                     ComputeReferences = true
                 };
 
-                int faces_all = 0;
-                int faces_cleared = 0;
+                int facesCountAll = 0;
+                int facesCountCleared = 0;
                 using (Transaction trans = new Transaction(doc, "Remove Paint from Element"))
                 {
                     trans.Start();
@@ -36,13 +36,13 @@ namespace BIM_Leaders_Core
                     foreach (Solid solid in element.get_Geometry(options))
                     {
                         FaceArray faces = solid.Faces;
-                        faces_all = faces.Size;
+                        facesCountAll = faces.Size;
                         foreach (Face face in faces)
                         {
                             if (doc.IsPainted(element.Id, face))
                             {
                                 doc.RemovePaint(element.Id, face);
-                                faces_cleared++;
+                                facesCountCleared++;
                             }
                         }
                     }
@@ -51,14 +51,10 @@ namespace BIM_Leaders_Core
                 }  
 
                 // Show result
-                if (faces_cleared == 0)
-                {
+                if (facesCountCleared == 0)
                     TaskDialog.Show("Paint remove", "Painted faces not found");
-                }
                 else
-                {
-                    TaskDialog.Show("Paint remove", string.Format("{0} of {1} faces have been cleared from paint", faces_cleared.ToString(), faces_all.ToString()));
-                }
+                    TaskDialog.Show("Paint remove", string.Format("{0} of {1} faces have been cleared from paint", facesCountCleared.ToString(), facesCountAll.ToString()));
 
                 return Result.Succeeded;
             }

@@ -82,8 +82,8 @@
     <Compile Include="Commands\Panel_Standards\Warnings_Solve.cs" />
     <Compile Include="Commands\Panel_Standards\Walls_Arranged.cs" />
     <Compile Include="Commands\Panel_Standards\Help_Standards.cs" />
-    <Compile Include="Commands\Selection\SelectionFilterByCategory.cs" />
-    <Compile Include="Commands\Type\WindowType.cs" />
+    <Compile Include="Commands\Helpers\SelectionFilterByCategory.cs" />
+    <Compile Include="Commands\Helpers\WindowType.cs" />
     <Compile Include="CoreAssembly.cs" />
     <Compile Include="Commands\Panel_Annotate\Dimension_Section_Floors.cs" />
     <Compile Include="Commands\Panel_DWG\DWG_Name_Delete.cs" />

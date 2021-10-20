@@ -26,7 +26,7 @@ namespace BIM_Leaders_Core
 
                 double length = 1;
 
-                XYZ o = new XYZ(0, 0, 0);
+                XYZ zero = new XYZ(0, 0, 0);
                 XYZ a = new XYZ(length, 0, 0);
                 XYZ b = new XYZ(0, length, 0);
                 XYZ c = new XYZ(0 - length, 0, 0);
@@ -36,21 +36,21 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    Line l_0 = Line.CreateBound(o, a);
-                    DetailCurve d_0 = doc.FamilyCreate.NewDetailCurve(view, l_0);
-                    Line l_1 = Line.CreateBound(o, b);
-                    DetailCurve d_1 = doc.FamilyCreate.NewDetailCurve(view, l_1);
-                    Line l_2 = Line.CreateBound(o, c);
-                    DetailCurve d_2 = doc.FamilyCreate.NewDetailCurve(view, l_2);
-                    Line l_3 = Line.CreateBound(o, d);
-                    DetailCurve d_3 = doc.FamilyCreate.NewDetailCurve(view, l_3);
+                    Line line0 = Line.CreateBound(zero, a);
+                    DetailCurve curve0 = doc.FamilyCreate.NewDetailCurve(view, line0);
+                    Line line1 = Line.CreateBound(zero, b);
+                    DetailCurve curve1 = doc.FamilyCreate.NewDetailCurve(view, line1);
+                    Line line2 = Line.CreateBound(zero, c);
+                    DetailCurve curve2 = doc.FamilyCreate.NewDetailCurve(view, line2);
+                    Line line3 = Line.CreateBound(zero, d);
+                    DetailCurve curve3 = doc.FamilyCreate.NewDetailCurve(view, line3);
 
                     List<ElementId> lines = new List<ElementId>
                     {
-                        d_0.Id,
-                        d_1.Id,
-                        d_2.Id,
-                        d_3.Id
+                        curve0.Id,
+                        curve1.Id,
+                        curve2.Id,
+                        curve3.Id
                     };
 
                     uidoc.Selection.SetElementIds(lines);

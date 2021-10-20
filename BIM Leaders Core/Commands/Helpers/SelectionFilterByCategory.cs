@@ -31,9 +31,7 @@ namespace BIM_Leaders_Core
         public bool AllowElement(Element element)
         {
             if (element.Category.Name == mCategory)
-            {
                 return true;
-            }
             return false;
         }
         /// <summary>

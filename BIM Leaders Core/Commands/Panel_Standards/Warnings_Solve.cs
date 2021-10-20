@@ -47,7 +47,7 @@ namespace BIM_Leaders_Core
                 // now solve only joins, so no input window results
 
                 bool joins = true;
-                int count_joins = 0;
+                int countJoins = 0;
 
 
                 IList<FailureMessage> warnings = doc.GetWarnings();
@@ -59,29 +59,25 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     if (joins)
-                    {
-                        foreach (FailureMessage w in warnings)
-                        {
+                        foreach (FailureMessage warning in warnings)
                             if (w.GetDescriptionText() == "Highlighted elements are joined but do not intersect.")
                             {
-                                List<ElementId> ids = w.GetFailingElements().ToList();
-                                Element el_0 = doc.GetElement(ids[0]);
-                                Element el_1 = doc.GetElement(ids[1]);
+                                List<ElementId> ids = warning.GetFailingElements().ToList();
+                                Element element0 = doc.GetElement(ids[0]);
+                                Element element1 = doc.GetElement(ids[1]);
 
-                                JoinGeometryUtils.UnjoinGeometry(doc, el_0, el_1);
+                                JoinGeometryUtils.UnjoinGeometry(doc, element0, element1);
 
-                                count_joins++;
+                                countJoins++;
                             }
-                        }
-                    }
                     
                     trans.Commit();
 
                     // Show result
-                    if (count_joins == 0)
+                    if (countJoins == 0)
                         TaskDialog.Show("Solve Warnings", "No warnings to solve");
                     else
-                        TaskDialog.Show("Solve Warnings", string.Format("{0} wrong joins were removed", count_joins.ToString()));
+                        TaskDialog.Show("Solve Warnings", string.Format("{0} wrong joins were removed", countJoins.ToString()));
 
                     return Result.Succeeded;
                 }

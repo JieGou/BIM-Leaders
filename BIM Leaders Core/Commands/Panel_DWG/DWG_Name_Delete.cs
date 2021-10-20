@@ -34,17 +34,18 @@ namespace BIM_Leaders_Core
                 data = form.DataContext as DWG_Name_Delete_Data;
 
                 string name = doc.GetElement(data.dwg_list_sel).Category.Name;
+
                 // Get all Imports with name same as input from a form
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
-                IEnumerable<ImportInstance> dwg_types_all = collector.OfClass(typeof(ImportInstance))
+                IEnumerable<ImportInstance> dwgTypesAll = collector.OfClass(typeof(ImportInstance))
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>(); //LINQ function;
                 List<ElementId> delete = new List<ElementId>();
-                foreach (ImportInstance i in dwg_types_all)
+                foreach (ImportInstance dwgType in dwgTypesAll)
                 {
-                    string i_name = i.Category.Name;
-                    if (i_name == name)
-                        delete.Add(i.Id);
+                    string dwgTypeName = dwgType.Category.Name;
+                    if (dwgTypeName == name)
+                        delete.Add(dwgType.Id);
                 }
                 int count = 0;
 
@@ -61,13 +62,9 @@ namespace BIM_Leaders_Core
                     trans.Commit();
 
                     if(count == 0)
-                    {
                         TaskDialog.Show("DWG Deleted", "No DWG deleted");
-                    }
                     else
-                    {
                         TaskDialog.Show("DWG Deleted", string.Format("{0} DWG named {1} deleted", count.ToString(), name));
-                    }
                 }
                 return Result.Succeeded;
             }

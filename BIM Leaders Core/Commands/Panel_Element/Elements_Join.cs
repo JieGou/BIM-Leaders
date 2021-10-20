@@ -24,78 +24,74 @@ namespace BIM_Leaders_Core
 
                 //Plane view_plane = Plane.CreateByNormalAndOrigin(doc.ActiveView.ViewDirection, doc.ActiveView.Origin);
                 // Solid of view section plane for filtering
-                IList<CurveLoop> view_crop = doc.ActiveView.GetCropRegionShapeManager().GetCropShape();
-                Solid s = GeometryCreationUtilities.CreateExtrusionGeometry(view_crop, doc.ActiveView.ViewDirection, 1);
-                ElementIntersectsSolidFilter eief = new ElementIntersectsSolidFilter(s);
+                IList<CurveLoop> viewCrop = doc.ActiveView.GetCropRegionShapeManager().GetCropShape();
+                Solid s = GeometryCreationUtilities.CreateExtrusionGeometry(viewCrop, doc.ActiveView.ViewDirection, 1);
+                ElementIntersectsSolidFilter eieFilter = new ElementIntersectsSolidFilter(s);
 
                 // Get Walls Ids
                 FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                ICollection<ElementId> walls_all = collector.OfClass(typeof(Wall))
+                ICollection<ElementId> wallsAll = collector.OfClass(typeof(Wall))
                     .WhereElementIsNotElementType()
-                    .WherePasses(eief)
+                    .WherePasses(eieFilter)
                     .ToElementIds();
                 // Get Floors Ids
-                FilteredElementCollector collector_1 = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                ICollection<ElementId> floors_all = collector_1.OfClass(typeof(Floor))
+                FilteredElementCollector collector1 = new FilteredElementCollector(doc, doc.ActiveView.Id);
+                ICollection<ElementId> floorsAll = collector1.OfClass(typeof(Floor))
                     .WhereElementIsNotElementType()
-                    .WherePasses(eief)
+                    .WherePasses(eieFilter)
                     .ToElementIds();
 
                 // Get all Walls and Floors as Elements
-                List<Element> elements_all = new List<Element>();
-                foreach(ElementId id in walls_all)
-                {
-                    elements_all.Add(doc.GetElement(id));
-                }
-                foreach (ElementId id in floors_all)
-                {
-                    elements_all.Add(doc.GetElement(id));
-                }
+                List<Element> elementsAll = new List<Element>();
+                foreach(ElementId id in wallsAll)
+                    elementsAll.Add(doc.GetElement(id));
+                foreach (ElementId id in floorsAll)
+                    elementsAll.Add(doc.GetElement(id));
 
                 using (Transaction trans = new Transaction(doc, "Remove Paint from Element"))
                 {
                     trans.Start();
 
                     // Go through elements list and join all elements that close to each element
-                    foreach (Element el in elements_all)
+                    foreach (Element element in elementsAll)
                     {
                         // Filter for intersecting the current element
                         //ElementIntersectsElementFilter filter = new ElementIntersectsElementFilter(el);
 
-                        BoundingBoxXYZ bb = el.get_BoundingBox(doc.ActiveView);
+                        BoundingBoxXYZ bb = element.get_BoundingBox(doc.ActiveView);
                         Outline outline = new Outline(bb.Min, bb.Max);
                         double tolerance = 0.1;
                         BoundingBoxIntersectsFilter filter = new BoundingBoxIntersectsFilter(outline, tolerance);
 
                         // List of elements that intersect
-                        List<Element> elements_close = new List<Element>();
+                        List<Element> elementsClose = new List<Element>();
 
                         // Collecting elements that intersect
-                        FilteredElementCollector collector_w = new FilteredElementCollector(doc, walls_all);
-                        IList<Element> walls_close = collector_w
+                        FilteredElementCollector collectorW = new FilteredElementCollector(doc, wallsAll);
+                        IList<Element> wallsClose = collectorW
                             .WherePasses(filter)
                             .ToElements();
-                        FilteredElementCollector collector_f = new FilteredElementCollector(doc, floors_all);
-                        IList<Element> floors_close = collector_w
+                        FilteredElementCollector collectorF = new FilteredElementCollector(doc, floorsAll);
+                        IList<Element> floorsClose = collectorF
                             .WherePasses(filter)
                             .ToElements();
 
                         // Joining
                         try
                         {
-                            foreach (Element el_w in walls_close)
+                            foreach (Element elementW in wallsClose)
                             {
-                                if (!JoinGeometryUtils.AreElementsJoined(doc, el, el_w))
+                                if (!JoinGeometryUtils.AreElementsJoined(doc, element, elementW))
                                 {
-                                    JoinGeometryUtils.JoinGeometry(doc, el, el_w);
+                                    JoinGeometryUtils.JoinGeometry(doc, element, elementW);
                                     count++;
                                 }
                             }
-                            foreach (Element el_f in floors_close)
+                            foreach (Element elementF in floorsClose)
                             {
-                                if (!JoinGeometryUtils.AreElementsJoined(doc, el, el_f))
+                                if (!JoinGeometryUtils.AreElementsJoined(doc, element, elementF))
                                 {
-                                    JoinGeometryUtils.JoinGeometry(doc, el, el_f);
+                                    JoinGeometryUtils.JoinGeometry(doc, element, elementF);
                                     count++;
                                 }
                             }
@@ -107,13 +103,9 @@ namespace BIM_Leaders_Core
 
                 // Show result
                 if (count == 0)
-                {
                     TaskDialog.Show("Elements Join", "No joins found");
-                }
                 else
-                {
-                    TaskDialog.Show("Elements Join", string.Format("{0} elements cuts a view. {1} elements joins were done", elements_all.Count.ToString(), count.ToString()));
-                }
+                    TaskDialog.Show("Elements Join", string.Format("{0} elements cuts a view. {1} elements joins were done", elementsAll.Count.ToString(), count.ToString()));
 
                 return Result.Succeeded;
             }

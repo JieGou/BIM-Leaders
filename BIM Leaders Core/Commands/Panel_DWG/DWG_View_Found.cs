@@ -28,34 +28,34 @@ namespace BIM_Leaders_Core
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>(); //LINQ function;
 
-                List<string> imports_names = new List<string> { "File" };
+                List<string> importsNames = new List<string> { "File" };
                 List<string> views = new List<string> { "View" };
                 List<string> ids = new List<string> { "Id" };
                 List<string> islink = new List<string> { "Import Type" };
 
-                foreach (ImportInstance i in imports)
+                foreach (ImportInstance import in imports)
                 {
                     try
                     {
-                        imports_names.Add(i.Category.Name);
+                        importsNames.Add(import.Category.Name);
                     }
                     catch (Exception empty_name)
                     {
-                        imports_names.Add("");
+                        importsNames.Add("");
                     }
                     
                     // Checking if 2D or 3D
-                    if(i.ViewSpecific)
-                        views.Add(doc.GetElement(i.OwnerViewId).Name);
+                    if(import.ViewSpecific)
+                        views.Add(doc.GetElement(import.OwnerViewId).Name);
                     else
                         views.Add("Not a view specific import");
                     // Checking if link or import
-                    if (i.IsLinked)
+                    if (import.IsLinked)
                         islink.Add("Link");
                     else
                         islink.Add("Import");
 
-                    ids.Add(i.Id.ToString());
+                    ids.Add(import.Id.ToString());
                 }
 
                 // Export to Excel
@@ -81,10 +81,10 @@ namespace BIM_Leaders_Core
 
                 // Fill the table
                 DataRow newRow1;
-                string i_name = "";
-                string i_view = "Not a view specific import";
-                string i_id = "";
-                string i_link = "Import";
+                string iName = "";
+                string iView = "Not a view specific import";
+                string iId = "";
+                string iLink = "Import";
                 foreach (ImportInstance i in imports)
                 {
                     newRow1 = dwgDataTable.NewRow();
@@ -92,25 +92,25 @@ namespace BIM_Leaders_Core
                     // Name
                     try
                     {
-                        i_name = i.Category.Name;
+                        iName = i.Category.Name;
                     }
                     catch (Exception empty_name) { }
 
                     // Checking if 2D or 3D
                     if (i.ViewSpecific)
-                        i_view = doc.GetElement(i.OwnerViewId).Name;
+                        iView = doc.GetElement(i.OwnerViewId).Name;
 
                     // Id
-                    i_id = i.Id.ToString();
+                    iId = i.Id.ToString();
 
                     // Checking if link or import
                     if (i.IsLinked)
-                        i_link = "Link";
+                        iLink = "Link";
 
-                    newRow1["File"] = i_name;
-                    newRow1["View"] = i_view;
-                    newRow1["Id"] = i_id;
-                    newRow1["Import Type"] = i_link;
+                    newRow1["File"] = iName;
+                    newRow1["View"] = iView;
+                    newRow1["Id"] = iId;
+                    newRow1["Import Type"] = iLink;
 
                     // Add the row to the Customers table.  
                     dwgDataTable.Rows.Add(newRow1); 
@@ -120,17 +120,12 @@ namespace BIM_Leaders_Core
                 // Show result
                 if (imports.Count() > 0)
                 {
-                    //TaskDialog.Show("Imports", string.Format("[{0}] on view [{1}] as {2}", imports_names[1], views[1], islink[1]));
-
                     DWG_View_Found_Data data = new DWG_View_Found_Data(dwgDataSet);
-
                     DWG_View_Found_Form form = new DWG_View_Found_Form(dwgDataSet);
                     form.ShowDialog();
                 }
                 else
-                {
                     TaskDialog.Show("Imports", string.Format("No imports in the file"));
-                }
                 
                 return Result.Succeeded;
             }

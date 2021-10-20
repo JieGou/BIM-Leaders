@@ -21,34 +21,30 @@ namespace BIM_Leaders_Core
             try
             {
                 FilteredElementCollector collector = new FilteredElementCollector(doc);
-                IEnumerable<CurveElement> lines_used = collector.OfClass(typeof(CurveElement))
-                    .WhereElementIsNotElementType().ToElements().Cast<CurveElement>();
+                IEnumerable<CurveElement> usedLines = collector.OfClass(typeof(CurveElement))
+                    .WhereElementIsNotElementType()
+                    .ToElements()
+                    .Cast<CurveElement>();
 
-                List<ElementId> line_styles_used = new List<ElementId>();
+                List<ElementId> lineStylesUsed = new List<ElementId>();
 
-                foreach(CurveElement l in lines_used)
+                foreach(CurveElement usedLine in usedLines)
                 {
-                    ElementId line_style = l.LineStyle.Id;
+                    ElementId lineStyle = usedLine.LineStyle.Id;
 
-                    if(!line_styles_used.Contains(line_style))
-                    {
-                        line_styles_used.Add(line_style);
-                    }
+                    if(!lineStylesUsed.Contains(lineStyle))
+                        lineStylesUsed.Add(lineStyle);
                 }
 
                 // Selecting all line styles in the project
-                CategoryNameMap line_styles_all_cnm = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
-                List<ElementId> line_styles_all = new List<ElementId>();
-                foreach (Category c in line_styles_all_cnm)
-                {
-                    line_styles_all.Add(c.Id);
-                }
+                CategoryNameMap lineStylesAllCnm = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
+                List<ElementId> lineStylesAll = new List<ElementId>();
+                foreach (Category category in lineStylesAllCnm)
+                    lineStylesAll.Add(category.Id);
 
-                List<ElementId> line_styles = new List<ElementId>();
-                foreach(ElementId i in line_styles_all)
-                {
-                    line_styles.Add(i);
-                }
+                List<ElementId> lineStyles = new List<ElementId>();
+                foreach(ElementId lineStyle in lineStylesAll)
+                    lineStyles.Add(lineStyle);
 
                 int count = 0;
 
@@ -57,19 +53,16 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     // Deleting unused line styles
-                    foreach (ElementId i in line_styles)
+                    foreach (ElementId lineStyle in lineStyles)
                     {
-                        if (!line_styles_used.Contains(i))
+                        if (!lineStylesUsed.Contains(lineStyle))
                         {
                             try
                             {
-                                doc.Delete(i);
+                                doc.Delete(lineStyle);
                                 count++;
                             }
-                            catch
-                            {
-
-                            }
+                            catch { }
                         }
                     }
 
@@ -78,13 +71,9 @@ namespace BIM_Leaders_Core
 
                 // Show result
                 if (count == 0)
-                {
                     TaskDialog.Show("Delete Unused Linestyles", "No linestyles deleted");
-                }
                 else
-                {
                     TaskDialog.Show("Delete Unused Linestyles", string.Format("{0} unused linestyles were deleted", count.ToString()));
-                }
 
                 return Result.Succeeded;
             }
