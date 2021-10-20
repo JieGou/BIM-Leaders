@@ -39,7 +39,7 @@ namespace BIM_Leaders_Core
                     {
                         importsNames.Add(import.Category.Name);
                     }
-                    catch (Exception empty_name)
+                    catch (Exception e)
                     {
                         importsNames.Add("");
                     }

@@ -60,7 +60,7 @@ namespace BIM_Leaders_Core
 
                     if (joins)
                         foreach (FailureMessage warning in warnings)
-                            if (w.GetDescriptionText() == "Highlighted elements are joined but do not intersect.")
+                            if (warning.GetDescriptionText() == "Highlighted elements are joined but do not intersect.")
                             {
                                 List<ElementId> ids = warning.GetFailingElements().ToList();
                                 Element element0 = doc.GetElement(ids[0]);
