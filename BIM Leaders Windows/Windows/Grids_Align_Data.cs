@@ -13,24 +13,42 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public Grids_Align_Data()
         {
-            result_side = true;
+            result_side_1 = true;
+            result_side_2 = true;
             result_switch = true;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating if <see cref="Grids_Align_Data"/> chosen Switch to 2D.
+        /// Gets or sets a value indicating if <see cref="Grids_Align_Data"/> chosen Side 1.
         /// </summary>
         /// /// <value>
-        ///     <c>true</c> if Switch to 2D is chosen, if not, then <c>false</c>.
+        ///     <c>true</c> if Side 1 is chosen, if not, then <c>false</c>.
         /// </value>
-        private bool _result_side;
-        public bool result_side
+        private bool _result_side_1;
+        public bool result_side_1
         {
-            get { return _result_side; }
+            get { return _result_side_1; }
             set
             {
-                _result_side = value;
-                OnPropertyChanged(nameof(result_side));
+                _result_side_1 = value;
+                OnPropertyChanged(nameof(result_side_1));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating if <see cref="Grids_Align_Data"/> chosen Side 2.
+        /// </summary>
+        /// /// <value>
+        ///     <c>true</c> if Side 2 is chosen, if not, then <c>false</c>.
+        /// </value>
+        private bool _result_side_2;
+        public bool result_side_2
+        {
+            get { return _result_side_2; }
+            set
+            {
+                _result_side_2 = value;
+                OnPropertyChanged(nameof(result_side_2));
             }
         }
 

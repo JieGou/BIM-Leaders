@@ -13,24 +13,42 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public Levels_Align_Data()
         {
-            result_side = true;
+            result_side_1 = true;
+            result_side_2 = true;
             result_switch = true;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating picked side for <see cref="Levels_Align_Data"/> annotations.
+        /// Gets or sets a value indicating if <see cref="Grids_Align_Data"/> chosen Side 1.
         /// </summary>
         /// /// <value>
-        ///     <c>true</c> if side 1 is chosen, if side 2 is chosen, then <c>false</c>.
+        ///     <c>true</c> if Side 1 is chosen, if not, then <c>false</c>.
         /// </value>
-        private bool _result_side;
-        public bool result_side
+        private bool _result_side_1;
+        public bool result_side_1
         {
-            get { return _result_side; }
+            get { return _result_side_1; }
             set
             {
-                _result_side = value;
-                OnPropertyChanged(nameof(result_side));
+                _result_side_1 = value;
+                OnPropertyChanged(nameof(result_side_1));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating if <see cref="Grids_Align_Data"/> chosen Side 2.
+        /// </summary>
+        /// /// <value>
+        ///     <c>true</c> if Side 2 is chosen, if not, then <c>false</c>.
+        /// </value>
+        private bool _result_side_2;
+        public bool result_side_2
+        {
+            get { return _result_side_2; }
+            set
+            {
+                _result_side_2 = value;
+                OnPropertyChanged(nameof(result_side_2));
             }
         }
 
@@ -67,7 +85,8 @@ namespace BIM_Leaders_Windows
         {
             // Information gathered from window
             var information = new Levels_Align_Data();
-            information.result_side = result_side;
+            information.result_side_1 = result_side_1;
+            information.result_side_2 = result_side_2;
             information.result_switch = result_switch;
             return information;
         }

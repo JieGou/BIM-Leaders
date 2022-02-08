@@ -25,10 +25,9 @@ namespace BIM_Leaders_Core
 
             // Getting input from user
             bool inputSwitch = data.result_switch;
-            bool inputSide1 = data.result_side;
-            bool inputSide2 = false;
-            if (!inputSide1)
-                inputSide2 = true;
+            bool inputSide1 = data.result_side_1;
+            bool inputSide2 = data.result_side_2;
+
             int count2D = 0;
             int count = 0;
 
