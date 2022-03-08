@@ -73,53 +73,53 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MultivalueTextBoxesConverter.cs" />
-    <Compile Include="Windows\Checker_Report_Data.cs" />
-    <Compile Include="Windows\Family_Parameter_Set_Data.cs" />
-    <Compile Include="Windows\Family_Parameter_Set_Form.xaml.cs">
-      <DependentUpon>Family_Parameter_Set_Form.xaml</DependentUpon>
+    <Compile Include="Windows\CheckerReportData.cs" />
+    <Compile Include="Windows\FamilyParameterSetData.cs" />
+    <Compile Include="Windows\FamilyParameterSetForm.xaml.cs">
+      <DependentUpon>FamilyParameterSetForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DWG_View_Found_Data.cs" />
-    <Compile Include="Windows\Checker_Data.cs" />
-    <Compile Include="Windows\Checker_Report_Form.xaml.cs">
-      <DependentUpon>Checker_Report_Form.xaml</DependentUpon>
+    <Compile Include="Windows\DwgViewFoundData.cs" />
+    <Compile Include="Windows\CheckerData.cs" />
+    <Compile Include="Windows\CheckerReportForm.xaml.cs">
+      <DependentUpon>CheckerReportForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Names_Prefix_Change_Data.cs" />
-    <Compile Include="Windows\Linetypes_Delete_Data.cs" />
-    <Compile Include="Windows\DWG_View_Found_Form.xaml.cs">
-      <DependentUpon>DWG_View_Found_Form.xaml</DependentUpon>
+    <Compile Include="Windows\NamesPrefixChangeData.cs" />
+    <Compile Include="Windows\LinetypesDeleteData.cs" />
+    <Compile Include="Windows\DwgViewFoundForm.xaml.cs">
+      <DependentUpon>DwgViewFoundForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Checker_Form.xaml.cs">
-      <DependentUpon>Checker_Form.xaml</DependentUpon>
+    <Compile Include="Windows\CheckerForm.xaml.cs">
+      <DependentUpon>CheckerForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Names_Prefix_Change_Form.xaml.cs">
-      <DependentUpon>Names_Prefix_Change_Form.xaml</DependentUpon>
+    <Compile Include="Windows\NamesPrefixChangeForm.xaml.cs">
+      <DependentUpon>NamesPrefixChangeForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Linetypes_Delete_Form.xaml.cs">
-      <DependentUpon>Linetypes_Delete_Form.xaml</DependentUpon>
+    <Compile Include="Windows\LinetypesDeleteForm.xaml.cs">
+      <DependentUpon>LinetypesDeleteForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DWG_Name_Delete_Data.cs" />
-    <Compile Include="Windows\Walls_Compare_Data.cs" />
-    <Compile Include="Windows\DWG_Name_Delete_Form.xaml.cs">
-      <DependentUpon>DWG_Name_Delete_Form.xaml</DependentUpon>
+    <Compile Include="Windows\DwgNameDeleteData.cs" />
+    <Compile Include="Windows\WallsCompareData.cs" />
+    <Compile Include="Windows\DwgNameDeleteForm.xaml.cs">
+      <DependentUpon>DwgNameDeleteForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Walls_Compare_Form.xaml.cs">
-      <DependentUpon>Walls_Compare_Form.xaml</DependentUpon>
+    <Compile Include="Windows\WallsCompareForm.xaml.cs">
+      <DependentUpon>WallsCompareForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Stairs_Steps_Enumerate_Form.xaml.cs">
-      <DependentUpon>Stairs_Steps_Enumerate_Form.xaml</DependentUpon>
+    <Compile Include="Windows\StairsStepsEnumerateForm.xaml.cs">
+      <DependentUpon>StairsStepsEnumerateForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Stairs_Steps_Enumerate_Data.cs" />
-    <Compile Include="Windows\Dimension_Section_Floors_Data.cs" />
-    <Compile Include="Windows\Dimension_Section_Floors_Form.xaml.cs">
-      <DependentUpon>Dimension_Section_Floors_Form.xaml</DependentUpon>
+    <Compile Include="Windows\StairsStepsEnumerateData.cs" />
+    <Compile Include="Windows\DimensionSectionFloorsData.cs" />
+    <Compile Include="Windows\DimensionSectionFloorsForm.xaml.cs">
+      <DependentUpon>DimensionSectionFloorsForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Levels_Align_Form.xaml.cs">
-      <DependentUpon>Levels_Align_Form.xaml</DependentUpon>
+    <Compile Include="Windows\LevelsAlignForm.xaml.cs">
+      <DependentUpon>LevelsAlignForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Levels_Align_Data.cs" />
-    <Compile Include="Windows\Grids_Align_Data.cs" />
-    <Compile Include="Windows\Grids_Align_Form.xaml.cs">
-      <DependentUpon>Grids_Align_Form.xaml</DependentUpon>
+    <Compile Include="Windows\LevelsAlignData.cs" />
+    <Compile Include="Windows\GridsAlignData.cs" />
+    <Compile Include="Windows\GridsAlignForm.xaml.cs">
+      <DependentUpon>GridsAlignForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="MultivalueBoolInvertConverter.cs" />
     <Page Include="Fonts.xaml">
@@ -178,51 +178,51 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Checker_Report_Form.xaml">
+    <Page Include="Windows\CheckerReportForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Family_Parameter_Set_Form.xaml">
+    <Page Include="Windows\FamilyParameterSetForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DWG_View_Found_Form.xaml">
+    <Page Include="Windows\DwgViewFoundForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Checker_Form.xaml">
+    <Page Include="Windows\CheckerForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Names_Prefix_Change_Form.xaml">
+    <Page Include="Windows\NamesPrefixChangeForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Linetypes_Delete_Form.xaml">
+    <Page Include="Windows\LinetypesDeleteForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DWG_Name_Delete_Form.xaml">
+    <Page Include="Windows\DwgNameDeleteForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Walls_Compare_Form.xaml">
+    <Page Include="Windows\WallsCompareForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Stairs_Steps_Enumerate_Form.xaml">
+    <Page Include="Windows\StairsStepsEnumerateForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Levels_Align_Form.xaml">
+    <Page Include="Windows\LevelsAlignForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Grids_Align_Form.xaml">
+    <Page Include="Windows\GridsAlignForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Dimension_Section_Floors_Form.xaml">
+    <Page Include="Windows\DimensionSectionFloorsForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -245,16 +245,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

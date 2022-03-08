@@ -1,0 +1,89 @@
+﻿<Window x:Class="BIM_Leaders_Windows.WallsCompareForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BIM_Leaders_Windows"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        
+        Style="{DynamicResource SWindow}"
+        Title="BIM Leaders - Walls Compare"
+        WindowStartupLocation="CenterScreen"
+        
+        d:DataContext="{d:DesignInstance Type=local:WallsCompareData}"
+        MouseLeftButtonDown="FormMouseMove">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="{x:Type Rectangle}" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{x:Null}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="60"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <TextBlock Text="Walls Compare"
+                       Style="{StaticResource STextBlock}">
+            </TextBlock>
+            <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
+                    Style="{StaticResource SRoundButton}">
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <StackPanel Height="260" Margin="20,0">
+                <Label Content="Links Count"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <RadioButton x:Name="radiobuttonLinks" GroupName="rbGroup" IsChecked="{Binding Path=ResultLinks, Mode=TwoWay}"
+                             Content="1 link and document"
+                             Style="{StaticResource SRadioButton}">
+                </RadioButton>
+                <RadioButton x:Name="radiobuttonLinks2" GroupName="rbGroup"
+                             Content="2 links"
+                             Style="{StaticResource SRadioButton}">
+                </RadioButton>
+                
+                <Label Content="Wall Material"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <ComboBox x:Name="comboboxMaterials" SelectedValue="{Binding ListMaterialsSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                          ItemsSource="{Binding ListMaterials, Mode=OneWay}"
+                          Style="{StaticResource SComboBox}">
+                </ComboBox>
+                
+                <Label Content="Fill Type"
+                       Margin="0,20,0,0"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <ComboBox x:Name="comboboxFillTypes" SelectedValue="{Binding ListFillTypesSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                          ItemsSource="{Binding ListFillTypes, Mode=OneWay}"
+                          Style="{StaticResource SComboBox}">
+                </ComboBox>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2" VerticalAlignment="Top">
+            <Button x:Name="buttonOk" Click="ButtonOkClick"
+                    Content="Magic" ToolTip="Run"
+                    Style="{StaticResource SRectangleButton}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource MultivalueTextBoxes}" Mode="TwoWay">
+                        <Binding ElementName="comboboxMaterials" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding ElementName="comboboxFillTypes" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
+        </Grid>
+        
+    </Grid>
+</Window>
