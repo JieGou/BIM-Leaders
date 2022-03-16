@@ -10,7 +10,6 @@
     <RootNamespace>BIM_Leaders_Core</RootNamespace>
     <AssemblyName>BIM Leaders Core</AssemblyName>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -23,14 +22,18 @@
     <ApplicationIcon>Revit.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2020|AnyCPU'">
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <OutputPath>..\Output\2020\</OutputPath>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>VERSION2020</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2021|AnyCPU'">
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <OutputPath>..\Output\2021\</OutputPath>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <DefineConstants>VERSION2021</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">

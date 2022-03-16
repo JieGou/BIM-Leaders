@@ -49,7 +49,11 @@ namespace BIM_Leaders_Core
 
                 // Sort landings in groups by coordinates, each group have landings with same locations but different heights
                 double thresholdCm = 150;
+#if VERSION2020
                 double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, DisplayUnitType.DUT_CENTIMETERS);
+#elif VERSION2021
+                double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, UnitTypeId.Centimeters);
+#endif
 
                 List<List<StairsLanding>> landingsSorted = new List<List<StairsLanding>>();
                 int i = 0;

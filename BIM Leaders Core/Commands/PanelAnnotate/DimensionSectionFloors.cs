@@ -23,8 +23,15 @@ namespace BIM_Leaders_Core
             View view = doc.ActiveView;
 
             // Get length units
+#if VERSION2020
+
             DisplayUnitType units = doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
 
+#elif VERSION2021
+
+            ForgeTypeId units = doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
+
+#endif
             try
             {
                 Options options = new Options
@@ -103,7 +110,7 @@ namespace BIM_Leaders_Core
 
                 /*
 
-                #  Transforming offset to world coordinates
+# Transforming offset to world coordinates
                 view_dir_x = view.ViewDirection.X
                 view_dir_y = view.ViewDirection.Y
                 offset_scaled_x = offset * view.Scale * view_dir_x

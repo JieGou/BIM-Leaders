@@ -58,15 +58,25 @@ namespace BIM_Leaders_Core
                                 case StorageType.None:
                                     break;
                                 case StorageType.Integer:
+#if VERSION2020
                                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
                                         doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(parameterValue), DisplayUnitType.DUT_CENTIMETERS));
+#elif VERSION2021
+                                    if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
+                                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(parameterValue), UnitTypeId.Centimeters));
+#endif
                                     else
                                         doc.FamilyManager.Set(parameter, Convert.ToInt32(parameterValue));
                                     count++;
                                     break;
                                 case StorageType.Double:
+#if VERSION2020
                                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
                                         doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(parameterValue), DisplayUnitType.DUT_CENTIMETERS));
+#elif VERSION2021
+                                    if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
+                                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(parameterValue), UnitTypeId.Centimeters));
+#endif
                                     else
                                         doc.FamilyManager.Set(parameter, Convert.ToDouble(parameterValue));
                                     count++;

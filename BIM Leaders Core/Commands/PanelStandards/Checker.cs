@@ -350,9 +350,13 @@ namespace BIM_Leaders_Core
                         // Check if stairs steps are right height and depth
                         foreach (Stairs stair in stairs)
                         {
+#if VERSION2020
                             double stepHeight = UnitUtils.ConvertFromInternalUnits(stair.ActualRiserHeight, DisplayUnitType.DUT_CENTIMETERS);
                             double stepDepth = UnitUtils.ConvertFromInternalUnits(stair.ActualTreadDepth, DisplayUnitType.DUT_CENTIMETERS);
-
+#elif VERSION2021
+                            double stepHeight = UnitUtils.ConvertFromInternalUnits(stair.ActualRiserHeight, UnitTypeId.Centimeters);
+                            double stepDepth = UnitUtils.ConvertFromInternalUnits(stair.ActualTreadDepth, UnitTypeId.Centimeters);
+#endif
                             double r = 2 * stepHeight + stepDepth;
 
                             if (r < 61 | r > 63 || stepHeight < 10 || stepHeight > 17.5 || stepDepth < 26)
@@ -364,10 +368,15 @@ namespace BIM_Leaders_Core
                     // Checking stairs head height
                     if (inputCodes[1])
                     {
+#if VERSION2020
                         double heightOffset = UnitUtils.ConvertToInternalUnits(10, DisplayUnitType.DUT_CENTIMETERS);
                         double height = UnitUtils.ConvertToInternalUnits(inputHeadHeight, DisplayUnitType.DUT_CENTIMETERS) - heightOffset;
                         double planOffset = UnitUtils.ConvertToInternalUnits(1, DisplayUnitType.DUT_CENTIMETERS);
-
+#elif VERSION2021
+                        double heightOffset = UnitUtils.ConvertToInternalUnits(10, UnitTypeId.Centimeters);
+                        double height = UnitUtils.ConvertToInternalUnits(inputHeadHeight, UnitTypeId.Centimeters) - heightOffset;
+                        double planOffset = UnitUtils.ConvertToInternalUnits(1, UnitTypeId.Centimeters);
+#endif
                         // Get extrusion vector, only direction is needed but for sure the point is on 0 point of solid bottom but Z is on solid top
                         XYZ extrusionDir = new XYZ(0, 0, 1);
 

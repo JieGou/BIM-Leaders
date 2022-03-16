@@ -139,7 +139,11 @@ namespace BIM_Leaders_Core
                             distanceInternal = wallLocationCurve.Project(point).Distance - lineOffset;
                         else
                             distanceInternal = wallLocationCurve.Project(point).Distance + lineOffset;
+#if VERSION2020
                         double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, DisplayUnitType.DUT_CENTIMETERS);
+#elif VERSION2021
+                        double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, UnitTypeId.Centimeters);
+#endif
 
                         // Calculate precision
                         double precision = distance % distanceStep;
@@ -185,7 +189,11 @@ namespace BIM_Leaders_Core
                             distanceInternal = wallLocationCurve.Project(point).Distance - lineOffset;
                         else
                             distanceInternal = wallLocationCurve.Project(point).Distance + lineOffset;
+#if VERSION2020
                         double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, DisplayUnitType.DUT_CENTIMETERS);
+#elif VERSION2021
+                        double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, UnitTypeId.Centimeters);
+#endif
 
                         // Calculate precision
                         double precision = distance % distanceStep;
