@@ -62,7 +62,7 @@
                 </ComboBox>
                 
                 <Label Content="Fill Type"
-                       Margin="0,20,0,0"
+                       Margin="-5,20,0,0"
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <ComboBox x:Name="comboboxFillTypes" SelectedValue="{Binding ListFillTypesSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"

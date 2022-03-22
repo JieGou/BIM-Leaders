@@ -12,7 +12,7 @@
 		<Name>BIM_Leaders_Core</Name>
 		<Assembly>BIM Leaders.dll</Assembly>
 		<AddInId>CADBFF10-CE2C-4729-8CDE-B3F5E1ABB310</AddInId>
-		<FullClassName>BIM_Leaders.ExternalDBApp_Group_Restore</FullClassName>
+		<FullClassName>BIM_Leaders.ExternalDBAppGroupRestore</FullClassName>
 		<Text>Group Restore in a Document</Text>
 		<Description>Event Register for Group Restore</Description>
 		<VendorId>Pinchuk</VendorId>

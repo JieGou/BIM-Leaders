@@ -6,6 +6,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.ApplicationServices;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -29,8 +30,6 @@ namespace BIM_Leaders_Core
             try
             {
                 double toleranceAngle = uiapp.AngleTolerance / 100; // 0.001 grad
-                double distanceStep = 1; // 1 cm
-                double toleranceDistance = 0.00001; // 0.00001 cm
                 Color color0 = new Color(255, 127, 39);
                 Color color1 = new Color(255, 64, 64);
 
@@ -38,6 +37,22 @@ namespace BIM_Leaders_Core
                 {
                     ComputeReferences = true
                 };
+
+
+                // Collector for data provided in window
+                WallsArrangedData data = new WallsArrangedData();
+
+                WallsArrangedForm form = new WallsArrangedForm();
+                form.ShowDialog();
+
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
+
+                // Get user provided information from window
+                data = form.DataContext as WallsArrangedData;
+                double distanceStep = double.Parse(data.ResultDistanceStep);
+                double toleranceDistance = double.Parse(data.ResultDistanceTolerance);
+
 
                 // Getting References of Reference Planes
                 IList<Reference> referenceUncheckedList = uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Two Perpendicular Reference Planes");

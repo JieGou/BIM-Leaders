@@ -22,6 +22,7 @@
     <SolidColorBrush x:Key="SColorDataGridBorder" Color="#007AFF" />
 
     <SolidColorBrush x:Key="SColorText" Color="White" />
+    <SolidColorBrush x:Key="SColorTextHint" Color="#FFBFBFBF" />
     <SolidColorBrush x:Key="SColorTextError" Color="#FF453A" />
 
 </ResourceDictionary>

@@ -55,7 +55,7 @@
                 </RadioButton>
                 
                 <Label Content="Top Floor Max Thickness"
-                       Margin="0,10,0,0"
+                       Margin="-5,10,0,0"
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxThickness"

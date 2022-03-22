@@ -16,7 +16,7 @@ namespace BIM_Leaders
             string tabName = "BIM Leaders";
             application.CreateRibbonTab(tabName);
             //string path = Assembly.GetExecutingAssembly().Location;
-
+            
             // Create Ribbon Panel
             string panelName01 = "Standards";
             RibbonPanel panel01 = application.CreateRibbonPanel(tabName, panelName01);

@@ -14,9 +14,9 @@ namespace BIM_Leaders_Core
         {
             try
             {
-                Document o_doc = applicationData.ActiveUIDocument.Document;
+                Document doc = applicationData.ActiveUIDocument.Document;
 
-                if (o_doc.IsFamilyDocument)
+                if (doc.IsFamilyDocument)
                     return true;
                 return false;
             }
@@ -38,9 +38,9 @@ namespace BIM_Leaders_Core
         {
             try
             {
-                ViewType v_type = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
+                ViewType viewType = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
 
-                if (v_type == ViewType.Section)
+                if (viewType == ViewType.Section)
                     return true;
                 return false;
             }
@@ -62,9 +62,9 @@ namespace BIM_Leaders_Core
         {
             try
             {
-                ViewType v_type = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
+                ViewType viewType = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
 
-                if (v_type == ViewType.Section || v_type == ViewType.Elevation)
+                if (viewType == ViewType.Section || viewType == ViewType.Elevation)
                     return true;
                 return false;
             }
@@ -84,8 +84,8 @@ namespace BIM_Leaders_Core
 
         public bool IsCommandAvailable(UIApplication applicationData, CategorySet selectedCategories)
         {
-            ViewType v_type = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
-            if (v_type == ViewType.FloorPlan)
+            ViewType viewType = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
+            if (viewType == ViewType.FloorPlan)
                 return true;
             return false;
         }

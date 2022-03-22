@@ -11,10 +11,10 @@ namespace BIM_Leaders_UI
         public static PulldownButton Create(RevitPulldownButtonDataModel data)
         {
             // The button name based on unique ID
-            var btnDataName = Guid.NewGuid().ToString();
+            string btnDataName = Guid.NewGuid().ToString();
 
             // Sets the button data
-            var btnData = new PulldownButtonData(btnDataName, data.Label)
+            PulldownButtonData btnData = new PulldownButtonData(btnDataName, data.Label)
             {
                 ToolTip = data.ToolTip,
                 LongDescription = data.LongDescription,

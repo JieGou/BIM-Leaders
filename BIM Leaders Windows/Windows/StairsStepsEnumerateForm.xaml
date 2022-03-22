@@ -53,14 +53,14 @@
                              Style="{StaticResource SRadioButton}">
                 </RadioButton>
                 <Label Content="Start number"
-                       Margin="0,10,0,0"
+                       Margin="-5,10,0,0"
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxNumber"
                          Text="{Binding ResultNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>
-                <Label Content="{Binding ElementName=textboxNumber, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                <Label Content="{Binding ElementName=textboxNumber, Path=(Validation.Errors)/ErrorContent}"
                        Style="{StaticResource SLabelError}"/>
             </StackPanel>
         </Grid>

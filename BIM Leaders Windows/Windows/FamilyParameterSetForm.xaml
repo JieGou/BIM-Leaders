@@ -50,7 +50,7 @@
                           Style="{StaticResource SComboBox}">
                 </ComboBox>
                 <Label Content="Value"
-                       Margin="0,20,0,0"
+                       Margin="-5,20,0,0"
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxParameterValue"

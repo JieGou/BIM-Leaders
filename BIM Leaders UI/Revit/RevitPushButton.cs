@@ -12,10 +12,10 @@ namespace BIM_Leaders_UI
         public static PushButton Create(RevitPushButtonDataModel data)
         {
             // The button name based on unique ID
-            var btnDataName = Guid.NewGuid().ToString();
+            string btnDataName = Guid.NewGuid().ToString();
 
             // Sets the button data
-            var btnData = new PushButtonData(btnDataName, data.Label, CoreAssembly.GetAssemblyLocation(), data.CommandNamespacePath)
+            PushButtonData btnData = new PushButtonData(btnDataName, data.Label, CoreAssembly.GetAssemblyLocation(), data.CommandNamespacePath)
             {
                 ToolTip = data.ToolTip,
                 LongDescription = data.LongDescription,
@@ -31,10 +31,10 @@ namespace BIM_Leaders_UI
         public static PushButton CreateInPulldown(RevitPushButtonDataModel data, PulldownButton button)
         {
             // The button name based on unique ID
-            var btnDataName = Guid.NewGuid().ToString();
+            string btnDataName = Guid.NewGuid().ToString();
 
             // Sets the button data
-            var btnData = new PushButtonData(btnDataName, data.Label, CoreAssembly.GetAssemblyLocation(), data.CommandNamespacePath)
+            PushButtonData btnData = new PushButtonData(btnDataName, data.Label, CoreAssembly.GetAssemblyLocation(), data.CommandNamespacePath)
             {
                 ToolTip = data.ToolTip,
                 LongDescription = data.LongDescription,
@@ -44,7 +44,7 @@ namespace BIM_Leaders_UI
             };
 
             // Return created button and host it on panel provided in required data model
-            return button.AddPushButton(btnData) as PushButton;
+            return button.AddPushButton(btnData);
         }
     }
 }

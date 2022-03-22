@@ -11,14 +11,14 @@ namespace BIM_Leaders
         public Result OnStartup(UIControlledApplication application)
         {
             // Initialize whole plugin's user interface
-            var ui = new SetupInterface();
+            SetupInterface ui = new SetupInterface();
             ui.Initialize(application);
 
             return Result.Succeeded;
         }
         public Result OnShutdown(UIControlledApplication application)
         {
-        return Result.Succeeded;
+            return Result.Succeeded;
         }
     }
 }
