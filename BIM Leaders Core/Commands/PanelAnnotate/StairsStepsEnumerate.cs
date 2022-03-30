@@ -21,14 +21,13 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
-            // Get View
-            View view = doc.ActiveView;
-
             try
             {
-                // Collector for data provided in window
-                StairsStepsEnumerateData data = new StairsStepsEnumerateData();
+                int count = 0;
+                int countGrouped = 0;
+                int countUnpinned = 0;
 
+                // Collector for data provided in window
                 StairsStepsEnumerateForm form = new StairsStepsEnumerateForm();
                 form.ShowDialog();
 
@@ -36,34 +35,22 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                data = form.DataContext as StairsStepsEnumerateData;
+                StairsStepsEnumerateData data = form.DataContext as StairsStepsEnumerateData;
 
                 // Getting input from user
                 bool inputRightSide = data.ResultSideRight;
                 double inputStartNumber = double.Parse(data.ResultNumber);
-                int count = 0;
-                int grouped = 0;
-                int unpinned = 0;
 
-                // Get Floors
-                IEnumerable<MultistoryStairs> stairsMultiAll = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_MultistoryStairs)
+                // Get all multistory stairs in the view
+                IEnumerable<MultistoryStairs> stairsMultiAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                    .OfClass(typeof(MultistoryStairs))
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<MultistoryStairs>();
 
-                // Selecting all levels in the view
-                IEnumerable<ElementId> levelsAll = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Levels)
-                    .WhereElementIsNotElementType()
-                    .ToElementIds();
-
-                // Selecting all runs in the view
-                IEnumerable<StairsRun> runs = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_StairsRuns)
-                    .WhereElementIsNotElementType()
-                    .ToElements()
-                    .Cast<StairsRun>();
-
-                // Selecting all stairs in the view
-                IEnumerable<Stairs> stairsAll = new FilteredElementCollector(doc, view.Id).OfCategory(BuiltInCategory.OST_Stairs)
+                // Get all stairs in the view
+                IEnumerable<Stairs> stairsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                    .OfClass(typeof(Stairs))
                     .WhereElementIsNotElementType()
                     .ToElements()
                     .Cast<Stairs>();
@@ -75,31 +62,17 @@ namespace BIM_Leaders_Core
                     if (stairMulti.GroupId == ElementId.InvalidElementId)
                         stairsMulti.Add(stairMulti);
                     else
-                        grouped++;
+                        countGrouped++;
                 }
 
                 // Filtering for stairs that are in groups
-                List<Stairs> stairsTemp = new List<Stairs>();
+                List<Stairs> stairs = new List<Stairs>();
                 foreach (Stairs stair in stairsAll)
                 {
                     if (stair.GroupId == ElementId.InvalidElementId)
-                        stairsTemp.Add(stair);
-                    else
-                        grouped++;
-                }
-
-                // Creating list of stairs levels and filtering for Model-In-Place
-                List<Stairs> stairs = new List<Stairs>();
-                List<double> levels = new List<double>();
-                foreach (Stairs stair in stairsTemp)
-                {
-                    try
-                    {
-                        levels.Add(stair.BaseElevation);
                         stairs.Add(stair);
-
-                    }
-                    catch { }
+                    else
+                        countGrouped++;
                 }
 
                 // Changing stairs order in a list according to base height
@@ -110,63 +83,24 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    // Unpinning groups (stairs) in multistairs
-                    foreach (MultistoryStairs stairMulti in stairsMulti)
-                    {
-                        foreach (ElementId level in levelsAll)
-                        {
-                            try
-                            {
-                                stairMulti.Unpin(level);
-                                unpinned++;
-                            }
-                            catch { }
-                        }
-                    }
-
-                    // Changing thread numbers
-                    foreach (Stairs stair in stairsSorted)
-                    {
-                        Parameter parameter = stair.get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX);
-                        parameter.Set(inputStartNumber);
-                        inputStartNumber += stair.ActualRisersNumber;
-                    }
-
-                    // Creating thread numbers on the view
-                    foreach (StairsRun run in runs)
-                    {
-                        Reference refer = run.GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter);
-
-                        if (inputRightSide)
-                            refer = run.GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter);
-
-                        LinkElementId runId = new LinkElementId(run.Id);
-
-                        try
-                        {
-                            NumberSystem.Create(doc, view.Id, runId, refer);
-                            count++;
-                        }
-                        catch { count++; }
-                    }
+                    countUnpinned = UnpinMultistoryStairs(doc, stairsMulti);
+                    ChangeTreadNumbers(stairsSorted, inputStartNumber);
+                    count = CreateNumbers(doc, inputRightSide);
 
                     trans.Commit();
+                }
 
-                    string text = "";
-                    if (grouped > 0)
-                    {
-                        text += grouped.ToString();
-                        text += " stairs are in groups! Exclude them from groups!";
-                    }
-                    text += count.ToString();
-                    text += " runs with ";
-                    text += (inputStartNumber - 1).ToString();
-                    text += " threads was numbered. ";
-                    if (unpinned > 0)
-                    {
-                        text += unpinned.ToString();
-                        text += " stairs was unpinned!";
-                    }
+                // Show result
+                string text = "";
+                if (count == 0)
+                    text = "No annotations created";
+                else
+                {
+                    if (countGrouped > 0)
+                        text += $"{countGrouped} stairs are in groups! Exclude them from groups!{Environment.NewLine}";
+                    text += $"{count} runs with {inputStartNumber - 1} threads was numbered.";
+                    if (countUnpinned > 0)
+                        text += $"{Environment.NewLine}{countUnpinned} stairs were unpinned!";
                     /*
                     if(pinned > 0)
                     {
@@ -174,12 +108,9 @@ namespace BIM_Leaders_Core
                         text += " stairs are pinned!";
                     }
                     */
-
-                    if (count == 0)
-                        TaskDialog.Show("Section Annotations", "No annotations created");
-                    else
-                        TaskDialog.Show("Section Annotations", text);
                 }
+                TaskDialog.Show("Section Annotations", text);
+
                 return Result.Succeeded;
             }
             catch (Exception e)
@@ -188,6 +119,82 @@ namespace BIM_Leaders_Core
                 return Result.Failed;
             }
         }
+
+        /// <summary>
+        /// Unpin multistory stairs. Only unpinned stairs can have different start number on each floor.
+        /// </summary>
+        /// <returns>Count of unpinned stairs.</returns>
+        private static int UnpinMultistoryStairs(Document doc, List<MultistoryStairs> stairsMulti)
+        {
+            int count = 0;
+
+            // Selecting all levels in the view
+            IEnumerable<ElementId> levelsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                .OfCategory(BuiltInCategory.OST_Levels)
+                .WhereElementIsNotElementType()
+                .ToElementIds();
+
+            // Unpinning groups (stairs) in multistairs
+            foreach (MultistoryStairs stairMulti in stairsMulti)
+                foreach (ElementId level in levelsAll)
+                {
+                    try
+                    {
+                        stairMulti.Unpin(level);
+                        count++;
+                    }
+                    catch { }
+                }
+            return count;
+        }
+
+        /// <summary>
+        /// Change tread numbers of all given stairs, beginning from the given number.
+        /// </summary>
+        private static void ChangeTreadNumbers(IOrderedEnumerable<Stairs> stairsSorted, double inputStartNumber)
+        {
+            foreach (Stairs stair in stairsSorted)
+            {
+                Parameter parameter = stair.get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX);
+                parameter.Set(inputStartNumber);
+                inputStartNumber += stair.ActualRisersNumber;
+            }
+        }
+
+        /// <summary>
+        /// Creating thread numbers on the view
+        /// </summary>
+        /// <returns>Count of created numberings.</returns>
+        private static int CreateNumbers(Document doc, bool inputRightSide)
+        {
+            int count = 0;
+
+            // Get all runs in the view
+            IEnumerable<StairsRun> runs = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                .OfClass(typeof(StairsRun))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<StairsRun>();
+
+            foreach (StairsRun run in runs)
+            {
+                Reference refer = run.GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter);
+
+                if (inputRightSide)
+                    refer = run.GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter);
+
+                LinkElementId runId = new LinkElementId(run.Id);
+
+                try
+                {
+                    NumberSystem.Create(doc, doc.ActiveView.Id, runId, refer);
+                    count++;
+                }
+                catch { count++; }
+            }
+            return count;
+        }
+
         public static string GetPath()
         {
             // Return constructed namespace path

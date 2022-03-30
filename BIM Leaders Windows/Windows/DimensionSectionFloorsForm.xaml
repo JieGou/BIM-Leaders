@@ -53,9 +53,25 @@
                              Content="Dimensions"
                              Style="{StaticResource SRadioButton}">
                 </RadioButton>
-                
-                <Label Content="Top Floor Max Thickness"
-                       Margin="-5,10,0,0"
+
+                <Label Content="Annotation placement"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <CheckBox x:Name="checkboxPlacement0" IsChecked="{Binding Path=ResultPlacement[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Top Floor - Top"
+                          Style="{StaticResource SCheckBox}">
+                </CheckBox>
+                <CheckBox x:Name="checkboxPlacement1" IsChecked="{Binding Path=ResultPlacement[1], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Thick Floor - Top"
+                          Style="{StaticResource SCheckBox}">
+                </CheckBox>
+                <CheckBox x:Name="checkboxPlacement2" IsChecked="{Binding Path=ResultPlacement[2], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Thick Floor - Bottom"
+                          Style="{StaticResource SCheckBox}">
+                </CheckBox>
+
+                <Label Content="Top Floor Max thickness (cm)"
+                       Margin="-5,5,0,0"
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxThickness"
@@ -76,15 +92,22 @@
                 </LinearGradientBrush>
             </Grid.Background>
             -->
-            <Button x:Name="buttonOk" Click="ButtonOkClick"
+            <StackPanel>
+                <Button x:Name="buttonOk" Click="ButtonOkClick"
                     Content="Magic" ToolTip="Run"
                     Style="{StaticResource SRectangleButton}">
-                <Button.IsEnabled>
-                    <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                        <Binding ElementName="textboxThickness" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
-                    </MultiBinding>
-                </Button.IsEnabled>
-            </Button>
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                            <Binding ElementName="textboxThickness" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                            <Binding ElementName="checkboxPlacement0" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+                <Label Content="{Binding ElementName=checkboxPlacement0, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                       Margin="0,0,20,0"
+                       Style="{StaticResource SLabelError}">
+                </Label>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

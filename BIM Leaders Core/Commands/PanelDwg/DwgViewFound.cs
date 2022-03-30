@@ -41,7 +41,7 @@ namespace BIM_Leaders_Core
                     }
                     catch (Exception e)
                     {
-                        importsNames.Add("");
+                        importsNames.Add(e.Message);
                     }
                     
                     // Checking if 2D or 3D
@@ -94,7 +94,7 @@ namespace BIM_Leaders_Core
                     {
                         iName = i.Category.Name;
                     }
-                    catch (Exception empty_name) { }
+                    catch (Exception e) { iName = e.Message; }
 
                     // Checking if 2D or 3D
                     if (i.ViewSpecific)
@@ -116,7 +116,6 @@ namespace BIM_Leaders_Core
                     dwgDataTable.Rows.Add(newRow1); 
                 }
 
-
                 // Show result
                 if (imports.Count() > 0)
                 {
@@ -125,7 +124,7 @@ namespace BIM_Leaders_Core
                     form.ShowDialog();
                 }
                 else
-                    TaskDialog.Show("Imports", string.Format("No imports in the file"));
+                    TaskDialog.Show("Imports", "No imports in the file.");
                 
                 return Result.Succeeded;
             }

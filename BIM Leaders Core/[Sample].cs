@@ -427,7 +427,7 @@ namespace BIM_Leaders_Core
         }
     }
     [TransactionAttribute(TransactionMode.Manual)]
-    public class EditElement : IExternalCommand
+    public class MoveElement : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {

@@ -21,8 +21,7 @@ namespace BIM_Leaders_Core
 
             try
             {
-                // Collector for data provided in window
-                DwgNameDeleteData data = new DwgNameDeleteData(uidoc);
+                int count = 0;
 
                 DwgNameDeleteForm form = new DwgNameDeleteForm(uidoc);
                 form.ShowDialog();
@@ -31,23 +30,19 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                data = form.DataContext as DwgNameDeleteData;
+                DwgNameDeleteData data = form.DataContext as DwgNameDeleteData;
 
                 string name = doc.GetElement(data.DwgListSelected).Category.Name;
 
                 // Get all Imports with name same as input from a form
-                FilteredElementCollector collector = new FilteredElementCollector(doc);
-                IEnumerable<ImportInstance> dwgTypesAll = collector.OfClass(typeof(ImportInstance))
+                IEnumerable<ImportInstance> dwgTypesAll = new FilteredElementCollector(doc)
+                    .OfClass(typeof(ImportInstance))
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>(); //LINQ function;
                 List<ElementId> delete = new List<ElementId>();
                 foreach (ImportInstance dwgType in dwgTypesAll)
-                {
-                    string dwgTypeName = dwgType.Category.Name;
-                    if (dwgTypeName == name)
+                    if (dwgType.Category.Name == name)
                         delete.Add(dwgType.Id);
-                }
-                int count = 0;
 
                 using (Transaction trans = new Transaction(doc, "Delete DWG by Name"))
                 {
@@ -60,12 +55,14 @@ namespace BIM_Leaders_Core
                     }
 
                     trans.Commit();
-
-                    if(count == 0)
-                        TaskDialog.Show("DWG Deleted", "No DWG deleted");
-                    else
-                        TaskDialog.Show("DWG Deleted", string.Format("{0} DWG named {1} deleted", count.ToString(), name));
                 }
+
+                // Show result
+                string text = count == 0
+                    ? "No DWG deleted"
+                    : $"{count} DWG named {name} deleted";
+                TaskDialog.Show("DWG Deleted", text);
+
                 return Result.Succeeded;
             }
             catch (Exception e)
@@ -74,6 +71,7 @@ namespace BIM_Leaders_Core
                 return Result.Failed;
             }
         }
+
         public static string GetPath()
         {
             // Return constructed namespace path

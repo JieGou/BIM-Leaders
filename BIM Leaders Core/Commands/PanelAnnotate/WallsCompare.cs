@@ -19,12 +19,10 @@ namespace BIM_Leaders_Core
                 try
                 {
                     if (element.Category.Name == "RVT Links")
-                    {
                         return true;
-                    }
                     return false;
                 }
-                catch (System.NullReferenceException) { return false; }
+                catch (NullReferenceException) { return false; }
             }
 
             public bool AllowReference(Reference reference, XYZ point)
@@ -32,115 +30,7 @@ namespace BIM_Leaders_Core
                 return false;
             }
         }
-        /// <summary>
-        /// Get walls from document, that have level with given elevation and have material with given name.
-        /// </summary>
-        /// <param name="doc">Document (current Revit file or link).</param>
-        /// <param name="elevation">Elevation of the needed walls, input the current plan view level elevation.</param>
-        /// <param name="material">If wall will have material with given name, it will be filtered in.</param>
-        /// <returns>A list of walls from the document.</returns>
-        private static List<Wall> GetWalls(Document doc, double elevation, string material)
-        {
-            List<Wall> walls = new List<Wall>();
 
-            FilteredElementCollector collector0 = new FilteredElementCollector(doc);
-            FilteredElementCollector collector1 = new FilteredElementCollector(doc);
-
-            // Selecting all walls from doc 0
-            IEnumerable<Wall> wallsAll = collector0.OfCategory(BuiltInCategory.OST_Walls)
-                .WhereElementIsNotElementType()
-                .Cast<Wall>(); //LINQ function
-
-            // Selecting all levels from doc 0
-            IEnumerable<Level> levelsAll = collector1.OfCategory(BuiltInCategory.OST_Levels)
-                .WhereElementIsNotElementType()
-                .Cast<Level>(); //LINQ function
-
-            // Getting closest level in the document
-            double level0 = levelsAll.First().Elevation;
-            foreach (Level level in levelsAll)
-                if (Math.Abs(level.ProjectElevation - elevation) < 1)
-                    level0 = level.ProjectElevation;
-
-            // Filtering needed walls for materials and height
-            foreach (Wall wall in wallsAll)
-            {
-                CompoundStructure wallStructure = wall.WallType.GetCompoundStructure();
-                if (wallStructure != null)
-                {
-                    IList<CompoundStructureLayer> layers = wallStructure.GetLayers();
-                    List<string> materialNames = new List<string>();
-                    foreach (CompoundStructureLayer layer in layers)
-                        materialNames.Add(doc.GetElement(layer.MaterialId).Name);
-                    if (materialNames.Contains(material)) // Filtering  for materials
-                    {
-                        LocationCurve wallLocation = wall.Location as LocationCurve;
-                        double diff = Math.Abs(wallLocation.Curve.GetEndPoint(0).Z - level0);
-                        if (diff < 1)
-                            walls.Add(wall);
-                    }
-                }
-            }
-            return walls;
-        }
-        /// <summary>
-        /// Convert walls contours to list of CurveLoop items.
-        /// </summary>
-        /// <param name="wall">Wall element.</param>
-        /// <returns>List of CurveLoops.</returns>
-        private static List<CurveLoop> GetWallsLoops(Wall wall)
-        {
-            Options options = new Options();
-
-            List<CurveLoop> loops = new List<CurveLoop>();
-            GeometryElement geometryElement = wall.get_Geometry(options);
-            foreach(Solid geometrySolid in geometryElement)
-            {
-                foreach(Face face in geometrySolid.Faces)
-                {
-                    if (face is PlanarFace)
-                    {
-                        PlanarFace facePlanar = face as PlanarFace;
-                        if (facePlanar.FaceNormal.Z == -1)
-                        {
-                            double height = facePlanar.Origin.Z;
-                            double heightLowest = height;
-                            // Get the lowest face
-                            if (loops.Count == 0)
-                                loops = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
-                            else
-                            {
-                                if (height < heightLowest)
-                                {
-                                    loops = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
-                                    heightLowest = height;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return loops;
-        }
-        private static Solid GetWallsLoop(List<CurveLoop> loops)
-        {
-            List<Solid> temp_booleaned_list = new List<Solid>();
-            foreach (CurveLoop l in loops)
-            {
-                List<CurveLoop> l_c = new List<CurveLoop> { l };
-                Solid temp_extrusion = GeometryCreationUtilities.CreateExtrusionGeometry(l_c, new XYZ(0, 0, 1), 10);
-
-                if (temp_booleaned_list.Count > 0)
-                {
-                    Solid b = BooleanOperationsUtils.ExecuteBooleanOperation(temp_extrusion, temp_booleaned_list.First(), BooleanOperationsType.Union);
-                    temp_booleaned_list.Clear();
-                    temp_booleaned_list.Add(b);
-                }
-                else
-                    temp_booleaned_list.Add(temp_extrusion);
-            }
-            return temp_booleaned_list.First();
-        }
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get UIDocument
@@ -154,6 +44,8 @@ namespace BIM_Leaders_Core
 
             try
             {
+                int count = 0;
+
                 WallsCompareData data = new WallsCompareData(uidoc);
 
                 // Create a form to select objects.
@@ -174,8 +66,6 @@ namespace BIM_Leaders_Core
                 FilledRegionType fill = doc.GetElement(data.ListFillTypesSelected) as FilledRegionType;
                 
                 double elevation = view.GenLevel.Elevation;
-
-                int count = 0;
                 
                 // Links selection
 
@@ -227,49 +117,55 @@ namespace BIM_Leaders_Core
                 Solid loop2 = GetWallsLoop(loops2);
 
                 // Transform solids
-                Solid loop1T = SolidUtils.CreateTransformed(loop1, transform1);
-                Solid loop2T = loop2;
+                Solid loop1Transformed = SolidUtils.CreateTransformed(loop1, transform1);
+                Solid loop2Transformed = loop2;
                 if (!inputLinks)
-                    loop2T = SolidUtils.CreateTransformed(loop2, transform2);
+                    loop2Transformed = SolidUtils.CreateTransformed(loop2, transform2);
 
                 
                 IList<CurveLoop> loop = new List<CurveLoop>();
                 List<IList<CurveLoop>> loopList = new List<IList<CurveLoop>>();
-                if (loop1T.Volume > 0 && loop2T.Volume > 0)
+
+                if (loop1Transformed.Volume == 0 || loop2Transformed.Volume == 0)
                 {
-                    Solid boolean = BooleanOperationsUtils.ExecuteBooleanOperation(loop1T, loop2T, BooleanOperationsType.Intersect);
-
-                    // Create CurveLoop from intersection
-                    foreach (Face face in boolean.Faces)
-                    {
-                        try
-                        {
-                            PlanarFace facePlanar = face as PlanarFace;
-                            if (facePlanar.FaceNormal.Z == 1)
-                            {
-                                loop = face.GetEdgesAsCurveLoops();
-                                loopList.Add(loop);
-                            }
-                        }
-                        catch { }
-                    }
-                    using (Transaction trans = new Transaction(doc, "Compare Walls"))
-                    {
-                        trans.Start();
-
-                        // Drawing filled region
-                        foreach (IList<CurveLoop> l in loopList)
-                        {
-                            FilledRegion region = FilledRegion.Create(doc, fill.Id, view.Id, l);
-                            count++;
-                        }
-
-                        trans.Commit();
-                    }
-                    TaskDialog.Show("Walls comparison", string.Format("{0} filled regions created.", count.ToString()));
+                    TaskDialog.Show("Walls comparison", "No intersections found.");
+                    return Result.Failed;
                 }
-                else
-                    TaskDialog.Show("Walls comparison", string.Format("No intersections found."));
+
+                Solid boolean = BooleanOperationsUtils.ExecuteBooleanOperation(loop1Transformed, loop2Transformed, BooleanOperationsType.Intersect);
+
+                // Create CurveLoop from intersection
+                foreach (Face face in boolean.Faces)
+                {
+                    try
+                    {
+                        PlanarFace facePlanar = face as PlanarFace;
+                        if (facePlanar.FaceNormal.Z == 1)
+                        {
+                            loop = face.GetEdgesAsCurveLoops();
+                            loopList.Add(loop);
+                        }
+                    }
+                    catch { }
+                }
+
+                // Drawing filled region
+                using (Transaction trans = new Transaction(doc, "Compare Walls"))
+                {
+                    trans.Start();
+                    
+                    foreach (IList<CurveLoop> l in loopList)
+                    {
+                        FilledRegion region = FilledRegion.Create(doc, fill.Id, doc.ActiveView.Id, l);
+                        count++;
+                    }
+
+                    trans.Commit();
+                }
+
+                // Show result
+                string text = $"{count} filled regions created.";
+                TaskDialog.Show("Walls comparison", text);
                 
                 return Result.Succeeded;
             }
@@ -279,6 +175,122 @@ namespace BIM_Leaders_Core
                 return Result.Failed;
             }
         }
+
+        /// <summary>
+        /// Get walls from document, that have level with given elevation and have material with given name.
+        /// </summary>
+        /// <param name="doc">Document (current Revit file or link).</param>
+        /// <param name="elevation">Elevation of the needed walls, input the current plan view level elevation.</param>
+        /// <param name="material">If wall will have material with given name, it will be filtered in.</param>
+        /// <returns>A list of walls from the document.</returns>
+        private static List<Wall> GetWalls(Document doc, double elevation, string material)
+        {
+            List<Wall> walls = new List<Wall>();
+
+            // Selecting all walls from doc
+            IEnumerable<Wall> wallsAll = new FilteredElementCollector(doc)
+                .OfClass(typeof(Wall))
+                .WhereElementIsNotElementType()
+                .Cast<Wall>(); //LINQ function
+
+            // Selecting all levels from doc
+            IEnumerable<Level> levelsAll = new FilteredElementCollector(doc)
+                .OfClass(typeof(Level))
+                .WhereElementIsNotElementType()
+                .Cast<Level>(); //LINQ function
+
+            // Getting closest level in the document
+            double level0 = levelsAll.First().Elevation;
+            foreach (Level level in levelsAll)
+                if (Math.Abs(level.ProjectElevation - elevation) < 1)
+                    level0 = level.ProjectElevation;
+
+            // Filtering needed walls for materials and height
+            foreach (Wall wall in wallsAll)
+            {
+                CompoundStructure wallStructure = wall.WallType.GetCompoundStructure();
+                if (wallStructure != null)
+                {
+                    IList<CompoundStructureLayer> layers = wallStructure.GetLayers();
+                    List<string> materialNames = new List<string>();
+                    foreach (CompoundStructureLayer layer in layers)
+                        materialNames.Add(doc.GetElement(layer.MaterialId).Name);
+                    if (materialNames.Contains(material)) // Filtering  for materials
+                    {
+                        LocationCurve wallLocation = wall.Location as LocationCurve;
+                        double diff = Math.Abs(wallLocation.Curve.GetEndPoint(0).Z - level0);
+                        if (diff < 1)
+                            walls.Add(wall);
+                    }
+                }
+            }
+            return walls;
+        }
+
+        /// <summary>
+        /// Convert walls contours to list of CurveLoop items.
+        /// </summary>
+        /// <param name="wall">Wall element.</param>
+        /// <returns>List of CurveLoops.</returns>
+        private static List<CurveLoop> GetWallsLoops(Wall wall)
+        {
+            Options options = new Options();
+
+            List<CurveLoop> loops = new List<CurveLoop>();
+            GeometryElement geometryElement = wall.get_Geometry(options);
+            foreach (Solid geometrySolid in geometryElement)
+            {
+                foreach (Face face in geometrySolid.Faces)
+                {
+                    if (face is PlanarFace)
+                    {
+                        PlanarFace facePlanar = face as PlanarFace;
+                        if (facePlanar.FaceNormal.Z == -1)
+                        {
+                            double height = facePlanar.Origin.Z;
+                            double heightLowest = height;
+                            // Get the lowest face
+                            if (loops.Count == 0)
+                                loops = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
+                            else
+                            {
+                                if (height < heightLowest)
+                                {
+                                    loops = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
+                                    heightLowest = height;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return loops;
+        }
+
+        /// <summary>
+        /// Convert walls loops to single solid.
+        /// </summary>
+        /// <returns>Solid</returns>
+        private static Solid GetWallsLoop(List<CurveLoop> CurveLoopsInput)
+        {
+            List<Solid> solids = new List<Solid>();
+            foreach (CurveLoop curveLoop in CurveLoopsInput)
+            {
+                List<CurveLoop> CurveLoops = new List<CurveLoop> { curveLoop };
+                Solid extrusion = GeometryCreationUtilities.CreateExtrusionGeometry(CurveLoops, new XYZ(0, 0, 1), 10);
+
+                if (solids.Count > 0)
+                {
+                    Solid solid = BooleanOperationsUtils.ExecuteBooleanOperation(extrusion, solids.First(), BooleanOperationsType.Union);
+                    solids.Clear();
+                    solids.Add(solid);
+                }
+                else
+                    solids.Add(extrusion);
+            }
+            return solids.First();
+        }
+
         public static string GetPath()
         {
             // Return constructed namespace path

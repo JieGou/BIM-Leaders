@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BIM_Leaders_Windows
 {
@@ -7,7 +9,6 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class DimensionSectionFloorsData : INotifyPropertyChanged, IDataErrorInfo
     {
-        public string Error { get { return null; } }
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="DimensionSectionFloorsData"/> class.
@@ -15,6 +16,7 @@ namespace BIM_Leaders_Windows
         public DimensionSectionFloorsData()
         {
             ResultSpots = true;
+            ResultPlacement = Enumerable.Repeat(true, 3).ToList();
             ResultThickness = "10";
         }
 
@@ -29,6 +31,17 @@ namespace BIM_Leaders_Windows
             }
         }
 
+        private List<bool> _resultPlacement;
+        public List<bool> ResultPlacement
+        {
+            get { return _resultPlacement; }
+            set
+            {
+                _resultPlacement = value;
+                OnPropertyChanged(nameof(ResultPlacement));
+            }
+        }
+
         private string _resultThickness;
         public string ResultThickness
         {
@@ -40,6 +53,10 @@ namespace BIM_Leaders_Windows
             }
         }
 
+
+        #region Validation
+
+        public string Error { get { return null; } }
         public string this[string propertyName]
         {
             get
@@ -48,20 +65,27 @@ namespace BIM_Leaders_Windows
             }
         }
 
-
-        #region Validation
-
         string GetValidationError(string propertyName)
         {
             string error = null;
             
             switch (propertyName)
             {
+                case "ResultPlacement":
+                    error = ValidateResultPlacement();
+                    break;
                 case "ResultThickness":
                     error = ValidateResultThickness();
                     break;
             }
             return error;
+        }
+
+        private string ValidateResultPlacement()
+        {
+            if (!ResultPlacement.Contains(true))
+                return "Check at least one placement";
+            return null;
         }
 
         private string ValidateResultThickness()
