@@ -42,10 +42,10 @@ namespace BIM_Leaders_Core
             // Get View Id
             View view = doc.ActiveView;
 
+            int count = 0;
+
             try
             {
-                int count = 0;
-
                 WallsCompareData data = new WallsCompareData(uidoc);
 
                 // Create a form to select objects.

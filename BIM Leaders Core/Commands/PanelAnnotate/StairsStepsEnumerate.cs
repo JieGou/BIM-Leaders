@@ -21,12 +21,12 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
+            int count = 0;
+            int countGrouped = 0;
+            int countUnpinned = 0;
+
             try
             {
-                int count = 0;
-                int countGrouped = 0;
-                int countUnpinned = 0;
-
                 // Collector for data provided in window
                 StairsStepsEnumerateForm form = new StairsStepsEnumerateForm();
                 form.ShowDialog();

@@ -19,10 +19,10 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
+            int count = 0;
+
             try
             {
-                int count = 0;
-
                 DwgNameDeleteForm form = new DwgNameDeleteForm(uidoc);
                 form.ShowDialog();
 

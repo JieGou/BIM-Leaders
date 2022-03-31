@@ -28,18 +28,15 @@ namespace BIM_Leaders_Core
 
             // Get length units
 #if VERSION2020
-
             DisplayUnitType units = doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
-
 #elif VERSION2021
-
             ForgeTypeId units = doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
-
 #endif
+
+            int count = 0;
+
             try
             {
-                int count = 0;
-
                 // Get the line from user selection
                 IList<ElementId> selectedIds = uidoc.Selection.GetElementIds() as IList<ElementId>;
 

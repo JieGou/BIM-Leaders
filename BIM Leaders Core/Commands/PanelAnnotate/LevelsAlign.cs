@@ -19,11 +19,11 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
+            int count2D = 0;
+            int count = 0;
+
             try
             {
-                int count2D = 0;
-                int count = 0;
-
                 // Get user provided information from window
                 LevelsAlignForm form = new LevelsAlignForm();
                 form.ShowDialog();

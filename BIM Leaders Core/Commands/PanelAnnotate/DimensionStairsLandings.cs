@@ -30,19 +30,19 @@ namespace BIM_Leaders_Core
                 View = view
             };
 
-            try
-            {
-                int countSpots = 0;
-                int countDimensions = 0;
-
-                // Threshold for sorting landings into lists. Each list contains landings located over each other.
-                double thresholdCm = 150;
+            // Threshold for sorting landings into lists. Each list contains landings located over each other.
+            double thresholdCm = 150;
 #if VERSION2020
                 double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, DisplayUnitType.DUT_CENTIMETERS);
 #elif VERSION2021
-                double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, UnitTypeId.Centimeters);
+            double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, UnitTypeId.Centimeters);
 #endif
 
+            int countSpots = 0;
+            int countDimensions = 0;
+
+            try
+            {
                 // Selecting all landings in the view
                 List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, view.Id)
                     .OfClass(typeof(StairsLanding))
