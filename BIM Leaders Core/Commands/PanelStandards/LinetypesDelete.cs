@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using System.Collections.Generic;
-using System.Linq;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
@@ -19,11 +19,10 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
+            int count = 0;
+
             try
             {
-                // Collector for data provided in window
-                LinetypesDeleteData data = new LinetypesDeleteData();
-
                 LinetypesDeleteForm form = new LinetypesDeleteForm();
                 form.ShowDialog();
 
@@ -31,40 +30,32 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                data = form.DataContext as LinetypesDeleteData;
+                LinetypesDeleteData data = form.DataContext as LinetypesDeleteData;
 
                 string nameDelete = data.ResultName;
-                int count = 0;
 
-                FilteredElementCollector collector = new FilteredElementCollector(doc);
-                IEnumerable<LinePatternElement> linePatterns = collector.OfClass(typeof(LinePatternElement))
-                    .WhereElementIsNotElementType().ToElements().Cast<LinePatternElement>();
+                List<Element> linePatterns = new FilteredElementCollector(doc)
+                    .OfClass(typeof(LinePatternElement))
+                    .WhereElementIsNotElementType()
+                    .Where(x => x.Name.Contains(nameDelete))
+                    .ToList();
+
+                count = linePatterns.Count;
 
                 using (Transaction trans = new Transaction(doc, "Delete Line Patterns"))
                 {
                     trans.Start();
 
-                    // Deleting unused line patterns
-                    foreach (LinePatternElement linePattern in linePatterns)
-                    {
-                        string linePatternName = linePattern.Name;
-
-                        if (linePatternName.Contains(nameDelete))
-                        {
-                            ElementId linePatternId = linePattern.Id;
-                            doc.Delete(linePatternId);
-                            count++;
-                        }
-                    }
+                    doc.Delete(linePatterns.ConvertAll(x => x.Id));
 
                     trans.Commit();
                 }
 
                 // Show result
-                if (count == 0)
-                    TaskDialog.Show("Delete Line Patterns", "No line patterns deleted");
-                else
-                    TaskDialog.Show("Delete Line Patterns", string.Format("{0} line patterns deleted", count.ToString()));
+                string text = count == 0
+                    ? "No line patterns deleted"
+                    : $"{count} line patterns deleted";
+                TaskDialog.Show("Delete Line Patterns", text);
 
                 return Result.Succeeded;
             }

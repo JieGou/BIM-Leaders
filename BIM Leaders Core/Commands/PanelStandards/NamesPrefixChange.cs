@@ -12,8 +12,86 @@ namespace BIM_Leaders_Core
     [TransactionAttribute(TransactionMode.Manual)]
     public class NamesPrefixChange : IExternalCommand
     {
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            // Get UIDocument
+            UIDocument uidoc = commandData.Application.ActiveUIDocument;
+
+            // Get Document
+            Document doc = uidoc.Document;
+
+            List<Type> typesAll = new List<Type>() {
+                typeof(AreaScheme),
+                typeof(BrowserOrganization),
+                typeof(BuildingPadType),
+                typeof(CeilingType),
+                typeof(CurtainSystemType),
+                typeof(DimensionType),
+                typeof(Family), //typeof(FamilySymbol),
+                typeof(FilledRegionType),
+                typeof(GridType),
+                typeof(GroupType),
+                typeof(LevelType),
+                typeof(LinePatternElement),
+                typeof(Material),
+                typeof(PanelType),
+                typeof(ContinuousRailType), //typeof(RailingType),
+                typeof(FasciaType), //typeof(GutterType), typeof(RoofType),
+                typeof(SpotDimensionType),
+                typeof(StairsType),
+                typeof(StairsLandingType),
+                typeof(StairsRunType),
+                typeof(TextNoteType),
+                typeof(ViewDrafting), //typeof(ViewPlan), typeof(ViewSchedule), typeof(ViewSection),
+                typeof(WallType),
+                typeof(WallFoundationType)
+            };
+
+            int count = 0;
+
+            try
+            {
+                NamesPrefixChangeForm form = new NamesPrefixChangeForm();
+                form.ShowDialog();
+
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
+
+                // Get user provided information from window
+                NamesPrefixChangeData data = form.DataContext as NamesPrefixChangeData;
+
+                // Getting input data from user
+                string inputPrefixOld = data.ResultPrefixOld;
+                string inputPrefixNew = data.ResultPrefixNew;
+                List<bool> categories = data.ResultCategories;
+
+                List<Type> types = typesAll.Where((name, index) => categories[index]).ToList();
+
+                using (Transaction trans = new Transaction(doc, "Change Names Prefix"))
+                {
+                    trans.Start();
+
+                    count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, types);
+
+                    trans.Commit();
+                }
+
+                // Show result
+                string text = count == 0
+                    ? "No prefixes changed"
+                    : $"{count} prefixes changed";
+                TaskDialog.Show("Names Prefix Change", text);
+
+                return Result.Succeeded;
+            }
+            catch (Exception e)
+            {
+                message = e.Message;
+                return Result.Failed;
+            }
+        }
         /// <summary>
-        /// Replace substring in names of elements of given category.
+        /// Replace substring in names of elements of given types.
         /// <para>
         /// <c>int count = CountPrefixes(doc, "OLD", "NEW", typeof(GutterType));</c>
         /// </para>
@@ -21,14 +99,17 @@ namespace BIM_Leaders_Core
         /// <param name="doc">Document to process in.</param>
         /// <param name="prefixOld">String to search.</param>
         /// <param name="prefixNew">String to replace with.</param>
-        /// <param name="type">Sytem.Type of needed DB class (category).</param>
+        /// <param name="types">Sytem.Type of needed DB classes (categories).</param>
         /// <returns>Count of strings with replaced substrings.</returns>
-        private static int ReplaceNames(Document doc, string prefixOld, string prefixNew, Type type)
+        private static int ReplaceNames(Document doc, string prefixOld, string prefixNew, List<Type> types)
         {
             int count = 0;
 
-            FilteredElementCollector collector = new FilteredElementCollector(doc);
-            IEnumerable<Element> elements = collector.OfClass(type).ToElements();
+            ElementMulticlassFilter elementMulticlassFilter = new ElementMulticlassFilter(types);
+
+            IEnumerable<Element> elements = new FilteredElementCollector(doc)
+                .WherePasses(elementMulticlassFilter)
+                .ToElements();
             foreach (Element element in elements)
             {
                 string name = element.Name;
@@ -43,117 +124,6 @@ namespace BIM_Leaders_Core
             return count;
         }
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
-        {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-
-            // Get Document
-            Document doc = uidoc.Document;
-
-            try
-            {
-                // Collector for data provided in window
-                NamesPrefixChangeData data = new NamesPrefixChangeData();
-
-                NamesPrefixChangeForm form = new NamesPrefixChangeForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                data = form.DataContext as NamesPrefixChangeData;
-
-                // Getting input data from user
-                string inputPrefixOld = data.ResultPrefixOld;
-                string inputPrefixNew = data.ResultPrefixNew;
-                List<bool> categories = data.ResultCategories;
-                int count = 0;
-
-                using (Transaction trans = new Transaction(doc, "Change Names Prefix"))
-                {
-                    trans.Start();
-
-                    if (categories[0])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(AreaScheme));
-                    if (categories[1])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(BrowserOrganization));
-                    if (categories[2])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(BuildingPadType));
-                    if (categories[3])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(CeilingType));
-                    if (categories[4])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(CurtainSystemType));
-                    if (categories[5])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(DimensionType));
-                    if (categories[6])
-                    {
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(Family));
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(FamilySymbol));
-                    }
-                    if (categories[7])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(FilledRegionType));
-                    if (categories[8])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(GridType));
-                    if (categories[9])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(GroupType));
-                    if (categories[10])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(LevelType));
-                    if (categories[11])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(LinePatternElement));
-                    if (categories[12])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(Material));
-                    if (categories[13])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(PanelType));
-                    if (categories[14])
-                    {
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(ContinuousRailType));
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(RailingType));
-                    }
-                    if (categories[15])
-                    {
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(FasciaType));
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(GutterType));
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(RoofType));
-                    }
-                    if (categories[16])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(SpotDimensionType));
-                    if (categories[17])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(StairsType));
-                    if (categories[18])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(StairsLandingType));
-                    if (categories[19])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(StairsRunType));
-                    if (categories[20])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(TextNoteType));
-                    if (categories[21])
-                    {
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(ViewDrafting));
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(ViewPlan));
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(ViewSchedule));
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(ViewSection));
-                    }
-                    if (categories[22])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(WallType));
-                    if (categories[23])
-                        count += ReplaceNames(doc, inputPrefixOld, inputPrefixNew, typeof(WallFoundationType));
-
-                    trans.Commit();
-
-                    if (count == 0)
-                        TaskDialog.Show("Names Prefix Change", "No prefixes changed");
-                    else
-                        TaskDialog.Show("Names Prefix Change", string.Format("{0} prefixes changed", count.ToString()));
-                }
-                return Result.Succeeded;
-            }
-            catch (Exception e)
-            {
-                message = e.Message;
-                return Result.Failed;
-            }
-        }
         /// <summary>
         /// Gets the full namespace path to this command
         /// </summary>

@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using System.Collections.Generic;
 
 namespace BIM_Leaders_Core
 {
@@ -17,43 +17,32 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
-            // Get View
-            View view = doc.ActiveView;
+            double length = 1;
 
             try
             {
-                Family family = doc.OwnerFamily;
-
-                double length = 1;
-
                 XYZ zero = new XYZ(0, 0, 0);
-                XYZ a = new XYZ(length, 0, 0);
-                XYZ b = new XYZ(0, length, 0);
-                XYZ c = new XYZ(0 - length, 0, 0);
-                XYZ d = new XYZ(0, 0 - length, 0);
-                
+
+                List<XYZ> points = new List<XYZ>();
+                points.Add(new XYZ(length, 0, 0));
+                points.Add(new XYZ(0, length, 0));
+                points.Add(new XYZ(0 - length, 0, 0));
+                points.Add(new XYZ(0, 0 - length, 0));
+
+                List<Line> lines = points
+                    .ConvertAll(x => Line.CreateBound(zero, x));
+
                 using (Transaction trans = new Transaction(doc, "Family Zero Coordinates"))
                 {
                     trans.Start();
 
-                    Line line0 = Line.CreateBound(zero, a);
-                    DetailCurve curve0 = doc.FamilyCreate.NewDetailCurve(view, line0);
-                    Line line1 = Line.CreateBound(zero, b);
-                    DetailCurve curve1 = doc.FamilyCreate.NewDetailCurve(view, line1);
-                    Line line2 = Line.CreateBound(zero, c);
-                    DetailCurve curve2 = doc.FamilyCreate.NewDetailCurve(view, line2);
-                    Line line3 = Line.CreateBound(zero, d);
-                    DetailCurve curve3 = doc.FamilyCreate.NewDetailCurve(view, line3);
+                    List<DetailCurve> curves = lines
+                        .ConvertAll(x => doc.FamilyCreate.NewDetailCurve(doc.ActiveView, x));
 
-                    List<ElementId> lines = new List<ElementId>
-                    {
-                        curve0.Id,
-                        curve1.Id,
-                        curve2.Id,
-                        curve3.Id
-                    };
-
-                    uidoc.Selection.SetElementIds(lines);
+                    List<ElementId> curveIds = curves
+                        .ConvertAll(x => x.Id);
+                    
+                    uidoc.Selection.SetElementIds(curveIds);
 
                     trans.Commit();
                 }

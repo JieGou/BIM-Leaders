@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BIM_Leaders_Core
 {
@@ -18,62 +18,45 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
+            int count = 0;
+
             try
             {
-                FilteredElementCollector collector = new FilteredElementCollector(doc);
-                IEnumerable<CurveElement> usedLines = collector.OfClass(typeof(CurveElement))
+                // Get all used linestyles in the project.
+                IEnumerable<ElementId> lineStylesUsed = new FilteredElementCollector(doc)
+                    .OfClass(typeof(CurveElement))
                     .WhereElementIsNotElementType()
                     .ToElements()
-                    .Cast<CurveElement>();
+                    .Cast<CurveElement>().ToList()
+                    .ConvertAll(x => x.LineStyle.Id)
+                    .Distinct();
 
-                List<ElementId> lineStylesUsed = new List<ElementId>();
-
-                foreach(CurveElement usedLine in usedLines)
-                {
-                    ElementId lineStyle = usedLine.LineStyle.Id;
-
-                    if(!lineStylesUsed.Contains(lineStyle))
-                        lineStylesUsed.Add(lineStyle);
-                }
-
-                // Selecting all line styles in the project
+                // Get all line styles in the project.
                 CategoryNameMap lineStylesAllCnm = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
                 List<ElementId> lineStylesAll = new List<ElementId>();
                 foreach (Category category in lineStylesAllCnm)
                     lineStylesAll.Add(category.Id);
 
-                List<ElementId> lineStyles = new List<ElementId>();
-                foreach(ElementId lineStyle in lineStylesAll)
-                    lineStyles.Add(lineStyle);
+                List<ElementId> lineStylesDelete = lineStylesAll
+                    .Where(x => !lineStylesUsed.Contains(x))
+                    .ToList();
 
-                int count = 0;
+                count = lineStylesDelete.Count;
 
                 using (Transaction trans = new Transaction(doc, "Delete Unused Linestyles"))
                 {
                     trans.Start();
 
-                    // Deleting unused line styles
-                    foreach (ElementId lineStyle in lineStyles)
-                    {
-                        if (!lineStylesUsed.Contains(lineStyle))
-                        {
-                            try
-                            {
-                                doc.Delete(lineStyle);
-                                count++;
-                            }
-                            catch { }
-                        }
-                    }
+                    doc.Delete(lineStylesDelete);
 
                     trans.Commit();
                 }
 
                 // Show result
-                if (count == 0)
-                    TaskDialog.Show("Delete Unused Linestyles", "No linestyles deleted");
-                else
-                    TaskDialog.Show("Delete Unused Linestyles", string.Format("{0} unused linestyles were deleted", count.ToString()));
+                string text = count == 0
+                    ? "No linestyles deleted"
+                    : $"{count} unused linestyles were deleted";
+                TaskDialog.Show("Delete Unused Linestyles", text);
 
                 return Result.Succeeded;
             }
