@@ -76,7 +76,11 @@
   <ItemGroup>
     <Compile Include="MultivalueTextBoxesConverter.cs" />
     <Compile Include="Windows\CheckerReportData.cs" />
+    <Compile Include="Windows\DimensionsPlanCheckData.cs" />
     <Compile Include="Windows\WallsArrangedData.cs" />
+    <Compile Include="Windows\DimensionsPlanCheckForm.xaml.cs">
+      <DependentUpon>DimensionsPlanCheckForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\WallsArrangedForm.xaml.cs">
       <DependentUpon>WallsArrangedForm.xaml</DependentUpon>
     </Compile>
@@ -185,6 +189,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\CheckerReportForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\DimensionsPlanCheckForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

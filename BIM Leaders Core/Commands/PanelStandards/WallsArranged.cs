@@ -33,8 +33,6 @@ namespace BIM_Leaders_Core
             };
 
             double toleranceAngle = uiapp.AngleTolerance / 100; // 0.001 grad
-            //Color filterColor0 = new Color(255, 127, 39);
-            //Color filterColor1 = new Color(255, 64, 64);
             string filterName0 = "Walls arranged filter. Distances";
             string filterName1 = "Walls arranged filter. Angles";
 

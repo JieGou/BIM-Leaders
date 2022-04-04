@@ -53,8 +53,27 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        public Color ResultColor0 { get; set; }
-        public Color ResultColor1 { get; set; }
+        private Color _resultColor0;
+        public Color ResultColor0
+        {
+            get { return _resultColor0; }
+            set
+            {
+                _resultColor0 = value;
+                OnPropertyChanged(nameof(ResultColor0));
+            }
+        }
+
+        private Color _resultColor1;
+        public Color ResultColor1
+        {
+            get { return _resultColor1; }
+            set
+            {
+                _resultColor1 = value;
+                OnPropertyChanged(nameof(ResultColor1));
+            }
+        }
 
         public string this[string propertyName]
         {

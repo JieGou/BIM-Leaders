@@ -70,7 +70,7 @@
                 <materialDesign:ColorPicker  x:Name="colorPicker0"
                                              Color="{Binding ResultColor0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 </materialDesign:ColorPicker>
-                
+
                 <Label Content="Filter color (angles)"
                        Margin="-5,10,0,0"
                        Style="{StaticResource SLabelBold}">

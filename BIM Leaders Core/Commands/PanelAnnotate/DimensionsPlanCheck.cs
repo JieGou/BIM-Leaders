@@ -4,6 +4,7 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -18,10 +19,19 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
+            string filterName = "Walls dimension filter";
+
             try
             {
-                Color filterColor = new Color(255, 127, 39);
-                string filterName = "Walls dimension filter";
+                DimensionSectionFloorsForm form = new DimensionSectionFloorsForm();
+                form.ShowDialog();
+
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
+
+                // Get user provided information from window
+                DimensionsPlanCheckData data = form.DataContext as DimensionsPlanCheckData;
+                Color filterColor = new Color(data.ResultColor.R, data.ResultColor.G, data.ResultColor.B);
 
                 List<ElementId> wallIds = GetWallIds(doc);
 
