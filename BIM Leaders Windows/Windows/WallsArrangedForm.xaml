@@ -10,6 +10,7 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Dimension Section Floors"
         WindowStartupLocation="CenterScreen"
+        Height="500"
         
         d:DataContext="{d:DesignInstance Type=local:WallsArrangedData}"
         MouseLeftButtonDown="FormMouseMove">
@@ -41,7 +42,7 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <StackPanel Height="231" Margin="20,0">
+            <StackPanel Height="331" Margin="20,0">
                 <Label Content="Distance Step (cm)"
                        Style="{StaticResource SLabelBold}">
                 </Label>
@@ -61,6 +62,29 @@
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxDistanceTolerance, Path=(Validation.Errors).CurrentItem.ErrorContent}"
                        Style="{StaticResource SLabelError}"/>
+
+                <Label Content="Filter color (distances)"
+                       Margin="-5,10,0,0"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <materialDesign:ColorPicker  x:Name="colorPicker0"
+                                             Color="{Binding ResultColor0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                </materialDesign:ColorPicker>
+                
+                <Label Content="Filter color (angles)"
+                       Margin="-5,10,0,0"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <materialDesign:ColorPicker  x:Name="colorPicker1"
+                                             Color="{Binding ResultColor1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                </materialDesign:ColorPicker>
+
+                <!--
+                <Button x:Name="buttonColor0" Click="ButtonColor0Click"
+                        Content="0" ToolTip="Run"
+                        Style="{StaticResource SColorButton}">
+                </Button>
+                -->
             </StackPanel>
         </Grid>
 

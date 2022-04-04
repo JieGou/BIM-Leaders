@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows.Media;
 
 namespace BIM_Leaders_Windows
 {
@@ -16,6 +17,18 @@ namespace BIM_Leaders_Windows
         {
             ResultDistanceStep = "1"; // 1 cm
             ResultDistanceTolerance = "0.00001"; // 0.00001 cm
+            ResultColor0 = new Color
+            {
+                R = 255,
+                G = 127,
+                B = 39
+            };
+            ResultColor1 = new Color
+            {
+                R = 255,
+                G = 64,
+                B = 64
+            };
         }
 
         private string _resultDistanceStep;
@@ -39,6 +52,9 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(ResultDistanceTolerance));
             }
         }
+
+        public Color ResultColor0 { get; set; }
+        public Color ResultColor1 { get; set; }
 
         public string this[string propertyName]
         {

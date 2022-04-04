@@ -33,8 +33,8 @@ namespace BIM_Leaders_Core
             };
 
             double toleranceAngle = uiapp.AngleTolerance / 100; // 0.001 grad
-            Color filterColor0 = new Color(255, 127, 39);
-            Color filterColor1 = new Color(255, 64, 64);
+            //Color filterColor0 = new Color(255, 127, 39);
+            //Color filterColor1 = new Color(255, 64, 64);
             string filterName0 = "Walls arranged filter. Distances";
             string filterName1 = "Walls arranged filter. Angles";
 
@@ -50,6 +50,8 @@ namespace BIM_Leaders_Core
                 WallsArrangedData data = form.DataContext as WallsArrangedData;
                 double toleranceDistance = double.Parse(data.ResultDistanceTolerance);
                 double distanceStep = double.Parse(data.ResultDistanceStep);
+                Color filterColor0 = new Color(data.ResultColor0.R, data.ResultColor0.G, data.ResultColor0.B);
+                Color filterColor1 = new Color(data.ResultColor1.R, data.ResultColor1.G, data.ResultColor1.B);
 
                 // Getting References of Reference Planes
                 IList<Reference> referenceUncheckedList = uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Two Perpendicular Reference Planes");

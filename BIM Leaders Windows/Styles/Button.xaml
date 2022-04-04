@@ -81,5 +81,28 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+    <Style x:Key="SColorButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="BorderBrush" Value="{x:Null}" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+
+        <Setter Property="ToolTip" Value="Select Color" />
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <materialDesign:PackIcon Kind="Circle"
+                                             Width="20" Height="20"
+                                             Foreground="White"
+                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
