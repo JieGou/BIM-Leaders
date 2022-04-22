@@ -57,7 +57,7 @@ namespace BIM_Leaders_Core
                     // Show the dialog.
                     WallsCompareForm form = new WallsCompareForm(uidoc);
                     result = form.ShowDialog();
-                    // Get user provided information from window
+                    // Get user provided information from window.
                     data = form.DataContext as WallsCompareData;
                 }
                 
@@ -67,7 +67,7 @@ namespace BIM_Leaders_Core
                 
                 double elevation = view.GenLevel.Elevation;
                 
-                // Links selection
+                // Links selection.
 
                 ISelectionFilter selFilter = new LinkSelectionFilter();
                 List<Wall> walls1 = new List<Wall>();

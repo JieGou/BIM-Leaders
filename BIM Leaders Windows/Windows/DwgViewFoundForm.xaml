@@ -53,7 +53,7 @@
 
         <Grid Grid.Row="2" VerticalAlignment="Center">
             <Button x:Name="buttonOk" Click="ButtonOkClick"
-                    Content="OK" ToolTip="Run"
+                    Content="OK" ToolTip="Close"
                     Margin="270,0"
                     Style="{StaticResource SRectangleButton}">
             </Button>

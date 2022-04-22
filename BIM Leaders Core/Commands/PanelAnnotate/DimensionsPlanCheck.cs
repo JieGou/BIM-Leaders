@@ -45,7 +45,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = wallIds.Count == 0
+                string text = (wallIds.Count == 0)
                     ? "All walls are dimensioned"
                     : $"{wallIds.Count} walls added to Walls dimension filter";
                 TaskDialog.Show("Dimension Plan Check", text);

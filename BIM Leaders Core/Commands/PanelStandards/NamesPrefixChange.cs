@@ -77,7 +77,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = count == 0
+                string text = (count == 0)
                     ? "No prefixes changed"
                     : $"{count} prefixes changed";
                 TaskDialog.Show("Names Prefix Change", text);

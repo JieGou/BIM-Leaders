@@ -61,6 +61,7 @@
                                 <Label Content="{Binding ElementName=textboxPrefix, Path=(Validation.Errors)/ErrorContent}"
                                        Style="{StaticResource SLabelError}">
                                 </Label>
+
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="1">

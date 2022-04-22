@@ -52,7 +52,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = count == 0
+                string text = (count == 0)
                     ? "No line patterns deleted"
                     : $"{count} line patterns deleted";
                 TaskDialog.Show("Delete Line Patterns", text);

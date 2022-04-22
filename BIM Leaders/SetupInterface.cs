@@ -212,13 +212,23 @@ namespace BIM_Leaders
                 LongDescription = "Usable only on a section view. Joins may be reviewed for correct joining order.",
                 CommandNamespacePath = ElementsJoin.GetPath(),
                 IconImageName = "BIM_Leaders_Elements_Join.png",
-                //TooltipImageName = "BIM_Leaders_Element_Paint_Remove.png"
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
             };
             // Create button from provided data
             RevitPushButton.Create(button_3_2_data);
 
-
+            // Populate button data model
+            RevitPushButtonDataModel button_3_3_data = new RevitPushButtonDataModel
+            {
+                Label = "Match\r\nParameters",
+                Panel = panel_3,
+                ToolTip = "Transfer instance parameters values from one element to other.",
+                LongDescription = "Does not match those parameters: Type, Family and Type, Image.",
+                CommandNamespacePath = ElementPropertiesMatch.GetPath(),
+                IconImageName = "BIM_Leaders_Element_Properties_Match.png",
+            };
+            // Create button from provided data
+            RevitPushButton.Create(button_3_3_data);
 
 
             // Create Ribbon Panel

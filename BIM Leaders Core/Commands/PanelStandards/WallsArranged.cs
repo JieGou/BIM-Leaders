@@ -140,9 +140,9 @@ namespace BIM_Leaders_Core
             List<Wall> walls = new List<Wall>();
             foreach (Wall wall in wallsAll)
             {
-                LocationCurve lc = wall.Location as LocationCurve;
-                if (lc.Curve.GetType() == typeof(Line))
-                    walls.Add(wall);
+                if (wall.Location is LocationCurve lc)
+                    if (lc.Curve.GetType() == typeof(Line))
+                        walls.Add(wall);
             }
             return walls;
         }
@@ -238,7 +238,7 @@ namespace BIM_Leaders_Core
                 distanceInternal = wallLocationCurve.Project(point).Distance + lineOffset;
 #if VERSION2020
                         double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, DisplayUnitType.DUT_CENTIMETERS);
-#elif VERSION2021
+#else
             double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, UnitTypeId.Centimeters);
 #endif
             // Calculate precision
@@ -281,16 +281,17 @@ namespace BIM_Leaders_Core
             View view = doc.ActiveView;
 
             // Get solid pattern.
-            IEnumerable<Element> patterns = new FilteredElementCollector(doc).OfClass(typeof(FillPatternElement)).ToElements();
-            ElementId pattern = patterns.First().Id;
-            foreach (Element element in patterns)
-                if (element.Name == "<Solid fill>")
-                    pattern = element.Id;
+            ElementId patternId = new FilteredElementCollector(doc)
+                .OfClass(typeof(FillPatternElement))
+                .ToElements()
+                .Cast<FillPatternElement>()
+                .Where(x => x.GetFillPattern().IsSolidFill)
+                .First().Id;
 
             // Use the existing graphics settings, and change the color.
             OverrideGraphicSettings overrideSettings = view.GetFilterOverrides(filterId);
             overrideSettings.SetCutForegroundPatternColor(filterColor);
-            overrideSettings.SetCutForegroundPatternId(pattern);
+            overrideSettings.SetCutForegroundPatternId(patternId);
             view.SetFilterOverrides(filterId, overrideSettings);
         }
 

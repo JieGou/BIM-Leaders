@@ -35,30 +35,27 @@ namespace BIM_Leaders_Core
                 string name = doc.GetElement(data.DwgListSelected).Category.Name;
 
                 // Get all Imports with name same as input from a form
-                IEnumerable<ImportInstance> dwgTypesAll = new FilteredElementCollector(doc)
+                ICollection<ElementId> dwgDelete = new FilteredElementCollector(doc)
                     .OfClass(typeof(ImportInstance))
                     .WhereElementIsNotElementType()
-                    .Cast<ImportInstance>(); //LINQ function;
-                List<ElementId> delete = new List<ElementId>();
-                foreach (ImportInstance dwgType in dwgTypesAll)
-                    if (dwgType.Category.Name == name)
-                        delete.Add(dwgType.Id);
+                    .Where(x => x.Category.Name == name) //LINQ function
+                    .ToList()                            //LINQ function
+                    .ConvertAll(x => x.Id)               //LINQ function
+                    .ToList();                           //LINQ function
+
+                count = dwgDelete.Count;
 
                 using (Transaction trans = new Transaction(doc, "Delete DWG by Name"))
                 {
                     trans.Start();
 
-                    foreach(ElementId i in delete)
-                    {
-                        doc.Delete(i);
-                        count++;
-                    }
+                    doc.Delete(dwgDelete);  
 
                     trans.Commit();
                 }
 
                 // Show result
-                string text = count == 0
+                string text = (count == 0)
                     ? "No DWG deleted"
                     : $"{count} DWG named {name} deleted";
                 TaskDialog.Show("DWG Deleted", text);

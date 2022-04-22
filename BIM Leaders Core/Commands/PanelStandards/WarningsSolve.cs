@@ -44,7 +44,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = countJoins == 0
+                string text = (countJoins == 0)
                     ? "No warnings to solve"
                     : $"{countJoins} wrong joins were removed";
                 TaskDialog.Show("Solve Warnings", text);
@@ -68,12 +68,22 @@ namespace BIM_Leaders_Core
             foreach (FailureMessage warning in warningsJoin)
             {
                 List<ElementId> ids = warning.GetFailingElements().ToList();
+
+                // Filter elements in workshared document that are aditable
+                if (doc.IsWorkshared)
+                    ids = WorksharingUtils.CheckoutElements(doc, ids).ToList();
+                if (ids.Count < 2)
+                    continue;
+
                 Element element0 = doc.GetElement(ids[0]);
                 Element element1 = doc.GetElement(ids[1]);
 
-                JoinGeometryUtils.UnjoinGeometry(doc, element0, element1);
-
-                count++;
+                try
+                {
+                    JoinGeometryUtils.UnjoinGeometry(doc, element0, element1);
+                    count++;
+                }
+                catch { }
             }
             return count;
         }

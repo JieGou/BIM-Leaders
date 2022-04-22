@@ -3,8 +3,12 @@
 
 	<?if $(var.Configuration)=2020 ?>
 	<?define ProductCode = "{35AA8360-520E-40E2-89E5-B2D1AE4CC919}"?>
-	<?else?>
+	<?endif?>
+	<?if $(var.Configuration)=2021 ?>
 	<?define ProductCode = "{3DA2729B-4AB9-43B8-A531-E4BF4DEC2C0D}"?>
+	<?endif?>
+	<?if $(var.Configuration)=2022 ?>
+	<?define ProductCode = "{07B5707B-DE4C-48AF-8265-749B7F1C6ED9}"?>
 	<?endif?>
 
 	<!-- Do not change! Must be the same in all versions -->
@@ -14,7 +18,7 @@
 	<?define Company = "BIM Leaders"?>
 	<?define Description = "Revit Addin"?>
 	<?define Keywords = "revit, addin, plugin"?>
-	<?define Comments = "Developed in 2021 to make work easy"?>
+	<?define Comments = "Developed in 2022 to make work easy"?>
 	
 	<Product Id="$(var.ProductCode)"
 			 Name="BIM Leaders Addin"

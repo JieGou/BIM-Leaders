@@ -57,7 +57,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = count == 0
+                string text = (count == 0)
                     ? "No grids aligned"
                     : $"{count2D} levels switched to 2D and aligned.{Environment.NewLine}{count} levels changed tags";
                 TaskDialog.Show("Levels Align", text);

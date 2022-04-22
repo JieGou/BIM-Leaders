@@ -20,7 +20,13 @@ namespace BIM_Leaders_Core
 
             try
             {
-                List<Type> types = new List<Type> { typeof(Extrusion), typeof(Blend), typeof(Revolution), typeof(Sweep), typeof(SweptBlend) };
+                List<Type> types = new List<Type> { 
+                    typeof(Extrusion),
+                    typeof(Blend),
+                    typeof(Revolution),
+                    typeof(Sweep),
+                    typeof(SweptBlend)
+                };
                 ElementMulticlassFilter elementMulticlassFilter = new ElementMulticlassFilter(types);
 
                 // Get Geometry primitives

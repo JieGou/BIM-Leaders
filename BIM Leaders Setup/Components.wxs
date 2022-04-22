@@ -9,6 +9,8 @@
 			<ComponentRef Id="File3" />
 			<ComponentRef Id="File4" />
 			<ComponentRef Id="File5" />
+			<ComponentRef Id="File6" />
+			<ComponentRef Id="File7" />
 
 		</ComponentGroup>
 
@@ -30,6 +32,12 @@
 			</Component>
 			<Component Id="File5" Guid="{6683198B-B3E5-4269-9F96-CC24DABB5283}">
 				<File Id="FileMainFile" Name="BIM Leaders.dll"></File>
+			</Component>
+			<Component Id="File6" Guid="{292A1213-2AA4-4743-A5D6-67270E5483DC}">
+				<File Id="FileMDColorsFile" Name="MaterialDesignColors.dll"></File>
+			</Component>
+			<Component Id="File7" Guid="{E94AB29E-C95D-4344-8F56-D181E34A81D0}">
+				<File Id="FileMDThemesFile" Name="MaterialDesignThemes.Wpf.dll"></File>
 			</Component>
 		</DirectoryRef>
 		

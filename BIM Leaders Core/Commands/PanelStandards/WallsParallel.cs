@@ -57,7 +57,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = wallsFilter.Count == 0
+                string text = (wallsFilter.Count == 0)
                     ? "All walls are clear"
                     : $"{wallsFilter} walls added to Walls parallel filter";
                 TaskDialog.Show("Walls parallel filter", text);

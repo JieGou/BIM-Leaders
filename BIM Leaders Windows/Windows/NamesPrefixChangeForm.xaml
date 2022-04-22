@@ -62,6 +62,7 @@
                         </Label>
 
                         <Label Content="New Prefix"
+                               Margin="-5,10,0,0"
                                Style="{StaticResource SLabelBold}">
                         </Label>
                         <TextBox x:Name="textboxPrefixNew"

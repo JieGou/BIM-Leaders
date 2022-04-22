@@ -23,43 +23,46 @@ namespace BIM_Leaders_Core
             try
             {
                 // Get Imports
-                FilteredElementCollector collector = new FilteredElementCollector(doc);
-                IEnumerable<ImportInstance> imports = collector.OfClass(typeof(ImportInstance))
+                IEnumerable<ImportInstance> imports = new FilteredElementCollector(doc)
+                    .OfClass(typeof(ImportInstance))
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>(); //LINQ function;
 
-                List<string> importsNames = new List<string> { "File" };
-                List<string> views = new List<string> { "View" };
-                List<string> ids = new List<string> { "Id" };
-                List<string> islink = new List<string> { "Import Type" };
+                /*
+                List<string> namesColumn = new List<string> { "File" };
+                List<string> viewsColumn = new List<string> { "View" };
+                List<string> idsColumn = new List<string> { "Id" };
+                List<string> islinkColumn = new List<string> { "Import Type" };
 
                 foreach (ImportInstance import in imports)
                 {
                     try
                     {
-                        importsNames.Add(import.Category.Name);
+                        namesColumn.Add(import.Category.Name);
                     }
                     catch (Exception e)
                     {
-                        importsNames.Add(e.Message);
+                        namesColumn.Add(e.Message);
                     }
                     
                     // Checking if 2D or 3D
-                    if(import.ViewSpecific)
-                        views.Add(doc.GetElement(import.OwnerViewId).Name);
-                    else
-                        views.Add("Not a view specific import");
-                    // Checking if link or import
-                    if (import.IsLinked)
-                        islink.Add("Link");
-                    else
-                        islink.Add("Import");
+                    string viewText = import.ViewSpecific
+                        ? doc.GetElement(import.OwnerViewId).Name
+                        : "Not a view specific import";
+                    viewsColumn.Add(viewText);
 
-                    ids.Add(import.Id.ToString());
+                    idsColumn.Add(import.Id.ToString());
+
+                    // Checking if link or import
+                    string importText = import.IsLinked
+                        ? "Link"
+                        : "Import";
+                    islinkColumn.Add(importText);
                 }
 
                 // Export to Excel
                 // ...
+                */
 
                 // Create a DataSet
                 DataSet dwgDataSet = new DataSet("dwgDataSet");
@@ -80,33 +83,25 @@ namespace BIM_Leaders_Core
                 dwgDataSet.Tables.Add(dwgDataTable);
 
                 // Fill the table
-                DataRow newRow1;
-                string iName = "";
-                string iView = "Not a view specific import";
-                string iId = "";
-                string iLink = "Import";
                 foreach (ImportInstance i in imports)
                 {
-                    newRow1 = dwgDataTable.NewRow();
-
                     // Name
-                    try
-                    {
-                        iName = i.Category.Name;
-                    }
-                    catch (Exception e) { iName = e.Message; }
+                    string iName = i.Category?.Name ?? "Error";
 
                     // Checking if 2D or 3D
-                    if (i.ViewSpecific)
-                        iView = doc.GetElement(i.OwnerViewId).Name;
+                    string iView = (i.ViewSpecific)
+                        ? doc.GetElement(i.OwnerViewId).Name
+                        : "Not a view specific import";
 
                     // Id
-                    iId = i.Id.ToString();
+                    string iId = i.Id.ToString();
 
                     // Checking if link or import
-                    if (i.IsLinked)
-                        iLink = "Link";
+                    string iLink = (i.IsLinked)
+                        ? "Link"
+                        : "Import";
 
+                    DataRow newRow1 = dwgDataTable.NewRow();
                     newRow1["File"] = iName;
                     newRow1["View"] = iView;
                     newRow1["Id"] = iId;
@@ -119,7 +114,7 @@ namespace BIM_Leaders_Core
                 // Show result
                 if (imports.Count() > 0)
                 {
-                    DwgViewFoundData data = new DwgViewFoundData(dwgDataSet);
+                    //DwgViewFoundData data = new DwgViewFoundData(dwgDataSet);
                     DwgViewFoundForm form = new DwgViewFoundForm(dwgDataSet);
                     form.ShowDialog();
                 }

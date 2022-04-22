@@ -16,7 +16,7 @@ namespace BIM_Leaders_Windows
         public WallsArrangedData()
         {
             ResultDistanceStep = "1"; // 1 cm
-            ResultDistanceTolerance = "0.00001"; // 0.00001 cm
+            ResultDistanceTolerance = "0.0000001"; // 0.00001 cm
             ResultColor0 = new Color
             {
                 R = 255,

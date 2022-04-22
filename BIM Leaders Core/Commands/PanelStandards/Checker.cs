@@ -353,7 +353,7 @@ namespace BIM_Leaders_Core
 #if VERSION2020
                             double stepHeight = UnitUtils.ConvertFromInternalUnits(stair.ActualRiserHeight, DisplayUnitType.DUT_CENTIMETERS);
                             double stepDepth = UnitUtils.ConvertFromInternalUnits(stair.ActualTreadDepth, DisplayUnitType.DUT_CENTIMETERS);
-#elif VERSION2021
+#else
                             double stepHeight = UnitUtils.ConvertFromInternalUnits(stair.ActualRiserHeight, UnitTypeId.Centimeters);
                             double stepDepth = UnitUtils.ConvertFromInternalUnits(stair.ActualTreadDepth, UnitTypeId.Centimeters);
 #endif
@@ -372,7 +372,7 @@ namespace BIM_Leaders_Core
                         double heightOffset = UnitUtils.ConvertToInternalUnits(10, DisplayUnitType.DUT_CENTIMETERS);
                         double height = UnitUtils.ConvertToInternalUnits(inputHeadHeight, DisplayUnitType.DUT_CENTIMETERS) - heightOffset;
                         double planOffset = UnitUtils.ConvertToInternalUnits(1, DisplayUnitType.DUT_CENTIMETERS);
-#elif VERSION2021
+#else
                         double heightOffset = UnitUtils.ConvertToInternalUnits(10, UnitTypeId.Centimeters);
                         double height = UnitUtils.ConvertToInternalUnits(inputHeadHeight, UnitTypeId.Centimeters) - heightOffset;
                         double planOffset = UnitUtils.ConvertToInternalUnits(1, UnitTypeId.Centimeters);

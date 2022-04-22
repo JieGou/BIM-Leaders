@@ -35,9 +35,9 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = facesCountCleared == 0
+                string text = (facesCountCleared == 0)
                     ? "Painted faces not found."
-                    :$"{facesCountCleared} of {facesCountAll} faces have been cleared from paint.";
+                    : $"{facesCountCleared} of {facesCountAll} faces have been cleared from paint.";
                 TaskDialog.Show("Paint remove", text);
 
                 return Result.Succeeded;
@@ -76,6 +76,7 @@ namespace BIM_Leaders_Core
                     }
                 }
             }
+
             return (count, countCleared);
         }
         public static string GetPath()

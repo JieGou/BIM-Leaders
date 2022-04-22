@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -30,19 +31,27 @@ namespace BIM_Leaders_Core
                 View = view
             };
 
-            // Threshold for sorting landings into lists. Each list contains landings located over each other.
-            double thresholdCm = 150;
-#if VERSION2020
-                double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, DisplayUnitType.DUT_CENTIMETERS);
-#elif VERSION2021
-            double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, UnitTypeId.Centimeters);
-#endif
-
             int countSpots = 0;
             int countDimensions = 0;
 
             try
             {
+                DimensionStairsLandingsForm form = new DimensionStairsLandingsForm();
+                form.ShowDialog();
+
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
+
+                // Get user provided information from window
+                DimensionStairsLandingsData data = form.DataContext as DimensionStairsLandingsData;
+                double thresholdCm = double.Parse(data.ResultDistance); // Threshold for sorting landings into lists. Each list contains landings located over each other.
+
+#if VERSION2020
+                double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, DisplayUnitType.DUT_CENTIMETERS);
+#else
+                double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, UnitTypeId.Centimeters);
+#endif
+
                 // Selecting all landings in the view
                 List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, view.Id)
                     .OfClass(typeof(StairsLanding))
@@ -69,7 +78,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = countSpots == 0 && countDimensions == 0
+                string text = (countSpots == 0 && countDimensions == 0)
                     ? "No annotations created"
                     : $"{countSpots} spot elevations were created. {countDimensions} dimension lines were created.";
                 TaskDialog.Show("Dimension Stairs", text);

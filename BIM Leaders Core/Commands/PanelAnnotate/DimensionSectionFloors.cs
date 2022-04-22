@@ -29,7 +29,7 @@ namespace BIM_Leaders_Core
             // Get length units
 #if VERSION2020
             DisplayUnitType units = doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
-#elif VERSION2021
+#else
             ForgeTypeId units = doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
 #endif
 
@@ -130,7 +130,7 @@ namespace BIM_Leaders_Core
                 if (count == 0)
                     text = "No annotations created.";
                 else
-                    text = inputSpots
+                    text = (inputSpots)
                         ? $"{count} spot elevations created."
                         : $"Dimension with {count} segments created.";
                 TaskDialog.Show("Section Annotations", text);
@@ -277,7 +277,7 @@ namespace BIM_Leaders_Core
 
             DisplayUnitType units = doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
 
-#elif VERSION2021
+#else
 
             ForgeTypeId units = doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
 

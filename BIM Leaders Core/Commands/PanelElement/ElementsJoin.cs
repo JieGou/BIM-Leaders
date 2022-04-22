@@ -34,7 +34,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = countJoined == 0
+                string text = (countJoined == 0)
                     ? "No joins found."
                     : $"{countCutted} elements cuts a view. {countJoined} elements joins were done.";
                 TaskDialog.Show("Elements Join", text);

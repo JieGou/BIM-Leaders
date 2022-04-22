@@ -46,7 +46,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = count == 0
+                string text = (count == 0)
                     ? "No parameters set."
                     : $"{count} parameters set.";
                 TaskDialog.Show("Parameter Set", text);
@@ -84,7 +84,7 @@ namespace BIM_Leaders_Core
 #if VERSION2020
                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
                         doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(parameterValue), DisplayUnitType.DUT_CENTIMETERS));
-#elif VERSION2021
+#else
                     if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
                         doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(parameterValue), UnitTypeId.Centimeters));
 #endif
@@ -102,7 +102,7 @@ namespace BIM_Leaders_Core
 #if VERSION2020
                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
                         doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(parameterValue), DisplayUnitType.DUT_CENTIMETERS));
-#elif VERSION2021
+#else
                     if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
                         doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(parameterValue), UnitTypeId.Centimeters));
 #endif

@@ -53,7 +53,7 @@ namespace BIM_Leaders_Core
                 }
 
                 // Show result
-                string text = count == 0
+                string text = (count == 0)
                     ? "No linestyles deleted"
                     : $"{count} unused linestyles were deleted";
                 TaskDialog.Show("Delete Unused Linestyles", text);
