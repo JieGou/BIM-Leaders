@@ -201,7 +201,13 @@ namespace BIM_Leaders_Core
         {
             List<Wall> wallsFilter = new List<Wall>();
 
+            if (!(wall.Location is LocationCurve))
+            {
+                return wallsFilter;
+            }
+
             LocationCurve wallLocation = wall.Location as LocationCurve;
+
             // Make unbound because Distance is calculating differently then just by normal, if point is out of curve range
             Curve wallLocationCurve = wallLocation.Curve;
             wallLocationCurve.MakeUnbound();
@@ -258,7 +264,9 @@ namespace BIM_Leaders_Core
             View view = doc.ActiveView;
 
             // Checking if filter already exists
-            IEnumerable<Element> filters = new FilteredElementCollector(doc).OfClass(typeof(SelectionFilterElement)).ToElements();
+            IEnumerable<Element> filters = new FilteredElementCollector(doc)
+                .OfClass(typeof(SelectionFilterElement))
+                .ToElements();
             foreach (Element element in filters)
                 if (element.Name == filterName)
                     doc.Delete(element.Id);

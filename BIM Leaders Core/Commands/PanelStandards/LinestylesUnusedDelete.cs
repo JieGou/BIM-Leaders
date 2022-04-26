@@ -31,11 +31,13 @@ namespace BIM_Leaders_Core
                     .ConvertAll(x => x.LineStyle.Id)
                     .Distinct();
 
-                // Get all line styles in the project.
+                // Get all line styles in the project (but not built-in).
                 CategoryNameMap lineStylesAllCnm = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
                 List<ElementId> lineStylesAll = new List<ElementId>();
                 foreach (Category category in lineStylesAllCnm)
-                    lineStylesAll.Add(category.Id);
+                    if (category.Id.IntegerValue > 0)
+                        lineStylesAll.Add(category.Id);
+                    
 
                 List<ElementId> lineStylesDelete = lineStylesAll
                     .Where(x => !lineStylesUsed.Contains(x))

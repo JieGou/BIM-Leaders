@@ -23,7 +23,7 @@ namespace BIM_Leaders_Core
 
             try
             {
-                DimensionSectionFloorsForm form = new DimensionSectionFloorsForm();
+                DimensionsPlanCheckForm form = new DimensionsPlanCheckForm();
                 form.ShowDialog();
 
                 if (form.DialogResult == false)
