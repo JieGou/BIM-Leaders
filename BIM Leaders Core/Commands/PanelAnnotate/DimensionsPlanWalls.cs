@@ -27,13 +27,6 @@ namespace BIM_Leaders_Core
 
             double toleranceAngle = uiapp.AngleTolerance / 100; // 0.001 grad
 
-            Options opts = new Options()
-            {
-                ComputeReferences = true,
-                IncludeNonVisibleObjects = false,
-                View = doc.ActiveView
-            };
-
             try
             {
                 // Get the line from user selection
@@ -85,70 +78,6 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
-        }
-
-        /// <summary>
-        /// Get walls that have no dimension references on active view.
-        /// </summary>
-        /// <returns>List<ElementId> of walls.</returns>
-        private static List<ElementId> GetWallIds(Document doc)
-        {
-            List<ElementId> wallIds = new List<ElementId>();
-
-            // Get Walls
-            FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-            IEnumerable<Wall> wallsAll = collector.OfClass(typeof(Wall))
-                .WhereElementIsNotElementType()
-                .ToElements()
-                .Cast<Wall>();
-
-            // Get Dimensions
-            FilteredElementCollector collector1 = new FilteredElementCollector(doc, doc.ActiveView.Id);
-            IEnumerable<Dimension> dimensionsAll = collector1.OfClass(typeof(Dimension))
-                .WhereElementIsNotElementType()
-                .ToElements()
-                .Cast<Dimension>();
-
-            // Iterate walls
-            foreach (Wall wall in wallsAll)
-            {
-                XYZ normalWall = new XYZ(0, 0, 0);
-                try
-                {
-                    normalWall = wall.Orientation;
-                }
-                catch { continue; }
-                // List for intersections count for each dimansion
-                List<int> countIntersections = new List<int>();
-                // Iterate dimensions
-                foreach (Dimension dimension in dimensionsAll)
-                {
-                    Line dimensionLine = dimension.Curve as Line;
-                    if (dimensionLine != null)
-                    {
-                        dimensionLine.MakeBound(0, 1);
-                        XYZ point0 = dimensionLine.GetEndPoint(0);
-                        XYZ point1 = dimensionLine.GetEndPoint(1);
-                        XYZ dimensionLoc = point1.Subtract(point0).Normalize();
-                        // Intersections count
-                        int countIntersection = 0;
-
-                        ReferenceArray referenceArray = dimension.References;
-                        // Iterate dimension references
-                        foreach (Reference reference in referenceArray)
-                            if (reference.ElementId == wall.Id)
-                                countIntersection++;
-                        // If 2 dimensions on a wall so check if dimansion is parallel to wall normal
-                        if (countIntersection >= 2)
-                            if (Math.Round(Math.Abs((dimensionLoc.AngleTo(normalWall) / Math.PI - 0.5) * 2)) == 1) // Angle is from 0 to PI, so divide by PI - from 0 to 1, then...
-                                countIntersections.Add(countIntersection);
-                    }
-                }
-                // Check if no dimensions left
-                if (countIntersections.Count == 0)
-                    wallIds.Add(wall.Id);
-            }
-            return wallIds;
         }
 
         /// <summary>

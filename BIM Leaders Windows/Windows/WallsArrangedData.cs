@@ -16,7 +16,7 @@ namespace BIM_Leaders_Windows
         public WallsArrangedData()
         {
             ResultDistanceStep = "1"; // 1 cm
-            ResultDistanceTolerance = "0.0000001"; // 0.00001 cm
+            ResultDistanceTolerance = "0.000000001"; // cm (enough is 0.000000030 - 0.000000035 - closer walls after join will be without dividing line)
             ResultColor0 = new Color
             {
                 R = 255,

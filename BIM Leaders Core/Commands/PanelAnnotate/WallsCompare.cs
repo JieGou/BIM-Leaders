@@ -46,20 +46,14 @@ namespace BIM_Leaders_Core
 
             try
             {
-                WallsCompareData data = new WallsCompareData(uidoc);
+                // Show the dialog.
+                WallsCompareForm form = new WallsCompareForm(uidoc);
+                form.ShowDialog();
 
-                // Create a form to select objects.
-                bool? result = null;
-                while (result == null)
-                {
-                    if (result == false)
-                        return Result.Cancelled;
-                    // Show the dialog.
-                    WallsCompareForm form = new WallsCompareForm(uidoc);
-                    result = form.ShowDialog();
-                    // Get user provided information from window.
-                    data = form.DataContext as WallsCompareData;
-                }
+                if (form.DialogResult == false)
+                    return Result.Cancelled;
+
+                WallsCompareData data = form.DataContext as WallsCompareData;
                 
                 bool inputLinks = data.ResultLinks;
                 string materialName = doc.GetElement(data.ListMaterialsSelected).Name;
