@@ -36,16 +36,16 @@ namespace BIM_Leaders_Core
             {
 				// INPUT
 				double searchStepCm = 15;
-				double searchDistanceCm = 15;
+				double searchDistanceCm = 1500;
 
 				int stopper = 1000;
 
 #if VERSION2020
-				double searchStep = UnitUtils.ConvertFromInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
-				double searchDistance = UnitUtils.ConvertFromInternalUnits(searchDistanceCm, DisplayUnitType.DUT_CENTIMETERS);
+				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
+				double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, DisplayUnitType.DUT_CENTIMETERS);
 #else
-                double searchStep = UnitUtils.ConvertFromInternalUnits(search_step_cm, UnitTypeId.Centimeters);
-				double searchDistance = UnitUtils.ConvertFromInternalUnits(search_distance_cm, UnitTypeId.Centimeters);
+                double searchStep = UnitUtils.ConvertToInternalUnits(search_step_cm, UnitTypeId.Centimeters);
+				double searchDistance = UnitUtils.ConvertToInternalUnits(search_distance_cm, UnitTypeId.Centimeters);
 #endif
 				// Collecting model elements to dimension
 				List<Wall> wallsAll = GetWallsStraight(doc);
@@ -62,20 +62,21 @@ namespace BIM_Leaders_Core
 				// Storing data needed to create all dimensions
 				Dictionary<Line, ReferenceArray> dimensionsData = new Dictionary<Line, ReferenceArray>();
 
-				// Get all vertical faces that need a dimension
+				// Get all horizontal faces that need a dimension
 				// !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
-				Dictionary<Face, List<XYZ>> facesAll = GetFacesHorizontal(doc, toleranceAngle, elementsHor);
+				List<Face> facesHorAll = GetFacesHorizontal(doc, toleranceAngle, elementsHor);
 
 				// Faces buffer for faces with no dimension yet
-				Dictionary<Face, List<XYZ>> facesNotDim = facesAll;
+				List<Face> facesHorNotDim = facesHorAll;
 
 				// Looping through faces
 				int stopperI = 0;
-				while (facesNotDim.Count > 1 && stopperI < stopper)
+				while (facesHorNotDim.Count > 1 && stopperI < stopper)
                 {
 					stopperI++;
 
-					(Face faceMin, XYZ faceMinA, XYZ faceMinB) = FindFaceBottom(facesNotDim);
+					Face faceMin = FindFaceBottom(facesHorNotDim);
+					(XYZ faceMinA, XYZ faceMinB) = FindFacePoints(faceMin);
 
 					// Iterate through space between two points of face
 					// Get max number of intersections
@@ -92,13 +93,18 @@ namespace BIM_Leaders_Core
 						// Make two points, with coordinates from face beginning
 						// Search distance added and multiplied to extend the line for intersections search
 						// lengthPast added in Y only, to move the line across the face
-						XYZ point1 = new XYZ(faceMinA.X - searchDistance * view.UpDirection.Y, faceMinA.Y + searchDistance * view.UpDirection.X + lengthPast, 0);
-						XYZ point2 = new XYZ(faceMinA.X + searchDistance * view.UpDirection.Y, faceMinA.Y - searchDistance * view.UpDirection.X + lengthPast, 0);
+						XYZ point1 = new XYZ(faceMinA.X + lengthPast, faceMinA.Y + searchDistance * view.UpDirection.Y, 0);
+						XYZ point2 = new XYZ(faceMinA.X + lengthPast, faceMinA.Y - searchDistance * view.UpDirection.Y, 0);
 						Line line = Line.CreateBound(point1, point2);
 
 						// Find faces and its refs that intersect with the line
-						(List<Face> faceIter, ReferenceArray refsIter) = FindReferences(line, facesAll.Keys.ToList());
-						
+						(List<Face> faceIter, ReferenceArray refsIter) = FindReferences(line, facesHorAll.ToList());
+
+						lengthPast += searchStep;
+
+						if (refsIter.Size == 0)
+							continue;
+
 						if (refsIter.Size > intersectsMax)
                         {
 							refsMax = refsIter;
@@ -106,32 +112,37 @@ namespace BIM_Leaders_Core
 							intersectsMax = refsMax.Size;
 							lineMax = line;
 						}
-						lengthPast += searchStep;
 					}
-					dimensionsData.Add(lineMax, refsMax);
+					if (lineMax != null)
+                    {
+						dimensionsData.Add(lineMax, refsMax);
+						countDim++;
+						countRef += refsMax.Size - 1;
+					}
+					// Wall is too short - no one line found no intersections
+					else
+						facesHorNotDim.Remove(faceMin);
 
 					// Remove dimensioned faces from buffer facesNotDim
 					foreach (Face face in facesMax)
-						facesNotDim.Remove(face);
-
-					countDim++;
-					countRef += refsMax.Size - 1;
+						facesHorNotDim.Remove(face);
 				}
 
 				// Get all vertical faces that need a dimension
 				// !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
-				facesAll = GetFacesVertical(doc, toleranceAngle, elementsVer);
+				List<Face> facesVerAll = GetFacesVertical(doc, toleranceAngle, elementsVer);
 
 				// Faces buffer for faces with no dimension yet
-				facesNotDim = facesAll;
+				List<Face> facesVerNotDim = facesVerAll;
 
 				// Looping through faces
 				stopperI = 0;
-				while (facesNotDim.Count > 1 && stopperI < stopper)
+				while (facesVerNotDim.Count > 1 && stopperI < stopper)
 				{
 					stopperI++;
 
-					(Face faceMin, XYZ faceMinA, XYZ faceMinB) = FindFaceLeft(facesNotDim);
+					Face faceMin = FindFaceLeft(facesVerNotDim);
+					(XYZ faceMinA, XYZ faceMinB) = FindFacePoints(faceMin);
 
 					// Iterate through space between two points of face
 					// Get max number of intersections
@@ -146,12 +157,17 @@ namespace BIM_Leaders_Core
 						// Make two points, with coordinates from face beginning
 						// Search distance added and multiplied to extend the line for intersections search
 						// lengthPast added in X only, to move the line across the face
-						XYZ point_1 = new XYZ(faceMinA.X - searchDistance * view.UpDirection.X + lengthPast, faceMinA.Y - searchDistance * view.UpDirection.Y, 0);
-						XYZ point_2 = new XYZ(faceMinA.X + searchDistance * view.UpDirection.X + lengthPast, faceMinA.Y + searchDistance * view.UpDirection.Y, 0);
+						XYZ point_1 = new XYZ(faceMinA.X - searchDistance * view.UpDirection.Y, faceMinA.Y + lengthPast, 0);
+						XYZ point_2 = new XYZ(faceMinA.X + searchDistance * view.UpDirection.Y, faceMinA.Y + lengthPast, 0);
 						Line line = Line.CreateBound(point_1, point_2);
 
 						// Find faces and its refs that intersect with the line
-						(List<Face> faceIter, ReferenceArray refsIter) = FindReferences(line, facesAll.Keys.ToList());
+						(List<Face> faceIter, ReferenceArray refsIter) = FindReferences(line, facesVerAll.ToList());
+
+						lengthPast += searchStep;
+
+						if (refsIter.Size == 0)
+							continue;
 
 						if (refsIter.Size > intersectsMax)
 						{
@@ -160,16 +176,20 @@ namespace BIM_Leaders_Core
 							intersectsMax = refsMax.Size;
 							lineMax = line;
 						}
-						lengthPast += searchStep;
 					}
-					dimensionsData.Add(lineMax, refsMax);
+					if (lineMax != null)
+                    {
+						dimensionsData.Add(lineMax, refsMax);
+						countDim++;
+						countRef += refsMax.Size - 1;
+					}
+					// Wall is too short - no one line found no intersections
+					else
+						facesHorNotDim.Remove(faceMin);
 
 					// Remove dimensioned faces from buffer facesNotDim
 					foreach (Face face in facesMax)
-						facesNotDim.Remove(face);
-
-					countDim++;
-					countRef += refsMax.Size - 1;
+						facesVerNotDim.Remove(face);
 				}
 
 				using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
@@ -302,12 +322,12 @@ namespace BIM_Leaders_Core
 		}
 
 		/// <summary>
-		/// Get faces for dimensions.
+		/// Get horizontal faces for dimensions.
 		/// </summary>
-		/// <returns>Dictionary of faces and their two farest points on plan.</returns>
-		private static Dictionary<Face, List<XYZ>> GetFacesHorizontal(Document doc, double toleranceAngle, IEnumerable<Element> elements)
+		/// <returns>List of faces.</returns>
+		private static List<Face> GetFacesHorizontal(Document doc, double toleranceAngle, IEnumerable<Element> elements)
         {
-			Dictionary<Face, List<XYZ>> facesAll = new Dictionary<Face, List<XYZ>>();
+			List<Face> facesAll = new List<Face>();
 
 			View view = doc.ActiveView;
 
@@ -330,14 +350,7 @@ namespace BIM_Leaders_Core
 							// Check if face is vertical in 3D and horisontal on plan
 							double angleFaceToView = facePlanar.FaceNormal.AngleTo(view.UpDirection);
 							if (angleFaceToView <= toleranceAngle || Math.Abs(angleFaceToView - Math.PI) <= toleranceAngle)
-							{
-								// Get face points
-								List<XYZ> facePoints = new List<XYZ>();
-								CurveLoop curveLoop = face.GetEdgesAsCurveLoops()[0];
-								foreach (Curve curve in curveLoop)
-									facePoints.Add(curve.GetEndPoint(0));
-								facesAll.Add(facePlanar, facePoints);
-							}
+								facesAll.Add(facePlanar);
 						}
 					}
 				}
@@ -346,12 +359,12 @@ namespace BIM_Leaders_Core
 		}
 
 		/// <summary>
-		/// Get faces for dimensions.
+		/// Get vertical faces for dimensions.
 		/// </summary>
-		/// <returns>Dictionary of faces and their two farest points on plan.</returns>
-		private static Dictionary<Face, List<XYZ>> GetFacesVertical(Document doc, double toleranceAngle, IEnumerable<Element> elements)
+		/// <returns>List of faces.</returns>
+		private static List<Face> GetFacesVertical(Document doc, double toleranceAngle, IEnumerable<Element> elements)
 		{
-			Dictionary<Face, List<XYZ>> facesAll = new Dictionary<Face, List<XYZ>>();
+			List<Face> facesAll = new List<Face>();
 
 			View view = doc.ActiveView;
 
@@ -374,14 +387,7 @@ namespace BIM_Leaders_Core
 							// Check if face is vertical in 3D and horisontal on plan
 							double angleFaceToView = facePlanar.FaceNormal.AngleTo(view.UpDirection);
 							if (Math.Abs(angleFaceToView - Math.PI / 2) <= toleranceAngle && (!(Math.Abs(facePlanar.FaceNormal.Z) == 1)))
-							{
-								// Get face points
-								List<XYZ> facePoints = new List<XYZ>();
-								CurveLoop curveLoop = face.GetEdgesAsCurveLoops()[0];
-								foreach (Curve curve in curveLoop)
-									facePoints.Add(curve.GetEndPoint(0));
-								facesAll.Add(facePlanar, facePoints);
-							}
+								facesAll.Add(facePlanar);
 						}
 					}
 				}
@@ -392,59 +398,75 @@ namespace BIM_Leaders_Core
 		/// <summary>
 		/// Find the most bottom (minimal Y coordinate) face on the view.
 		/// </summary>
-		/// <returns>Tuple of face and its two farest points on plan.</returns>
-		private static (Face, XYZ, XYZ) FindFaceBottom(Dictionary<Face, List<XYZ>> facesNotDim)
+		/// <returns>Face.</returns>
+		private static Face FindFaceBottom(List<Face> faces)
         {
+			// Select first face as default
+			Face faceMin = faces.First();
+			double faceMinY = faceMin.EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Y;
 
-			// Select first face in list as default
-			Face faceMin = facesNotDim.First().Key;
-			XYZ faceMinA = facesNotDim[faceMin][0];
-			XYZ faceMinB = facesNotDim[faceMin][1];
-
-			// Find face with minimal coordinate and its points
-			foreach (KeyValuePair<Face, List<XYZ>> faceData in facesNotDim)
+			// Find face with minimal coordinate
+			foreach (Face face in faces)
 			{
-				foreach (XYZ point in faceData.Value)
-				{
-					if (point.Y < faceMinA.Y)
-					{
-						faceMin = faceData.Key;
-						faceMinA = point;
-					}
-					if (point.Y > faceMinB.Y)
-						faceMinB = point;
-				}
+				if (face.EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Y < faceMinY)
+					faceMin = face;
 			}
-			return (faceMin, faceMinA, faceMinB);
+
+			return faceMin;
 		}
 
 		/// <summary>
 		/// Find the most left (minimal X coordinate) face on the view.
 		/// </summary>
-		/// <returns>Tuple of face and its two farest points on plan.</returns>
-		private static (Face, XYZ, XYZ) FindFaceLeft(Dictionary<Face, List<XYZ>> facesNotDim)
+		/// <returns>Face.</returns>
+		private static Face FindFaceLeft(List<Face> faces)
 		{
+			// Select first face as default
+			Face faceMin = faces.First();
+			double faceMinX = faceMin.EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).X;
 
-			// Select first face in list as default
-			Face faceMin = facesNotDim.First().Key;
-			XYZ faceMinA = facesNotDim[faceMin][0];
-			XYZ faceMinB = facesNotDim[faceMin][1];
-
-			// Find face with minimal coordinate and its points
-			foreach (KeyValuePair<Face, List<XYZ>> faceData in facesNotDim)
+			// Find face with minimal coordinate
+			foreach (Face face in faces)
 			{
-				foreach (XYZ point in faceData.Value)
-				{
-					if (point.X < faceMinA.X)
-					{
-						faceMin = faceData.Key;
-						faceMinA = point;
-					}
-					if (point.X > faceMinB.X)
-						faceMinB = point;
-				}
+				if (face.EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).X < faceMinX)
+					faceMin = face;
 			}
-			return (faceMin, faceMinA, faceMinB);
+			return faceMin;
+		}
+
+		/// <summary>
+		/// Find the farest points on the face.
+		/// </summary>
+		/// <returns>Tuple of two points.</returns>
+		private static (XYZ, XYZ) FindFacePoints(Face face)
+		{
+			// Find farest two points of the face
+			List<XYZ> facePoints = face.GetEdgesAsCurveLoops()[0].Select(x => x.GetEndPoint(0)).ToList(); // Get face points
+			XYZ facePointA = facePoints[0];
+			XYZ facePointB = facePoints[1];
+
+			XYZ normal = face.ComputeNormal(new UV(0, 0));
+
+			if (Math.Abs(normal.Y) == 1)
+				foreach (XYZ point in facePoints)
+				{
+					if (point.X < facePointA.X)
+						facePointA = point;
+					else if (point.X > facePointB.X)
+						facePointB = point;
+				}
+			else if (Math.Abs(normal.X) == 1)
+				foreach (XYZ point in facePoints)
+				{
+					if (point.Y < facePointA.Y)
+						facePointA = point;
+					else if (point.Y > facePointB.Y)
+						facePointB = point;
+				}
+			else
+				throw new Exception("FindFacePoints Error. Face is not vertical or horisontal.");
+
+			return (facePointA, facePointB);
 		}
 
 		/// <summary>
@@ -464,15 +486,16 @@ namespace BIM_Leaders_Core
 					// Collecting unique intersection points
 					facesTemp.Add(face);
 			}
+
 			// Convert list to ReferenceArray
 			List<Face> faces = new List<Face>();
 			ReferenceArray references = new ReferenceArray();
-			try
-            {
-				faces.Add(facesTemp[0]);
-				references.Append(facesTemp[0].Reference);
-			}
-			catch { }
+
+			if (facesTemp.Count == 0)
+				return (faces, references);
+
+			faces.Add(facesTemp[0]);
+			references.Append(facesTemp[0].Reference);
 			
 			foreach (Face face in facesTemp)
             {
