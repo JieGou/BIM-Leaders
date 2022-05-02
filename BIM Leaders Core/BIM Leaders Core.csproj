@@ -92,8 +92,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Helpers\Message.cs" />
-    <None Include="Commands\PanelAnnotate\DimensionsPlan.cs" />
-    <Compile Include="Commands\PanelAnnotate\DimensionsPlanWalls.cs" />
+    <Compile Include="Commands\PanelAnnotate\DimensionsPlan.cs" />
+    <Compile Include="Commands\PanelAnnotate\DimensionsPlanLine.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlanCheck.cs" />
     <Compile Include="Commands\PanelElement\ElementPropertiesMatch.cs" />
     <Compile Include="Commands\PanelElement\ElementsJoin.cs" />

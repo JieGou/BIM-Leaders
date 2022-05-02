@@ -39,7 +39,7 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
-            // Get View Id
+            // Get View
             View view = doc.ActiveView;
 
             int count = 0;

@@ -12,7 +12,7 @@ using System.Collections;
 namespace BIM_Leaders_Core
 {
     [TransactionAttribute(TransactionMode.Manual)]
-    public class DimensionsPlanWalls : IExternalCommand
+    public class DimensionsPlanLine : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -217,7 +217,7 @@ namespace BIM_Leaders_Core
         public static string GetPath()
         {
             // Return constructed namespace path
-            return typeof(DimensionsPlanWalls).Namespace + "." + nameof(DimensionsPlanWalls);
+            return typeof(DimensionsPlanLine).Namespace + "." + nameof(DimensionsPlanLine);
         }
     }
 }
