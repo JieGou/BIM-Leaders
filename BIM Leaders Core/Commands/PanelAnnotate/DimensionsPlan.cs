@@ -473,39 +473,23 @@ namespace BIM_Leaders_Core
 		/// Find faces and its references that intersects with the curve.
 		/// </summary>
 		/// <returns>List of faces and their references that intersect the given curve.</returns>
-		private static (List<Face>, ReferenceArray) FindReferences(Curve curveIntersect, List<Face> facesIntersect)
+		private static (List<Face>, ReferenceArray) FindReferences(Curve curve, List<Face> faces)
         {
-			// Temporary list for faces that intersects but can duplicate
-			List<Face> facesTemp = new List<Face>();
+			List<Face> facesIntersected = new List<Face>();
+			ReferenceArray references = new ReferenceArray();
 			
 			// Iterate through faces and get references
-			foreach (Face face in facesIntersect)
+			foreach (Face face in faces)
             {
-				SetComparisonResult intersection = face.Intersect(curveIntersect);
+				SetComparisonResult intersection = face.Intersect(curve);
 				if (intersection == SetComparisonResult.Overlap)
-					// Collecting unique intersection points
-					facesTemp.Add(face);
+					if (!facesIntersected.Contains(face))
+                    {
+						facesIntersected.Add(face);
+						references.Append(face.Reference);
+					}	
 			}
-
-			// Convert list to ReferenceArray
-			List<Face> faces = new List<Face>();
-			ReferenceArray references = new ReferenceArray();
-
-			if (facesTemp.Count == 0)
-				return (faces, references);
-
-			faces.Add(facesTemp[0]);
-			references.Append(facesTemp[0].Reference);
-			
-			foreach (Face face in facesTemp)
-            {
-				if (!faces.Contains(face))
-                {
-					faces.Add(face);
-					references.Append(face.Reference);
-				}
-			}		
-			return (faces, references);
+			return (facesIntersected, references);
 		}
 
         public static string GetPath()
