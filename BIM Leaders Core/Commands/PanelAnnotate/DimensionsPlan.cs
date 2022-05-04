@@ -32,13 +32,23 @@ namespace BIM_Leaders_Core
 			double countDim = 0;
 			double countRef = 0;
 
+			int stopper = 1000;
+
 			try
             {
-				// INPUT
-				double searchStepCm = 15;
-				double searchDistanceCm = 1500;
+				// Get user provided information from window
+				DimensionsPlanForm form = new DimensionsPlanForm();
+				form.ShowDialog();
 
-				int stopper = 1000;
+				if (form.DialogResult == false)
+					return Result.Cancelled;
+
+				// Collector for data provided in window
+				DimensionsPlanData data = form.DataContext as DimensionsPlanData;
+
+				// Getting input from user
+				double searchStepCm = double.Parse(data.ResultSearchStep);
+				double searchDistanceCm = double.Parse(data.ResultSearchDistance);
 
 #if VERSION2020
 				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
