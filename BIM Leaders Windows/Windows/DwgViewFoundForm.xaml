@@ -48,6 +48,11 @@
                           ItemsSource="{Binding Dwg.Tables[0]}" IsReadOnly="True"
                           Margin="20,0"
                           Style="{StaticResource SDataGridSimple}">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
             </DataGrid>
         </Grid>
 

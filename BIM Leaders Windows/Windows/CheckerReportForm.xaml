@@ -47,7 +47,13 @@
             <DataGrid x:Name="datagridReport"
                           ItemsSource="{Binding CheckReport.Tables[0]}" IsReadOnly="True"
                           Margin="20,0"
-                          Style="{StaticResource SDataGridSimple}"/>
+                          Style="{StaticResource SDataGridSimple}">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Center">

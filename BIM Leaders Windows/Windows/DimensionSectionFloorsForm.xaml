@@ -58,23 +58,23 @@
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <CheckBox x:Name="checkboxPlacement0" IsChecked="{Binding Path=ResultPlacement[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                          Content="Top Floor - Top"
+                          Content="Thin Floor - Top" ToolTip="Annotate the top side of thin floors."
                           Style="{StaticResource SCheckBox}">
                 </CheckBox>
                 <CheckBox x:Name="checkboxPlacement1" IsChecked="{Binding Path=ResultPlacement[1], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                          Content="Thick Floor - Top"
+                          Content="Thick Floor - Top" ToolTip="Annotate the top side of thick floors."
                           Style="{StaticResource SCheckBox}">
                 </CheckBox>
                 <CheckBox x:Name="checkboxPlacement2" IsChecked="{Binding Path=ResultPlacement[2], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                          Content="Thick Floor - Bottom"
+                          Content="Thick Floor - Bottom" ToolTip="Annotate the bottom side of thick floors."
                           Style="{StaticResource SCheckBox}">
                 </CheckBox>
 
-                <Label Content="Top Floor Max thickness (cm)"
+                <Label Content="Thin Floor - Max thickness (cm)"
                        Margin="-5,5,0,0"
                        Style="{StaticResource SLabelBold}">
                 </Label>
-                <TextBox x:Name="textboxThickness"
+                <TextBox x:Name="textboxThickness" ToolTip="All floors thicker than given value will be recognized as thick."
                          Text="{Binding ResultThickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>

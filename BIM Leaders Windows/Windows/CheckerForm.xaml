@@ -176,19 +176,19 @@
                             <Label Content="Checks"
                                    Style="{StaticResource SLabelBold}">
                             </Label>
-                            <CheckBox Content="Groups"
+                            <CheckBox Content="Groups" ToolTip="Check for unused, unpinned, excluded groups."
                                       IsChecked="{Binding Path=ResultModel[0], Mode=TwoWay}"
                                       Style="{StaticResource SCheckBox}"/>
-                            <CheckBox Content="Unused Linestyles"
+                            <CheckBox Content="Unused Linestyles" ToolTip="Check for unused linestyles."
                                       IsChecked="{Binding Path=ResultModel[1], Mode=TwoWay}"
                                       Style="{StaticResource SCheckBox}"/>
-                            <CheckBox Content="Rooms"
+                            <CheckBox Content="Rooms" ToolTip="Check for unplaced and intersecting rooms."
                                       IsChecked="{Binding Path=ResultModel[2], Mode=TwoWay}"
                                       Style="{StaticResource SCheckBox}"/>
-                            <CheckBox Content="Warnings"
+                            <CheckBox Content="Warnings" ToolTip="Check for warnings in the document."
                                       IsChecked="{Binding Path=ResultModel[3], Mode=TwoWay}"
                                       Style="{StaticResource SCheckBox}"/>
-                            <CheckBox Content="Exterior Walls"
+                            <CheckBox Content="Exterior Walls" ToolTip="Check if outer walls are Exterior type."
                                       IsChecked="{Binding Path=ResultModel[4], Mode=TwoWay}"
                                       Style="{StaticResource SCheckBox}"/>
                         </StackPanel>
@@ -206,7 +206,7 @@
                                 <Label Content="Checks"
                                        Style="{StaticResource SLabelBold}">
                                 </Label>
-                                <CheckBox Content="Stairs Formula"
+                                <CheckBox Content="Stairs Formula" ToolTip="2a + b = 61-63. Also check steps are: height 10-17.5 cm and depth >26 cm."
                                           IsChecked="{Binding Path=ResultCodes[0], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                                 <CheckBox Content="Stairs Head Height:"
