@@ -14,7 +14,6 @@
         <Setter Property="Foreground" Value="{StaticResource SColorText}" />
         <Setter Property="BorderBrush" Value="{StaticResource SColorControls}" />
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
-        <Setter Property=""
     </Style>
 
 </ResourceDictionary>
