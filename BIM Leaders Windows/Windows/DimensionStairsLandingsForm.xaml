@@ -49,7 +49,6 @@
                 </Label>
                 <TextBox x:Name="textboxDistance" ToolTip="Landings with distance on plan smaller than given value will be dimensioned in stack."
                          Text="{Binding ResultDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                         ToolTip="If projection of distance between landings centers are less that given value, they will be marked as stacked (situated one-over-other)"
                          Style="{StaticResource STextBox}">
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxDistance, Path=(Validation.Errors).CurrentItem.ErrorContent}"
