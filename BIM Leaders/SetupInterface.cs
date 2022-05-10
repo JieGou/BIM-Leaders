@@ -381,11 +381,11 @@ namespace BIM_Leaders
                 Label = "Align\r\nGrids",
                 Panel = panel_5,
                 ToolTip = "Align Grid Ends.",
-                LongDescription = "Can be useful on elevation and section views. Bubbles on ends of the grids can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.",
+                LongDescription = "Aligning can be performed only on elevation and section views. Bubbles on ends of the grids can be turned on/off. Internal engine does not understand where is right and left, so if result is not acceptable, try other option.",
                 CommandNamespacePath = GridsAlign.GetPath(),
                 IconImageName = "BIM_Leaders_Grids_Align.png",
                 //TooltipImageName = "BIM_Leaders_Grids_Align.png"
-                AvailabilityClassName = "BIM_Leaders_Core.ViewIsSectionOrElevation"
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsStandard"
             };
             // Create button from provided data
             RevitPushButton.Create(button_5_7_data);
