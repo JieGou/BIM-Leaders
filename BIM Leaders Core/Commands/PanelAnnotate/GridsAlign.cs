@@ -83,12 +83,6 @@ namespace BIM_Leaders_Core
             View view = doc.ActiveView;
 
             Curve curve = grids.First().GetCurvesInView(extentMode, view)[0];
-            double curve_1_x = curve.GetEndPoint(0).X;
-            double curve_1_y = curve.GetEndPoint(0).Y;
-            double curve_1_z = curve.GetEndPoint(0).Z;
-            double curve_2_x = curve.GetEndPoint(1).X;
-            double curve_2_y = curve.GetEndPoint(1).Y;
-            double curve_2_z = curve.GetEndPoint(1).Z;
 
             foreach (Grid grid in grids)
             {
