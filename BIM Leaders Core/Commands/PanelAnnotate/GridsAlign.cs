@@ -83,12 +83,6 @@ namespace BIM_Leaders_Core
             View view = doc.ActiveView;
 
             Curve curve = grids.First().GetCurvesInView(extentMode, view)[0];
-            double curve_1_x = curve.GetEndPoint(0).X;
-            double curve_1_y = curve.GetEndPoint(0).Y;
-            double curve_1_z = curve.GetEndPoint(0).Z;
-            double curve_2_x = curve.GetEndPoint(1).X;
-            double curve_2_y = curve.GetEndPoint(1).Y;
-            double curve_2_z = curve.GetEndPoint(1).Z;
 
             foreach (Grid grid in grids)
             {
@@ -97,7 +91,7 @@ namespace BIM_Leaders_Core
                     grid.SetDatumExtentType(DatumEnds.End0, view, extentMode);
                     grid.SetDatumExtentType(DatumEnds.End1, view, extentMode);
 
-                    if (view.ViewType == ViewType.Elevation | view.ViewType == ViewType.Section)
+                    if (view.ViewType == ViewType.Elevation || view.ViewType == ViewType.Section)
                     {
                         Curve gridCurve = grid.GetCurvesInView(extentMode, view)[0];
                         XYZ point0 = new XYZ(gridCurve.GetEndPoint(0).X, gridCurve.GetEndPoint(0).Y, curve.GetEndPoint(0).Z);

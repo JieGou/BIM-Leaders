@@ -91,7 +91,7 @@ namespace BIM_Leaders_Core
                     level.SetDatumExtentType(DatumEnds.End0, view, extentMode);
                     level.SetDatumExtentType(DatumEnds.End1, view, extentMode);
 
-                    if (view.ViewType == ViewType.Elevation | view.ViewType == ViewType.Section)
+                    if (view.ViewType == ViewType.Elevation || view.ViewType == ViewType.Section)
                     {
                         Curve levelCurve = level.GetCurvesInView(extentMode, view)[0];
                         XYZ point0 = new XYZ(curve.GetEndPoint(0).X, curve.GetEndPoint(0).Y, levelCurve.GetEndPoint(0).Z);
