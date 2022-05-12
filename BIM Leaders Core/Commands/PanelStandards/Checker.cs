@@ -43,6 +43,7 @@ namespace BIM_Leaders_Core
                 int inputHeadHeight = data.ResultHeight;
 
                 int countPrefixes = 0;
+                int countTagsEmpty = 0;
                 int countGroups = 0;
                 int countGroupsUnused = 0;
                 int countGroupsUnpinned = 0;
@@ -56,39 +57,45 @@ namespace BIM_Leaders_Core
                 int countHeightLandings = 0;
                 int countHeightRuns = 0;
 
+                List<ReportMessage> reportMessageList = new List<ReportMessage>();
+
                 using (Transaction trans = new Transaction(doc, "Check"))
                 {
                     trans.Start();
 
-                    countPrefixes = CheckPrefixesAll(doc, inputCategories, inputPrefix);
+                    reportMessageList.AddRange(CheckPrefixesAll(doc, inputCategories, inputPrefix));
 
                     // Groups check
                     if (inputModel[0])
-                        (countGroups, countGroupsUnused, countGroupsUnpinned, countGroupsExcluded) = CheckGroups(doc);
+                        reportMessageList.AddRange(CheckTags(doc));
+
+                    // Groups check
+                    if (inputModel[8])
+                        reportMessageList.AddRange(CheckGroups(doc));
 
                     // Line Styles Unused check
-                    if (inputModel[1])
-                        countLinestyles = CheckLineStyles(doc);
+                    if (inputModel[2])
+                        reportMessageList.AddRange(CheckLineStyles(doc));
 
                     // Rooms check
-                    if (inputModel[2])
-                        (countRoomsPlacement, countRoomsIntersect) = CheckRooms(doc);
+                    if (inputModel[9])
+                        reportMessageList.AddRange(CheckRooms(doc));
 
                     // Warnings check
-                    if (inputModel[3])
-                        countWarnings = doc.GetWarnings().Count;
+                    if (inputModel[7])
+                        reportMessageList.AddRange(CheckWarnings(doc));
 
                     // Exterior walls check
-                    if (inputModel[4])
-                        countWallsInterior = CheckWallsExterior(doc);
+                    if (inputModel[13])
+                        reportMessageList.AddRange(CheckWallsExterior(doc));
 
                     // Checking stairs formula
                     if (inputCodes[0])
-                        countStairsFormula = CheckStairsFormula(doc);
+                        reportMessageList.AddRange(CheckStairsFormula(doc));
 
                     // Checking stairs head height
                     if (inputCodes[1])
-                        (countHeightLandings, countHeightRuns) = CheckStairsHeadHeight(doc, inputHeadHeight);
+                        reportMessageList.AddRange(CheckStairsHeadHeight(doc, inputHeadHeight));
                     
                     trans.Commit();
                 }
@@ -97,20 +104,7 @@ namespace BIM_Leaders_Core
                 // ...
 
                 // Create a DataSet
-                DataSet reportDataSet = CreateReportDataSet(
-                    countPrefixes,
-                    countGroups,
-                    countGroupsUnused,
-                    countGroupsUnpinned,
-                    countGroupsExcluded,
-                    countLinestyles,
-                    countRoomsPlacement,
-                    countRoomsIntersect,
-                    countWarnings,
-                    countWallsInterior,
-                    countStairsFormula,
-                    countHeightLandings,
-                    countHeightRuns);
+                DataSet reportDataSet = CreateReportDataSet(reportMessageList);
 
                 // Show result
                 //CheckerReportData dataReport = new CheckerReportData(reportDataSet);
@@ -128,11 +122,25 @@ namespace BIM_Leaders_Core
         }
 
         /// <summary>
+        /// Message class containing message name and text.
+        /// </summary>
+        private class ReportMessage
+        {
+            public string MessageName { get; set; }
+            public string MessageText { get; set; }
+            public ReportMessage(string messageName, string messageText)
+            {
+                MessageName = messageName;
+                MessageText = messageText;
+            }
+        }
+
+        /// <summary>
         /// Check names for containing given string.
         /// </summary>
         /// <param name="doc">Document to process in.</param>
-        /// <returns>Count of prefixes that contains given string.</returns>
-        private static int CheckPrefixesAll(Document doc, List<bool> inputCategories, string prefix)
+        /// <returns>Checking report message.</returns>
+        private static IEnumerable<ReportMessage> CheckPrefixesAll(Document doc, List<bool> inputCategories, string prefix)
         {
             int countPrefixes = 0;
 
@@ -174,7 +182,12 @@ namespace BIM_Leaders_Core
                 if (keyValue.Value)
                     countPrefixes += CheckPrefixes(doc, prefix, keyValue.Key);
 
-            return countPrefixes;
+            string reportMessageText = (countPrefixes == 0)
+                ? "-"
+                : $"{countPrefixes} prefixes wrong.";
+            ReportMessage reportMessage = new ReportMessage("Prefixes", reportMessageText);
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
@@ -204,10 +217,35 @@ namespace BIM_Leaders_Core
         }
 
         /// <summary>
+        /// Checks if any empty tags in the model.
+        /// </summary>
+        /// <returns>Checking report message.</returns>
+        private static IEnumerable<ReportMessage> CheckTags(Document doc)
+        {
+            int countTags = 0;
+
+            IEnumerable<IndependentTag> tags = new FilteredElementCollector(doc)
+                .OfClass(typeof(IndependentTag))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<IndependentTag>()
+                .Where(x => x.TagText.Length == 0);
+
+            countTags = tags.Count();
+
+            string reportMessageText = (countTags == 0)
+                ? "-"
+                : $"{countTags} tags are empty.";
+            ReportMessage reportMessage = new ReportMessage("Empty Tags", reportMessageText);
+
+            return new List<ReportMessage>() { reportMessage };
+        }
+
+        /// <summary>
         /// Check groups in current document for unused, unpinned, excluded groups.
         /// </summary>
-        /// <returns>Tuple of counts of wrong groups.</returns>
-        private static (int, int, int, int) CheckGroups(Document doc)
+        /// <returns>Tuple of checking report messages.</returns>
+        private static IEnumerable<ReportMessage> CheckGroups(Document doc)
         {
             int countGroups = 0;
             int countGroupsUnused = 0;
@@ -238,14 +276,29 @@ namespace BIM_Leaders_Core
                 countGroups++;
             }
 
-            return (countGroups, countGroupsUnused, countGroupsUnpinned, countGroupsExcluded);
+            string reportMessageText0 = (countGroupsUnused == 0)
+                ? "-"
+                : $"{countGroupsUnused} of {countGroups} groups are not used.";
+            ReportMessage reportMessage0 = new ReportMessage("Unused Groups", reportMessageText0);
+
+            string reportMessageText1 = (countGroupsUnpinned == 0)
+                ? "-"
+                : $"{countGroupsUnpinned} of {countGroups} groups are not pinned.";
+            ReportMessage reportMessage1 = new ReportMessage("Unpinned Groups", reportMessageText1);
+
+            string reportMessageText2 = (countGroupsExcluded == 0)
+                ? "-"
+                : $"{countGroupsExcluded} of {countGroups} group instances are with excluded elements.";
+            ReportMessage reportMessage2 = new ReportMessage("Excluded Groups", reportMessageText2);
+
+            return new List<ReportMessage>() { reportMessage0, reportMessage1, reportMessage2 };
         }
 
         /// <summary>
         /// Checks if all existing linestyles are used in the document.
         /// </summary>
-        /// <returns>Count of unused linestyles.</returns>
-        private static int CheckLineStyles(Document doc)
+        /// <returns>Checking report message.</returns>
+        private static IEnumerable<ReportMessage> CheckLineStyles(Document doc)
         {
             int countLinestyles = 0;
 
@@ -270,14 +323,19 @@ namespace BIM_Leaders_Core
                 if (!lineStylesUsed.Contains(lineStyle))
                     countLinestyles++;
 
-            return countLinestyles;
+            string reportMessageText = (countLinestyles == 0)
+                ? "-"
+                : $"{countLinestyles} line styles are unused.";
+            ReportMessage reportMessage = new ReportMessage("Line Styles", reportMessageText);
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Checks all rooms in the document.
         /// </summary>
-        /// <returns>Count of all unplaced and intersecting rooms.</returns>
-        private static (int, int) CheckRooms(Document doc)
+        /// <returns>Tuple of checking report messages.</returns>
+        private static IEnumerable<ReportMessage> CheckRooms(Document doc)
         {
             int countRoomsPlacement = 0;
             int countRoomsUnbounded = 0;
@@ -319,14 +377,40 @@ namespace BIM_Leaders_Core
                 }
             }
 
-            return (countRoomsPlacement, countRoomsIntersect);
+            string reportMessageText0 = (countRoomsPlacement == 0)
+                ? "-"
+                : $"{countRoomsPlacement} rooms are not placed.";
+            ReportMessage reportMessage0 = new ReportMessage("Rooms Placement", reportMessageText0);
+
+            string reportMessageText1 = (countRoomsIntersect == 0)
+                ? "-"
+                : $"{countRoomsIntersect} rooms overlap.";
+            ReportMessage reportMessage1 = new ReportMessage("Rooms Overlap", reportMessageText1);
+
+            return new List<ReportMessage>() { reportMessage0, reportMessage1 };
+        }
+
+        /// <summary>
+        /// Checks if warnings are in the document.
+        /// </summary>
+        /// <returns>Checking report message.</returns>
+        private static IEnumerable<ReportMessage> CheckWarnings(Document doc)
+        {
+            int countWarnings = doc.GetWarnings().Count;
+
+            string reportMessageText = (countWarnings == 0)
+                ? "-"
+                : $"{countWarnings} warnings in the project.";
+            ReportMessage reportMessage = new ReportMessage("Warnings", reportMessageText);
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Checks if all actually exterior walls are set as Exterior in the properties.
         /// </summary>
-        /// <returns>Count of wrong walls.</returns>
-        private static int CheckWallsExterior(Document doc)
+        /// <returns>Checking report message.</returns>
+        private static IEnumerable<ReportMessage> CheckWallsExterior(Document doc)
         {
             int countWallsInterior = 0;
 
@@ -415,14 +499,19 @@ namespace BIM_Leaders_Core
             foreach (Wall wall in wallsToDelete)
                 doc.Delete(wall.Id);
 
-            return countWallsInterior;
+            string reportMessageText = (countWallsInterior == 0)
+                ? "-"
+                : $"{countWallsInterior} exterior walls have interior type.";
+            ReportMessage reportMessage = new ReportMessage("Exterior Walls", reportMessageText);
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Checks all stairs if their parameters (step length / step height) good in formula.
         /// </summary>
-        /// <returns>Count of wrong stairs.</returns>
-        private static int CheckStairsFormula(Document doc)
+        /// <returns>Checking report message.</returns>
+        private static IEnumerable<ReportMessage> CheckStairsFormula(Document doc)
         {
             int countStairsFormula = 0;
 
@@ -444,14 +533,20 @@ namespace BIM_Leaders_Core
                 if (r < 61 | r > 63 || stepHeight < 10 || stepHeight > 17.5 || stepDepth < 26)
                     countStairsFormula++;
             }
-            return countStairsFormula;
+
+            string reportMessageText = (countStairsFormula == 0)
+                ? "-"
+                : $"{countStairsFormula} stairs have bad formula.";
+            ReportMessage reportMessage = new ReportMessage("Stairs Formula", reportMessageText);
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Checks all stairs elements in document if they good in the given head height.
         /// </summary>
-        /// <returns>Count of wrong stairs landings and runs.</returns>
-        private static (int, int) CheckStairsHeadHeight(Document doc, double inputHeadHeight)
+        /// <returns>Checking report message.</returns>
+        private static IEnumerable<ReportMessage> CheckStairsHeadHeight(Document doc, double inputHeadHeight)
         {
             int countHeightLandings = 0;
             int countHeightRuns = 0;
@@ -586,27 +681,29 @@ namespace BIM_Leaders_Core
                         countHeightRuns++;
                 }
             }
-            return (countHeightLandings, countHeightRuns);
+
+            string reportMessageText = "";
+            if (countHeightLandings != 0)
+                reportMessageText += $"{countHeightLandings} stairs landings";
+            if (countHeightRuns != 0)
+                if (reportMessageText.Length != 0)
+                    reportMessageText += " and ";
+                reportMessageText += $"{countHeightLandings} stairs runs";
+            if (reportMessageText.Length != 0)
+                reportMessageText += " have too low head height.";
+            else
+                reportMessageText = "-";
+
+            ReportMessage reportMessage = new ReportMessage("Stairs Head Height", reportMessageText);
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Create DataSet table for report window.
         /// </summary>
         /// <returns>DataSet object contains all data.</returns>
-        private static DataSet CreateReportDataSet(
-            int countPrefixes,
-            int countGroups,
-            int countGroupsUnused,
-            int countGroupsUnpinned,
-            int countGroupsExcluded,
-            int countLinestyles,
-            int countRoomsPlacement,
-            int countRoomsIntersect,
-            int countWarnings,
-            int countWallsInterior,
-            int countStairsFormula,
-            int countHeightLandings,
-            int countHeightRuns)
+        private static DataSet CreateReportDataSet(List<ReportMessage> reportMessages)
         {
             DataSet reportDataSet = new DataSet("reportDataSet");
 
@@ -623,129 +720,13 @@ namespace BIM_Leaders_Core
             reportDataSet.Tables.Add(reportDataTable);
 
             // Fill the table
-
-            // Prefixes
-            string iCheck = "Prefixes";
-            string iResult = "-";
-
-            if (countPrefixes != 0)
-                iResult = string.Format("{0} prefixes wrong.", countPrefixes.ToString());
-            DataRow newRow1 = reportDataTable.NewRow();
-            newRow1["Check"] = iCheck;
-            newRow1["Result"] = iResult;
-
-            // Groups Unused
-            iCheck = "Unused Groups";
-            iResult = "-";
-            if (countGroupsUnused != 0)
-                iResult = string.Format("{0} of {1} groups are not used.", countGroupsUnused.ToString(), countGroups.ToString());
-            DataRow newRow2 = reportDataTable.NewRow();
-            newRow2["Check"] = iCheck;
-            newRow2["Result"] = iResult;
-
-            // Groups Unpined
-            iCheck = "Unpinned Groups";
-            iResult = "-";
-            if (countGroupsUnpinned != 0)
-                iResult = string.Format("{0} of {1} groups are not pinned.", countGroupsUnpinned.ToString(), countGroups.ToString());
-            DataRow newRow3 = reportDataTable.NewRow();
-            newRow3["Check"] = iCheck;
-            newRow3["Result"] = iResult;
-
-            // Groups Excluded
-            iCheck = "Excluded Groups";
-            iResult = "-";
-            if (countGroupsExcluded != 0)
-                iResult = string.Format("{0} of {1} group instances are with excluded elements.", countGroupsExcluded.ToString(), countGroups.ToString());
-            DataRow newRow4 = reportDataTable.NewRow();
-            newRow4["Check"] = iCheck;
-            newRow4["Result"] = iResult;
-
-            // Linestyles
-            iCheck = "Line Styles";
-            iResult = "-";
-            if (countLinestyles != 0)
-                iResult = string.Format("{0} line styles are unused.", countLinestyles.ToString());
-            DataRow newRow5 = reportDataTable.NewRow();
-            newRow5["Check"] = iCheck;
-            newRow5["Result"] = iResult;
-
-            // Rooms Placed
-            iCheck = "Rooms Placement";
-            iResult = "-";
-            if (countRoomsPlacement != 0)
-                iResult = string.Format("{0} rooms are not placed.", countRoomsPlacement.ToString());
-            DataRow newRow6 = reportDataTable.NewRow();
-            newRow6["Check"] = iCheck;
-            newRow6["Result"] = iResult;
-
-            // Rooms Overlap
-            iCheck = "Rooms Overlap";
-            iResult = "-";
-            if (countRoomsIntersect != 0)
-                iResult = string.Format("{0} rooms overlap.", countRoomsIntersect.ToString());
-            DataRow newRow7 = reportDataTable.NewRow();
-            newRow7["Check"] = iCheck;
-            newRow7["Result"] = iResult;
-
-            // Warnings
-            iCheck = "Warnings";
-            iResult = "-";
-            if (countWarnings != 0)
-                iResult = string.Format("{0} warnings in the project.", countWarnings.ToString());
-            DataRow newRow8 = reportDataTable.NewRow();
-            newRow8["Check"] = iCheck;
-            newRow8["Result"] = iResult;
-
-            // Walls Interior
-            iCheck = "Walls";
-            iResult = "-";
-            if (countWallsInterior != 0)
-                iResult = string.Format("{0} exterior walls have interior type.", countWallsInterior.ToString());
-            DataRow newRow9 = reportDataTable.NewRow();
-            newRow9["Check"] = iCheck;
-            newRow9["Result"] = iResult;
-
-            // Stairs Formula
-            iCheck = "Stairs Formula";
-            iResult = "-";
-            if (countStairsFormula != 0)
-                iResult = string.Format("{0} stairs have bad formula.", countStairsFormula.ToString());
-            DataRow newRow10 = reportDataTable.NewRow();
-            newRow10["Check"] = iCheck;
-            newRow10["Result"] = iResult;
-
-            // Stairs Landings
-            iCheck = "Stairs Head Height - Landings";
-            iResult = "-";
-            if (countHeightLandings != 0)
-                iResult = string.Format("{0} stairs landings have too low head height.", countHeightLandings.ToString());
-            DataRow newRow11 = reportDataTable.NewRow();
-            newRow11["Check"] = iCheck;
-            newRow11["Result"] = iResult;
-
-            // Stairs Runs
-            iCheck = "Stairs Head Height - Runs";
-            iResult = "-";
-            if (countHeightRuns != 0)
-                iResult = string.Format("{0} stairs runs have too low head height.", countHeightRuns.ToString());
-            DataRow newRow12 = reportDataTable.NewRow();
-            newRow12["Check"] = iCheck;
-            newRow12["Result"] = iResult;
-
-            // Add the rows to the Report table
-            reportDataTable.Rows.Add(newRow1);
-            reportDataTable.Rows.Add(newRow2);
-            reportDataTable.Rows.Add(newRow3);
-            reportDataTable.Rows.Add(newRow4);
-            reportDataTable.Rows.Add(newRow5);
-            reportDataTable.Rows.Add(newRow6);
-            reportDataTable.Rows.Add(newRow7);
-            reportDataTable.Rows.Add(newRow8);
-            reportDataTable.Rows.Add(newRow9);
-            reportDataTable.Rows.Add(newRow10);
-            reportDataTable.Rows.Add(newRow11);
-            reportDataTable.Rows.Add(newRow12);
+            foreach (ReportMessage reportMessage in reportMessages)
+            {
+                DataRow dataRow = reportDataTable.NewRow();
+                dataRow["Check"] = reportMessage.MessageName;
+                dataRow["Result"] = reportMessage.MessageText;
+                reportDataTable.Rows.Add(dataRow);
+            }
 
             return reportDataSet;
         }

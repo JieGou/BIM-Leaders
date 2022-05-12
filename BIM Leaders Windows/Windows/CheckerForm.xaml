@@ -200,26 +200,66 @@
 
                 <TabItem Header=" Model " Style="{StaticResource STabItemCenter}">
                     <Grid Background="{x:Null}" Width="740" Height="190" HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0">
-                            <Label Content="Checks"
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="220"></ColumnDefinition>
+                            <ColumnDefinition Width="520"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0">
+                                <Label Content="Checks 2D"
                                    Style="{StaticResource SLabelBold}">
-                            </Label>
-                            <CheckBox Content="Groups" ToolTip="Check for unused, unpinned, excluded groups."
-                                      IsChecked="{Binding Path=ResultModel[0], Mode=TwoWay}"
-                                      Style="{StaticResource SCheckBox}"/>
-                            <CheckBox Content="Unused Linestyles" ToolTip="Check for unused linestyles."
-                                      IsChecked="{Binding Path=ResultModel[1], Mode=TwoWay}"
-                                      Style="{StaticResource SCheckBox}"/>
-                            <CheckBox Content="Rooms" ToolTip="Check for unplaced and intersecting rooms."
-                                      IsChecked="{Binding Path=ResultModel[2], Mode=TwoWay}"
-                                      Style="{StaticResource SCheckBox}"/>
-                            <CheckBox Content="Warnings" ToolTip="Check for warnings in the document."
-                                      IsChecked="{Binding Path=ResultModel[3], Mode=TwoWay}"
-                                      Style="{StaticResource SCheckBox}"/>
-                            <CheckBox Content="Exterior Walls" ToolTip="Check if outer walls are Exterior type."
-                                      IsChecked="{Binding Path=ResultModel[4], Mode=TwoWay}"
-                                      Style="{StaticResource SCheckBox}"/>
-                        </StackPanel>
+                                </Label>
+                                <CheckBox Content="Tags" ToolTip="Check for empty tags."
+                                          IsChecked="{Binding Path=ResultModel[0], Mode=TwoWay}" IsEnabled="False"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Text Notes" ToolTip="Check for count of text notes in the project."
+                                          IsChecked="{Binding Path=ResultModel[1], Mode=TwoWay}" IsEnabled="False"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Unused Linestyles" ToolTip="Check for unused linestyles."
+                                          IsChecked="{Binding Path=ResultModel[2], Mode=TwoWay}"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Filters" ToolTip="Check if filters are unused."
+                                          IsChecked="{Binding Path=ResultModel[3], Mode=TwoWay}" IsEnabled="False"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Views" ToolTip="Check if views are unreferenced."
+                                          IsChecked="{Binding Path=ResultModel[4], Mode=TwoWay}" IsEnabled="False"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="View Templates" ToolTip="Check if view templates are unused."
+                                          IsChecked="{Binding Path=ResultModel[5], Mode=TwoWay}" IsEnabled="False"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Sheets" ToolTip="Check for sheet placeholders and empty sheets."
+                                          IsChecked="{Binding Path=ResultModel[6], Mode=TwoWay}" IsEnabled="False"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Warnings" ToolTip="Check for warnings in the document."
+                                          IsChecked="{Binding Path=ResultModel[7], Mode=TwoWay}"
+                                          Style="{StaticResource SCheckBox}"/>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0">
+                                <Label Content="Checks 3D"
+                                   Style="{StaticResource SLabelBold}">
+                                </Label>
+                                <CheckBox Content="Groups" ToolTip="Check for unused, unpinned, excluded groups."
+                                          IsChecked="{Binding Path=ResultModel[8], Mode=TwoWay}"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Rooms" ToolTip="Check for unplaced and intersecting rooms."
+                                          IsChecked="{Binding Path=ResultModel[9], Mode=TwoWay}"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Areas" ToolTip="Check for unplaced areas."
+                                          IsChecked="{Binding Path=ResultModel[10], Mode=TwoWay}" IsEnabled="False"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Spaces" ToolTip="Check for unplaced spaces."
+                                          IsChecked="{Binding Path=ResultModel[11], Mode=TwoWay}" IsEnabled="False"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Scope Boxes" ToolTip="Check for unused scope boxes."
+                                          IsChecked="{Binding Path=ResultModel[12], Mode=TwoWay}" IsEnabled="False"
+                                          Style="{StaticResource SCheckBox}"/>
+                                <CheckBox Content="Exterior Walls" ToolTip="Check if outer walls are Exterior type."
+                                          IsChecked="{Binding Path=ResultModel[13], Mode=TwoWay}"
+                                          Style="{StaticResource SCheckBox}"/>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </TabItem>
 

@@ -19,7 +19,7 @@ namespace BIM_Leaders_Windows
             ResultPrefix = "PRE_";
             ResultCategories = Enumerable.Repeat(false, 24).ToList();
             ResultCategories[6] = true;
-            ResultModel = Enumerable.Repeat(false, 5).ToList();
+            ResultModel = Enumerable.Repeat(false, 14).ToList();
             ResultCodes = Enumerable.Repeat(false, 2).ToList();
             ResultHeight = 210;
         }
