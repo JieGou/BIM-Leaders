@@ -19,7 +19,8 @@ namespace BIM_Leaders_Windows
             ResultSubstringOld = "OLD";
             ResultSubstringNew = "NEW";
             ResultPartPrefix = true;
-            ResultCategories = Enumerable.Repeat(true, 24).ToList();
+            ResultCategories = Enumerable.Repeat(false, 24).ToList();
+            ResultCategories[6] = true;
         }
 
         private string _resultSubstringOld;

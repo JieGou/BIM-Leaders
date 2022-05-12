@@ -105,4 +105,16 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SButtonText" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionButton}">
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="BorderBrush" Value="{x:Null}" />
+        <Setter Property="Foreground" Value="{StaticResource SColorTextBlue}" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+
+        <Setter Property="ToolTip" Value="Select Color" />
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
+    </Style>
+
 </ResourceDictionary>

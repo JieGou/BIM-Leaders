@@ -24,5 +24,6 @@
     <SolidColorBrush x:Key="SColorText" Color="White" />
     <SolidColorBrush x:Key="SColorTextHint" Color="#FFBFBFBF" />
     <SolidColorBrush x:Key="SColorTextError" Color="#FF453A" />
+    <SolidColorBrush x:Key="SColorTextBlue" Color="#007AFF" />
 
 </ResourceDictionary>

@@ -96,6 +96,10 @@
                         <Label Content="Categories"
                                Style="{StaticResource SLabelBold}">
                         </Label>
+                        <Button Content="Select all" Click="SelectAll_Click"
+                                Margin="80,-25,0,0"
+                                Style="{StaticResource SButtonText}">
+                        </Button>
                         <Label Content="{Binding ElementName=ResultCategories, Path=(Validation.Errors).CurrentItem.ErrorContent}"
                                    Margin="0,-20,0,0"
                                    Style="{StaticResource SLabelError}">
@@ -109,86 +113,110 @@
 
                             <Grid Grid.Column="0">
                                 <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                                    <CheckBox Content="Area Schemes"
-                                          IsChecked="{Binding Path=ResultCategories[0], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Browser Organization"
-                                          IsChecked="{Binding Path=ResultCategories[1], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Building Pad Types"
-                                          IsChecked="{Binding Path=ResultCategories[2], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Ceiling Types"
-                                          IsChecked="{Binding Path=ResultCategories[3], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Curtain System Types"
-                                          IsChecked="{Binding Path=ResultCategories[4], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Dimension Types"
-                                          IsChecked="{Binding Path=ResultCategories[5], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Families"
-                                          IsChecked="{Binding Path=ResultCategories[6], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Filled Region Types"
-                                          IsChecked="{Binding Path=ResultCategories[7], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox00"
+                                              Content="Area Schemes"
+                                              IsChecked="{Binding Path=ResultCategories[0], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox01"
+                                              Content="Browser Organization"
+                                              IsChecked="{Binding Path=ResultCategories[1], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox02"
+                                              Content="Building Pad Types"
+                                              IsChecked="{Binding Path=ResultCategories[2], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox03"
+                                              Content="Ceiling Types"
+                                              IsChecked="{Binding Path=ResultCategories[3], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox04"
+                                              Content="Curtain System Types"
+                                              IsChecked="{Binding Path=ResultCategories[4], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox05"
+                                              Content="Dimension Types"
+                                              IsChecked="{Binding Path=ResultCategories[5], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox06"
+                                              Content="Families"
+                                              IsChecked="{Binding Path=ResultCategories[6], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox07"
+                                              Content="Filled Region Types"
+                                              IsChecked="{Binding Path=ResultCategories[7], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
                                 </StackPanel>
                             </Grid>
                             <Grid Grid.Column="1">
                                 <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                                    <CheckBox Content="Grid Types"
-                                          IsChecked="{Binding Path=ResultCategories[8], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Group Types"
-                                          IsChecked="{Binding Path=ResultCategories[9], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Level Types"
-                                          IsChecked="{Binding Path=ResultCategories[10], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Line Patterns"
-                                          IsChecked="{Binding Path=ResultCategories[11], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Materials"
-                                          IsChecked="{Binding Path=ResultCategories[12], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Panel Types"
-                                          IsChecked="{Binding Path=ResultCategories[13], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Railing Types"
-                                          IsChecked="{Binding Path=ResultCategories[14], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Roof Types"
-                                          IsChecked="{Binding Path=ResultCategories[15], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox08"
+                                              Content="Grid Types"
+                                              IsChecked="{Binding Path=ResultCategories[8], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox09"
+                                              Content="Group Types"
+                                              IsChecked="{Binding Path=ResultCategories[9], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox10"
+                                              Content="Level Types"
+                                              IsChecked="{Binding Path=ResultCategories[10], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox11"
+                                              Content="Line Patterns"
+                                              IsChecked="{Binding Path=ResultCategories[11], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox12"
+                                              Content="Materials"
+                                              IsChecked="{Binding Path=ResultCategories[12], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox13"
+                                              Content="Panel Types"
+                                              IsChecked="{Binding Path=ResultCategories[13], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox14"
+                                              Content="Railing Types"
+                                              IsChecked="{Binding Path=ResultCategories[14], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox15"
+                                              Content="Roof Types"
+                                              IsChecked="{Binding Path=ResultCategories[15], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
                                 </StackPanel>
                             </Grid>
                             <Grid Grid.Column="2">
                                 <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                                    <CheckBox Content="Spot Dimension Types"
-                                          IsChecked="{Binding Path=ResultCategories[16], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Stair Types"
-                                          IsChecked="{Binding Path=ResultCategories[17], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Stair Landing Types"
-                                          IsChecked="{Binding Path=ResultCategories[18], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Stair Run Types"
-                                          IsChecked="{Binding Path=ResultCategories[19], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Text Note Types"
-                                          IsChecked="{Binding Path=ResultCategories[20], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Views"
-                                          IsChecked="{Binding Path=ResultCategories[21], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Wall Types"
-                                          IsChecked="{Binding Path=ResultCategories[22], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
-                                    <CheckBox Content="Wall Foundation Types"
-                                          IsChecked="{Binding Path=ResultCategories[23], Mode=TwoWay}"
-                                          Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox16"
+                                              Content="Spot Dimension Types"
+                                              IsChecked="{Binding Path=ResultCategories[16], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox17"
+                                              Content="Stair Types"
+                                              IsChecked="{Binding Path=ResultCategories[17], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox18"
+                                              Content="Stair Landing Types"
+                                              IsChecked="{Binding Path=ResultCategories[18], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox19"
+                                              Content="Stair Run Types"
+                                              IsChecked="{Binding Path=ResultCategories[19], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox20"
+                                              Content="Text Note Types"
+                                              IsChecked="{Binding Path=ResultCategories[20], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox21"
+                                              Content="Views"
+                                              IsChecked="{Binding Path=ResultCategories[21], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox22"
+                                              Content="Wall Types"
+                                              IsChecked="{Binding Path=ResultCategories[22], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
+                                    <CheckBox Name="checkBox23"
+                                              Content="Wall Foundation Types"
+                                              IsChecked="{Binding Path=ResultCategories[23], Mode=TwoWay}"
+                                              Style="{StaticResource SCheckBox}"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>
