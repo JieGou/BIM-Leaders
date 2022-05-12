@@ -110,7 +110,7 @@
     <Compile Include="Windows\CheckerReportForm.xaml.cs">
       <DependentUpon>CheckerReportForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\NamesPrefixChangeData.cs" />
+    <Compile Include="Windows\NamesChangeData.cs" />
     <Compile Include="Windows\LinetypesDeleteData.cs" />
     <Compile Include="Windows\DwgViewFoundForm.xaml.cs">
       <DependentUpon>DwgViewFoundForm.xaml</DependentUpon>
@@ -118,8 +118,8 @@
     <Compile Include="Windows\CheckerForm.xaml.cs">
       <DependentUpon>CheckerForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\NamesPrefixChangeForm.xaml.cs">
-      <DependentUpon>NamesPrefixChangeForm.xaml</DependentUpon>
+    <Compile Include="Windows\NamesChangeForm.xaml.cs">
+      <DependentUpon>NamesChangeForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\LinetypesDeleteForm.xaml.cs">
       <DependentUpon>LinetypesDeleteForm.xaml</DependentUpon>
@@ -237,7 +237,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\NamesPrefixChangeForm.xaml">
+    <Page Include="Windows\NamesChangeForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

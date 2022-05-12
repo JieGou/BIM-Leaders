@@ -30,7 +30,6 @@ namespace BIM_Leaders
                 LongDescription = "Check which categories need to be checked for prefix in naming. Also check model issues, and problems with national codes.",
                 CommandNamespacePath = Checker.GetPath(),
                 IconImageName = "BIM_Leaders_Checker.png",
-                //TooltipImageName = "BIM_Leaders_Names_Prefix_Change.png"
             };
             // Create button from provided data
             RevitPushButton.Create(buttonData0101);
@@ -44,7 +43,6 @@ namespace BIM_Leaders
                 LongDescription = "Usable for only warnings that don't need user's decision.",
                 CommandNamespacePath = WarningsSolve.GetPath(),
                 IconImageName = "BIM_Leaders_Warnings.png",
-                //TooltipImageName = "BIM_Leaders_Names_Prefix_Change.png"
             };
             // Create button from provided data
             RevitPushButton.Create(button_1_2_data);
@@ -52,13 +50,12 @@ namespace BIM_Leaders
             // Populate button data model
             RevitPushButtonDataModel button_1_3_data = new RevitPushButtonDataModel
             {
-                Label = "Names Prefix\r\nChange",
+                Label = "Names\r\nChange",
                 Panel = panel01,
-                ToolTip = "Change all names prefixes.",
+                ToolTip = "Change all names.",
                 LongDescription = "Check which categories need to be renamed. Also can be useful to change part of the names in the middle or at the end.",
-                CommandNamespacePath = NamesPrefixChange.GetPath(),
-                IconImageName = "BIM_Leaders_Names_Prefix_Change.png",
-                //TooltipImageName = "BIM_Leaders_Names_Prefix_Change.png"
+                CommandNamespacePath = NamesChange.GetPath(),
+                IconImageName = "BIM_Leaders_Names_Change.png",
             };
             // Create button from provided data
             RevitPushButton.Create(button_1_3_data);

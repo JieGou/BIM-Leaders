@@ -115,7 +115,7 @@
     <Compile Include="Commands\PanelStandards\LinestylesUnusedDelete.cs" />
     <Compile Include="Commands\PanelStandards\LinetypesDelete.cs" />
     <Compile Include="Commands\PanelStandards\Checker.cs" />
-    <Compile Include="Commands\PanelStandards\NamesPrefixChange.cs" />
+    <Compile Include="Commands\PanelStandards\NamesChange.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionStairsLandings.cs" />
     <Compile Include="Commands\PanelAnnotate\StairsStepsEnumerate.cs" />
     <Compile Include="Commands\PanelAnnotate\WallsCompare.cs" />

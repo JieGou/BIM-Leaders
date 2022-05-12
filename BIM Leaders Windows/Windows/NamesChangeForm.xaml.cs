@@ -7,21 +7,21 @@ using System.Windows.Media;
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Dimension floors aquisition form.
+    /// Renamer form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class NamesPrefixChangeForm : Window
+    public partial class NamesChangeForm : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="NamesPrefixChangeForm"/>
+        /// Initializes a new instance of the <see cref="NamesChangeForm"/>
         /// </summary>
-        public NamesPrefixChangeForm()
+        public NamesChangeForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new NamesPrefixChangeData();
+            DataContext = new NamesChangeData();
         }
 
         private void InitializeMaterialDesign()

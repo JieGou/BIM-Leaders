@@ -1,4 +1,4 @@
-﻿<Window x:Class="BIM_Leaders_Windows.NamesPrefixChangeForm"
+﻿<Window x:Class="BIM_Leaders_Windows.NamesChangeForm"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,9 +11,9 @@
         Title="BIM Leaders - Change Names Prefix"
         WindowStartupLocation="CenterScreen"
         Width="800"
-        Height="350"
+        Height="360"
         
-        d:DataContext="{d:DesignInstance Type=local:NamesPrefixChangeData}"
+        d:DataContext="{d:DesignInstance Type=local:NamesChangeData}"
         MouseLeftButtonDown="FormMouseMove">
 
     <Window.Resources>
@@ -33,7 +33,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <TextBlock Text="Change Names Prefix"
+            <TextBlock Text="Change Names"
                        Style="{StaticResource STextBlock}">
             </TextBlock>
             <Button x:Name="buttonCancel" IsCancel="True"
@@ -49,29 +49,46 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0">
-                    <StackPanel Height="210" Margin="20,0">
-                        <Label Content="Old Prefix"
+                    <StackPanel Height="220" Margin="20,0">
+                        <Label Content="Old Substring"
                                Style="{StaticResource SLabelBold}">
                         </Label>
-                        <TextBox x:Name="textboxPrefixOld"
-                                 Text="{Binding ResultPrefixOld, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                        <TextBox x:Name="textboxSubstringOld"
+                                 Text="{Binding ResultSubstringOld, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}">
                         </TextBox>
-                        <Label Content="{Binding ElementName=textboxPrefixOld, Path=(Validation.Errors)/ErrorContent}"
+                        <Label Content="{Binding ElementName=textboxSubstringOld, Path=(Validation.Errors)/ErrorContent}"
                                Style="{StaticResource SLabelError}">
                         </Label>
 
-                        <Label Content="New Prefix"
+                        <Label Content="New Substring"
                                Margin="-5,10,0,0"
                                Style="{StaticResource SLabelBold}">
                         </Label>
-                        <TextBox x:Name="textboxPrefixNew"
-                                 Text="{Binding ResultPrefixNew, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                        <TextBox x:Name="textboxSubstringNew"
+                                 Text="{Binding ResultSubstringNew, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}">
                         </TextBox>
-                        <Label Content="{Binding ElementName=textboxPrefixNew, Path=(Validation.Errors)/ErrorContent}"
+                        <Label Content="{Binding ElementName=textboxSubstringNew, Path=(Validation.Errors)/ErrorContent}"
                                Style="{StaticResource SLabelError}">
                         </Label>
+
+                        <Label Content="Substring Location"
+                               Margin="-5,10,0,0"
+                               Style="{StaticResource SLabelBold}">
+                        </Label>
+                        <RadioButton x:Name="radiobuttonPartPrefix" GroupName="rbGroup"
+                                     Content="Prefix"
+                                     IsChecked="{Binding Path=ResultPartPrefix, Mode=TwoWay}"
+                                     Style="{StaticResource SRadioButton}"/>
+                        <RadioButton x:Name="radiobuttonPartCenter" GroupName="rbGroup"
+                                     Content="Any location"
+                                     IsChecked="{Binding Path=ResultPartCenter, Mode=TwoWay}"
+                                     Style="{StaticResource SRadioButton}"/>
+                        <RadioButton x:Name="radiobuttonPartSuffix" GroupName="rbGroup"
+                                     Content="Suffix"
+                                     IsChecked="{Binding Path=ResultPartSuffix, Mode=TwoWay}"
+                                     Style="{StaticResource SRadioButton}"/>
                     </StackPanel>
                 </Grid>
                 <Grid Grid.Column="1">
@@ -189,12 +206,12 @@
                     Style="{StaticResource SRectangleButton}">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                        <Binding ElementName="textboxPrefixOld" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
-                        <Binding ElementName="textboxPrefixNew" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                        <Binding ElementName="textboxSubstringOld" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                        <Binding ElementName="textboxSubstringNew" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
                     </MultiBinding>
                 </Button.IsEnabled>
             </Button>
         </Grid>
-        
+
     </Grid>
 </Window>
