@@ -69,7 +69,7 @@ namespace BIM_Leaders_Core
             {
                 List<ElementId> ids = warning.GetFailingElements().ToList();
 
-                // Filter elements in workshared document that are aditable
+                // Filter elements in workshared document that are editable
                 if (doc.IsWorkshared)
                     ids = WorksharingUtils.CheckoutElements(doc, ids).ToList();
                 if (ids.Count < 2)
