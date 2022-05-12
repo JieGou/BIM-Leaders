@@ -96,7 +96,7 @@
                         <Label Content="Categories"
                                Style="{StaticResource SLabelBold}">
                         </Label>
-                        <Button Content="Select all" Click="SelectAll_Click"
+                        <Button Content="Select all" ToolTip="Select all categories" Click="SelectAll_Click"
                                 Margin="80,-25,0,0"
                                 Style="{StaticResource SButtonText}">
                         </Button>

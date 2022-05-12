@@ -112,8 +112,6 @@
         <Setter Property="Height" Value="25" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-
-        <Setter Property="ToolTip" Value="Select Color" />
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
     </Style>
 
