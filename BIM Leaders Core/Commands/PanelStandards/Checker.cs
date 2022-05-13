@@ -62,6 +62,10 @@ namespace BIM_Leaders_Core
                     if (inputModel[2])
                         reportMessageList.AddRange(CheckFilters(doc));
 
+                    // Check for sheet placeholders and empty sheets.
+                    if (inputModel[6])
+                        reportMessageList.AddRange(CheckSheets(doc));
+
                     // Groups check
                     if (inputModel[8])
                         reportMessageList.AddRange(CheckGroups(doc));
@@ -257,6 +261,58 @@ namespace BIM_Leaders_Core
             ReportMessage reportMessage = new ReportMessage("Unused Filters", reportMessageText);
 
             return new List<ReportMessage>() { reportMessage };
+        }
+
+        /// <summary>
+        /// Check for sheet placeholders and empty sheets.
+        /// </summary>
+        /// <returns>Checking report messages.</returns>
+        private static IEnumerable<ReportMessage> CheckSheets(Document doc)
+        {
+            int countPlaceholders = 0;
+            int countEmptySheets = 0;
+
+            IEnumerable<ViewSheet> sheets = new FilteredElementCollector(doc)
+                .OfClass(typeof(ViewSheet))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<ViewSheet>()
+                .Where(x => x.GetAllPlacedViews().Count == 0);
+
+            List<ViewSheet> sheetsNoPlaceholders = new List<ViewSheet>();
+            foreach (ViewSheet sheet in sheets)
+            {
+                if (sheet.IsPlaceholder)
+                    countPlaceholders++;
+                else
+                    sheetsNoPlaceholders.Add(sheet);
+            }
+
+            // "Empty" sheets can contain schedules still, so filter sheets without schedules.
+            IEnumerable<ElementId> schedulesSheets = new FilteredElementCollector(doc)
+                .OfClass(typeof(ScheduleSheetInstance))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<ScheduleSheetInstance>()
+                .Select(x => x.OwnerViewId);
+
+            foreach (ViewSheet sheet in sheetsNoPlaceholders)
+            {
+                if (!schedulesSheets.Contains(sheet.Id))
+                    countEmptySheets++;
+            }
+
+            string reportMessageText0 = (countPlaceholders == 0)
+                ? "-"
+                : $"{countPlaceholders} placeholder sheets are in the project.";
+            ReportMessage reportMessage0 = new ReportMessage("Placeholder Sheets", reportMessageText0);
+
+            string reportMessageText1 = (countEmptySheets == 0)
+                ? "-"
+                : $"{countEmptySheets} empty sheets are in the project.";
+            ReportMessage reportMessage1 = new ReportMessage("Empty Sheets", reportMessageText1);
+
+            return new List<ReportMessage>() { reportMessage0, reportMessage1 };
         }
 
         /// <summary>

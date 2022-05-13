@@ -215,11 +215,11 @@
                                 <CheckBox Content="Text Notes" ToolTip="Check for count of text notes in the project."
                                           IsChecked="{Binding Path=ResultModel[1], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
-                                <CheckBox Content="Unused Linestyles" ToolTip="Check for unused linestyles."
+                                <CheckBox Content="Linestyles" ToolTip="Check for unused linestyles."
                                           IsChecked="{Binding Path=ResultModel[2], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                                 <CheckBox Content="Filters" ToolTip="Check if filters are unused."
-                                          IsChecked="{Binding Path=ResultModel[3], Mode=TwoWay}" IsEnabled="False"
+                                          IsChecked="{Binding Path=ResultModel[3], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                                 <CheckBox Content="Views" ToolTip="Check if views are unreferenced."
                                           IsChecked="{Binding Path=ResultModel[4], Mode=TwoWay}" IsEnabled="False"
@@ -228,7 +228,7 @@
                                           IsChecked="{Binding Path=ResultModel[5], Mode=TwoWay}" IsEnabled="False"
                                           Style="{StaticResource SCheckBox}"/>
                                 <CheckBox Content="Sheets" ToolTip="Check for sheet placeholders and empty sheets."
-                                          IsChecked="{Binding Path=ResultModel[6], Mode=TwoWay}" IsEnabled="False"
+                                          IsChecked="{Binding Path=ResultModel[6], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                                 <CheckBox Content="Warnings" ToolTip="Check for warnings in the document."
                                           IsChecked="{Binding Path=ResultModel[7], Mode=TwoWay}"
