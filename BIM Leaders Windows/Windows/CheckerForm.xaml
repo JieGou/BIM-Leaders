@@ -210,10 +210,10 @@
                                    Style="{StaticResource SLabelBold}">
                                 </Label>
                                 <CheckBox Content="Tags" ToolTip="Check for empty tags."
-                                          IsChecked="{Binding Path=ResultModel[0], Mode=TwoWay}" IsEnabled="False"
+                                          IsChecked="{Binding Path=ResultModel[0], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                                 <CheckBox Content="Text Notes" ToolTip="Check for count of text notes in the project."
-                                          IsChecked="{Binding Path=ResultModel[1], Mode=TwoWay}" IsEnabled="False"
+                                          IsChecked="{Binding Path=ResultModel[1], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                                 <CheckBox Content="Unused Linestyles" ToolTip="Check for unused linestyles."
                                           IsChecked="{Binding Path=ResultModel[2], Mode=TwoWay}"

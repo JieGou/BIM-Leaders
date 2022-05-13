@@ -50,9 +50,17 @@ namespace BIM_Leaders_Core
 
                     reportMessageList.AddRange(CheckPrefixesAll(doc, inputCategories, inputPrefix));
 
-                    // Groups check
+                    // Check for empty tags.
                     if (inputModel[0])
                         reportMessageList.AddRange(CheckTags(doc));
+
+                    // Check for count of text notes in the project.
+                    if (inputModel[1])
+                        reportMessageList.AddRange(CheckTextNotes(doc));
+
+                    // Check if filters are unused.
+                    if (inputModel[2])
+                        reportMessageList.AddRange(CheckFilters(doc));
 
                     // Groups check
                     if (inputModel[8])
@@ -189,6 +197,64 @@ namespace BIM_Leaders_Core
                 ? "-"
                 : $"{countTags} tags are empty.";
             ReportMessage reportMessage = new ReportMessage("Empty Tags", reportMessageText);
+
+            return new List<ReportMessage>() { reportMessage };
+        }
+
+        /// <summary>
+        /// Check for count of text notes in the project.
+        /// </summary>
+        /// <returns>Checking report messages.</returns>
+        private static IEnumerable<ReportMessage> CheckTextNotes(Document doc)
+        {
+            IEnumerable<TextNote> textNotes = new FilteredElementCollector(doc)
+                .OfClass(typeof(TextNote))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<TextNote>();
+
+            int countTextNotes = textNotes.Count();
+            string reportMessageText = (countTextNotes == 0)
+                ? "-"
+                : $"{countTextNotes} text notes are in the project.";
+            ReportMessage reportMessage = new ReportMessage("Text Notes", reportMessageText);
+
+            return new List<ReportMessage>() { reportMessage };
+        }
+
+        /// <summary>
+        /// Check if filters are unused.
+        /// </summary>
+        /// <returns>Checking report messages.</returns>
+        private static IEnumerable<ReportMessage> CheckFilters(Document doc)
+        {
+            int countFiltersUnused = 0;
+
+            IEnumerable<View> views = new FilteredElementCollector(doc)
+                .OfClass(typeof(View))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<View>();
+            ICollection<ElementId> filtersAll = new FilteredElementCollector(doc)
+                .OfClass(typeof(ElementFilter))
+                .WhereElementIsNotElementType()
+                .ToElementIds();
+
+            // Get views filters list
+            List<ElementId> filtersUsed = new List<ElementId>();
+            foreach (View view in views)
+            {
+                // Add to the list if it not contains those filters yet
+                ICollection<ElementId> viewFilters = view.GetFilters();
+                filtersUsed.AddRange(viewFilters.Where(x => !filtersUsed.Contains(x)));
+            }
+
+            countFiltersUnused = filtersAll.Count - filtersUsed.Count;
+
+            string reportMessageText = (countFiltersUnused == 0)
+                ? "-"
+                : $"{countFiltersUnused} filters are unused.";
+            ReportMessage reportMessage = new ReportMessage("Unused Filters", reportMessageText);
 
             return new List<ReportMessage>() { reportMessage };
         }
