@@ -7,6 +7,7 @@ using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using Autodesk.Revit.DB.Mechanical;
 
 namespace BIM_Leaders_Core
 {
@@ -58,29 +59,33 @@ namespace BIM_Leaders_Core
                     if (inputModel[1])
                         reportMessageList.AddRange(CheckTextNotes(doc));
 
-                    // Check if filters are unused.
+                    // Line Styles Unused check
                     if (inputModel[2])
+                        reportMessageList.AddRange(CheckLineStyles(doc));
+
+                    // Check if filters are unused.
+                    if (inputModel[3])
                         reportMessageList.AddRange(CheckFilters(doc));
 
                     // Check for sheet placeholders and empty sheets.
                     if (inputModel[6])
                         reportMessageList.AddRange(CheckSheets(doc));
 
+                    // Warnings check
+                    if (inputModel[7])
+                        reportMessageList.AddRange(CheckWarnings(doc));
+
                     // Groups check
                     if (inputModel[8])
                         reportMessageList.AddRange(CheckGroups(doc));
-
-                    // Line Styles Unused check
-                    if (inputModel[2])
-                        reportMessageList.AddRange(CheckLineStyles(doc));
 
                     // Rooms check
                     if (inputModel[9])
                         reportMessageList.AddRange(CheckRooms(doc));
 
-                    // Warnings check
-                    if (inputModel[7])
-                        reportMessageList.AddRange(CheckWarnings(doc));
+                    // Check for unplaced and unbounded areas.
+                    if (inputModel[10])
+                        reportMessageList.AddRange(CheckAreas(doc));
 
                     // Exterior walls check
                     if (inputModel[13])
@@ -434,7 +439,7 @@ namespace BIM_Leaders_Core
                 if (room.Location is null)
                     countRoomsPlacement++;
                 else if (room.Volume == 0)
-                    countRoomsUnbounded++; // NOW WITHOUT OUTPUT AND REPORT
+                    countRoomsUnbounded++;
                 // Checking for volumes overlap
                 else
                 {
@@ -456,10 +461,101 @@ namespace BIM_Leaders_Core
                 : $"{countRoomsPlacement} rooms are not placed.";
             ReportMessage reportMessage0 = new ReportMessage("Rooms Placement", reportMessageText0);
 
-            string reportMessageText1 = (countRoomsIntersect == 0)
+            string reportMessageText1 = (countRoomsUnbounded == 0)
+                ? "-"
+                : $"{countRoomsUnbounded} rooms are not enclosed.";
+            ReportMessage reportMessage1 = new ReportMessage("Rooms Not Enclosed", reportMessageText1);
+
+            string reportMessageText2 = (countRoomsIntersect == 0)
                 ? "-"
                 : $"{countRoomsIntersect} rooms overlap.";
-            ReportMessage reportMessage1 = new ReportMessage("Rooms Overlap", reportMessageText1);
+            ReportMessage reportMessage2 = new ReportMessage("Rooms Overlap", reportMessageText2);
+
+            return new List<ReportMessage>() { reportMessage0, reportMessage1, reportMessage2 };
+        }
+
+        /// <summary>
+        /// Check for unplaced and unbounded areas.
+        /// </summary>
+        /// <returns>Checking report messages.</returns>
+        private static IEnumerable<ReportMessage> CheckAreas(Document doc)
+        {
+            int countAreasPlacement = 0;
+            int countAreasUnbounded = 0;
+
+            Options options = new Options
+            {
+                ComputeReferences = false,
+                View = doc.ActiveView,
+                IncludeNonVisibleObjects = true
+            };
+
+            IEnumerable<Area> areas = new FilteredElementCollector(doc)
+                .OfClass(typeof(SpatialElement))
+                .WherePasses(new AreaFilter())
+                .ToElements()
+                .Cast<Area>();
+
+            foreach (Area area in areas)
+            {
+                if (area.Location is null)
+                    countAreasPlacement++;
+                else if (area.Area == 0)
+                    countAreasUnbounded++;
+            }
+
+            string reportMessageText0 = (countAreasPlacement == 0)
+                ? "-"
+                : $"{countAreasPlacement} areas are not placed.";
+            ReportMessage reportMessage0 = new ReportMessage("Areas Placement", reportMessageText0);
+
+            string reportMessageText1 = (countAreasUnbounded == 0)
+                ? "-"
+                : $"{countAreasUnbounded} areas are not enclosed.";
+            ReportMessage reportMessage1 = new ReportMessage("Areas Not Enclosed", reportMessageText1);
+
+            return new List<ReportMessage>() { reportMessage0, reportMessage1 };
+        }
+
+        /// <summary>
+        /// Check for unplaced and unbounded spaces.
+        /// </summary>
+        /// <returns>Checking report messages.</returns>
+        private static IEnumerable<ReportMessage> CheckSpaces(Document doc)
+        {
+            int countSpacesPlacement = 0;
+            int countSpacesUnbounded = 0;
+
+            Options options = new Options
+            {
+                ComputeReferences = false,
+                View = doc.ActiveView,
+                IncludeNonVisibleObjects = true
+            };
+
+            IEnumerable<Space> spaces = new FilteredElementCollector(doc)
+                .OfClass(typeof(SpatialElement))
+                .WherePasses(new SpaceFilter())
+                .ToElements()
+                .Cast<Space>();
+
+            foreach (Space space in areas)
+            {
+                if (space.Location is null)
+                    countSpacesPlacement++;
+                else if (space.Area == 0)
+                    countSpacesUnbounded++;
+            }
+
+            string reportMessageText0 = (countSpacesPlacement == 0)
+                ? "-"
+                : $"{countSpacesPlacement} spaces are not placed.";
+            ReportMessage reportMessage0 = new ReportMessage("Spaces Placement", reportMessageText0);
+
+            string reportMessageText1 = (countSpacesUnbounded == 0)
+                ? "-"
+                : $"{countSpacesUnbounded} spaces are not enclosed.";
+            ReportMessage reportMessage1 = new ReportMessage("Spaces Not Enclosed", reportMessageText1);
 
             return new List<ReportMessage>() { reportMessage0, reportMessage1 };
         }

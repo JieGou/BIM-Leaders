@@ -243,13 +243,13 @@
                                 <CheckBox Content="Groups" ToolTip="Check for unused, unpinned, excluded groups."
                                           IsChecked="{Binding Path=ResultModel[8], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
-                                <CheckBox Content="Rooms" ToolTip="Check for unplaced and intersecting rooms."
+                                <CheckBox Content="Rooms" ToolTip="Check for unplaced, unbounded and intersecting rooms."
                                           IsChecked="{Binding Path=ResultModel[9], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
-                                <CheckBox Content="Areas" ToolTip="Check for unplaced areas."
+                                <CheckBox Content="Areas" ToolTip="Check for unplaced and unbounded areas."
                                           IsChecked="{Binding Path=ResultModel[10], Mode=TwoWay}" IsEnabled="False"
                                           Style="{StaticResource SCheckBox}"/>
-                                <CheckBox Content="Spaces" ToolTip="Check for unplaced spaces."
+                                <CheckBox Content="Spaces" ToolTip="Check for unplaced and unbounded spaces."
                                           IsChecked="{Binding Path=ResultModel[11], Mode=TwoWay}" IsEnabled="False"
                                           Style="{StaticResource SCheckBox}"/>
                                 <CheckBox Content="Scope Boxes" ToolTip="Check for unused scope boxes."
