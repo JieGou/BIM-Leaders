@@ -20,33 +20,6 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
-            List<Type> typesAll = new List<Type>() {
-                typeof(AreaScheme),
-                typeof(BrowserOrganization),
-                typeof(BuildingPadType),
-                typeof(CeilingType),
-                typeof(CurtainSystemType),
-                typeof(DimensionType),
-                typeof(Family), //typeof(FamilySymbol),
-                typeof(FilledRegionType),
-                typeof(GridType),
-                typeof(GroupType),
-                typeof(LevelType),
-                typeof(LinePatternElement),
-                typeof(Material),
-                typeof(PanelType),
-                typeof(ContinuousRailType), //typeof(RailingType),
-                typeof(FasciaType), //typeof(GutterType), typeof(RoofType),
-                typeof(SpotDimensionType),
-                typeof(StairsType),
-                typeof(StairsLandingType),
-                typeof(StairsRunType),
-                typeof(TextNoteType),
-                typeof(ViewDrafting), //typeof(ViewPlan), typeof(ViewSchedule), typeof(ViewSection),
-                typeof(WallType),
-                typeof(WallFoundationType)
-            };
-
             int count = 0;
 
             try
@@ -67,13 +40,11 @@ namespace BIM_Leaders_Core
                 bool inputPartSuffix = data.ResultPartSuffix;
                 List<bool> categories = data.ResultCategories;
 
-                List<Type> types = typesAll.Where((name, index) => categories[index]).ToList();
-
                 using (Transaction trans = new Transaction(doc, "Change Names Prefix"))
                 {
                     trans.Start();
 
-                    count += ReplaceNames(doc, inputSubstringOld, inputSubstringNew, inputPartPrefix, inputPartSuffix, types);
+                    count += ReplaceNames(doc, inputSubstringOld, inputSubstringNew, inputPartPrefix, inputPartSuffix, categories);
 
                     trans.Commit();
                 }
@@ -105,9 +76,11 @@ namespace BIM_Leaders_Core
         /// <param name="inputPartSuffix">If true, replace suffix part.</param>
         /// <param name="types">Sytem.Type of needed DB classes (categories).</param>
         /// <returns>Count of strings with replaced substrings.</returns>
-        private static int ReplaceNames(Document doc, string substringOld, string substringNew, bool inputPartPrefix, bool inputPartSuffix, List<Type> types)
+        private static int ReplaceNames(Document doc, string substringOld, string substringNew, bool inputPartPrefix, bool inputPartSuffix, List<bool> inputCategories)
         {
             int count = 0;
+
+            List<Type> types = Categories.GetTypesList(inputCategories);
 
             ElementMulticlassFilter elementMulticlassFilter = new ElementMulticlassFilter(types);
 

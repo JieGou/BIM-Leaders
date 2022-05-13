@@ -42,21 +42,6 @@ namespace BIM_Leaders_Core
                 List<bool> inputCodes = data.ResultCodes;
                 int inputHeadHeight = data.ResultHeight;
 
-                int countPrefixes = 0;
-                int countTagsEmpty = 0;
-                int countGroups = 0;
-                int countGroupsUnused = 0;
-                int countGroupsUnpinned = 0;
-                int countGroupsExcluded = 0;
-                int countLinestyles = 0;
-                int countRoomsPlacement = 0;
-                int countRoomsIntersect = 0;
-                int countWarnings = 0;
-                int countWallsInterior = 0;
-                int countStairsFormula = 0;
-                int countHeightLandings = 0;
-                int countHeightRuns = 0;
-
                 List<ReportMessage> reportMessageList = new List<ReportMessage>();
 
                 using (Transaction trans = new Transaction(doc, "Check"))
@@ -139,48 +124,15 @@ namespace BIM_Leaders_Core
         /// Check names for containing given string.
         /// </summary>
         /// <param name="doc">Document to process in.</param>
-        /// <returns>Checking report message.</returns>
+        /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckPrefixesAll(Document doc, List<bool> inputCategories, string prefix)
         {
             int countPrefixes = 0;
 
-            Dictionary<Type, bool> categories = new Dictionary<Type, bool>(){
-                { typeof(AreaScheme),          inputCategories[0] },
-                { typeof(BrowserOrganization), inputCategories[1] },
-                { typeof(BuildingPadType),     inputCategories[2] },
-                { typeof(CeilingType),         inputCategories[3] },
-                { typeof(CurtainSystemType),   inputCategories[4] },
-                { typeof(DimensionType),       inputCategories[5] },
-                { typeof(Family),              inputCategories[6] },
-                { typeof(FamilySymbol),        inputCategories[6] },
-                { typeof(FilledRegionType),    inputCategories[7] },
-                { typeof(GridType),            inputCategories[8] },
-                { typeof(GroupType),           inputCategories[9] },
-                { typeof(LevelType),           inputCategories[10] },
-                { typeof(LinePatternElement),  inputCategories[11] },
-                { typeof(Material),            inputCategories[12] },
-                { typeof(PanelType),           inputCategories[13] },
-                { typeof(ContinuousRailType),  inputCategories[14] },
-                { typeof(RailingType),         inputCategories[14] },
-                { typeof(FasciaType),          inputCategories[15] },
-                { typeof(GutterType),          inputCategories[15] },
-                { typeof(RoofType),            inputCategories[15] },
-                { typeof(SpotDimensionType),   inputCategories[16] },
-                { typeof(StairsType),          inputCategories[17] },
-                { typeof(StairsLandingType),   inputCategories[18] },
-                { typeof(StairsRunType),       inputCategories[19] },
-                { typeof(TextNoteType),        inputCategories[20] },
-                { typeof(ViewDrafting),        inputCategories[21] },
-                { typeof(ViewPlan),            inputCategories[21] },
-                { typeof(ViewSchedule),        inputCategories[21] },
-                { typeof(ViewSection),         inputCategories[21] },
-                { typeof(WallType),            inputCategories[22] },
-                { typeof(WallFoundationType),  inputCategories[23] }
-            };
+            List<Type> types = Categories.GetTypesList(inputCategories);
 
-            foreach (KeyValuePair<Type, bool> keyValue in categories)
-                if (keyValue.Value)
-                    countPrefixes += CheckPrefixes(doc, prefix, keyValue.Key);
+            foreach (Type type in types)
+                countPrefixes += CheckPrefixes(doc, prefix, type);
 
             string reportMessageText = (countPrefixes == 0)
                 ? "-"
@@ -219,7 +171,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Checks if any empty tags in the model.
         /// </summary>
-        /// <returns>Checking report message.</returns>
+        /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckTags(Document doc)
         {
             int countTags = 0;
@@ -244,7 +196,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Check groups in current document for unused, unpinned, excluded groups.
         /// </summary>
-        /// <returns>Tuple of checking report messages.</returns>
+        /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckGroups(Document doc)
         {
             int countGroups = 0;
@@ -297,7 +249,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Checks if all existing linestyles are used in the document.
         /// </summary>
-        /// <returns>Checking report message.</returns>
+        /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckLineStyles(Document doc)
         {
             int countLinestyles = 0;
@@ -334,7 +286,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Checks all rooms in the document.
         /// </summary>
-        /// <returns>Tuple of checking report messages.</returns>
+        /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckRooms(Document doc)
         {
             int countRoomsPlacement = 0;
@@ -393,7 +345,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Checks if warnings are in the document.
         /// </summary>
-        /// <returns>Checking report message.</returns>
+        /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckWarnings(Document doc)
         {
             int countWarnings = doc.GetWarnings().Count;
@@ -409,7 +361,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Checks if all actually exterior walls are set as Exterior in the properties.
         /// </summary>
-        /// <returns>Checking report message.</returns>
+        /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckWallsExterior(Document doc)
         {
             int countWallsInterior = 0;
@@ -510,7 +462,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Checks all stairs if their parameters (step length / step height) good in formula.
         /// </summary>
-        /// <returns>Checking report message.</returns>
+        /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckStairsFormula(Document doc)
         {
             int countStairsFormula = 0;
@@ -545,7 +497,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Checks all stairs elements in document if they good in the given head height.
         /// </summary>
-        /// <returns>Checking report message.</returns>
+        /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckStairsHeadHeight(Document doc, double inputHeadHeight)
         {
             int countHeightLandings = 0;
