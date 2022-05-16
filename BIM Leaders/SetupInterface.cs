@@ -135,6 +135,22 @@ namespace BIM_Leaders
             // Populate button data model
             RevitPushButtonDataModel button_1_7_data = new RevitPushButtonDataModel
             {
+                Label = "Journals\r\nAnalyze",
+                Panel = panel01,
+                ToolTip = "Standards.",
+                LongDescription = "Analyze the current Revit journal file.",
+                CommandNamespacePath = JournalAnalyze.GetPath(),
+                IconImageName = "BIM_Leaders_Help_Standards.png",
+                //TooltipImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png"
+            };
+            // Create button from provided data
+            RevitPushButton.Create(button_1_7_data);
+
+            panel01.AddSeparator();
+
+            // Populate button data model
+            RevitPushButtonDataModel button_1_8_data = new RevitPushButtonDataModel
+            {
                 Label = "Help\r\nStandards",
                 Panel = panel01,
                 ToolTip = "Standards.",
@@ -144,7 +160,7 @@ namespace BIM_Leaders
                 //TooltipImageName = "BIM_Leaders_Linetypes_IMPORT_Delete.png"
             };
             // Create button from provided data
-            RevitPushButton.Create(button_1_7_data);
+            RevitPushButton.Create(button_1_8_data);
 
 
             // Create Ribbon Panel

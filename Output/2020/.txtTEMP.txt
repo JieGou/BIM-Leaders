@@ -1,0 +1,2266 @@
+'C 16-May-2022 18:19:25.142;  started recording journal file 
+' Build: 20220112_1230(x64)
+' Branch: RELEASE_2020
+' Release: 2020.2.7
+Dim Jrn
+Set Jrn = CrsJournalScript
+'C 16-May-2022 18:19:25.149;  [00003fc4]->desktop InitApplication 
+'C 16-May-2022 18:19:25.160;  [00003fc4]<-desktop InitApplication 
+'C 16-May-2022 18:19:25.160;  [00003fc4]->desktop InitNativeInstance 
+' 0:< Options::loadOptions: m_strDataLibraryLocations=Metric Library=C:\ProgramData\Autodesk\RVT 2020\Libraries\US Metric\,Metric Detail Library=C:\ProgramData\Autodesk\RVT 2020\Libraries\US Metric\Detail Items (defaultLib==\Library) 
+' 0:< Options::loadOptions: Systems Analysis Workflows= 
+'C 16-May-2022 18:19:25.227;   0:< License initialization complete 
+' 0:< License version: 2.6.3.37 
+'C 16-May-2022 18:19:25.229;  [00003fc4]DBG_INFO: resetMainThreadIdDueTo57629: line 218 of d:\ship\2020_px64\source\foundation\utility\mainthreadinfo.cpp. 
+' 0:< Initial VM: Avail 134213049 MB, Used 52 MB, Peak 54; RAM: Avail 19912 MB, Used 120 MB, Peak 54 
+' 0:< GUI Resource Usage GDI: Avail 9991, Used 9, User: Used 46 
+' 0:< SystemSettings: 
+' 0:<                    8=multiCoreCharacteristic 
+' 0:<                 true=isDotNetInstalled 
+' 0:<    4.8.04084(528372)=dotNetInstalledVersionString 
+' 0:<                false=isProcessUserModeExceptionPolicyDisabledForCallbackFilter 
+' 0:< ::0:: Delta VM: Avail -6 -> 134213044 MB, Used +6 -> 58 MB, Peak +4 -> 58 MB; RAM: Avail +15 -> 19927 MB, Used +11 -> 132 MB, Peak +11 -> 132 MB 
+' 0:< GUI Resource Usage GDI: Avail 9986, Used 14, User: Used 50 
+'C 16-May-2022 18:19:25.526;  RevitLynx registered 4159 templates (0 duplicate typeids) 
+' 0:< ::0:: Delta VM: Avail -666 -> 134212378 MB, Used +24 -> 83 MB, Peak +25 -> 83 MB; RAM: Avail -100 -> 19828 MB, Used +36 -> 168 MB, Peak +36 -> 168 MB 
+' 0:< GUI Resource Usage GDI: Avail 9984, Used 16, User: Used 62 
+' 0:< CefSharp has been initialized successfully! 
+' 0:< ::0:: Delta VM: Avail -18 -> 134212361 MB, Used +3 -> 86 MB, Peak +3 -> 86 MB; RAM: Avail -41 -> 19788 MB, Used +10 -> 179 MB, Peak +10 -> 179 MB 
+' 0:< GUI Resource Usage GDI: Avail 9983, Used 17, User: Used 70 
+'C 16-May-2022 18:19:26.054;   0:< manage licensing 
+'C 16-May-2022 18:19:28.598;   0:< LicenseUpd(1)  
+' 0:< ::0:: Delta VM: Avail 134212361 MB, Used 86 MB; RAM: Avail -32 -> 19756 MB, Used 179 MB 
+' 0:< GUI Resource Usage GDI: Avail 9983, Used 17, User: Used 68 
+'C 16-May-2022 18:19:28.598;   0:< Delayed start 
+' 0:< License mode: User 
+' 0:< Status: Your license will expire in 412 days. 
+' 0:< Type: USER 
+' 0:< Usage: USER 
+' 0:< Behavior: USER 
+' 0:< Expiration: Sunday, July 02, 2023 
+' 0:< ::0:: Delta VM: Avail -123 -> 134212238 MB, Used +35 -> 122 MB, Peak +35 -> 122 MB; RAM: Avail -50 -> 19706 MB, Used +54 -> 233 MB, Peak +54 -> 233 MB 
+' 0:< GUI Resource Usage GDI: Avail 9950, Used 50, User: Used 82 
+' 0:< Setting WPF rendering mode to SoftwareOnly 
+' 0:< Family Dialog Bar : WM_WINDOWPOSCHANGING: cx-0, cy-0, x-10000, y-10000 
+' 0:< Family Dialog Bar : WM_WINDOWPOSCHANGING: cx-16, cy-60, x-0, y-0 
+' 0:< Family Dialog Bar : WM_WINDOWPOSCHANGING: cx-0, cy-0, x-0, y-0 
+' 0:< ::0:: Delta VM: Avail -77 -> 134212161 MB, Used +43 -> 165 MB, Peak +43 -> 165 MB; RAM: Avail -58 -> 19649 MB, Used +55 -> 288 MB, Peak +55 -> 288 MB 
+' 0:< GUI Resource Usage GDI: Avail 9883, Used 117, User: Used 139 
+' 0:< Autodesk Revit 2020 
+' 0:< 64-bit load point = C:\Program Files\Autodesk\Revit 2020 
+' 0:< this journal = C:\Users\i.pinchuk\AppData\Local\Autodesk\Revit\Autodesk Revit 2020\Journals\journal.0169.txt 
+' 0:< ::0:: Delta VM: Avail -12 -> 134212150 MB, Used +1 -> 166 MB, Peak +1 -> 166 MB; RAM: Avail +36 -> 19686 MB, Used +5 -> 294 MB, Peak +5 -> 294 MB 
+' 0:< GUI Resource Usage GDI: Avail 9883, Used 117, User: Used 140 
+'C 16-May-2022 18:19:31.132;  Journal Init 
+'C 16-May-2022 18:19:31.132;   0:< Log Summary 
+' 0:< .Count 
+' 0:< ...DBG_SOMETHING = 2 
+' 0:< ...DBG_WARNING = 1 
+' 0:< .JSON 
+' 0:< ...DeepCopyOps = 31 
+' 0:< ...References = 35 
+' 0:< .Marshalling 
+' 0:< ...CompactCaching = 1 (Enabled) 
+' 0:< .ThreadPool 
+' 0:< ...ActivePoolSize = 51 
+' 0:< ...ConfiguredPoolSize = automatic 
+' 0:< ...ParallelCores = 8 
+' 0:< ...RequestedPoolSize = automatic 
+' 0:< .Tuning 
+' 0:< ...ElemTable = 1 (Serial except when multithreaded) 
+'C 16-May-2022 18:19:31.133;  BC: 1,0,0 
+'H 16-May-2022 18:19:31.133;   0:< 
+Jrn.Directive "CategoryDisciplineFilter"  _
+        , 31
+'H 16-May-2022 18:19:31.133;   0:< 
+Jrn.Directive "DisciplineOption"  _
+        , 32253
+'H 16-May-2022 18:19:31.133;   0:< 
+Jrn.Directive "TabDisplayOptions"  _
+        , "StayOnModifyInProject", 0
+'H 16-May-2022 18:19:31.133;   0:< 
+Jrn.Directive "TabDisplayOptions"  _
+        , "StayOnModifyInFamily", 1
+'H 16-May-2022 18:19:31.133;   0:< 
+Jrn.Directive "TabDisplayOptions"  _
+        , "ActiveCtOnSelection", 1
+'H 16-May-2022 18:19:31.133;   0:< 
+Jrn.Data "JournalDefaultTemplate"  _
+        , "Construction Template=$AllUsersAppData\Templates\US Metric\Construction-DefaultUS-Canada.rte, Architectural Template=$AllUsersAppData\Templates\US Metric\DefaultUS-Canada.rte, Structural Template=$AllUsersAppData\Templates\US Metric\Structural Analysis-DefaultUS-Canada.rte, Mechanical Template=$AllUsersAppData\Templates\US Metric\Mechanical-Default_Metric.rte"
+'H 16-May-2022 18:19:31.133;   0:< 
+Jrn.Data "JournalDefaultViewDiscipline"  _
+        , "Coordination"
+'H 16-May-2022 18:19:31.133;   0:< 
+Jrn.Directive "Version"  _
+        , "2020.000", "2.164"
+'H 16-May-2022 18:19:31.133;   0:< 
+Jrn.Directive "Username"  _
+        , "arch_bim-ae"
+'H 16-May-2022 18:19:31.135;   0:< 
+Jrn.Directive "AllowLinkSelection"  _
+        , 1
+'H 16-May-2022 18:19:31.135;   0:< 
+Jrn.Directive "AllowFaceSelection"  _
+        , 0
+'H 16-May-2022 18:19:31.135;   0:< 
+Jrn.Directive "AllowUnderlaySelection"  _
+        , 0
+'H 16-May-2022 18:19:31.135;   0:< 
+Jrn.Directive "AllowPinnedSelection"  _
+        , 1
+'H 16-May-2022 18:19:31.135;   0:< 
+Jrn.Directive "ThinLinesEnabled"  _
+        , 1
+'C 16-May-2022 18:19:31.156;   1:< logging master created MasterQueue Session8936_P0MasterQueue 
+'C 16-May-2022 18:19:31.161;   1:< logging started queue minder  
+'C 16-May-2022 18:19:31.161;   1:< logging started worker services  
+ ' 0:< ::0:: Delta VM: Avail -37 -> 134212113 MB, Used +14 -> 181 MB, Peak +15 -> 181 MB; RAM: Avail -69 -> 19617 MB, Used +15 -> 310 MB, Peak +16 -> 311 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9875, Used 125, User: Used 151 
+ 'E 16-May-2022 18:19:31.471;   0:< 
+ Jrn.RibbonEvent "TabActivated:Architecture"
+' 0:< ::1:: Delta VM: Avail -10 -> 134212104 MB, Used +19 -> 200 MB, Peak +19 -> 201 MB; RAM: Avail -68 -> 19549 MB, Used +22 -> 332 MB, Peak +21 -> 333 MB 
+' 0:< GUI Resource Usage GDI: Avail 9866, Used 134, User: Used 159 
+'C 16-May-2022 18:19:32.253;  DBG_INFO: WPFWndProxy::OnWndMsgPreWPF() called after WPFWndProxy::OnWndMsgPostWPF()!: line 248 of d:\ship\2020_px64\source\revit\revitmfc\frames\mfcmainfrmwpf.cpp. 
+' 0:< ::1:: Delta VM: Avail -5 -> 134212099 MB, Used +5 -> 205 MB, Peak +5 -> 206 MB; RAM: Avail -16 -> 19534 MB, Used +8 -> 340 MB, Peak +9 -> 342 MB 
+' 0:< GUI Resource Usage GDI: Avail 9857, Used 143, User: Used 161 
+' 0:< Family Dialog Bar : WM_WINDOWPOSCHANGING: cx-0, cy-0, x-0, y-0 
+' 0:< Family Dialog Bar : WM_WINDOWPOSCHANGING: cx-0, cy-0, x-0, y-0 
+' 0:< Family Dialog Bar : WM_WINDOWPOSCHANGING: cx-0, cy-0, x-0, y-0 
+' 0:< API_SUCCESS { Registered an external service: Name(DirectContext3D Service); VendorId(ADSK); ServiceId(e454a471-b9f3-4cb7-96b1-bab4cf7742a6) } 
+' 0:< API_SUCCESS { Registered an external service: Name(External Resource Service); VendorId(ADSK); ServiceId(b3892e5f-9161-4bbc-958a-c8ef75e94e96) } 
+' 0:< API_SUCCESS { Registered an external service: Name(NavisworksExportService); VendorId(ADSK); ServiceId(a9bdf0fd-2632-429e-bc35-50ebc2b824d2) } 
+' 0:< API_SUCCESS { Registered an external service: Name(EntitlementExternalService); VendorId(ADSK); ServiceId(9111ab07-9bd9-4b68-a01f-c0a0dcae1564) } 
+' 0:< API_SUCCESS { Registered an external service: Name(CloudExternalService); VendorId(ADSK); ServiceId(279080e0-8c45-44eb-9027-d4eb37ece90d) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Code Checking Parameter Service); VendorId(ADSK); ServiceId(de6db8de-dea6-40bd-9503-4ffe62ff6143) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Hole Definition Service); VendorId(ADSK); ServiceId(9d39d4fe-6e5f-4088-8655-b349d00e864a) } 
+' 0:< API_SUCCESS { Registered an external service: Name(FramingProfileService); VendorId(ADSK); ServiceId(b2f816c0-6493-4537-8067-78a4e67f559e) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Modify Connection Parameters Service); VendorId(ADSK); ServiceId(e9c0f948-320e-4e7f-a573-10755555305d) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Connection Type Changed Service); VendorId(ADSK); ServiceId(e31c3100-9cab-4303-b85b-4171703ce1c4) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Section Type Parameter Service); VendorId(ADSK); ServiceId(c42c9b55-c491-4611-97e9-9e617958e13e) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Site Insert Service); VendorId(ADSK); ServiceId(c9979a42-11ab-4c25-93e1-abfb50b7be60) } 
+' 0:< API_SUCCESS { Registered an external service: Name(RebarUpdateService); VendorId(ADSK); ServiceId(a2c22b44-c231-4d3f-b653-b81b6f8be150) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Path of travel calculator); VendorId(ADSK); ServiceId(ee502325-58ce-4d6e-9a2c-643608b1fbd9) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Internal Forces Service); VendorId(ADSK); ServiceId(a97444aa-af8d-4a1e-af1f-fa7b77b368ee) } 
+' 0:< API_SUCCESS { Registered an external service: Name(IFC Export Service); VendorId(ADSK); ServiceId(d8b95737-f943-414c-9ad7-86785bf1acbc) } 
+' 0:< API_SUCCESS { Registered an external server: Name(Revit IFC Exporter); VendorId(ADSK); ServerId(ef8d0493-7f36-42b5-b9aa-8aaac716482b); ServiceId(d8b95737-f943-414c-9ad7-86785bf1acbc) } 
+ 'E 16-May-2022 18:19:32.335;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: ef8d0493-7f36-42b5-b9aa-8aaac716482b Rvt.Attr.ExternalService: d8b95737-f943-414c-9ad7-86785bf1acbc 
+' 0:< API_SUCCESS { Registered an external service: Name(IFC Import Service); VendorId(ADSK); ServiceId(98d317e2-e943-4cc0-a3da-2edf32a5d942) } 
+' 0:< API_SUCCESS { Registered an external server: Name(Revit IFC Importer); VendorId(ADSK); ServerId(660a7370-f6d6-43c8-8456-6b2eea785110); ServiceId(98d317e2-e943-4cc0-a3da-2edf32a5d942) } 
+ 'E 16-May-2022 18:19:32.335;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 660a7370-f6d6-43c8-8456-6b2eea785110 Rvt.Attr.ExternalService: 98d317e2-e943-4cc0-a3da-2edf32a5d942 
+' 0:< API_SUCCESS { Registered an external service: Name(Duct Fitting/Accessory Pressure Drop Calculator); VendorId(ADSK); ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Pipe Fitting/Accessory Pressure Drop Calculator); VendorId(ADSK); ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Duct Pressure Drop Calculator); VendorId(ADSK); ServiceId(8c707bd6-ecd6-4150-a0df-bd6c85dd9bb0) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Pipe Pressure Drop Calculator); VendorId(ADSK); ServiceId(62d13e0c-9fe1-4d8e-a0c7-1f93d24cf3f3) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Plumbing Flow Calculator); VendorId(ADSK); ServiceId(bf0da776-5307-4747-8285-f358e92a90d0) } 
+' 0:< API_SUCCESS { Registered an external service: Name(External Resource UI Service); VendorId(ADSK); ServiceId(1fe75ba7-79d4-45f6-8e31-c1b83d4476a9) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Site Linker UI Service); VendorId(ADSK); ServiceId(a177f6c8-d1f6-49e2-87bc-f70edbeac5a3) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Point Cloud Snapping Service); VendorId(ADSK); ServiceId(aaa05780-790c-43dc-bc41-1c2150227f45) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Duct fitting and accessory pressure drop UI service); VendorId(ADSK); ServiceId(52009bda-c817-4aef-aa31-36dc3742516e) } 
+' 0:< API_SUCCESS { Registered an external service: Name(Pipe fitting and accessory pressure drop UI service); VendorId(ADSK); ServiceId(1931b323-1d29-4083-b1ce-bfdcddd011af) } 
+' 0:< ::3:: Delta VM: Avail -35 -> 134212065 MB, Used +4 -> 209 MB, Peak +3 -> 209 MB; RAM: Avail -17 -> 19517 MB, Used +5 -> 346 MB, Peak +4 -> 346 MB 
+' 0:< GUI Resource Usage GDI: Avail 9858, Used 142, User: Used 163 
+' 0:< Failed to load add-in manifest file: Empty addin file! 
+' 0:< Failed to load add-in manifest file: Empty addin file! 
+' 0:< ::3:: Delta VM: Avail 134212065 MB, Used +0 -> 210 MB, Peak +1 -> 211 MB; RAM: Avail -11 -> 19507 MB, Used +2 -> 348 MB, Peak +5 -> 352 MB 
+' 0:< GUI Resource Usage GDI: Avail 9858, Used 142, User: Used 163 
+' 0:< TaskDialog "The publisher of this add-in could not be verified. What do you want to do?"
+'Id : TaskDialog_Security_Unsigned_File_Loading
+'Custom Buttons:
+'1001 : Always Load
+'1002 : Load Once
+'1003 : Do Not Load
+'DefaultButton : 1003 
+' 0:< ::3:: Delta VM: Avail -166 -> 134211899 MB, Used +44 -> 255 MB, Peak +43 -> 255 MB; RAM: Avail -178 -> 19329 MB, Used +61 -> 410 MB, Peak +58 -> 410 MB 
+' 0:< GUI Resource Usage GDI: Avail 9831, Used 169, User: Used 170 
+' 0:< To make IFC server work. 
+' 0:< ::3:: Delta VM: Avail -213 -> 134211687 MB, Used +53 -> 308 MB, Peak +54 -> 309 MB; RAM: Avail -130 -> 19199 MB, Used +77 -> 488 MB, Peak +78 -> 488 MB 
+' 0:< GUI Resource Usage GDI: Avail 9830, Used 170, User: Used 170 
+' 0:< API_SUCCESS { Registered an external server: Name(Autodesk Drive Internal); VendorId(ADSK); ServerId(baddc547-d952-4d29-ae01-16e71e75aa63); ServiceId(b3892e5f-9161-4bbc-958a-c8ef75e94e96) } 
+ 'E 16-May-2022 18:19:36.928;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: baddc547-d952-4d29-ae01-16e71e75aa63 Rvt.Attr.ExternalService: b3892e5f-9161-4bbc-958a-c8ef75e94e96 
+' 0:< API_SUCCESS { Starting External DB Application: ConnectedDesktopDB, Class: ConnectedDesktopDB.ServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit 2020\AddIns\ConnectedDesktop\ConnectedDesktopDB.dll } 
+' 0:< Third Party Updater 'CoordinationModelDB: CoordinationModelDBUpdater' registered for all documents. 
+' 0:< ::4:: Delta VM: Avail 134211687 MB, Used 308 MB; RAM: Avail -12 -> 19188 MB, Used +2 -> 491 MB, Peak +3 -> 491 MB 
+' 0:< GUI Resource Usage GDI: Avail 9830, Used 170, User: Used 170 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application CoordinationModelDB (c9463641-1c02-431c-9502-4ad0c91de1ce). } 
+' 0:< API_SUCCESS { Registering DocumentCreated event by application CoordinationModelDB (c9463641-1c02-431c-9502-4ad0c91de1ce). } 
+' 0:< API_SUCCESS { Registering DocumentChanged event by application CoordinationModelDB (c9463641-1c02-431c-9502-4ad0c91de1ce). } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application CoordinationModelDB (c9463641-1c02-431c-9502-4ad0c91de1ce). } 
+' 0:< API_SUCCESS { Starting External DB Application: CoordinationModelDB, Class: Autodesk.CoordinationModelDB.CoordinationModelDBApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit 2020\AddIns\CoordinationModel\CoordinationModelDB.dll } 
+' 0:< ::4:: Delta VM: Avail -30 -> 134211657 MB, Used +9 -> 318 MB, Peak +9 -> 319 MB; RAM: Avail -14 -> 19174 MB, Used +11 -> 502 MB, Peak +11 -> 503 MB 
+' 0:< GUI Resource Usage GDI: Avail 9830, Used 170, User: Used 170 
+' 0:< API_SUCCESS { Registered an external server: Name(Revit Default DB Server); VendorId(ADSK); ServerId(bd4f0f53-394a-4468-b37e-1e7949013382); ServiceId(b3892e5f-9161-4bbc-958a-c8ef75e94e96) } 
+ 'E 16-May-2022 18:19:37.171;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: bd4f0f53-394a-4468-b37e-1e7949013382 Rvt.Attr.ExternalService: b3892e5f-9161-4bbc-958a-c8ef75e94e96 
+' 0:< API_SUCCESS { Starting External DB Application: KeynoteDBServer, Class: KeynoteDBServer.ServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit 2020\AddIns\Keynote\KeynoteDBServer.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(Plumbing Fixture Flow); VendorId(ADSK); ServerId(56121d7d-e1d7-42a3-bed8-f4d1d32058c8); ServiceId(bf0da776-5307-4747-8285-f358e92a90d0) } 
+ 'E 16-May-2022 18:19:37.190;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 56121d7d-e1d7-42a3-bed8-f4d1d32058c8 Rvt.Attr.ExternalService: bf0da776-5307-4747-8285-f358e92a90d0 
+' 0:< API_SUCCESS { Registered an external server: Name(Altshul-Tsal Equation); VendorId(ADSK); ServerId(042a10e0-8d24-46a4-9596-d192b3125d0c); ServiceId(8c707bd6-ecd6-4150-a0df-bd6c85dd9bb0) } 
+ 'E 16-May-2022 18:19:37.197;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 042a10e0-8d24-46a4-9596-d192b3125d0c Rvt.Attr.ExternalService: 8c707bd6-ecd6-4150-a0df-bd6c85dd9bb0 
+' 0:< API_SUCCESS { Registered an external server: Name(Haaland Equation); VendorId(USERADDIN); ServerId(2e9a77c0-62a0-4693-9442-33312be60ad7); ServiceId(8c707bd6-ecd6-4150-a0df-bd6c85dd9bb0) } 
+ 'E 16-May-2022 18:19:37.197;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 2e9a77c0-62a0-4693-9442-33312be60ad7 Rvt.Attr.ExternalService: 8c707bd6-ecd6-4150-a0df-bd6c85dd9bb0 
+' 0:< API_SUCCESS { Registered an external server: Name(Haaland Equation); VendorId(USERADDIN); ServerId(58ea1b7c-2fca-453f-9ab9-7a3b9927ecc1); ServiceId(62d13e0c-9fe1-4d8e-a0c7-1f93d24cf3f3) } 
+ 'E 16-May-2022 18:19:37.205;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 58ea1b7c-2fca-453f-9ab9-7a3b9927ecc1 Rvt.Attr.ExternalService: 62d13e0c-9fe1-4d8e-a0c7-1f93d24cf3f3 
+' 0:< API_SUCCESS { Registered an external server: Name(Colebrook Equation); VendorId(USERADDIN); ServerId(e395a0ec-48a4-4255-b957-afbb3d73cb67); ServiceId(8c707bd6-ecd6-4150-a0df-bd6c85dd9bb0) } 
+ 'E 16-May-2022 18:19:37.205;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: e395a0ec-48a4-4255-b957-afbb3d73cb67 Rvt.Attr.ExternalService: 8c707bd6-ecd6-4150-a0df-bd6c85dd9bb0 
+' 0:< API_SUCCESS { Registered an external server: Name(Colebrook Equation); VendorId(USERADDIN); ServerId(0875f550-6141-4e34-a6b7-547cf9cfda01); ServiceId(62d13e0c-9fe1-4d8e-a0c7-1f93d24cf3f3) } 
+ 'E 16-May-2022 18:19:37.205;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 0875f550-6141-4e34-a6b7-547cf9cfda01 Rvt.Attr.ExternalService: 62d13e0c-9fe1-4d8e-a0c7-1f93d24cf3f3 
+' 0:< API_SUCCESS { Starting External DB Application: StraightSegmentCalculationServersApp, Class: StraightSegmentCalculationServers.ServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\StraightSegmentCalculationServers.dll } 
+' 0:< ::11:: Delta VM: Avail -1 -> 134211656 MB, Used 318 MB; RAM: Avail +10 -> 19185 MB, Used +0 -> 503 MB 
+' 0:< GUI Resource Usage GDI: Avail 9830, Used 170, User: Used 170 
+' 0:< API_SUCCESS { Registered an external server: Name(Not Defined); VendorId(ADSK); ServerId(76eff5da-2e71-45f7-b940-cc5716328ba0); ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540) } 
+ 'E 16-May-2022 18:19:37.219;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 76eff5da-2e71-45f7-b940-cc5716328ba0 Rvt.Attr.ExternalService: 785d0bd7-3088-489a-af7a-593fc32e2540 
+' 0:< API_SUCCESS { Registered an external server: Name(Coefficient from ASHRAE Table); VendorId(ADSK); ServerId(8baf7d75-8b9b-46d0-b8ce-3ad1c19e6b19); ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540) } 
+ 'E 16-May-2022 18:19:37.219;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 8baf7d75-8b9b-46d0-b8ce-3ad1c19e6b19 Rvt.Attr.ExternalService: 785d0bd7-3088-489a-af7a-593fc32e2540 
+' 0:< API_SUCCESS { Registered an external server: Name(Specific Coefficient); VendorId(ADSK); ServerId(5a598293-1504-46cc-a9c0-de55c82848b9); ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540) } 
+ 'E 16-May-2022 18:19:37.220;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 5a598293-1504-46cc-a9c0-de55c82848b9 Rvt.Attr.ExternalService: 785d0bd7-3088-489a-af7a-593fc32e2540 
+' 0:< API_SUCCESS { Registered an external server: Name(Specific Loss); VendorId(ADSK); ServerId(46245996-eebb-4536-ac17-9c1cd917d8cf); ServiceId(785d0bd7-3088-489a-af7a-593fc32e2540) } 
+ 'E 16-May-2022 18:19:37.220;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 46245996-eebb-4536-ac17-9c1cd917d8cf Rvt.Attr.ExternalService: 785d0bd7-3088-489a-af7a-593fc32e2540 
+' 0:< API_SUCCESS { Registered an external server: Name(Not Defined); VendorId(ADSK); ServerId(61e7b8e1-16d1-4fe4-82f0-327af736323f); ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780) } 
+ 'E 16-May-2022 18:19:37.228;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 61e7b8e1-16d1-4fe4-82f0-327af736323f Rvt.Attr.ExternalService: b8656566-e4ef-4e6a-bedb-9ecc6b5a2780 
+' 0:< API_SUCCESS { Registered an external server: Name(K Coefficient from Table); VendorId(ADSK); ServerId(51dd5e98-a9dd-464b-b286-4a37953610bf); ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780) } 
+ 'E 16-May-2022 18:19:37.229;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 51dd5e98-a9dd-464b-b286-4a37953610bf Rvt.Attr.ExternalService: b8656566-e4ef-4e6a-bedb-9ecc6b5a2780 
+' 0:< API_SUCCESS { Registered an external server: Name(Specific Coefficient); VendorId(ADSK); ServerId(32d58662-b467-4f7b-b728-f6ad7b7ba5e3); ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780) } 
+ 'E 16-May-2022 18:19:37.229;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 32d58662-b467-4f7b-b728-f6ad7b7ba5e3 Rvt.Attr.ExternalService: b8656566-e4ef-4e6a-bedb-9ecc6b5a2780 
+' 0:< API_SUCCESS { Registered an external server: Name(Specific Loss); VendorId(ADSK); ServerId(16f4f7be-0ac0-461d-a9a4-1d3511cd280e); ServiceId(b8656566-e4ef-4e6a-bedb-9ecc6b5a2780) } 
+ 'E 16-May-2022 18:19:37.230;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 16f4f7be-0ac0-461d-a9a4-1d3511cd280e Rvt.Attr.ExternalService: b8656566-e4ef-4e6a-bedb-9ecc6b5a2780 
+' 0:< API_SUCCESS { Starting External DB Application: FittingAndAccessoryCalculationServers, Class: FittingAndAccessoryCalculationServers.ServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\FittingAndAccessoryCalculationServers.dll } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application RouteAnalysisDB (40e082fd-2661-4bbb-83f0-e960745a72a2). } 
+' 0:< API_SUCCESS { Registering DocumentChanged event by application RouteAnalysisDB (40e082fd-2661-4bbb-83f0-e960745a72a2). } 
+' 0:< API_SUCCESS { Registered an external server: Name(Simulex (tm) Calculation); VendorId(ADSK); ServerId(3ac50ffe-852f-4a77-941f-851ddfbcbd57); ServiceId(ee502325-58ce-4d6e-9a2c-643608b1fbd9) } 
+ 'E 16-May-2022 18:19:37.261;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 3ac50ffe-852f-4a77-941f-851ddfbcbd57 Rvt.Attr.ExternalService: ee502325-58ce-4d6e-9a2c-643608b1fbd9 
+' 0:< API_SUCCESS { Starting External DB Application: RouteAnalysisDB, Class: RouteAnalysisDB.RouteAnalysisDBApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit 2020\AddIns\RouteAnalysis\RouteAnalysisDB.dll } 
+' 0:< ::20:: Delta VM: Avail -63 -> 134211594 MB, Used +17 -> 336 MB, Peak +17 -> 337 MB; RAM: Avail -10 -> 19175 MB, Used +18 -> 522 MB, Peak +19 -> 523 MB 
+' 0:< GUI Resource Usage GDI: Avail 9830, Used 170, User: Used 170 
+' 0:< API_SUCCESS { Registering DocumentCreating event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentCreated event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentOpening event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentSaving event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentSavingAs event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentChanged event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentClosed event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering LinkedResourceOpened event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering LinkedResourceOpening event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizingWithCentral event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizedWithCentral event by application Revit DWG extension Plug-in 2018 (9f2e732a-289e-4185-b701-15d33c31653f). } 
+' 0:< Third Party Updater 'Revit DWG extension Plug-in 2018: Steel Fabrication Updater' registered for all documents. 
+' 0:< API_SUCCESS { Starting External DB Application: Revit DWG extension Plug-in 2018, Class: RvtDwgAddon.Main, Vendor : Autodesk(www.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit 2020\AddIns\SteelConnections\RvtDwgAddon.dll } 
+' 0:< API_SUCCESS { Registering ApplicationInitialized event by application Site Linker Utility Application (01673995-d4d5-4c62-a184-98e970ef7805). } 
+' 0:< Third Party Updater 'Site Linker Utility Application: Show Invalid Surfaces' registered for all documents. 
+' 0:< API_SUCCESS { Starting External DB Application: Site Linker Utility Application, Class: SiteLinker.SiteServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit 2020\AddIns\SiteLinker\SiteLinker.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(CloudExternalServer); VendorId(ADSK); ServerId(31ebe9da-aa3f-430d-a83f-fed6f1089070); ServiceId(279080e0-8c45-44eb-9027-d4eb37ece90d) } 
+ 'E 16-May-2022 18:19:37.518;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 31ebe9da-aa3f-430d-a83f-fed6f1089070 Rvt.Attr.ExternalService: 279080e0-8c45-44eb-9027-d4eb37ece90d 
+'C 16-May-2022 18:19:37.677;   0:< Journal Logger Registered with Application Services, from within CollaborateDB Addon 
+' 0:< API_SUCCESS { Registering DocumentOpening event by application CollaborateDB (bb3086be-63bb-44bd-99eb-d584c013cf2f). } 
+' 0:< API_SUCCESS { Registering DocumentSavedAs event by application CollaborateDB (bb3086be-63bb-44bd-99eb-d584c013cf2f). } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application CollaborateDB (bb3086be-63bb-44bd-99eb-d584c013cf2f). } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application CollaborateDB (bb3086be-63bb-44bd-99eb-d584c013cf2f). } 
+' 0:< API_SUCCESS { Registering GetHubsRequested event by application CollaborateDB (bb3086be-63bb-44bd-99eb-d584c013cf2f). } 
+' 0:< API_SUCCESS { Registering GetProjectsRequested event by application CollaborateDB (bb3086be-63bb-44bd-99eb-d584c013cf2f). } 
+' 0:< API_SUCCESS { Registering GetFolderContentsRequested event by application CollaborateDB (bb3086be-63bb-44bd-99eb-d584c013cf2f). } 
+' 0:< API_SUCCESS { Starting External DB Application: CollaborateDB, Class: Autodesk.Revit.UI.Collaborate.CollaborateDBApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Cloud Models for Revit 2020\CollaborateDB.dll } 
+' 0:< API_SUCCESS { Registering DocumentChanged event by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). } 
+' 0:< API_SUCCESS { Starting External DB Application: BIM_Leaders_Core, Class: BIM_Leaders.ExternalDBAppGroupRestore, Vendor : Pinchuk(42), Assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders.dll } 
+' 0:< AddInJournalClient is loading journal controls from path C:\Program Files\Autodesk\Revit 2020\AddInJrnCtls 
+' 0:< ::21:: Delta VM: Avail -13 -> 134211582 MB, Used +4 -> 341 MB, Peak +3 -> 341 MB; RAM: Avail -17 -> 19159 MB, Used +10 -> 532 MB, Peak +9 -> 532 MB 
+' 0:< GUI Resource Usage GDI: Avail 9830, Used 170, User: Used 172 
+' 0:< AddInJournalClient load journal control: FabricationPartBrowserListBox = C:\Program Files\Autodesk\Revit 2020\AddInJrnCtls\..\Addins\FabricationPartBrowser\FabricationPartBrowser.dll 
+' 0:< AddInJournalClient load journal control: ModelBrowserSaveAsCloudModelWindow = C:\Program Files\Autodesk\Revit 2020\AddInJrnCtls\..\Addins\ModelBrowser\ModelBrowser.dll 
+' 0:< ::21:: Delta VM: Avail -24 -> 134211558 MB, Used +7 -> 348 MB, Peak +8 -> 349 MB; RAM: Avail -6 -> 19154 MB, Used +11 -> 543 MB, Peak +12 -> 544 MB 
+' 0:< GUI Resource Usage GDI: Avail 9830, Used 170, User: Used 174 
+' 0:< API_SUCCESS { Registering ApplicationClosing event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_PHOTO_RENDER_IN_CLOUD' Executed implementation with implementation from application 'RaaS' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\RaaSForRevit\RaaSApplication.dll'. } 
+' 0:< API_SUCCESS { API registering command  Executed event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_PHOTO_RENDER_IN_CLOUD' CanExecute implementation with implementation from application 'RaaS' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\RaaSForRevit\RaaSApplication.dll'. } 
+' 0:< API_SUCCESS { API registering command  CanExecute event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_PHOTO_RENDER_GALLERY' Executed implementation with implementation from application 'RaaS' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\RaaSForRevit\RaaSApplication.dll'. } 
+' 0:< API_SUCCESS { API registering command  Executed event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_PHOTO_RENDER_GALLERY' CanExecute implementation with implementation from application 'RaaS' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\RaaSForRevit\RaaSApplication.dll'. } 
+' 0:< API_SUCCESS { API registering command  CanExecute event by application RaaS (d4f6554b-5d68-4a13-beec-4a0647c34408). } 
+' 0:< API_SUCCESS { Starting External Application: RaaS, Class: Autodesk.RaaS.RevitAddin.EApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: RaaSApplication.dll } 
+'H 16-May-2022 18:19:38.290;   0:< 
+Jrn.Directive "IdleTimeTaskSymbol"  _
+        , "0.ExternalEvent"
+' 0:< API_SUCCESS { Starting External Application: AutoLoad, Class: AutoLoader.AutoLoader, Vendor : ADSK(), Assembly: AutoLoader.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(AutodeskDriveUI); VendorId(ADSK); ServerId(314de911-0991-4787-a0fd-914be9138034); ServiceId(1fe75ba7-79d4-45f6-8e31-c1b83d4476a9) } 
+ 'E 16-May-2022 18:19:38.351;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 314de911-0991-4787-a0fd-914be9138034 Rvt.Attr.ExternalService: 1fe75ba7-79d4-45f6-8e31-c1b83d4476a9 
+' 0:< API_SUCCESS { Starting External Application: ConnectedDesktopUI, Class: ConnectedDesktopUI.ServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: ConnectedDesktopUI.dll } 
+' 0:< ::22:: Delta VM: Avail 134211558 MB, Used +0 -> 349 MB; RAM: Avail +36 -> 19190 MB, Used +1 -> 544 MB, Peak +0 -> 545 MB 
+' 0:< GUI Resource Usage GDI: Avail 9825, Used 175, User: Used 175 
+' 0:< API_SUCCESS { Starting External Application: Application ContentDelivery, Class: ContentDelivery.ContentDeliveryApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: ContentDelivery.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_COORDINATION_MODEL' Executed implementation with implementation from application 'CoordinationModelUI' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\CoordinationModel\CoordinationModelUI.dll'. } 
+' 0:< API_SUCCESS { API registering command Coordination Model Executed event by application CoordinationModelUI (9817e4a5-0333-4323-b69e-781db5f70005). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_COORDINATION_MODEL' CanExecute implementation with implementation from application 'CoordinationModelUI' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\CoordinationModel\CoordinationModelUI.dll'. } 
+' 0:< API_SUCCESS { API registering command Coordination Model CanExecute event by application CoordinationModelUI (9817e4a5-0333-4323-b69e-781db5f70005). } 
+' 0:< API_SUCCESS { Starting External Application: CoordinationModelUI, Class: Autodesk.CoordinationModelUI.CoordinationModelUIApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: CoordinationModelUI.dll } 
+' 0:< ::22:: Delta VM: Avail -1 -> 134211557 MB, Used +0 -> 350 MB, Peak +1 -> 350 MB; RAM: Avail -13 -> 19178 MB, Used +1 -> 546 MB, Peak +1 -> 546 MB 
+' 0:< GUI Resource Usage GDI: Avail 9825, Used 175, User: Used 175 
+'H 16-May-2022 18:19:38.527;   0:< 
+Jrn.Directive "IdleTimeTaskSymbol"  _
+        , "1.OnIdleTask"
+' 0:< API_SUCCESS { Registering Idling event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Registering ViewActivated event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Registering ViewActivating event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Registering DocumentClosed event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_VISUAL_PROGRAMMING_DYNAMO' CanExecute implementation with implementation from application 'Dynamo For Revit' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\DynamoForRevit\Revit/DynamoRevitVersionSelector.dll'. } 
+' 0:< API_SUCCESS { API registering command Launch Dynamo
+'Dynamo CanExecute event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { API registering command Launch Dynamo
+'Dynamo BeforeExecuted event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_VISUAL_PROGRAMMING_DYNAMO' Executed implementation with implementation from application 'Dynamo For Revit' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\DynamoForRevit\Revit/DynamoRevitVersionSelector.dll'. } 
+' 0:< API_SUCCESS { API registering command Launch Dynamo
+'Dynamo Executed event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< Third Party Updater 'Dynamo For Revit: Sun and Shadow Settings Updater' registered for all documents. 
+' 0:< API_SUCCESS { Registering DocumentChanged event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_PLAYLIST_DYNAMO' CanExecute implementation with implementation from application 'Dynamo For Revit' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\DynamoForRevit\Revit/DynamoRevitVersionSelector.dll'. } 
+' 0:< API_SUCCESS { API registering command Launch Dynamo Playlist CanExecute event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_PLAYLIST_DYNAMO' Executed implementation with implementation from application 'Dynamo For Revit' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\DynamoForRevit\Revit/DynamoRevitVersionSelector.dll'. } 
+' 0:< API_SUCCESS { API registering command Launch Dynamo Playlist Executed event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Registering ApplicationClosing event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Registering Idling event by application Dynamo For Revit (8d83c886-b739-4acd-a9db-1bc78f315b2b). } 
+' 0:< API_SUCCESS { Starting External Application: Dynamo For Revit, Class: Dynamo.Applications.VersionLoader, Vendor : ADSK(Dynamo), Assembly: Revit/DynamoRevitVersionSelector.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_CEA_OPTIMIZE' Executed implementation with implementation from application 'Energy Analysis' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\EnergyAnalysis\EnergyAnalysis.dll'. } 
+' 0:< API_SUCCESS { API registering command  Executed event by application Energy Analysis (f50a2212-f174-4890-84a9-064c3c835c4d). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_CEA_OPTIMIZE' CanExecute implementation with implementation from application 'Energy Analysis' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\EnergyAnalysis\EnergyAnalysis.dll'. } 
+' 0:< API_SUCCESS { API registering command  CanExecute event by application Energy Analysis (f50a2212-f174-4890-84a9-064c3c835c4d). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_RUN_SYSTEMS_ANALYSIS' Executed implementation with implementation from application 'Energy Analysis' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\EnergyAnalysis\EnergyAnalysis.dll'. } 
+' 0:< API_SUCCESS { API registering command Run systems analysis. Executed event by application Energy Analysis (f50a2212-f174-4890-84a9-064c3c835c4d). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_RUN_SYSTEMS_ANALYSIS' CanExecute implementation with implementation from application 'Energy Analysis' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\EnergyAnalysis\EnergyAnalysis.dll'. } 
+' 0:< API_SUCCESS { API registering command Run systems analysis. CanExecute event by application Energy Analysis (f50a2212-f174-4890-84a9-064c3c835c4d). } 
+' 0:< API_SUCCESS { Starting External Application: Energy Analysis, Class: EnergyAnalysis.Application, Vendor : ADSK(), Assembly: EnergyAnalysis.dll } 
+' 0:< API_SUCCESS { Registering ViewActivated event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Registering DocumentClosed event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Registering DocumentChanged event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Registering DockableFrameVisibilityChanged event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Registering Idling event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Registering FabricationPartBrowserChanged event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_FABRICATION_SETTINGS' CanExecute implementation with implementation from application 'FabPartBrowserApplication' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\FabricationPartBrowser\FabricationPartBrowser.dll'. } 
+' 0:< API_SUCCESS { API registering command Fabrication Settings CanExecute event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_FABRICATION_SETTINGS' Executed implementation with implementation from application 'FabPartBrowserApplication' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\FabricationPartBrowser\FabricationPartBrowser.dll'. } 
+' 0:< API_SUCCESS { API registering command Fabrication Settings Executed event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_FABRICATION_PART_SHOW_SERVICE_IN_PART_BROWSER' CanExecute implementation with implementation from application 'FabPartBrowserApplication' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\FabricationPartBrowser\FabricationPartBrowser.dll'. } 
+' 0:< API_SUCCESS { API registering command Show Service in Part Browser
+'Show Service in Part Browser
+'Show Service in Part Browser CanExecute event by application FabPartBrowserApplication (ee72acb7-2d70-484e-9cdf-0f7006b1183e). } 
+' 0:< API_SUCCESS { Starting External Application: FabPartBrowserApplication, Class: FabricationPartBrowser.FabPartBrowserApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: FabricationPartBrowser.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(Duct not defined pressure drop UI server); VendorId(ADSK); ServerId(607992d7-359d-4593-b497-8aa238e2c564); ServiceId(52009bda-c817-4aef-aa31-36dc3742516e) } 
+ 'E 16-May-2022 18:19:38.779;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 607992d7-359d-4593-b497-8aa238e2c564 Rvt.Attr.ExternalService: 52009bda-c817-4aef-aa31-36dc3742516e 
+' 0:< API_SUCCESS { Registered an external server: Name(Duct specific coefficient pressure drop UI server); VendorId(ADSK); ServerId(9641a039-441e-42e2-93a6-c0e2177cc23c); ServiceId(52009bda-c817-4aef-aa31-36dc3742516e) } 
+ 'E 16-May-2022 18:19:38.780;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 9641a039-441e-42e2-93a6-c0e2177cc23c Rvt.Attr.ExternalService: 52009bda-c817-4aef-aa31-36dc3742516e 
+' 0:< API_SUCCESS { Registered an external server: Name(Duct specific loss pressure drop UI server); VendorId(ADSK); ServerId(d3b5e81d-9b8c-40da-8efb-99dd37fda611); ServiceId(52009bda-c817-4aef-aa31-36dc3742516e) } 
+ 'E 16-May-2022 18:19:38.780;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: d3b5e81d-9b8c-40da-8efb-99dd37fda611 Rvt.Attr.ExternalService: 52009bda-c817-4aef-aa31-36dc3742516e 
+' 0:< API_SUCCESS { Registered an external server: Name(Duct coefficient from table pressure drop UI server); VendorId(ADSK); ServerId(25fa8de2-67c4-47d1-91f6-bd6f0803a5ed); ServiceId(52009bda-c817-4aef-aa31-36dc3742516e) } 
+ 'E 16-May-2022 18:19:38.781;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 25fa8de2-67c4-47d1-91f6-bd6f0803a5ed Rvt.Attr.ExternalService: 52009bda-c817-4aef-aa31-36dc3742516e 
+' 0:< API_SUCCESS { Registered an external server: Name(Pipe not defined pressure drop UI server); VendorId(ADSK); ServerId(62917391-e14d-4897-ad0c-05342d71e4f9); ServiceId(1931b323-1d29-4083-b1ce-bfdcddd011af) } 
+ 'E 16-May-2022 18:19:38.790;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 62917391-e14d-4897-ad0c-05342d71e4f9 Rvt.Attr.ExternalService: 1931b323-1d29-4083-b1ce-bfdcddd011af 
+' 0:< API_SUCCESS { Registered an external server: Name(Pipe specific coefficient pressure drop UI server); VendorId(ADSK); ServerId(247265b6-7b71-4147-97c6-cc52b39c12aa); ServiceId(1931b323-1d29-4083-b1ce-bfdcddd011af) } 
+ 'E 16-May-2022 18:19:38.791;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 247265b6-7b71-4147-97c6-cc52b39c12aa Rvt.Attr.ExternalService: 1931b323-1d29-4083-b1ce-bfdcddd011af 
+' 0:< API_SUCCESS { Registered an external server: Name(Pipe specific loss pressure drop UI server); VendorId(ADSK); ServerId(5978b92a-3f0b-4691-bbc8-caf2fae20a71); ServiceId(1931b323-1d29-4083-b1ce-bfdcddd011af) } 
+ 'E 16-May-2022 18:19:38.791;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 5978b92a-3f0b-4691-bbc8-caf2fae20a71 Rvt.Attr.ExternalService: 1931b323-1d29-4083-b1ce-bfdcddd011af 
+' 0:< API_SUCCESS { Registered an external server: Name(Pipe K coefficient from table pressure drop UI server); VendorId(ADSK); ServerId(cda19b6f-fbd5-4725-a0ce-f159bf5d02fe); ServiceId(1931b323-1d29-4083-b1ce-bfdcddd011af) } 
+ 'E 16-May-2022 18:19:38.792;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: cda19b6f-fbd5-4725-a0ce-f159bf5d02fe Rvt.Attr.ExternalService: 1931b323-1d29-4083-b1ce-bfdcddd011af 
+' 0:< API_SUCCESS { Starting External Application: FittingAndAccessoryCalculationUIServers, Class: FittingAndAccessoryCalculationUIServers.ServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: FittingAndAccessoryCalculationUIServers.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_EXPORT_IFC' Executed implementation with implementation from application 'IFC override' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\IFCExporterUI\IFCExportUI.dll'. } 
+' 0:< API_SUCCESS { API registering command Export to IAI IFC (Industry Foundation Classes) file format Executed event by application IFC override (e78da2e3-7e89-464c-97cd-2212c8be3fa8). } 
+' 0:< API_SUCCESS { Starting External Application: IFC override, Class: BIM.IFC.Export.UI.IFCCommandOverrideApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: IFCExportUI.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(Revit Default UI Server.); VendorId(ADSK); ServerId(3ffc688a-bb2e-4145-90ab-9443da02aef6); ServiceId(1fe75ba7-79d4-45f6-8e31-c1b83d4476a9) } 
+ 'E 16-May-2022 18:19:38.881;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 3ffc688a-bb2e-4145-90ab-9443da02aef6 Rvt.Attr.ExternalService: 1fe75ba7-79d4-45f6-8e31-c1b83d4476a9 
+' 0:< API_SUCCESS { Starting External Application: KeynoteUIServer, Class: KeynoteUIServer.ServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: KeynoteUIServer.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(Internal Forces Server); VendorId(ADSK); ServerId(a97444aa-af8d-4a1e-af1f-fa7b77b368ee); ServiceId(a97444aa-af8d-4a1e-af1f-fa7b77b368ee) } 
+ 'E 16-May-2022 18:19:38.935;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: a97444aa-af8d-4a1e-af1f-fa7b77b368ee Rvt.Attr.ExternalService: a97444aa-af8d-4a1e-af1f-fa7b77b368ee 
+' 0:< API_SUCCESS { Starting External Application: Member Forces, Class: MemberForcesUI.ServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: MemberForces.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(EntitlementExternalServer); VendorId(ADSK); ServerId(c7cdeb6d-93b8-42b0-9fbd-b5f2baf15bb1); ServiceId(9111ab07-9bd9-4b68-a01f-c0a0dcae1564) } 
+ 'E 16-May-2022 18:19:38.982;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: c7cdeb6d-93b8-42b0-9fbd-b5f2baf15bb1 Rvt.Attr.ExternalService: 9111ab07-9bd9-4b68-a01f-c0a0dcae1564 
+' 0:< API_SUCCESS { Registering DocumentOpening event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Registering LinkedResourceOpening event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Registering LinkedResourceOpened event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Registering WorksharedOperationProgressChanged event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Registering ApplicationInitialized event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_REVIT_FILE_SAVE_AS_CLOUD_MODEL' Executed implementation with implementation from application 'Application ModelBrowser' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\ModelBrowser\ModelBrowser.dll'. } 
+' 0:< API_SUCCESS { API registering command  Executed event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_REVIT_FILE_SAVE_AS_CLOUD_MODEL' CanExecute implementation with implementation from application 'Application ModelBrowser' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\ModelBrowser\ModelBrowser.dll'. } 
+' 0:< API_SUCCESS { API registering command  CanExecute event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Registering DocumentSaved event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Registering DocumentSavedAs event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizedWithCentral event by application Application ModelBrowser (2b185467-5243-4cea-9148-aab8e5523c2a). } 
+' 0:< API_SUCCESS { Starting External Application: Application ModelBrowser, Class: ModelBrowser.ModelBrowserApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: ModelBrowser.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_NUMBERING_REINF_PARTITIONS' Executed implementation with implementation from application 'Object Numbering' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\ObjectNumbering\ObjectNumberingUI.dll'. } 
+' 0:< API_SUCCESS { API registering command  Executed event by application Object Numbering (32b5860a-aec9-4df7-96b0-07168b27446e). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_NUMBERING_REINF_PARTITIONS' CanExecute implementation with implementation from application 'Object Numbering' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\ObjectNumbering\ObjectNumberingUI.dll'. } 
+' 0:< API_SUCCESS { API registering command  CanExecute event by application Object Numbering (32b5860a-aec9-4df7-96b0-07168b27446e). } 
+' 0:< API_SUCCESS { Starting External Application: Object Numbering, Class: BIM.Numbering.UI.NumberingUIApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: ObjectNumberingUI.dll } 
+' 0:< API_SUCCESS { Registering ViewActivated event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering DocumentChanged event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering DocumentClosed event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering DocumentCreated event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering FamilyLoadingIntoDocument event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering FamilyLoadedIntoDocument event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering ApplicationClosing event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering TransferringProjectStandards event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering TransferredProjectStandards event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering Idling event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizingWithCentral event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizedWithCentral event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< Third Party Updater 'P&ID Modeler: RevitModelingHost.PipePropertyUpdater' registered for all documents. 
+' 0:< Third Party Updater 'P&ID Modeler: RevitModelingHost.AccessoryAndEquipmentPropertyUpdater' registered for all documents. 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_PNID_MODELER' CanExecute implementation with implementation from application 'P&ID Modeler' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\PnIDModeler\RevitModelingHost.dll'. } 
+' 0:< API_SUCCESS { API registering command P&ID Modeler CanExecute event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_PNID_MODELER' Executed implementation with implementation from application 'P&ID Modeler' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\PnIDModeler\RevitModelingHost.dll'. } 
+' 0:< API_SUCCESS { API registering command P&ID Modeler Executed event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_PNID_SETTINGS' CanExecute implementation with implementation from application 'P&ID Modeler' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\PnIDModeler\RevitModelingHost.dll'. } 
+' 0:< API_SUCCESS { API registering command P&ID Settings CanExecute event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_PNID_SETTINGS' Executed implementation with implementation from application 'P&ID Modeler' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\PnIDModeler\RevitModelingHost.dll'. } 
+' 0:< API_SUCCESS { API registering command P&ID Settings Executed event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Registering ApplicationInitialized event by application P&ID Modeler (502fe383-2648-4e98-adf8-5e604719dc34). } 
+' 0:< API_SUCCESS { Starting External Application: P&ID Modeler, Class: RevitModelingHost.RevitPnIDIteropRibbonPanel, Vendor : ADSK(Autodesk, Inc, www.autodesk.com), Assembly: RevitModelingHost.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(PointCloudSnappingServer); VendorId(ADSK); ServerId(85f4b666-8811-4e3d-9ed4-3d2ae4cd2e4c); ServiceId(aaa05780-790c-43dc-bc41-1c2150227f45) } 
+ 'E 16-May-2022 18:19:39.211;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 85f4b666-8811-4e3d-9ed4-3d2ae4cd2e4c Rvt.Attr.ExternalService: aaa05780-790c-43dc-bc41-1c2150227f45 
+' 0:< Third Party Updater 'PointCloudSnappingServer: Snapping Pipe Updater' registered for all documents. 
+' 0:< API_SUCCESS { Starting External Application: PointCloudSnappingServer, Class: PointCloudSnappingServer.Application, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: PointCloudSnappingServer.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_DUCT_PRESSURE_LOSS_REPORT' CanExecute implementation with implementation from application 'PressureLossReport' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\PressureLossReport.dll'. } 
+' 0:< API_SUCCESS { API registering command Duct Pressure Loss Report CanExecute event by application PressureLossReport (b00d3753-d3bc-4255-9c97-e389de87a5d6). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_DUCT_PRESSURE_LOSS_REPORT' Executed implementation with implementation from application 'PressureLossReport' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\PressureLossReport.dll'. } 
+' 0:< API_SUCCESS { API registering command Duct Pressure Loss Report Executed event by application PressureLossReport (b00d3753-d3bc-4255-9c97-e389de87a5d6). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_PIPE_PRESSURE_LOSS_REPORT' CanExecute implementation with implementation from application 'PressureLossReport' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\PressureLossReport.dll'. } 
+' 0:< API_SUCCESS { API registering command Pipe Pressure Loss Report CanExecute event by application PressureLossReport (b00d3753-d3bc-4255-9c97-e389de87a5d6). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_PIPE_PRESSURE_LOSS_REPORT' Executed implementation with implementation from application 'PressureLossReport' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\PressureLossReport.dll'. } 
+' 0:< API_SUCCESS { API registering command Pipe Pressure Loss Report Executed event by application PressureLossReport (b00d3753-d3bc-4255-9c97-e389de87a5d6). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_SELECT_DUCT_PRESSURE_LOSS_REPORT' CanExecute implementation with implementation from application 'PressureLossReport' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\PressureLossReport.dll'. } 
+' 0:< API_SUCCESS { API registering command Duct Pressure Loss Report CanExecute event by application PressureLossReport (b00d3753-d3bc-4255-9c97-e389de87a5d6). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_SELECT_DUCT_PRESSURE_LOSS_REPORT' Executed implementation with implementation from application 'PressureLossReport' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\PressureLossReport.dll'. } 
+' 0:< API_SUCCESS { API registering command Duct Pressure Loss Report Executed event by application PressureLossReport (b00d3753-d3bc-4255-9c97-e389de87a5d6). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_SELECT_PIPE_PRESSURE_LOSS_REPORT' CanExecute implementation with implementation from application 'PressureLossReport' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\PressureLossReport.dll'. } 
+' 0:< API_SUCCESS { API registering command Pipe Pressure Loss Report CanExecute event by application PressureLossReport (b00d3753-d3bc-4255-9c97-e389de87a5d6). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_SELECT_PIPE_PRESSURE_LOSS_REPORT' Executed implementation with implementation from application 'PressureLossReport' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\MEPCalculation\PressureLossReport.dll'. } 
+' 0:< API_SUCCESS { API registering command Pipe Pressure Loss Report Executed event by application PressureLossReport (b00d3753-d3bc-4255-9c97-e389de87a5d6). } 
+' 0:< API_SUCCESS { Starting External Application: PressureLossReport, Class: PressureLossReport.PressureLossReportApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: PressureLossReport.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(Surface Distribution Server); VendorId(ADSK); ServerId(88e37c6b-3ad6-4de3-a610-fcadcbb3021c); ServiceId(a2c22b44-c231-4d3f-b653-b81b6f8be150) } 
+ 'E 16-May-2022 18:19:39.320;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 88e37c6b-3ad6-4de3-a610-fcadcbb3021c Rvt.Attr.ExternalService: a2c22b44-c231-4d3f-b653-b81b6f8be150 
+' 0:< API_SUCCESS { Registered an external server: Name(Transversal Reinforcement Server ); VendorId(ADSK); ServerId(78ce2a95-71e7-4fe2-96ee-a38554320ea6); ServiceId(a2c22b44-c231-4d3f-b653-b81b6f8be150) } 
+ 'E 16-May-2022 18:19:39.321;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 78ce2a95-71e7-4fe2-96ee-a38554320ea6 Rvt.Attr.ExternalService: a2c22b44-c231-4d3f-b653-b81b6f8be150 
+' 0:< ::36:: Delta VM: Avail -9 -> 134211549 MB, Used +4 -> 354 MB, Peak +3 -> 354 MB; RAM: Avail -14 -> 19164 MB, Used +6 -> 552 MB, Peak +6 -> 553 MB 
+' 0:< GUI Resource Usage GDI: Avail 9825, Used 175, User: Used 175 
+' 0:< API_SUCCESS { Starting External Application: RebarUpdateApp, Class: RebarMorphedServer.RebarUpdateApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: RebarMorphedServer.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_ROUTE_ANALYSIS_SETTINGS' CanExecute implementation with implementation from application 'RouteAnalysisUI' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\RouteAnalysis\RouteAnalysisUI.dll'. } 
+' 0:< API_SUCCESS { API registering command Route Analysis Settings CanExecute event by application RouteAnalysisUI (13641868-6e6e-4610-9258-061b3b6f0421). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_ROUTE_ANALYSIS_SETTINGS' Executed implementation with implementation from application 'RouteAnalysisUI' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\RouteAnalysis\RouteAnalysisUI.dll'. } 
+' 0:< API_SUCCESS { API registering command Route Analysis Settings Executed event by application RouteAnalysisUI (13641868-6e6e-4610-9258-061b3b6f0421). } 
+' 0:< ::36:: Delta VM: Avail 134211549 MB, Used 354 MB; RAM: Avail -17 -> 19147 MB, Used +0 -> 553 MB 
+' 0:< GUI Resource Usage GDI: Avail 9825, Used 175, User: Used 175 
+' 0:< API_SUCCESS { Starting External Application: RouteAnalysisUI, Class: RouteAnalysisUI.RouteAnalysisUIApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: RouteAnalysisUI.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_EXT_ENTITY_RB_SAVE_AS' Executed implementation with implementation from application 'External Tool' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\SteelConnections\RvtSteelConnectionsUI.dll'. } 
+' 0:< API_SUCCESS { API registering command Save
+'Advance Steel Executed event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_EXT_ENTITY_RB_SAVE_AS' CanExecute implementation with implementation from application 'External Tool' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\SteelConnections\RvtSteelConnectionsUI.dll'. } 
+' 0:< API_SUCCESS { API registering command Save
+'Advance Steel CanExecute event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Copy the selection and put it on the Clipboard
+'Copy to Clipboard (Ctrl+C) BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Cut the selection and put it on the Clipboard
+'Cut (Ctrl+X) BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Save selection to a new file.
+'Save Selection to File BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Move copies of selected objects
+'Copy BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Rotate selected object(s)
+'Rotate BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Define a new center of rotation. BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Mirror selected object(s)
+'Mirror BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Offset walls and lines.
+'Offset BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Create a line
+'Mirror BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Insert Clipboard contents
+'Paste from Clipboard (Ctrl+V) BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command  BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Insert Clipboard contents in the active view in the same position as the original objects
+'Paste Aligned BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Click on level you want to paste to
+'Pick Level BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Select levels you want to paste to by name
+'Select Levels by Name BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { API registering command Insert Clipboard contents in the same place as the original objects
+'Same Place BeforeExecuted event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { Registering ViewActivated event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { Registering Idling event by application External Tool (e0a2d7a5-030b-4d4e-8689-8406903ea241). } 
+' 0:< API_SUCCESS { Registered an external server: Name(ModifyConnectionParametersServer); VendorId(ADSK); ServerId(d81402f0-e558-4434-89a8-30ec1f52a4d0); ServiceId(e9c0f948-320e-4e7f-a573-10755555305d) } 
+ 'E 16-May-2022 18:19:39.454;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: d81402f0-e558-4434-89a8-30ec1f52a4d0 Rvt.Attr.ExternalService: e9c0f948-320e-4e7f-a573-10755555305d 
+' 0:< API_SUCCESS { Registered an external server: Name(HoleDefinitionServer); VendorId(ADSK); ServerId(9d39d4fe-6e5f-4088-8655-b349d00e864a); ServiceId(9d39d4fe-6e5f-4088-8655-b349d00e864a) } 
+ 'E 16-May-2022 18:19:39.462;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 9d39d4fe-6e5f-4088-8655-b349d00e864a Rvt.Attr.ExternalService: 9d39d4fe-6e5f-4088-8655-b349d00e864a 
+' 0:< API_SUCCESS { Starting External Application: External Tool, Class: RvtSteelConnectionsUI.SteelConnection, Vendor : Autodesk(Autodesk, www.autodesk.com), Assembly: RvtSteelConnectionsUI.dll } 
+' 0:< API_SUCCESS { Registered an external server: Name(SectionTypeParameterServer); VendorId(ADSK); ServerId(1b91ce46-ddb4-44ec-a942-d45efadde353); ServiceId(c42c9b55-c491-4611-97e9-9e617958e13e) } 
+ 'E 16-May-2022 18:19:39.513;   0:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 1b91ce46-ddb4-44ec-a942-d45efadde353 Rvt.Attr.ExternalService: c42c9b55-c491-4611-97e9-9e617958e13e 
+' 0:< API_SUCCESS { Starting External Application: Structural Section Properties, Class: SectionProperties.ServerApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: SectionProperties.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_FILE_TOPOSURFACE_CONVERT_TO_LINK' Executed implementation with implementation from application 'Site Linker Application' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\SiteLinker\SiteLinker.dll'. } 
+' 0:< API_SUCCESS { API registering command  Executed event by application Site Linker Application (26af0fb8-0ceb-46dc-a0b1-79e0208edcdc). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_FILE_TOPOSURFACE_CONVERT_TO_LINK' CanExecute implementation with implementation from application 'Site Linker Application' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\SiteLinker\SiteLinker.dll'. } 
+' 0:< API_SUCCESS { API registering command  CanExecute event by application Site Linker Application (26af0fb8-0ceb-46dc-a0b1-79e0208edcdc). } 
+' 0:< API_SUCCESS { Starting External Application: Site Linker Application, Class: SiteLinker.SiteExportApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: SiteLinker.dll } 
+' 0:< API_SUCCESS { Registering ApplicationInitialized event by application Site Linker UI Application (d02ca96c-dd06-4192-9871-49f0fe3cb1b4). } 
+' 0:< API_SUCCESS { Starting External Application: Site Linker UI Application, Class: SiteLinkerUI.SiteLinkerUIApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: SiteLinkerUI.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_SPACE_NAMING_UTILITY' CanExecute implementation with implementation from application 'Space Naming Utility Application' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\SpaceNaming\SpaceNaming.dll'. } 
+' 0:< API_SUCCESS { API registering command Space Naming Utility CanExecute event by application Space Naming Utility Application (02663093-563b-4e2f-b5be-5b75beb2e313). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_MEP_SPACE_NAMING_UTILITY' Executed implementation with implementation from application 'Space Naming Utility Application' dll 'C:\Program Files\Autodesk\Revit 2020\AddIns\SpaceNaming\SpaceNaming.dll'. } 
+' 0:< API_SUCCESS { API registering command Space Naming Utility Executed event by application Space Naming Utility Application (02663093-563b-4e2f-b5be-5b75beb2e313). } 
+' 0:< API_SUCCESS { Starting External Application: Space Naming Utility Application, Class: SpaceNaming.Command, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: SpaceNaming.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6400, name: , text: Batch Print, class: Revit.PrintHarness.PrintHarnessAPI, assembly: C:\Program Files\Autodesk\Batch Print for Revit 2020\BatchPrint.dll } 
+' 0:< API_SUCCESS { Starting External Application: Batch Print Application, Class: Revit.PrintHarness.PrintHarnessApplication, Vendor : ADSK(Autodesk, subscription.autodesk.com), Assembly: C:\Program Files\Autodesk\Batch Print for Revit 2020\BatchPrint.dll } 
+' 0:< API_SUCCESS { Registering ViewActivated event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering Idling event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_COLLABORATE' Executed implementation with implementation from application 'Collaborate' dll 'C:\Program Files\Autodesk\Cloud Models for Revit 2020\Collaborate.dll'. } 
+' 0:< API_SUCCESS { API registering command Collaborate Executed event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_COLLABORATE' CanExecute implementation with implementation from application 'Collaborate' dll 'C:\Program Files\Autodesk\Cloud Models for Revit 2020\Collaborate.dll'. } 
+' 0:< API_SUCCESS { API registering command Collaborate CanExecute event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_COLLABORATE_360' Executed implementation with implementation from application 'Collaborate' dll 'C:\Program Files\Autodesk\Cloud Models for Revit 2020\Collaborate.dll'. } 
+' 0:< API_SUCCESS { API registering command  Executed event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_COLLABORATE_360' CanExecute implementation with implementation from application 'Collaborate' dll 'C:\Program Files\Autodesk\Cloud Models for Revit 2020\Collaborate.dll'. } 
+' 0:< API_SUCCESS { API registering command  CanExecute event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizingWithCentral event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering WorksharedOperationProgressChanged event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizedWithCentral event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizingWithCentral event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizedWithCentral event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering GetHubsRequested event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering GetProjectsRequested event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Registering GetFolderContentsRequested event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 0:< API_SUCCESS { Starting External Application: Collaborate, Class: Autodesk.Revit.UI.Collaborate.CollaborateApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Cloud Models for Revit 2020\Collaborate.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_COLLABORATE_BROWSER' Executed implementation with implementation from application 'CollaborateBrowser' dll 'C:\Program Files\Autodesk\Cloud Models for Revit 2020\CollaborateBrowser.dll'. } 
+' 0:< API_SUCCESS { API registering command BIM 360 Projects Executed event by application CollaborateBrowser (901c7e33-857c-4c9c-846c-8f971c7cf72a). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_COLLABORATE_BROWSER' CanExecute implementation with implementation from application 'CollaborateBrowser' dll 'C:\Program Files\Autodesk\Cloud Models for Revit 2020\CollaborateBrowser.dll'. } 
+' 0:< API_SUCCESS { API registering command BIM 360 Projects CanExecute event by application CollaborateBrowser (901c7e33-857c-4c9c-846c-8f971c7cf72a). } 
+' 0:< API_SUCCESS { Starting External Application: CollaborateBrowser, Class: Autodesk.Revit.UI.CollaborateBrowser.CollaborateBrowserApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Cloud Models for Revit 2020\CollaborateBrowser.dll } 
+'C 16-May-2022 18:19:39.985;   0:< SkyscraperClientHost: UpiConfig: C:\Program Files\Autodesk\Cloud Models for Revit 2020\UPI\upiconfig.xml 
+'C 16-May-2022 18:19:40.034;   0:< SkyscraperClientHost: Initialize Success: True 
+' 0:< API_SUCCESS { Starting External Application: SkyscraperClientHostApplication, Class: SkyscraperClientHost.SkyscraperClientHostApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\Cloud Models for Revit 2020\SkyscraperClientHost.dll } 
+' 0:< ::39:: Delta VM: Avail -11 -> 134211538 MB, Used +3 -> 357 MB, Peak +3 -> 358 MB; RAM: Avail -8 -> 19140 MB, Used +5 -> 558 MB, Peak +4 -> 558 MB 
+' 0:< GUI Resource Usage GDI: Avail 9825, Used 175, User: Used 175 
+' 0:< API_SUCCESS { Added pushbutton Id: 6401, name: , text: Transmit a model, class: eTransmitForRevit.eTransmitCommand, assembly: C:\Program Files\Autodesk\eTransmit for Revit 2020\eTransmitForRevit.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6402, name: , text: Help, class: eTransmitForRevit.eTransmitHelp, assembly: C:\Program Files\Autodesk\eTransmit for Revit 2020\eTransmitForRevit.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6403, name: , text: About, class: eTransmitForRevit.eTransmitAbout, assembly: C:\Program Files\Autodesk\eTransmit for Revit 2020\eTransmitForRevit.dll } 
+' 0:< API_SUCCESS { Starting External Application: eTransmit for Revit, Class: eTransmitForRevit.eTransmitApplication, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\eTransmit for Revit 2020\eTransmitForRevit.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6404, name: , text: Check, class: BIMStandardsManager.Command, assembly: C:\Program Files\Autodesk\Revit Model Review 2020\ModelReview.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6405, name: , text: Manage, class: BIMStandardsManager.CommandConfig, assembly: C:\Program Files\Autodesk\Revit Model Review 2020\ModelReview.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6406, name: , text: View, class: BIMStandardsManager.CommandReview, assembly: C:\Program Files\Autodesk\Revit Model Review 2020\ModelReview.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6407, name: , text: About..., class: BIMStandardsManager.CommandAbout, assembly: C:\Program Files\Autodesk\Revit Model Review 2020\ModelReview.dll } 
+' 0:< API_SUCCESS { Starting External Application: Model Review, Class: BIMStandardsManager.ExternalApp, Vendor : ADSK(Autodesk, subscription.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit Model Review 2020\ModelReview.dll } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application Model Review Events (1469753f-186d-4dc2-b0e9-431b302e62f9). } 
+' 0:< API_SUCCESS { Registering DocumentSaving event by application Model Review Events (1469753f-186d-4dc2-b0e9-431b302e62f9). } 
+' 0:< API_SUCCESS { Registering DocumentSavingAs event by application Model Review Events (1469753f-186d-4dc2-b0e9-431b302e62f9). } 
+' 0:< API_SUCCESS { Registering DocumentSynchronizingWithCentral event by application Model Review Events (1469753f-186d-4dc2-b0e9-431b302e62f9). } 
+' 0:< API_ERROR { Starting External Application: Model Review Events, Class: BIMStandardsManager.CommandEventsApp, Vendor : ADSK(Autodesk, subscription.autodesk.com), Assembly: C:\Program Files\Autodesk\Revit Model Review 2020\ModelReview.dll } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application Worksharing Monitor Application (04e9bc6c-9b81-4c82-a31a-7559fe7a1579). } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application Worksharing Monitor Application (04e9bc6c-9b81-4c82-a31a-7559fe7a1579). } 
+' 0:< API_SUCCESS { Registering DocumentSaved event by application Worksharing Monitor Application (04e9bc6c-9b81-4c82-a31a-7559fe7a1579). } 
+' 0:< API_SUCCESS { Registering DocumentSavedAs event by application Worksharing Monitor Application (04e9bc6c-9b81-4c82-a31a-7559fe7a1579). } 
+' 0:< API_SUCCESS { Starting External Application: Worksharing Monitor Application, Class: WorkSharingLib.ExternalApplication, Vendor : ADSK(Autodesk, subscription.autodesk.com), Assembly: C:\Program Files\Autodesk\Worksharing Monitor for Revit 2020\WorkSharingLib.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6408, name: , text: Launch WSM, class: WorksharingCommand.WorksharingCommand, assembly: C:\Program Files\Autodesk\Worksharing Monitor for Revit 2020\WorkSharingCommand.dll } 
+' 0:< API_SUCCESS { Starting External Application: Worksharing Monitor Launch App, Class: WorksharingCommand.WorksharingApp, Vendor : ADSK(Autodesk, subscription.autodesk.com), Assembly: C:\Program Files\Autodesk\Worksharing Monitor for Revit 2020\WorkSharingCommand.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6409, name: , text: Checker, class: BIM_Leaders_Core.Checker, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6410, name: , text: Solve
+'Warnings, class: BIM_Leaders_Core.WarningsSolve, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6411, name: , text: Names
+'Change, class: BIM_Leaders_Core.NamesChange, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6412, name: , text: Delete Unused
+'Line Styles, class: BIM_Leaders_Core.LinestylesUnusedDelete, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6413, name: , text: Delete 
+'Line Patterns, class: BIM_Leaders_Core.LinetypesDelete, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< ::39:: Delta VM: Avail -6 -> 134211533 MB, Used +2 -> 360 MB, Peak +2 -> 360 MB; RAM: Avail +10 -> 19150 MB, Used +3 -> 561 MB, Peak +4 -> 562 MB 
+' 0:< GUI Resource Usage GDI: Avail 9813, Used 187, User: Used 183 
+' 0:< API_SUCCESS { Added pushbutton Id: 6414, name: , text: Walls
+'Parallel, class: BIM_Leaders_Core.WallsParallel, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6415, name: , text: Walls
+'Arranged, class: BIM_Leaders_Core.WallsArranged, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6416, name: , text: Journals
+'Analyze, class: BIM_Leaders_Core.JournalAnalyze, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6417, name: , text: Help
+'Standards, class: BIM_Leaders_Core.HelpStandards, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6418, name: , text: Find DWG, class: BIM_Leaders_Core.DwgViewFound, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6419, name: , text: Delete DWG
+'by Name, class: BIM_Leaders_Core.DwgNameDelete, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6420, name: , text: Remove Paint, class: BIM_Leaders_Core.ElementPaintRemove, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6421, name: , text: Join, class: BIM_Leaders_Core.ElementsJoin, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6422, name: , text: Match
+'Parameters, class: BIM_Leaders_Core.ElementPropertiesMatch, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6423, name: , text: Select
+'Voids, class: BIM_Leaders_Core.FamilyVoidsSelect, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6424, name: , text: Find
+'Zero, class: BIM_Leaders_Core.FamilyZeroCoordinates, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6425, name: , text: Set
+'Parameter, class: BIM_Leaders_Core.FamilyParameterSet, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6426, name: , text: Dimensions
+'Check, class: BIM_Leaders_Core.DimensionsPlanCheck, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6427, name: , text: Dimension
+'Line, class: BIM_Leaders_Core.DimensionsPlanLine, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6428, name: , text: Dimension
+'Plan, class: BIM_Leaders_Core.DimensionsPlan, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6429, name: , text: Annotate
+'Section, class: BIM_Leaders_Core.DimensionSectionFloors, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6430, name: , text: Annotate
+'Landings, class: BIM_Leaders_Core.DimensionStairsLandings, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6431, name: , text: Steps
+'Enumerate, class: BIM_Leaders_Core.StairsStepsEnumerate, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6432, name: , text: Align
+'Grids, class: BIM_Leaders_Core.GridsAlign, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6433, name: , text: Align
+'Levels, class: BIM_Leaders_Core.LevelsAlign, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6434, name: , text: Walls
+'Compare, class: BIM_Leaders_Core.WallsCompare, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\BIM Leaders Core.dll } 
+' 0:< API_SUCCESS { Starting External Application: BIM Leaders, Class: BIM_Leaders.Main, Vendor : Pinchuk(42), Assembly: BIM Leaders.dll } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application ProSheets (5bd4b26a-bc11-4a5a-835b-b5e9228dd92a). } 
+' 0:< API_SUCCESS { Registering DocumentChanged event by application ProSheets (5bd4b26a-bc11-4a5a-835b-b5e9228dd92a). } 
+' 0:< API_SUCCESS { Registering DocumentClosed event by application ProSheets (5bd4b26a-bc11-4a5a-835b-b5e9228dd92a). } 
+' 0:< API_SUCCESS { Registering DialogBoxShowing event by application ProSheets (5bd4b26a-bc11-4a5a-835b-b5e9228dd92a). } 
+' 0:< ::39:: Delta VM: Avail -2 -> 134211532 MB, Used +0 -> 361 MB, Peak +0 -> 361 MB; RAM: Avail -14 -> 19136 MB, Used +0 -> 562 MB, Peak +0 -> 563 MB 
+' 0:< GUI Resource Usage GDI: Avail 9813, Used 187, User: Used 183 
+' 0:< API_SUCCESS { Added pushbutton Id: 6435, name: , text: ProSheets, class: ProSheets.PSCommand, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\DiRoots.ProSheets1.2.4.0\diroots.prosheets.dll } 
+' 0:< API_SUCCESS { Starting External Application: ProSheets, Class: ProSheets.AppStartUp, Vendor : www.diroots.com(DiRoots, http://www.diroots.com), Assembly: DiRoots.ProSheets1.2.4.0\diroots.prosheets.dll } 
+' 0:< API_SUCCESS { Replacing command id 'ID_VIEWS_FOR_A360' Executed implementation with implementation from application 'Views For A360' dll 'C:\ProgramData\Autodesk\Revit\Addins\2020\.\ExportViewSelectorAddin\ExportViewSelectorAddin.dll'. } 
+' 0:< API_SUCCESS { API registering command Publish Settings Executed event by application Views For A360 (78bd1446-1817-4842-8075-591b0424acaa). } 
+' 0:< API_SUCCESS { Replacing command id 'ID_VIEWS_FOR_A360' CanExecute implementation with implementation from application 'Views For A360' dll 'C:\ProgramData\Autodesk\Revit\Addins\2020\.\ExportViewSelectorAddin\ExportViewSelectorAddin.dll'. } 
+' 0:< API_SUCCESS { API registering command Publish Settings CanExecute event by application Views For A360 (78bd1446-1817-4842-8075-591b0424acaa). } 
+' 0:< API_SUCCESS { Starting External Application: Views For A360, Class: Autodesk.Revit.Addin.ExportViewSelector.ExportViewSelectorApp, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: .\ExportViewSelectorAddin\ExportViewSelectorAddin.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6436, name: , text: Convert RFA
+'to FormIt, class: RFAToAXMAddon.RFAToAXMCommand, assembly: C:\Program Files\Autodesk\FormItConverterForRevit2020\Addon\RFAToAXMAddon.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6437, name: , text: Convert SKP
+'to FormIt, class: RFAToAXMAddon.SketchUpToAXMCommand, assembly: C:\Program Files\Autodesk\FormItConverterForRevit2020\Addon\RFAToAXMAddon.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6438, name: , text: Import FormIt
+'to RVT, class: AXMImportorAddon.AXMImportorCommand, assembly: C:\Program Files\Autodesk\FormItConverterForRevit2020\Addon\AXMImportorAddon.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6439, name: , text: Reload Families, class: AXMImportorAddon.ReloadFamiliesCommand, assembly: C:\Program Files\Autodesk\FormItConverterForRevit2020\Addon\AXMImportorAddon.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6440, name: , text: About FormIt, class: FormItConverter.FormItLink, assembly: C:\Program Files\Autodesk\FormItConverterForRevit2020\Addon\FormItConverterRibbon.dll } 
+' 0:< ::39:: Delta VM: Avail -30 -> 134211502 MB, Used +19 -> 380 MB, Peak +20 -> 382 MB; RAM: Avail -17 -> 19120 MB, Used +19 -> 582 MB, Peak +19 -> 582 MB 
+' 0:< GUI Resource Usage GDI: Avail 9809, Used 191, User: Used 184 
+' 0:< API_SUCCESS { Starting External Application: FormIt Conversion, Class: FormItConverter.Ribbon, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: C:\Program Files\Autodesk\FormItConverterForRevit2020\Addon\FormItConverterRibbon.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6441, name: , text: Lumion, class: RevitExporter.CommandAbout, assembly: C:\ProgramData\Autodesk\ApplicationPlugins\LumionLiveSyncForRevit.bundle\Contents\LiveSyncForRevit_2020.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6442, name: , text: Start, class: RevitExporter.CommandLiveStart, assembly: C:\ProgramData\Autodesk\ApplicationPlugins\LumionLiveSyncForRevit.bundle\Contents\LiveSyncForRevit_2020.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6443, name: , text: Stop, class: RevitExporter.CommandLiveStop, assembly: C:\ProgramData\Autodesk\ApplicationPlugins\LumionLiveSyncForRevit.bundle\Contents\LiveSyncForRevit_2020.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6444, name: , text: Camera Sync, class: RevitExporter.CommandLiveCameraSync, assembly: C:\ProgramData\Autodesk\ApplicationPlugins\LumionLiveSyncForRevit.bundle\Contents\LiveSyncForRevit_2020.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6445, name: , text: Status, class: RevitExporter.CommandBase, assembly: C:\ProgramData\Autodesk\ApplicationPlugins\LumionLiveSyncForRevit.bundle\Contents\LiveSyncForRevit_2020.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6446, name: , text: Settings, class: RevitExporter.CommandLiveSettings, assembly: C:\ProgramData\Autodesk\ApplicationPlugins\LumionLiveSyncForRevit.bundle\Contents\LiveSyncForRevit_2020.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6447, name: , text: Save File, class: RevitExporter.CommandExport, assembly: C:\ProgramData\Autodesk\ApplicationPlugins\LumionLiveSyncForRevit.bundle\Contents\LiveSyncForRevit_2020.dll } 
+' 0:< API_SUCCESS { Registering ViewActivated event by application Lumion LiveSync for Autodesk® Revit® 2020 (968c26fd-c5d2-49d0-af10-5106ff036cfa). } 
+' 0:< API_SUCCESS { Registering Idling event by application Lumion LiveSync for Autodesk® Revit® 2020 (968c26fd-c5d2-49d0-af10-5106ff036cfa). } 
+' 0:< API_SUCCESS { Registering DocumentChanged event by application Lumion LiveSync for Autodesk® Revit® 2020 (968c26fd-c5d2-49d0-af10-5106ff036cfa). } 
+' 0:< API_SUCCESS { Registering DocumentClosing event by application Lumion LiveSync for Autodesk® Revit® 2020 (968c26fd-c5d2-49d0-af10-5106ff036cfa). } 
+' 0:< API_SUCCESS { Starting External Application: Lumion LiveSync for Autodesk® Revit® 2020, Class: RevitExporter.LumionPlugin, Vendor : Act3D(Act-3D B.V., https://lumion.com), Assembly: LiveSyncForRevit_2020.dll } 
+' 0:< ::39:: Delta VM: Avail -13 -> 134211489 MB, Used +16 -> 397 MB, Peak +15 -> 397 MB; RAM: Avail -9 -> 19111 MB, Used +17 -> 599 MB, Peak +17 -> 599 MB 
+' 0:< GUI Resource Usage GDI: Avail 9795, Used 205, User: Used 184 
+' 0:< API_SUCCESS { Added pushbutton Id: 6448, name: , text: Hello World..., class: RevitLookup.HelloWorld, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6449, name: , text: Snoop DB..., class: RevitLookup.CmdSnoopDb, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6450, name: , text: Snoop Current Selection..., class: RevitLookup.CmdSnoopModScope, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6451, name: , text: Snoop Pick Face..., class: RevitLookup.CmdSnoopModScopePickSurface, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6452, name: , text: Snoop Pick Edge..., class: RevitLookup.CmdSnoopModScopePickEdge, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6453, name: , text: Snoop Linked Element..., class: RevitLookup.CmdSnoopModScopeLinkedElement, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6454, name: , text: Snoop Dependent Elements..., class: RevitLookup.CmdSnoopModScopeDependents, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6455, name: , text: Snoop Active View..., class: RevitLookup.CmdSnoopActiveView, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6456, name: , text: Snoop Application..., class: RevitLookup.CmdSnoopApp, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6457, name: , text: Search and Snoop..., class: RevitLookup.CmdSearchBy, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6458, name: , text: Test Framework..., class: RevitLookup.CmdTestShell, assembly: C:\ProgramData\Autodesk\Revit\Addins\2020\RevitLookup.dll } 
+' 0:< API_SUCCESS { Registering DocumentClosed event by application RevitLookup External Application (356cda5a-e6c5-4c2f-a9ef-b3222116b8c8). } 
+' 0:< API_SUCCESS { Registering DocumentOpened event by application RevitLookup External Application (356cda5a-e6c5-4c2f-a9ef-b3222116b8c8). } 
+' 0:< API_SUCCESS { Registering DocumentSaved event by application RevitLookup External Application (356cda5a-e6c5-4c2f-a9ef-b3222116b8c8). } 
+' 0:< API_SUCCESS { Registering DocumentSavedAs event by application RevitLookup External Application (356cda5a-e6c5-4c2f-a9ef-b3222116b8c8). } 
+' 0:< API_SUCCESS { Starting External Application: RevitLookup External Application, Class: RevitLookup.App, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: RevitLookup.dll } 
+' 0:< ::39:: Delta VM: Avail -12 -> 134211478 MB, Used +0 -> 398 MB, Peak +0 -> 398 MB; RAM: Avail -11 -> 19101 MB, Used 599 MB, Peak +0 -> 600 MB 
+' 0:< GUI Resource Usage GDI: Avail 9795, Used 205, User: Used 184 
+' 0:< API_SUCCESS { Added pushbutton Id: 6459, name: , text: Snoop DB..., class: RevitLookupWpf.Commands.SnoopDBCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6460, name: , text: Snoop Active Document..., class: RevitLookupWpf.Commands.SnoopActiveDocCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6461, name: , text: Snoop Active View..., class: RevitLookupWpf.Commands.SnoopActiveViewCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6462, name: , text: Snoop Current Selections..., class: RevitLookupWpf.Commands.SnoopCurrentSelectionCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6463, name: , text: Snoop Points..., class: RevitLookupWpf.Commands.SnoopPointsCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6464, name: , text: Snoop Faces..., class: RevitLookupWpf.Commands.SnoopFacesCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6465, name: , text: Snoop Edges..., class: RevitLookupWpf.Commands.SnoopEdgesCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6466, name: , text: Snoop Points On Elements..., class: RevitLookupWpf.Commands.SnoopPointOnEleCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6467, name: , text: Snoop Geometry Element..., class: RevitLookupWpf.Commands.SnoopGeometryCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6468, name: , text: Snoop Linked Element..., class: RevitLookupWpf.Commands.SnoopLinkedElementCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6469, name: , text: Snoop ExternalCommandData..., class: RevitLookupWpf.Commands.SnoopExternalCommandData, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Added pushbutton Id: 6470, name: , text: Snoop Search Element..., class: RevitLookupWpf.Commands.SnoopSearchCommand, assembly: C:\Users\i.pinchuk\AppData\Roaming\Autodesk\Revit\Addins\2020\RevitLookupWpf\RevitLookupWpf.dll } 
+' 0:< API_SUCCESS { Starting External Application: RevitWpfLookup, Class: RevitLookupWpf.RvtAddin, Vendor : ADSK(Autodesk, www.autodesk.com), Assembly: RevitLookupWpf/RevitLookupWpf.dll } 
+' 0:< ::39:: Delta VM: Avail -2 -> 134211477 MB, Used +6 -> 404 MB, Peak +8 -> 406 MB; RAM: Avail -7 -> 19094 MB, Used +11 -> 610 MB, Peak +12 -> 612 MB 
+' 0:< GUI Resource Usage GDI: Avail 9795, Used 205, User: Used 184 
+'C 16-May-2022 18:19:41.424;   0:< ->processShellCommand 
+'C 16-May-2022 18:19:41.424;   0:< <-processShellCommand 
+'C 16-May-2022 18:19:41.424;  ->DesktopMFCApp::doStartupWarnings 
+'C 16-May-2022 18:19:41.424;   0:< manage involvement 
+'C 16-May-2022 18:19:41.497;   0:< manage debug modes 
+'C 16-May-2022 18:19:41.498;   0:< MFCApp::testGraphicsHardware 
+' 0:< Revit Graphics Information 
+' 0:< 	Current Mode : DirectX Hardware 
+' 0:< 	Use Hardware: ON 
+' 0:< 	Use Overlays : ON 
+' 0:< START CanUseHardware(forced) 
+' 1:< 
+'OGS Device Memory Size: 20386 MB 
+' 1:< ::39:: Delta VM: Avail -328 -> 134211149 MB, Used +141 -> 546 MB, Peak +141 -> 548 MB; RAM: Avail 19094 MB, Used +18 -> 629 MB, Peak +18 -> 631 MB 
+' 1:< GUI Resource Usage GDI: Avail 9781, Used 219, User: Used 188 
+' 1:< DX Device: DirectX 11, Hardware 
+' 1:< DX Device: DirectX 11, WARP 
+'C 16-May-2022 18:19:41.647;   1:< START video card certification 
+' 1:< ::39:: Delta VM: Avail -23 -> 134211126 MB, Used +2 -> 549 MB, Peak +19 -> 567 MB; RAM: Avail -8 -> 19087 MB, Used +3 -> 633 MB, Peak +21 -> 652 MB 
+' 1:< GUI Resource Usage GDI: Avail 9781, Used 219, User: Used 189 
+' 1:< 
+'Current driver version: 10.18.13.5330
+'Certified driver(s):  
+' 1:< VIDEO CARD ENVIRONMENT: CARD="NVIDIA Quadro K2200" ManufacturerID="10DE" DeviceID="13BA" osID="80000" DRIVER="10.18.13.5330" DEVICE="DX11" FL_Caps="50" (Shader Model) 
+'C 16-May-2022 18:19:41.703;   1:< FINISH video card certification 
+'  0.205417   1:<<<CanUseHardware(forced) 
+' 0:< 
+'Can use hardware=y
+'Hardware support flags:
+'DrvOlderThanTested=n
+'DrvNewerThanTested=n
+'CardIsNotListed=n
+'NotCertifiedEnv=y
+'SoftwareModeForced=n 
+' 0:< FINISH CanUseHardware(forced) 
+'C 16-May-2022 18:19:41.703;   0:< MFCApp::testMSAA 
+' 0:< Revit Graphics Information 
+' 0:< 	Current Mode : DirectX Hardware 
+' 0:< 	Use Hardware: ON 
+' 0:< 	Use Overlays : ON 
+'C 16-May-2022 18:19:41.703;   0:< postConditionalWarnings 
+'C 16-May-2022 18:19:41.703;   0:< giveAtomRegistrationWarnings 
+'C 16-May-2022 18:19:41.703;   0:< warnings->consumeAll 
+'C 16-May-2022 18:19:41.703;   0:< Process result of DebugModes-Changed Task Dialog 
+'C 16-May-2022 18:19:41.703;   0:< isMaterialLibraryAvailable 
+'C 16-May-2022 18:19:41.703;   0:< start up warnings for AddIns 
+'C 16-May-2022 18:19:41.704;  <-DesktopMFCApp::doStartupWarnings 
+ 'E 16-May-2022 18:19:41.785;   0:< 
+ Jrn.Command "Internal" , " , ID_REVIT_MODEL_BROWSER_OPEN"
+ 'E 16-May-2022 18:19:41.793;   0:< 
+ Jrn.RibbonEvent "ModelBrowserIsOpenChangedEvent:Open"
+'C 16-May-2022 18:19:41.887;  <-desktop InitNativeInstance 
+'C 16-May-2022 18:19:41.887;  ->desktop InitManagedInstance 
+' 1:< API_SUCCESS { Registered an external server: Name(Site Linker); VendorId(ADSK); ServerId(c6c190c2-458e-48ea-ba79-722f26a87b45); ServiceId(c9979a42-11ab-4c25-93e1-abfb50b7be60) } 
+ 'E 16-May-2022 18:19:41.911;   1:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: c6c190c2-458e-48ea-ba79-722f26a87b45 Rvt.Attr.ExternalService: c9979a42-11ab-4c25-93e1-abfb50b7be60 
+' 1:< ::42:: Delta VM: Avail -25 -> 134211102 MB, Used +7 -> 556 MB; RAM: Avail -7 -> 19081 MB, Used +8 -> 642 MB 
+' 1:< GUI Resource Usage GDI: Avail 9781, Used 219, User: Used 189 
+'Add-in component: Rvt.ModelBrowser
+'Rvt.Attr.AddInName: Application ModelBrowser
+'Rvt.Attr.CommandVendorId: ADSK
+'Rvt.Attr.ModelBrowserEnabled: True
+'Rvt.Attr.RecentFileEnabled: True 
+' 1:< API_SUCCESS { Registered an external server: Name(SiteLinkerUI); VendorId(ADSK); ServerId(3cda4d0d-f24f-45a1-965d-a4a26a9801a6); ServiceId(a177f6c8-d1f6-49e2-87bc-f70edbeac5a3) } 
+ 'E 16-May-2022 18:19:42.006;   1:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: 3cda4d0d-f24f-45a1-965d-a4a26a9801a6 Rvt.Attr.ExternalService: a177f6c8-d1f6-49e2-87bc-f70edbeac5a3 
+' 0:< ::43:: Delta VM: Avail -2 -> 134211101 MB, Used 556 MB; RAM: Avail -11 -> 19071 MB, Used 642 MB 
+' 0:< GUI Resource Usage GDI: Avail 9781, Used 219, User: Used 189 
+'C 16-May-2022 18:19:42.008;  <-desktop InitManagedInstance 
+'C 16-May-2022 18:19:42.038;   0:< appPriv idle 
+' 1:< ::43:: Delta VM: Avail -29 -> 134211072 MB, Used +12 -> 569 MB, Peak +4 -> 572 MB; RAM: Avail -78 -> 18993 MB, Used +28 -> 671 MB, Peak +18 -> 671 MB 
+' 1:< GUI Resource Usage GDI: Avail 9787, Used 213, User: Used 188 
+' 1:< OPERATING SYSTEM INFORMATION:  
+' 1:<    BuildNumber : 19044 
+' 1:<    BuildType : Multiprocessor Free 
+' 1:<    Caption : Ìàéêðîñîôò Windows 10 Pro 
+' 1:<    CodeSet : 1251 
+' 1:<    CountryCode : 7 
+' 1:<    FreePhysicalMemory : 19494336 
+' 1:<    FreeSpaceInPagingFiles : 4621672 
+' 1:<    FreeVirtualMemory : 15473340 
+' 1:<    MaxProcessMemorySize : 137438953344 
+' 1:<    OSLanguage : 1049 
+' 1:<    OSType : 18 
+' 1:<    ServicePackMajorVersion : 0 
+' 1:<    ServicePackMinorVersion : 0 
+' 1:<    TotalVirtualMemorySize : 38466664 
+' 1:<    TotalVisibleMemorySize : 33485928 
+' 1:<    Version : 10.0.19044 
+' 0:< ::43:: Delta VM: Avail -8 -> 134211065 MB, Used -1 -> 568 MB; RAM: Avail +30 -> 19023 MB, Used -1 -> 670 MB, Peak +2 -> 673 MB 
+' 0:< GUI Resource Usage GDI: Avail 9787, Used 213, User: Used 189 
+' 0:<    Process affinity mask : FF 
+' 0:<    System affinity mask : FF 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{509319fc-28b9-4a50-9305-8f1fec02b3f8}Netanya%201409\{84cd1e2d-e718-4960-98b6-422fd451c9d1}1409-5%20_Central_alonXL5R4.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{6db6a44f-73c1-431a-8f49-f008316e3cfe}Doron%20Levi%20-%20Raanana\{2816a78d-d9e0-459e-9612-9ee0e720482c}151-RA-2009_%20CENT.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{c44dbc65-5c5b-4086-aba6-3e3ee237b665}Alexander%20Yanai\{cd6d6ff7-c2d1-4812-8e53-b03458aee200}AY192.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{cc6102e9-c826-47a9-ae7b-2d6f754bb430}114\{3884c00d-e5b1-45e9-bd1a-b5e41a9022e3}???%20???%20???%20??-114-20.12.21.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{32092d9c-14cb-4e3e-a601-d6d109e87f9d}102\{4c8c957f-4734-41bb-942e-1eb405828b48}???%20???%20???%20??-102_alonXL5R4.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{6db6a44f-73c1-431a-8f49-f008316e3cfe}Doron%20Levi%20-%20Raanana\{d618845e-bcc6-4561-9be2-302c0ebdbddb}151-RA-2029_CENT.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{a046e197-1336-43ac-a5be-4ec53026ea48}Modiin%20H2\{54021b88-2e4c-40f9-970b-545b86d0a80b}494-Modiin_?2_CEN_roy.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{6db6a44f-73c1-431a-8f49-f008316e3cfe}Doron%20Levi%20-%20Raanana\{eac2a1c9-6c36-4758-bccb-5fc7aa4c1084}151-RA-2033_CENT.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{6db6a44f-73c1-431a-8f49-f008316e3cfe}Doron%20Levi%20-%20Raanana\{386e0e8c-4f5d-45ae-8d2f-98ea335d3a64}151-RA-2019_CENT.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{90b8ba52-a0db-4c5f-bfc2-6f60e61cef50}Ramat%20Gan%20Electra\{4669a5a3-d334-4d31-b377-0f7ae8b8185b}????21-175-SITE%20ALL-115-118.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{90b8ba52-a0db-4c5f-bfc2-6f60e61cef50}Ramat%20Gan%20Electra\{d4e5610b-4f6c-4b51-9fc7-5536b3cb1152}21-175-SITE-115.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{90b8ba52-a0db-4c5f-bfc2-6f60e61cef50}Ramat%20Gan%20Electra\{0b9c6e58-2e71-4030-b8a1-139274567aca}21-175-SITE-116.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{90b8ba52-a0db-4c5f-bfc2-6f60e61cef50}Ramat%20Gan%20Electra\{d34d4aff-93b3-4aec-8053-7f4f69a6dce1}21-175-SITE-117.rvt" 
+' 0:< logIntoAutodesk - starting to check and enforce Autodesk login. 
+' 0:< ::43:: Delta VM: Avail -55 -> 134211010 MB, Used +12 -> 581 MB, Peak +9 -> 582 MB; RAM: Avail -87 -> 18937 MB, Used +41 -> 712 MB, Peak +40 -> 713 MB 
+' 0:< GUI Resource Usage GDI: Avail 9787, Used 213, User: Used 192 
+' 0:< PROCESSOR INFORMATION:  
+' 0:<    AddressWidth : 64 
+' 0:<    Architecture : 9 
+' 0:<    Availability : 3 
+' 0:<    Caption : Intel64 Family 6 Model 158 Stepping 13 
+' 0:<    CurrentClockSpeed : 3600 
+' 0:<    DataWidth : 64 
+' 0:<    Description : Intel64 Family 6 Model 158 Stepping 13 
+' 0:<    Family : 198 
+' 0:<    L2CacheSize : 2048 
+' 0:<    Level : 6 
+' 0:<    Manufacturer : GenuineIntel 
+' 0:<    MaxClockSpeed : 3600 
+' 0:<    Name : Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz 
+' 0:<    ProcessorType : 3 
+' 0:<    Role : CPU 
+' 0:<    SocketDesignation : LGA1151 
+' 0:<    StatusInfo : 3 
+' 0:<    Version :  
+' 0:< VIDEO CONTROLLER INFORMATION:  
+' 0:<    AdapterCompatibility : NVIDIA 
+' 0:<    AdapterDACType : Integrated RAMDAC 
+' 0:<    AdapterRAM : -1048576 
+' 0:<    Caption : NVIDIA Quadro K2200 
+' 0:<    CurrentBitsPerPixel : 32 
+' 0:<    CurrentHorizontalResolution : 1920 
+' 0:<    CurrentNumberOfColors : 4294967296 
+' 0:<    CurrentRefreshRate : 60 
+' 0:<    CurrentVerticalResolution : 1080 
+' 0:<    Description : NVIDIA Quadro K2200 
+' 0:<    DriverDate : 20150617000000.000000-000 
+' 0:<    DriverVersion : 10.18.13.5330 
+' 0:<    MaxRefreshRate : 75 
+' 0:<    MinRefreshRate : 60 
+' 0:<    Monochrome : 0 
+' 0:<    Name : NVIDIA Quadro K2200 
+' 0:<    VideoArchitecture : 5 
+' 0:<    VideoMemoryType : 2 
+' 0:<    VideoModeDescription : 1920 x 1080 x 4294967296 colors 
+' 0:<    VideoProcessor : Quadro K2200 
+' 1:< API_SUCCESS { Unregistering Idling event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 1:< API_SUCCESS { Registering DocumentOpening event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 1:< API_SUCCESS { Registering DocumentCreating event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+'C 16-May-2022 18:19:43.565;   0:< {"http_response_headers":"{x-ads-correlation-id=724ddd89-53a2-4a85-9c36-fade89097622}","duration":549,"http_request_len":0,"facets_included":"http","correlation_id":"724ddd89-53a2-4a85-9c36-fade89097622","api_level":"primary","http_response_code":"200","http_url":"https://mgmt.skyscraper.autodesk.com/api/users/BY9RM899F74P","status":"OK","source_service":"management-service","context_user":"BY9RM899F74P","http_remoteip":null,"version":"1.0.0","http_method":"GET","start_time":"2022-05-16T15:19:43.5549279Z","context_call":"management-service","http_version":"1.1","api_scope":"F","http_user_agent":"Autodesk.RevitServer.Management.Client/6.1.0.0 Autodesk.Revit.2020/20220112_1230_x64_","http_request_headers":"{x-ads-requestid=54cd9a76-6cba-46ac-835d-e786b66cf270,x-ads-ctx-user=BY9RM899F74P,x-ads-correlation-id=724ddd89-53a2-4a85-9c36-fade89097622}"} 
+' 0:< PRINTER INFORMATION:  
+' 0:<    Caption : OneNote for Windows 10 
+' 0:<    Default : 0 
+' 0:<    DeviceID : OneNote for Windows 10 
+' 0:<    Direct : 0 
+' 0:<    DriverName : Microsoft Software Printer Driver 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 300 
+' 0:<    Local : -1 
+' 0:<    Name : OneNote for Windows 10 
+' 0:<    Network : 0 
+' 0:<    PortName : Microsoft.Office.OneNote_16001.14326.20838.0_x64__8wekyb3d8bbwe_microsoft.onenoteim_S-1-5-21-3574909832-2508683570-4059675293-1664 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 300 
+' 0:< PRINTER INFORMATION:  
+' 0:<    Caption : PDFCreator 
+' 0:<    Default : 0 
+' 0:<    DeviceID : PDFCreator 
+' 0:<    Direct : 0 
+' 0:<    DriverName : PDFCreator 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 600 
+' 0:<    Local : -1 
+' 0:<    Name : PDFCreator 
+' 0:<    Network : 0 
+' 0:<    PortName : pdfcmon 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 600 
+' 0:<    Caption : PDF995 
+' 0:<    Default : 0 
+' 0:<    DeviceID : PDF995 
+' 0:<    Direct : 0 
+' 0:<    DriverName : PDF995 Printer Driver 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 300 
+' 0:<    Local : -1 
+' 0:<    Name : PDF995 
+' 0:<    Network : 0 
+' 0:<    PortName : PDF995PORT 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : -1 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 300 
+' 0:<    Caption : PDF24 Fax 
+' 0:<    Default : 0 
+' 0:<    DeviceID : PDF24 Fax 
+' 0:<    Direct : 0 
+' 0:<    DriverName : PDF24 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 200 
+' 0:<    Local : -1 
+' 0:<    Name : PDF24 Fax 
+' 0:<    Network : 0 
+' 0:<    PortName : \\.\pipe\FaxPrint 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 200 
+' 0:<    Caption : PDF24 
+' 0:<    Default : 0 
+' 0:<    DeviceID : PDF24 
+' 0:<    Direct : 0 
+' 0:<    DriverName : PDF24 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 600 
+' 0:<    Local : -1 
+' 0:<    Name : PDF24 
+' 0:<    Network : 0 
+' 0:<    PortName : \\.\pipe\PDFPrint 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 600 
+' 0:<    Caption : PDF Architect 8 
+' 0:<    Default : 0 
+' 0:<    DeviceID : PDF Architect 8 
+' 0:<    Direct : 0 
+' 0:<    DriverName : PDF Architect 8 Driver 
+' 0:<    EnableBIDI : -1 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : -4 
+' 0:<    Local : -1 
+' 0:<    Name : PDF Architect 8 
+' 0:<    Network : 0 
+' 0:<    PortName : PDF_Architect_8_Port: 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 300 
+' 0:<    Caption : Microsoft XPS Document Writer 
+' 0:<    Default : 0 
+' 0:<    DeviceID : Microsoft XPS Document Writer 
+' 0:<    Direct : 0 
+' 0:<    DriverName : Microsoft XPS Document Writer v4 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 600 
+' 0:<    Local : -1 
+' 0:<    Name : Microsoft XPS Document Writer 
+' 0:<    Network : 0 
+' 0:<    PortName : PORTPROMPT: 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 600 
+' 0:<    Caption : Microsoft Print to PDF 
+' 0:<    Default : 0 
+' 0:<    DeviceID : Microsoft Print to PDF 
+' 0:<    Direct : 0 
+' 0:<    DriverName : Microsoft Print To PDF 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 600 
+' 0:<    Local : -1 
+' 0:<    Name : Microsoft Print to PDF 
+' 0:<    Network : 0 
+' 0:<    PortName : PORTPROMPT: 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 600 
+' 0:<    Caption : MF230 Series 
+' 0:<    Default : -1 
+' 0:<    DeviceID : MF230 Series 
+' 0:<    Direct : 0 
+' 0:<    DriverName : Canon UFR II B/W Class Driver 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 300 
+' 0:<    Local : -1 
+' 0:<    Name : MF230 Series 
+' 0:<    Network : 0 
+' 0:<    PortName : WSD-6742e3ae-f6fe-4644-82ca-99d2a7bf011e 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 300 
+' 0:<    Caption : Fax 
+' 0:<    Default : 0 
+' 0:<    DeviceID : Fax 
+' 0:<    Direct : 0 
+' 0:<    DriverName : Microsoft Shared Fax Driver 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 200 
+' 0:<    Local : -1 
+' 0:<    Name : Fax 
+' 0:<    Network : 0 
+' 0:<    PortName : SHRFAX: 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 200 
+' 0:<    Caption : diroots.prosheets 
+' 0:<    Default : 0 
+' 0:<    DeviceID : diroots.prosheets 
+' 0:<    Direct : 0 
+' 0:<    DriverName : PDF24 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 600 
+' 0:<    Local : -1 
+' 0:<    Name : diroots.prosheets 
+' 0:<    Network : 0 
+' 0:<    PortName : \\.\pipe\PDFPrint - diroots.prosheets 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : 0 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 600 
+' 0:<    Caption : Adobe PDF 
+' 0:<    Default : 0 
+' 0:<    DeviceID : Adobe PDF 
+' 0:<    Direct : 0 
+' 0:<    DriverName : Adobe PDF Converter 
+' 0:<    EnableBIDI : 0 
+' 0:<    EnableDevQueryPrint : 0 
+' 0:<    HorizontalResolution : 1200 
+' 0:<    Local : -1 
+' 0:<    Name : Adobe PDF 
+' 0:<    Network : 0 
+' 0:<    PortName : Documents\*.pdf 
+' 0:<    PrintJobDataType : RAW 
+' 0:<    PrintProcessor : winprint 
+' 0:<    RawOnly : -1 
+' 0:<    Shared : 0 
+' 0:<    SpoolEnabled : -1 
+' 0:<    VerticalResolution : 1200 
+' 0:< PRINTER CONFIGURATION INFORMATION:  
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : OneNote for Windows 10 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 300 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 300 
+' 0:<    YResolution : 300 
+' 0:< PRINTER CONFIGURATION INFORMATION:  
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : PDFCreator 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 600 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 600 
+' 0:<    YResolution : 600 
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : PDF995 
+' 0:<    DriverVersion : 1282 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 300 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 300 
+' 0:<    YResolution : 300 
+' 0:<    Color : 1 
+' 0:<    Copies : 1 
+' 0:<    Description : PDF24 Fax 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 200 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 200 
+' 0:<    YResolution : 200 
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : PDF24 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 600 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 600 
+' 0:<    YResolution : 600 
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : PDF Architect 8 
+' 0:<    DriverVersion : 7424 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : -4 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    YResolution : 1200 
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : Microsoft XPS Document Writer 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 600 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 600 
+' 0:<    YResolution : 600 
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : Microsoft Print to PDF 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 600 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 600 
+' 0:<    YResolution : 600 
+' 0:<    Copies : 1 
+' 0:<    Description : MF230 Series 
+' 0:<    DriverVersion : 1539 
+' 0:<    Duplex : 0 
+' 0:<    MediaType : 257 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 300 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 300 
+' 0:<    YResolution : 300 
+' 0:<    Color : 1 
+' 0:<    Description : Fax 
+' 0:<    DriverVersion : 1024 
+' 0:<    Duplex : 0 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 200 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 200 
+' 0:<    YResolution : 200 
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : diroots.prosheets 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 600 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 600 
+' 0:<    YResolution : 600 
+' 0:<    Color : 2 
+' 0:<    Copies : 1 
+' 0:<    Description : Adobe PDF 
+' 0:<    DriverVersion : 1539 
+' 0:<    Orientation : 1 
+' 0:<    PaperLength : 2970 
+' 0:<    PaperSize : A4 210 x 297 mm 
+' 0:<    PaperWidth : 2100 
+' 0:<    PrintQuality : 1200 
+' 0:<    SpecificationVersion : 1025 
+' 0:<    XResolution : 1200 
+' 0:<    YResolution : 1200 
+ 'E 16-May-2022 18:19:44.359;   0:< 
+ Jrn.RibbonEvent "ModelBrowserOpenDocumentEvent:open:{""projectGuid"":null,""modelGuid"":null,""id"":""C:\\Users\\i.pinchuk\\Desktop\\Project1.rvt"",""displayName"":""Project1""}"
+'H 16-May-2022 18:19:44.366;   0:< 
+Jrn.Directive "IdleTimeTaskSymbol"  _
+        , "2.PostCommandTask"
+'H 16-May-2022 18:19:44.368;   0:< 
+Jrn.Directive "IdleTimeTaskInvocation"  _
+        , "2.PostCommandTask", 0, "{}"
+' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+' 1:< RAM Statistics:    18932 /    32701       717=InUse      718=Peak  
+' 1:< VM  Statistics: 134211000 / 134217727       584=InUse      585=Peak  
+ 'E 16-May-2022 18:19:44.395;   1:< 
+ Jrn.RibbonEvent "ModelBrowserIsOpenChangedEvent:Close"
+' 2:< API_SUCCESS { Registered an external server: Name(BIM 360); VendorId(ADSK); ServerId(d2c3617d-7a16-45bc-b395-44897852f485); ServiceId(b3892e5f-9161-4bbc-958a-c8ef75e94e96) } 
+ 'E 16-May-2022 18:19:44.431;   2:< 
+ ' [Jrn.RegisterExternalServer] Rvt.Attr.ExternalServer: d2c3617d-7a16-45bc-b395-44897852f485 Rvt.Attr.ExternalService: b3892e5f-9161-4bbc-958a-c8ef75e94e96 
+' 2:< API_SUCCESS { Unregistering DocumentOpening event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Unregistering DocumentCreating event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Registering Idling event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Registering DocumentOpened event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Registering DocumentSavedAs event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Registering DocumentClosing event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Registering ViewActivated event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Registering Idling event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Registering DocumentSynchronizingWithCentral event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Registering DocumentSynchronizedWithCentral event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+' 2:< API_SUCCESS { Registering WorksharedOperationProgressChanged event by application Collaborate (14f73f04-900e-4e24-8d85-44c71092b6e9). } 
+'C 16-May-2022 18:19:44.591;  File: Open 
+' 3:< Connecting session [$e671e37f] to Worksharing Log [C:\Users\i.pinchuk\AppData\Local\Autodesk\Revit\Autodesk Revit 2020\Journals\journal.0169.txt] 
+' 3:< Additional IP address/name found for host ARC-ENG-PC12: 192.168.51.17  
+ ' 6:< ::46:: Delta VM: Avail -21 -> 134210989 MB, Used +14 -> 595 MB, Peak +13 -> 595 MB; RAM: Avail -9 -> 18928 MB, Used +10 -> 723 MB, Peak +10 -> 723 MB 
+ ' 6:< GUI Resource Usage GDI: Avail 9782, Used 218, User: Used 196 
+ 'E 16-May-2022 18:19:44.699;   6:< 
+ ' [Jrn.BasicFileInfo] Rvt.Attr.Worksharing: Not enabled Rvt.Attr.Username:  Rvt.Attr.CentralModelPath:  Rvt.Attr.RevitBuildVersion: Autodesk Revit 2020 (Build: 20220112_1230(x64)) Rvt.Attr.LastSavePath: C:\Users\i.pinchuk\Desktop\Project1.rvt Rvt.Attr.LTProject: notLTProject Rvt.Attr.LocaleWhenSaved: ENU Rvt.Attr.FileExt: rvt 
+ 'C 16-May-2022 18:19:44.702;  [ISL] On open, Adler Checksum: 0x2f668d5d [C:\Users\i.pinchuk\Desktop\Project1.rvt] 
+ ' 6:< [ISL] Read last modification time: 02-May-2022 17:19:29 (UTC: 02-May-2022 14:19:29) 
+' 6:< File was saved in Autodesk Revit 2020 (Build: 20220112_1230(x64)) 
+' 8:< ::47:: Delta VM: Avail -22 -> 134210967 MB, Used +12 -> 607 MB, Peak +12 -> 607 MB; RAM: Avail -6 -> 18922 MB, Used +4 -> 727 MB, Peak +4 -> 727 MB 
+' 8:< GUI Resource Usage GDI: Avail 9781, Used 219, User: Used 196 
+'C 16-May-2022 18:19:44.719;  Loaded elemStream#1: uncompSize=131860, compSize=23158, count=10 
+'C 16-May-2022 18:19:44.719;  LoadLatestEpoch::loadLatestEpoch 0x00000000000=thelper.currentPos() 0x00000005a76=thelper.targetPos() 
+' 8:< ::47:: Delta VM: Avail -61 -> 134210906 MB, Used +13 -> 621 MB, Peak +13 -> 621 MB; RAM: Avail -41 -> 18882 MB, Used +23 -> 751 MB, Peak +23 -> 751 MB 
+' 8:< GUI Resource Usage GDI: Avail 9781, Used 219, User: Used 216 
+'C 16-May-2022 18:19:44.874;  Loaded elemStream#0: uncompSize=22511481, compSize=4400203, count=35612 
+'C 16-May-2022 18:19:44.874;  LoadLatestEpoch::loadLatestEpoch 0x00000005a76=thelper.currentPos() 0x00000437ec1=thelper.targetPos() 
+'  0.155595          8:<<<loadLatestVersion 
+' 6:< ::47:: Delta VM: Avail -12 -> 134210894 MB, Used +12 -> 633 MB, Peak +12 -> 633 MB; RAM: Avail 18882 MB, Used +8 -> 759 MB, Peak +7 -> 759 MB 
+' 6:< GUI Resource Usage GDI: Avail 9781, Used 219, User: Used 216 
+'  0.240166         7:<<loadSelectedEpochs/ALL_GAPS   0.084571/Threshold_GAPs 100% 
+'  0.258791        6:<<TrustedUtility::readStreams/ALL_GAPS   0.018624/Threshold_GAPs 88% 
+'  0.387114       5:<<loadSerializeImpl/ALL_GAPS   0.128324/Threshold_GAPs 62% 
+'  0.387175      4:<<loadSerialize 
+'  0.387263     3:<<LoadFromStorage 
+ 'E 16-May-2022 18:19:45.062;   2:< 
+ ' [Jrn.ExternalResourceLoad] Rvt.Attr.ExternalResourceType: b6305212-4915-4526-b659-be2d6f97174f 0 , 
+ 'E 16-May-2022 18:19:45.062;   2:< 
+ ' [Jrn.ExternalResourceLoad] Rvt.Attr.ExternalResourceType: cf823dbb-21d2-42e0-a39c-1cb523a8cec2 0 , 
+' 4:< Unnecessary nesting;d:\ship\2020_px64\source\revit\persistencedb\document\postloaddocument.cpp;201;String_Revit_DelayedPropagatoinRegen ;N++E(N); 
+' 5:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+' 5:< RAM Statistics:    18878 /    32701       765=InUse      766=Peak  
+' 5:< VM  Statistics: 134210893 / 134217727       634=InUse      635=Peak  
+' 5:< Element Expansion Statistics: 
+' 5:<  0% Opening Plans                    (0) 
+' 5:<  0% Opening RC Plans                 (0) 
+' 5:<  0% Opening 3d Views                 (0) 
+' 5:<  0% Opening Elevations and Sections  (0) 
+' 5:<  0% In Regnerate                     (0) 
+' 5:<  0% In Autojoin                      (0) 
+' 5:<  0% In Overlap Checking              (0) 
+' 5:<  0% Reviewing PostedWarnings         (0) 
+' 5:<  100% Other                            (2445299) 
+' 5:< total bytes expanded: 2445299 
+' 5:< ;EES;0;0;0;0;0;0;0;0;100; 
+' 6:< ::49:: Delta VM: Avail -1 -> 134210893 MB, Used +1 -> 634 MB, Peak +2 -> 635 MB; RAM: Avail -13 -> 18869 MB, Used +6 -> 765 MB, Peak +7 -> 766 MB 
+' 6:< GUI Resource Usage GDI: Avail 9775, Used 225, User: Used 225 
+' 6:< Connecting session [$68ef3976] to Worksharing Log [C:\Users\i.pinchuk\AppData\Local\Autodesk\Revit\Autodesk Revit 2020\Journals\journal.0169.txt] 
+' 6:< Additional IP address/name found for host ARC-ENG-PC12: 192.168.51.17  
+' 3:< Unnecessary nesting;d:\ship\2020_px64\source\revit\persistencedb\document\postloaddocument.cpp;481;ID_SETTINGS_SNAPPING ;N++E(N); 
+'C 16-May-2022 18:19:45.099;  ->LynxTracker::engageBranch (this=000001EEDF507BA0) 
+'C 16-May-2022 18:19:45.099;  <-LynxTracker::engageBranch (this=000001EEDF507BA0) 
+' 3:< Document save history --> : 
+' 3:<   Revit 2020 - Preview Pre-Release 2020 (2020.000) : 20190109_1515(x64) 
+' 3:<   Revit 2020 2020 (2020.000) : 20220112_1230(x64) 
+' 3:< Document save history <-- 
+' 1:< ::49:: Delta VM: Avail 134210893 MB, Used +0 -> 635 MB; RAM: Avail -11 -> 18859 MB, Used +7 -> 773 MB, Peak +6 -> 773 MB 
+' 1:< GUI Resource Usage GDI: Avail 9776, Used 224, User: Used 225 
+'  0.546276    2:<<FormOrAbandon::openFromModelPath [C:\Users\i.pinchuk\Desktop\Project1.rvt]/ALL_GAPS   0.159014/Threshold_GAPs 68% 
+'H 16-May-2022 18:19:45.187;   1:< 
+Jrn.Directive "DocSymbol"  _
+        , "[Project1.rvt]"
+' 2:< ::49:: Delta VM: Avail -2 -> 134210892 MB, Used +4 -> 640 MB, Peak +11 -> 646 MB; RAM: Avail -14 -> 18845 MB, Used +5 -> 778 MB, Peak +12 -> 785 MB 
+' 2:< GUI Resource Usage GDI: Avail 9752, Used 248, User: Used 255 
+'C 16-May-2022 18:19:45.223;   2:< Protein : initialize RPC plug-ins 
+'C 16-May-2022 18:19:45.232;   2:< Protein : Register Preview Factories 
+'C 16-May-2022 18:19:45.232;   2:< Protein : Initialize Renderer Module 
+'C 16-May-2022 18:19:45.232;   2:< Protein : Open Protein content Libraries 
+'C 16-May-2022 18:19:45.232;   2:< Protein : Load Library:  
+' 2:< C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\assetlibrary_base.adsklib 
+'C 16-May-2022 18:19:45.232;   2:< Protein : Texture Path:  
+' 2:< C:/Program Files (x86)/Common Files/Autodesk Shared/Materials/Textures/ 
+' 2:< ::49:: Delta VM: Avail -26 -> 134210866 MB, Used +13 -> 653 MB, Peak +8 -> 654 MB; RAM: Avail -9 -> 18836 MB, Used +13 -> 792 MB, Peak +7 -> 793 MB 
+' 2:< GUI Resource Usage GDI: Avail 9752, Used 248, User: Used 255 
+' 2:< Protein Path Resolver has changed, to: 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\assetlibrary_base.fbm 
+' 2:< PathResolver path:C:/Program Files (x86)/Common Files/Autodesk Shared/Materials/Textures 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\PhysicalMaterial.fbm 
+' 2:< PathResolver path:C:/Program Files (x86)/Common Files/Autodesk Shared/Materials/Textures 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\assetlibrary_base.fbm 
+' 2:< Protein Path Resolver has changed, to: 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\assetlibrary_base.fbm 
+' 2:< PathResolver path:C:/Program Files (x86)/Common Files/Autodesk Shared/Materials/Textures 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\PhysicalMaterial.fbm 
+' 2:< PathResolver path:C:/Program Files (x86)/Common Files/Autodesk Shared/Materials/Textures 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\assetlibrary_base.fbm 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\PhysicalMaterial.fbm 
+' 2:< Protein Path Resolver has changed, to: 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\assetlibrary_base.fbm 
+' 2:< PathResolver path:C:/Program Files (x86)/Common Files/Autodesk Shared/Materials/Textures 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\PhysicalMaterial.fbm 
+' 2:< PathResolver path:C:/Program Files (x86)/Common Files/Autodesk Shared/Materials/Textures 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\assetlibrary_base.fbm 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\PhysicalMaterial.fbm 
+' 2:< PathResolver path:C:\Program Files (x86)\Common Files\Autodesk Shared\Materials\2020\AECMaterials.fbm 
+'C 16-May-2022 18:19:45.265;   2:< Protein : Notify Plugins to load the content on the asset library 
+'C 16-May-2022 18:19:45.265;   2:< Protein : Reopen RPC library. 
+' 2:< ::49:: Delta VM: Avail 134210866 MB, Used 653 MB; RAM: Avail -23 -> 18814 MB, Used +1 -> 793 MB 
+' 2:< GUI Resource Usage GDI: Avail 9752, Used 248, User: Used 254 
+'C 16-May-2022 18:19:47.464;   2:< Protein : Register the Protein RenderingAsset Manager 
+ 'E 16-May-2022 18:19:47.483;   2:< 
+ ' [Jrn.TabbedViewAnalytics] ProjectCount: 1
+ 'E 16-May-2022 18:19:47.484;   2:< 
+ ' [Jrn.TabbedViewAnalytics] ViewCount: 1
+'H 16-May-2022 18:19:47.485;   2:< 
+Jrn.Directive "GlobalToProj"  _
+        , "[Project1.rvt]", "Floor Plan: Level 1" _
+        , 0.01000000000000 _
+        , 1.00000000000000, 0.00000000000000, 0.00000000000000 _
+        , 0.00000000000000, 1.00000000000000, 0.00000000000000 _
+        , 0.00000000000000, 0.00000000000000, 1.00000000000000 _
+        , 0.00000000000000, 0.00000000000000, 0.00000000000000
+'H 16-May-2022 18:19:47.486;   2:< 
+Jrn.Directive "ProjToPage"  _
+        , "[Project1.rvt]", "Floor Plan: Level 1" _
+        , 1.00000000000000 _
+        , 1.00000000000000, 0.00000000000000, 0.00000000000000 _
+        , 0.00000000000000, 1.00000000000000, 0.00000000000000 _
+        , 0.00000000000000, 0.00000000000000, 1.00000000000000 _
+        , 0.00000000000000, 0.00000000000000, 0.00000000000000
+'H 16-May-2022 18:19:47.486;   2:< 
+Jrn.Directive "WindowSize"  _
+        , "[Project1.rvt]", "Floor Plan: Level 1" _
+        , 0, 0
+' 2:< Before : Create Display Manager 
+' 2:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+' 2:< RAM Statistics:    18815 /    32701       794=InUse      794=Peak  
+' 2:< VM  Statistics: 134210866 / 134217727       653=InUse      654=Peak  
+' 2:< Revit Graphics Information 
+' 2:< 	Current Mode : DirectX Hardware 
+' 2:< 	Use Hardware: ON 
+' 2:< 	Use Overlays : ON 
+' 2:< After : Create Display Manager 
+' 2:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+' 2:< RAM Statistics:    18815 /    32701       794=InUse      794=Peak  
+' 2:< VM  Statistics: 134210866 / 134217727       653=InUse      654=Peak  
+ 'E 16-May-2022 18:19:47.545;   2:< 
+ Jrn.Activate "[Project1.rvt]" , "Floor Plan: Level 1"
+ ' 2:< ::52:: Delta VM: Avail -6 -> 134210861 MB, Used +4 -> 657 MB, Peak +4 -> 658 MB; RAM: Avail -12 -> 18803 MB, Used +6 -> 800 MB, Peak +7 -> 801 MB 
+ ' 2:< GUI Resource Usage GDI: Avail 9396, Used 604, User: Used 326 
+ ' 2:< View Open: Element expansion used 0.000000 seconds averaging 0.000000 seconds/hit for 0 hits. 
+ ' 2:< View Open: Element expansion used 0.000000 seconds averaging 0.000000 seconds/hit for 0 hits. 
+ ' 2:< View Open: Element expansion used 0.000000 seconds averaging 0.000000 seconds/hit for 0 hits. 
+ ' 5:< ::52:: Delta VM: Avail +15 -> 134210876 MB, Used +2 -> 659 MB, Peak +1 -> 660 MB; RAM: Avail -1 -> 18802 MB, Used -2 -> 798 MB, Peak +2 -> 804 MB 
+ ' 5:< GUI Resource Usage GDI: Avail 9247, Used 753, User: Used 397 
+ '  2.920737!!!! 3:!!!BIG_GAP [Cloud]openOntoDesktop 
+ 'C 16-May-2022 18:19:48.122;  DBG_INFO: Detected unfrozen change of selection.: line 603 of d:\ship\2020_px64\source\revit\revitui\modscope\modscope.cpp. 
+ ' 6:< ::52:: Delta VM: Avail -11 -> 134210866 MB, Used 659 MB; RAM: Avail -2 -> 18800 MB, Used +5 -> 804 MB 
+ ' 6:< GUI Resource Usage GDI: Avail 9235, Used 765, User: Used 404 
+ 'C 16-May-2022 18:19:48.169;  DBG_INFO: m_stairsHeight is not up to date. Some regen dependency is missing.: line 1173 of d:\ship\2020_px64\source\stairramp\stairrampdb\elem\src_stairselement.cpp. 
+ 'C 16-May-2022 18:19:48.173;  DBG_INFO: Unexpected: More then one GeomStep of Type StairsSupportJoinEndGStep: line 673 of d:\ship\2020_px64\source\revit\revitdb\regen\geomsteplist.h. 
+ 'C 16-May-2022 18:19:48.183;  DBG_INFO: If bHandleEdgeInCutPlane is true, bUseVertexTol should also be true.: line 2267 of d:\ship\2020_px64\source\foundation\geomutil\geomxsec.cpp. 
+ ' 2:< <<Begin build CT>>
+ '
+ 'Edit mode: IDR_COMMON
+ 'Command: 
+ 'Category: 0
+ 'Bar list: 
+ '	
+ 'Provider list: 
+ '	
+ 'Product: Unknown
+ '
+ '
+ 'Edit mode context, but no edit mode set.
+ '<<End build CT>> 
+' 2:< View Open: Element expansion used 0.000000 seconds averaging 0.000000 seconds/hit for 0 hits. 
+'  3.299289    2:<<[Cloud]openOntoDesktop 
+' 1:< Third Party Updater 'Revit: ObjectNumberingUpdater' registered for document 'Project1.rvt'. 
+' 1:< Third Party Updater 'Revit: ObjectNumberingUpdater' registered for document 'Project1.rvt'. 
+' 1:< Third Party Updater 'Revit: ObjectNumberingUpdater' registered for document 'Project1.rvt'. 
+ 'E 16-May-2022 18:19:48.487;   1:< 
+ ' [Jrn.Content.Open] 
+' 2:< ::53:: Delta VM: Avail -2 -> 134210864 MB, Used +0 -> 660 MB, Peak +2 -> 662 MB; RAM: Avail +31 -> 18832 MB, Used +6 -> 810 MB, Peak +7 -> 811 MB 
+' 2:< GUI Resource Usage GDI: Avail 9223, Used 777, User: Used 415 
+' 2:< CoordinationModel script: scriptPath: C:\Program Files\Autodesk\Revit 2020\AddIns\CoordinationModel\NavisFileList.ini 
+' 2:< CoordinationModel script: File doesn't exist 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{509319fc-28b9-4a50-9305-8f1fec02b3f8}Netanya%201409\{84cd1e2d-e718-4960-98b6-422fd451c9d1}1409-5%20_Central_alonXL5R4.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{6db6a44f-73c1-431a-8f49-f008316e3cfe}Doron%20Levi%20-%20Raanana\{2816a78d-d9e0-459e-9612-9ee0e720482c}151-RA-2009_%20CENT.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{c44dbc65-5c5b-4086-aba6-3e3ee237b665}Alexander%20Yanai\{cd6d6ff7-c2d1-4812-8e53-b03458aee200}AY192.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{cc6102e9-c826-47a9-ae7b-2d6f754bb430}114\{3884c00d-e5b1-45e9-bd1a-b5e41a9022e3}???%20???%20???%20??-114-20.12.21.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{32092d9c-14cb-4e3e-a601-d6d109e87f9d}102\{4c8c957f-4734-41bb-942e-1eb405828b48}???%20???%20???%20??-102_alonXL5R4.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{6db6a44f-73c1-431a-8f49-f008316e3cfe}Doron%20Levi%20-%20Raanana\{d618845e-bcc6-4561-9be2-302c0ebdbddb}151-RA-2029_CENT.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{a046e197-1336-43ac-a5be-4ec53026ea48}Modiin%20H2\{54021b88-2e4c-40f9-970b-545b86d0a80b}494-Modiin_?2_CEN_roy.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{6db6a44f-73c1-431a-8f49-f008316e3cfe}Doron%20Levi%20-%20Raanana\{eac2a1c9-6c36-4758-bccb-5fc7aa4c1084}151-RA-2033_CENT.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{6db6a44f-73c1-431a-8f49-f008316e3cfe}Doron%20Levi%20-%20Raanana\{386e0e8c-4f5d-45ae-8d2f-98ea335d3a64}151-RA-2019_CENT.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{90b8ba52-a0db-4c5f-bfc2-6f60e61cef50}Ramat%20Gan%20Electra\{4669a5a3-d334-4d31-b377-0f7ae8b8185b}????21-175-SITE%20ALL-115-118.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{90b8ba52-a0db-4c5f-bfc2-6f60e61cef50}Ramat%20Gan%20Electra\{d4e5610b-4f6c-4b51-9fc7-5536b3cb1152}21-175-SITE-115.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{90b8ba52-a0db-4c5f-bfc2-6f60e61cef50}Ramat%20Gan%20Electra\{0b9c6e58-2e71-4030-b8a1-139274567aca}21-175-SITE-116.rvt" 
+' 0:< ModelPath Created: Is server path = True, Central server = "https://model15.skyscraper.autodesk.com:443/ModelService2015/ModelService.svc/basichttpbuffer", Path = "CLD:\\{90b8ba52-a0db-4c5f-bfc2-6f60e61cef50}Ramat%20Gan%20Electra\{d34d4aff-93b3-4aec-8053-7f4f69a6dce1}21-175-SITE-117.rvt" 
+' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+' 1:< RAM Statistics:    18829 /    32701       811=InUse      812=Peak  
+' 1:< VM  Statistics: 134210863 / 134217727       661=InUse      662=Peak  
+' 1:< Element Expansion Statistics: 
+' 1:<  24% Opening Plans                    (839562) 
+' 1:<  0% Opening RC Plans                 (0) 
+' 1:<  0% Opening 3d Views                 (0) 
+' 1:<  0% Opening Elevations and Sections  (0) 
+' 1:<  0% In Regnerate                     (0) 
+' 1:<  0% In Autojoin                      (0) 
+' 1:<  0% In Overlap Checking              (0) 
+' 1:<  0% Reviewing PostedWarnings         (376) 
+' 1:<  76% Other                            (2659992) 
+' 1:< total bytes expanded: 3499930 
+' 1:< ;EES;24;0;0;0;0;0;0;0;76; 
+' 1:<   System (MB) [Available /  Total ]  [Revit Memory Usage (MB)   ] 
+' 1:< RAM Statistics:    18830 /    32701       811=InUse      812=Peak  
+' 1:< VM  Statistics: 134210863 / 134217727       661=InUse      662=Peak  
+ 'E 16-May-2022 18:19:48.668;   1:< 
+ ' [Jrn.OpenAndImportAnalytics] 
+'  4.287094-- 1:<<[Cloud]standardOpenDocumentFile/ALL_GAPS   0.441529/TurnOff_GAPs 53% 
+' 0:< ::54:: Delta VM: Avail -1 -> 134210863 MB, Used +0 -> 661 MB; RAM: Avail -13 -> 18820 MB, Used +1 -> 812 MB, Peak +0 -> 812 MB 
+' 0:< GUI Resource Usage GDI: Avail 9223, Used 777, User: Used 415 
+'H 16-May-2022 18:19:48.698;   0:< 
+Jrn.Directive "IdleTimeTaskInvocation"  _
+        , "2.PostCommandTask", 0, "end"
+ 'E 16-May-2022 18:19:48.755;   0:< 
+ Jrn.Size        0 ,   1408 ,    812
+ 'H 16-May-2022 18:19:48.756;   0:< 
+ Jrn.Directive "WindowSize"  _
+         , "[Project1.rvt]", "Floor Plan: Level 1" _
+         , 1408, 812
+'H 16-May-2022 18:19:48.986;   0:< 
+Jrn.Directive "ScreenResolution"  _
+        , 296, 1080
+'H 16-May-2022 18:19:48.987;   0:< 
+Jrn.Directive "ProjToPage"  _
+        , "[Project1.rvt]", "Floor Plan: Level 1" _
+        , 423.08076243977422 _
+        , 423.08076243977422, 0.00000000000000, 0.00000000000000 _
+        , 0.00000000000000, 423.08076243977422, 0.00000000000000 _
+        , 0.00000000000000, 0.00000000000000, 423.08076243977422 _
+        , 0.00000000000000, 0.00000000000000, 0.00000000000000
+'H 16-May-2022 18:19:48.988;   0:< 
+Jrn.Directive "ProjToPage"  _
+        , "[Project1.rvt]", "Floor Plan: Level 1" _
+        , 423.08076243977422 _
+        , 423.08076243977422, 0.00000000000000, 0.00000000000000 _
+        , 0.00000000000000, 423.08076243977422, 0.00000000000000 _
+        , 0.00000000000000, 0.00000000000000, 423.08076243977422 _
+        , 708.42770150170918, -401.55442136174059, 0.00000000000000
+'H 16-May-2022 18:19:49.006;   0:< 
+Jrn.Directive "ProjToPage"  _
+        , "[Project1.rvt]", "Floor Plan: Level 1" _
+        , 423.08076243977439 _
+        , 423.08076243977439, 0.00000000000000, 0.00000000000000 _
+        , 0.00000000000000, 423.08076243977439, 0.00000000000000 _
+        , 0.00000000000000, 0.00000000000000, 423.08076243977439 _
+        , 708.42770150170918, -401.55442136174059, 0.00000000000000
+'H 16-May-2022 18:19:49.007;   0:< 
+Jrn.Directive "ProjToPage"  _
+        , "[Project1.rvt]", "Floor Plan: Level 1" _
+        , 423.08076243977439 _
+        , 423.08076243977439, 0.00000000000000, 0.00000000000000 _
+        , 0.00000000000000, 423.08076243977439, 0.00000000000000 _
+        , 0.00000000000000, 0.00000000000000, 423.08076243977439 _
+        , 708.42770150170895, -401.55442136174042, 0.00000000000000
+' 0:< GContext::getDefaultDpi(): s_defaultDpi = 96 
+' 0:< ::55:: Delta VM: Avail -33 -> 134210831 MB, Used +39 -> 701 MB, Peak +41 -> 703 MB; RAM: Avail -11 -> 18809 MB, Used +22 -> 834 MB, Peak +24 -> 836 MB 
+' 0:< GUI Resource Usage GDI: Avail 9209, Used 791, User: Used 420 
+'  0.216223   1:<<;PERF;MISC;drawing 
+'C 16-May-2022 18:19:49.233;   0:< idle0_doc 
+'H 16-May-2022 18:19:49.234;   0:< 
+Jrn.Directive "AllowPressAndDrag"  _
+        , 0
+' 0:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: ID_BUTTON_SELECT
+'Category: 0
+'Bar list: 
+'	Dialog_Revit_DynamicLabelDBar
+'	Dialog_Essentials_FilterSelectionNew
+'Provider list: 
+'	
+'Product: Revit
+'
+'
+'***********************************************************
+'***********************************************************
+'<<End build CT>> 
+ 'E 16-May-2022 18:19:49.983;   0:< 
+ Jrn.MouseMove    0 ,    494 ,    266
+ 'E 16-May-2022 18:19:49.984;   0:< 
+ Jrn.LButtonDown    1 ,    494 ,    266
+ ' 0:< Candidates (curIdx = -1):  
+ 'E 16-May-2022 18:19:50.070;   0:< 
+ Jrn.MouseMove    1 ,    494 ,    266
+ 'E 16-May-2022 18:19:50.070;   0:< 
+ Jrn.LButtonUp    0 ,    494 ,    266
+ ' 0:< Candidates (curIdx = -1):  
+ 'E 16-May-2022 18:19:50.309;   0:< 
+ Jrn.MouseMove    0 ,    654 ,    415
+ 'E 16-May-2022 18:19:50.309;   0:< 
+ Jrn.Wheel      0 ,  120 ,    881 ,    614
+ ' 0:< ::61:: Delta VM: Avail -3 -> 134210828 MB, Used +10 -> 711 MB, Peak +8 -> 711 MB; RAM: Avail -5 -> 18805 MB, Used +5 -> 840 MB, Peak +3 -> 840 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9186, Used 814, User: Used 429 
+ 'H 16-May-2022 18:19:50.327;   0:< 
+ Jrn.Directive "ProjToPage"  _
+         , "[Project1.rvt]", "Floor Plan: Level 1" _
+         , 486.54287680574049 _
+         , 486.54287680574049, 0.00000000000000, 0.00000000000000 _
+         , 0.00000000000000, 486.54287680574049, 0.00000000000000 _
+         , 0.00000000000000, 0.00000000000000, 486.54287680574049 _
+         , 708.42770150170895, -401.55442136174042, 0.00000000000000
+ 'H 16-May-2022 18:19:50.327;   0:< 
+ Jrn.Directive "ProjToPage"  _
+         , "[Project1.rvt]", "Floor Plan: Level 1" _
+         , 486.54287680574049 _
+         , 486.54287680574049, 0.00000000000000, 0.00000000000000 _
+         , 0.00000000000000, 486.54287680574049, 0.00000000000000 _
+         , 0.00000000000000, 0.00000000000000, 486.54287680574049 _
+         , 715.99185672696535, -398.93758456600153, 0.00000000000000
+ 'E 16-May-2022 18:19:50.348;   0:< 
+ Jrn.MouseMove    0 ,    667 ,    430
+ 'E 16-May-2022 18:19:50.348;   0:< 
+ Jrn.Wheel      0 ,  120 ,    897 ,    632
+ 'H 16-May-2022 18:19:50.349;   0:< 
+ Jrn.Directive "ProjToPage"  _
+         , "[Project1.rvt]", "Floor Plan: Level 1" _
+         , 559.52430832660139 _
+         , 559.52430832660139, 0.00000000000000, 0.00000000000000 _
+         , 0.00000000000000, 559.52430832660139, 0.00000000000000 _
+         , 0.00000000000000, 0.00000000000000, 559.52430832660139 _
+         , 715.99185672696535, -398.93758456600153, 0.00000000000000
+ 'H 16-May-2022 18:19:50.350;   0:< 
+ Jrn.Directive "ProjToPage"  _
+         , "[Project1.rvt]", "Floor Plan: Level 1" _
+         , 559.52430832660139 _
+         , 559.52430832660139, 0.00000000000000, 0.00000000000000 _
+         , 0.00000000000000, 559.52430832660139, 0.00000000000000 _
+         , 0.00000000000000, 0.00000000000000, 559.52430832660139 _
+         , 722.29063523601019, -393.22822225090187, 0.00000000000000
+ ' 0:< ::63:: Delta VM: Avail -1 -> 134210827 MB, Used +8 -> 719 MB, Peak +12 -> 724 MB; RAM: Avail -1 -> 18804 MB, Used +1 -> 841 MB, Peak +1 -> 841 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9189, Used 811, User: Used 430 
+ 'E 16-May-2022 18:19:50.363;   0:< 
+ Jrn.MouseMove    0 ,    679 ,    442
+ 'E 16-May-2022 18:19:50.363;   0:< 
+ Jrn.Wheel      0 ,  120 ,    908 ,    642
+ 'H 16-May-2022 18:19:50.364;   0:< 
+ Jrn.Directive "ProjToPage"  _
+         , "[Project1.rvt]", "Floor Plan: Level 1" _
+         , 643.45295457559155 _
+         , 643.45295457559155, 0.00000000000000, 0.00000000000000 _
+         , 0.00000000000000, 643.45295457559155, 0.00000000000000 _
+         , 0.00000000000000, 0.00000000000000, 643.45295457559155 _
+         , 722.29063523601019, -393.22822225090187, 0.00000000000000
+ 'H 16-May-2022 18:19:50.365;   0:< 
+ Jrn.Directive "ProjToPage"  _
+         , "[Project1.rvt]", "Floor Plan: Level 1" _
+         , 643.45295457559155 _
+         , 643.45295457559155, 0.00000000000000, 0.00000000000000 _
+         , 0.00000000000000, 643.45295457559155, 0.00000000000000 _
+         , 0.00000000000000, 0.00000000000000, 643.45295457559155 _
+         , 727.88423052141184, -385.16245558853711, 0.00000000000000
+ 'E 16-May-2022 18:19:50.384;   0:< 
+ Jrn.MouseMove    0 ,    689 ,    448
+ 'E 16-May-2022 18:19:50.384;   0:< 
+ Jrn.Wheel      0 ,  120 ,    916 ,    644
+ 'H 16-May-2022 18:19:50.384;   0:< 
+ Jrn.Directive "ProjToPage"  _
+         , "[Project1.rvt]", "Floor Plan: Level 1" _
+         , 739.97089776193025 _
+         , 739.97089776193025, 0.00000000000000, 0.00000000000000 _
+         , 0.00000000000000, 739.97089776193025, 0.00000000000000 _
+         , 0.00000000000000, 0.00000000000000, 739.97089776193025 _
+         , 727.88423052141184, -385.16245558853711, 0.00000000000000
+ 'H 16-May-2022 18:19:50.385;   0:< 
+ Jrn.Directive "ProjToPage"  _
+         , "[Project1.rvt]", "Floor Plan: Level 1" _
+         , 739.97089776193025 _
+         , 739.97089776193025, 0.00000000000000, 0.00000000000000 _
+         , 0.00000000000000, 739.97089776193025, 0.00000000000000 _
+         , 0.00000000000000, 0.00000000000000, 739.97089776193025 _
+         , 733.11686509962351, -375.58682392681766, 0.00000000000000
+ ' 0:< ::67:: Delta VM: Avail -2 -> 134210825 MB, Used +10 -> 730 MB, Peak +9 -> 733 MB; RAM: Avail +23 -> 18827 MB, Used +4 -> 846 MB, Peak +5 -> 847 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9199, Used 801, User: Used 429 
+ 'E 16-May-2022 18:19:51.306;   0:< 
+ Jrn.MouseMove    0 ,    131 ,      4
+ 'E 16-May-2022 18:19:51.306;   0:< 
+ Jrn.Command "Ribbon" , "Create a wall , ID_OBJECTS_WALL"
+' 0:< Unnecessary nesting;ArrowUI_4;-1;ID_OBJECTS_WALL ;N++EB(NB); 
+'H 16-May-2022 18:19:51.314;   0:< 
+Jrn.Directive "JournalDataChainOption"  _
+        , "Walls", 1
+' 0:< Setup Tool transaction group (wall) 
+' 0:< Setup Tool transaction (wall) 
+' 0:< Unnecessary nesting;WallUI_1;-1;ID_SETUP_WALL_TOOL ;N++OB(NAB); 
+' 7:< FileCheckTrigger dependencies update 
+' 1:< ;PERF;MISC;ElementsGraphicCacheUpdater::updateAll() DBViewProject id=3651: 453(100%) elements need cache update 
+' 0:< ::69:: Delta VM: Avail 134210825 MB, Used 730 MB; RAM: Avail -32 -> 18796 MB, Used +2 -> 848 MB, Peak +1 -> 849 MB 
+' 0:< GUI Resource Usage GDI: Avail 9141, Used 859, User: Used 477 
+' 0:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: ID_OBJECTS_WALL
+'Category: 0
+'Bar list: 
+'	Dialog_Revit_DynamicLabelDBar
+'	Dialog_Revit_FamilyBar
+'	Dialog_Essentials_CurveCreate
+'	Dialog_Essentials_LevelSelectionWDdown
+'	Dialog_HostObj_KeyRefDlg
+'	Dialog_Essentials_WallProp
+'Provider list: 
+'	
+'Product: Revit
+'
+'
+'***********************************************************
+'CT [Modify | Place Wall]:
+'	{1} spacer_shr
+'	{20} DPPanel
+'
+'***********************************************************
+'<<End build CT>> 
+' 0:< ::69:: Delta VM: Avail -1 -> 134210824 MB, Used +15 -> 745 MB, Peak +14 -> 748 MB; RAM: Avail -21 -> 18775 MB, Used +15 -> 864 MB, Peak +15 -> 864 MB 
+' 0:< GUI Resource Usage GDI: Avail 9134, Used 866, User: Used 476 
+'C 16-May-2022 18:19:51.876;  DBG_INFO: Downsizing the Dialog Bar: line 148 of d:\ship\2020_px64\source\revit\desktopmfc\dialog\aribbonaccess.cpp. 
+ 'E 16-May-2022 18:19:52.159;   0:< 
+ Jrn.MouseMove    0 ,    861 ,    293
+ 'E 16-May-2022 18:19:52.159;   0:< 
+ Jrn.LButtonDown    1 ,    861 ,    293
+ ' 0:< Candidates (curIdx = 0): Snap(361798-1-6L [361798-1-LINE]) NoSnap  
+ ' 4:< REGEN_DOC_CONTEXT_INFO: Changing wrong atom in regeneration 
+ 'E 16-May-2022 18:19:52.270;   0:< 
+ Jrn.MouseMove    1 ,    862 ,    299
+ 'E 16-May-2022 18:19:52.270;   0:< 
+ Jrn.LButtonUp    0 ,    862 ,    299
+ ' 0:< Candidates (curIdx = 0): Combo[Combo[Snap(361798-1-6L [361798-1-LINE]),Snap(362424-1-6L [362424-1-LINE])],DirSnap(-1V)] DirSnap(-1V) Combo[Snap(361798-1-6L [361798-1-LINE]),DirSnap(-1V)] DirSnap(-1V) Combo[Snap(362424-1-6L [362424-1-LINE]),DirSnap(-1V)] DirSnap(-1V) Snap(362424-1-6L [362424-1-LINE]) NoSnap  
+ 'C 16-May-2022 18:19:52.271;  DBG_INFO: Recent Dynamic Added but not to Dynamics, this means that this element is not dynamic anymore with RDYs removed.: line 185 of d:\ship\2020_px64\source\revit\revitdb\display\graphicsmgr.cpp. 
+ 'E 16-May-2022 18:19:52.439;   0:< 
+ Jrn.MouseMove    0 ,    868 ,    397
+ 'E 16-May-2022 18:19:52.440;   0:< 
+ Jrn.LButtonDown    1 ,    868 ,    397
+ ' 0:< Candidates (curIdx = 0): Combo[Snap(361798-1-6L [361798-1-LINE]),DirSnap(-1V)] DirSnap(-1V) NoSnap  
+ ' 4:< Snapshot is constant 
+ ' 4:< Snapshot is constant and really did nothing 
+ ' 7:< --TB- Level   13071 - Levels : Level : Level 1 
+ 'C 16-May-2022 18:19:52.455;  DBG_INFO: When constructing ElementRecord, elem 362626 not found: line 35 of d:\ship\2020_px64\source\revit\revitdb\elemtable\elementrecord.cpp. 
+ ' 3:< ::75:: Delta VM: Avail -35 -> 134210789 MB, Used +4 -> 750 MB, Peak +8 -> 756 MB; RAM: Avail -4 -> 18771 MB, Used +9 -> 874 MB, Peak +15 -> 880 MB 
+ ' 3:< GUI Resource Usage GDI: Avail 9101, Used 899, User: Used 486 
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ '  0.192952    2:<<raiseDocumentChangedEvent 
+ 'H 16-May-2022 18:19:52.654;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Wall - Line"
+ '  0.203574   1:<<EndOrAbortUndoTransaction();DOPT; 
+ 'H 16-May-2022 18:19:52.660;   0:< 
+ Jrn.Data "Restricted Propagation"  _
+         , 2, 25
+ 'E 16-May-2022 18:19:52.691;   0:< 
+ Jrn.MouseMove    1 ,    871 ,    397
+ 'E 16-May-2022 18:19:52.691;   0:< 
+ Jrn.LButtonUp    0 ,    871 ,    397
+ ' 0:< Candidates (curIdx = 0): Combo[Snap(362638-10-6L [362638-10-FACE]),DirSnap(-1H)] DirSnap(-1H) NoSnap  
+ 'E 16-May-2022 18:19:52.713;   0:< 
+ Jrn.MouseMove    0 ,    945 ,    386
+ 'E 16-May-2022 18:19:52.713;   0:< 
+ Jrn.LButtonDown    1 ,    945 ,    386
+ ' 0:< Candidates (curIdx = 0): DirSnap(-1A) NoSnap  
+ ' 1:< ::attachToElem() actually attaching [362660,0]+[362638,1] 
+ ' 4:< FaultyAtomsCheckLog - Comparasion difference found :  
+ ' 7:< --TB- Level   13071 - Levels : Level : Level 1 
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:19:52.741;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Wall - Line"
+ 'H 16-May-2022 18:19:52.747;   0:< 
+ Jrn.Data "Restricted Propagation"  _
+         , 2, 25
+ 'E 16-May-2022 18:19:52.807;   0:< 
+ Jrn.MouseMove    1 ,    945 ,    386
+ 'E 16-May-2022 18:19:52.807;   0:< 
+ Jrn.LButtonUp    0 ,    945 ,    386
+ ' 0:< Candidates (curIdx = 0): DirSnap(-1V) Snap(362660-1-1L [362660-1-LINE]) Combo[Snap(362660-5-5L [362660-5-FACE]),DirSnap(-1V)] DirSnap(-1V) Snap(362660-5-1L [362660-5-FACE]) Combo[Snap(362660-6-5L [362660-6-FACE]),DirSnap(-1V)] DirSnap(-1V) Snap(362660-6-0L [362660-6-FACE]) DirSnap(-1V) Snap(362660-10-6L [362660-10-FACE]) NoSnap  
+ 'E 16-May-2022 18:19:53.070;   0:< 
+ Jrn.MouseMove    0 ,    946 ,    312
+ 'E 16-May-2022 18:19:53.070;   0:< 
+ Jrn.LButtonDown    1 ,    946 ,    312
+ ' 0:< Candidates (curIdx = 0): DirSnap(-1V) NoSnap  
+ ' 1:< ::attachToElem() actually attaching [362684,0]+[362660,1] 
+ ' 7:< --TB- Level   13071 - Levels : Level : Level 1 
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:19:53.100;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Wall - Line"
+ 'H 16-May-2022 18:19:53.105;   0:< 
+ Jrn.Data "Restricted Propagation"  _
+         , 2, 25
+ 'E 16-May-2022 18:19:53.166;   0:< 
+ Jrn.MouseMove    1 ,    946 ,    312
+ 'E 16-May-2022 18:19:53.166;   0:< 
+ Jrn.LButtonUp    0 ,    946 ,    312
+ ' 0:< Candidates (curIdx = 0): DirSnap(-1H) Snap(362684-1-1L [362684-1-LINE]) Combo[Snap(362684-5-1L [362684-5-FACE]),DirSnap(-1H)] DirSnap(-1H) Snap(362684-5-1L [362684-5-FACE]) Combo[Snap(362684-6-0L [362684-6-FACE]),DirSnap(-1H)] DirSnap(-1H) Snap(362684-6-0L [362684-6-FACE]) DirSnap(-1H) Snap(362684-10-2L [362684-10-FACE]) NoSnap  
+ 'E 16-May-2022 18:19:53.432;   0:< 
+ Jrn.MouseMove    0 ,    914 ,    337
+ 'E 16-May-2022 18:19:53.432;   0:< 
+ Jrn.Command "AccelKey" , "Cancel the current operation , ID_CANCEL_EDITOR"
+' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+'C 16-May-2022 18:19:53.468;   0:< idle0_doc 
+' 0:< Setup Tool transaction group (wall) 
+' 0:< Setup Tool transaction (wall) 
+' 0:< Unnecessary nesting;WallUI_1;-1;ID_SETUP_WALL_TOOL ;N++OB(NAB); 
+ 'E 16-May-2022 18:19:53.704;   0:< 
+ Jrn.MouseMove    0 ,    992 ,    424
+ 'E 16-May-2022 18:19:53.704;   0:< 
+ Jrn.LButtonDown    1 ,    992 ,    424
+ ' 0:< Candidates (curIdx = -1):  
+ 'E 16-May-2022 18:19:53.820;   0:< 
+ Jrn.MouseMove    1 ,    965 ,    424
+ 'E 16-May-2022 18:19:53.820;   0:< 
+ Jrn.LButtonUp    0 ,    965 ,    424
+ ' 0:< Candidates (curIdx = 0): DirSnap(-1H) NoSnap  
+ ' 0:< ::91:: Delta VM: Avail -1 -> 134210788 MB, Used -13 -> 737 MB, Peak +2 -> 758 MB; RAM: Avail +0 -> 18772 MB, Used +0 -> 875 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9097, Used 903, User: Used 482 
+ 'E 16-May-2022 18:19:54.138;   0:< 
+ Jrn.MouseMove    0 ,    844 ,    460
+ 'E 16-May-2022 18:19:54.138;   0:< 
+ Jrn.LButtonDown    1 ,    844 ,    460
+ ' 0:< Candidates (curIdx = 0): DirSnap(-1A) NoSnap  
+ ' 7:< --TB- Level   13071 - Levels : Level : Level 1 
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:19:54.163;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Wall - Line"
+ 'E 16-May-2022 18:19:54.237;   0:< 
+ Jrn.MouseMove    1 ,    844 ,    460
+ 'E 16-May-2022 18:19:54.237;   0:< 
+ Jrn.LButtonUp    0 ,    844 ,    460
+ ' 0:< Candidates (curIdx = 0): Snap(362740-1-1L [362740-1-LINE]) Snap(362740-5-1L [362740-5-FACE]) Snap(362740-6-0L [362740-6-FACE]) Snap(362740-10-2L [362740-10-FACE]) NoSnap  
+ ' 0:< ::95:: Delta VM: Avail 134210788 MB, Used +1 -> 739 MB; RAM: Avail +34 -> 18807 MB, Used +0 -> 876 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9102, Used 898, User: Used 482 
+ 'E 16-May-2022 18:19:54.657;   0:< 
+ Jrn.MouseMove    0 ,    722 ,    350
+ 'E 16-May-2022 18:19:54.658;   0:< 
+ Jrn.LButtonDown    1 ,    722 ,    350
+ ' 0:< Candidates (curIdx = 0): Combo[Snap(362550-10-6L [362550-10-FACE]),DirSnap(-1D45)] DirSnap(-1D45) Snap(362550-10-6L [362550-10-FACE]) NoSnap  
+ ' 1:< ::attachToElem() actually attaching [362773,0]+[362740,1] 
+ ' 7:< --TB- Level   13071 - Levels : Level : Level 1 
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:19:54.685;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Wall - Line"
+ 'H 16-May-2022 18:19:54.690;   0:< 
+ Jrn.Data "Restricted Propagation"  _
+         , 2, 25
+ 'E 16-May-2022 18:19:54.757;   0:< 
+ Jrn.MouseMove    1 ,    722 ,    350
+ 'E 16-May-2022 18:19:54.757;   0:< 
+ Jrn.LButtonUp    0 ,    722 ,    350
+ ' 0:< Candidates (curIdx = 0): Combo[Snap(362550-10-6L [362550-10-FACE]),DirSnap(-1H)] DirSnap(-1H) NoSnap  
+ 'E 16-May-2022 18:19:54.872;   0:< 
+ Jrn.MouseMove    0 ,    601 ,    261
+ 'E 16-May-2022 18:19:54.873;   0:< 
+ Jrn.Command "AccelKey" , "Cancel the current operation , ID_CANCEL_EDITOR"
+' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+'C 16-May-2022 18:19:54.912;   0:< idle0_doc 
+' 0:< Setup Tool transaction group (wall) 
+' 0:< Setup Tool transaction (wall) 
+' 0:< Unnecessary nesting;WallUI_1;-1;ID_SETUP_WALL_TOOL ;N++OB(NAB); 
+ 'E 16-May-2022 18:19:55.091;   0:< 
+ Jrn.MouseMove    0 ,    409 ,     43
+ 'E 16-May-2022 18:19:55.091;   0:< 
+ Jrn.Command "AccelKey" , "Cancel the current operation , ID_CANCEL_EDITOR"
+'C 16-May-2022 18:19:55.112;   0:< idle0_doc 
+' 0:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: ID_BUTTON_SELECT
+'Category: 0
+'Bar list: 
+'	Dialog_Revit_DynamicLabelDBar
+'	Dialog_Essentials_FilterSelectionNew
+'Provider list: 
+'	
+'Product: Revit
+'
+'
+'***********************************************************
+'***********************************************************
+'<<End build CT>> 
+ ' 0:< ::103:: Delta VM: Avail -2 -> 134210787 MB, Used +2 -> 741 MB; RAM: Avail -32 -> 18775 MB, Used +2 -> 878 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9158, Used 842, User: Used 438 
+ 'E 16-May-2022 18:19:56.903;   0:< 
+ Jrn.MouseMove    0 ,    420 ,      2
+ 'E 16-May-2022 18:19:56.903;   0:< 
+ Jrn.Command "Ribbon" , "Create a window , ID_OBJECTS_WINDOW"
+' 0:< Unnecessary nesting;ArrowUI_4;-1;ID_OBJECTS_WINDOW ;N++EB(NB); 
+' 0:< Unnecessary nesting;InsertableInstUI_6;-1;ID_CHANGE_SYMBOL ;N++EB(NB); 
+' 7:< MODIFICATION IS FORBIDDEN: Element modification is forbidden because it is a member of a family, and that family is not being edited. 
+' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+'H 16-May-2022 18:19:57.050;   1:< 
+Jrn.Data "Transaction Successful"  _
+        , "Set up Placement Tool"
+' 0:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: ID_OBJECTS_WINDOW
+'Category: 0
+'Bar list: 
+'	Dialog_Revit_DynamicLabelDBar
+'	Dialog_Revit_FamilyBar
+'	Dialog_Family_ManyInstDbar
+'	Dialog_Essentials_TagOnPlacement
+'	Dialog_Essentials_IndependentTagUiDlgBar
+'Provider list: 
+'	
+'Product: Revit
+'
+'
+'***********************************************************
+'CT [Modify | Place Window]:
+'	{1} spacer_shr
+'	{500} Dialog_Essentials_TagOnPlacement
+'	{10} Dialog_Family_ManyInstDbar
+'
+'***********************************************************
+'<<End build CT>> 
+ 'E 16-May-2022 18:19:57.639;   0:< 
+ Jrn.MouseMove    0 ,    810 ,    426
+ 'E 16-May-2022 18:19:57.639;   0:< 
+ Jrn.LButtonDown    1 ,    810 ,    426
+ ' 0:< Candidates (curIdx = 0): 362773 (+10.295103, -6.9077775, +3.9370079)  
+ ' 0:< ::107:: Delta VM: Avail +6 -> 134210793 MB, Used +0 -> 742 MB; RAM: Avail -11 -> 18765 MB, Used +5 -> 884 MB, Peak +3 -> 884 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9151, Used 849, User: Used 451 
+ 'E 16-May-2022 18:19:57.739;   0:< 
+ Jrn.MouseMove    1 ,    812 ,    425
+ 'E 16-May-2022 18:19:57.739;   0:< 
+ Jrn.LButtonUp    0 ,    812 ,    425
+ ' 0:< Candidates (curIdx = 0): 362773 (+10.594664, -6.7433573, +3.9370079)  
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:19:57.823;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Window"
+ ' 0:< Unnecessary nesting;InsertableInstUI_6;-1;ID_CHANGE_SYMBOL ;N++EB(NB); 
+ 'E 16-May-2022 18:19:57.882;   0:< 
+ Jrn.MouseMove    0 ,    820 ,    378
+ 'E 16-May-2022 18:19:57.882;   0:< 
+ Jrn.LButtonDown    1 ,    820 ,    378
+ ' 0:< Candidates (curIdx = -1):  
+ ' 0:< Unnecessary nesting;InsertableInstUI_6;-1;ID_CHANGE_SYMBOL ;N++EB(NB); 
+ 'E 16-May-2022 18:19:57.958;   0:< 
+ Jrn.MouseMove    1 ,    820 ,    378
+ 'E 16-May-2022 18:19:57.958;   0:< 
+ Jrn.LButtonUp    0 ,    820 ,    378
+ ' 0:< Candidates (curIdx = -1):  
+ 'E 16-May-2022 18:19:58.283;   0:< 
+ Jrn.MouseMove    0 ,    670 ,    303
+ 'E 16-May-2022 18:19:58.283;   0:< 
+ Jrn.LButtonDown    1 ,    670 ,    303
+ ' 0:< Candidates (curIdx = 0): 362424 (-8.5296415, +9.8557204, +3.9370079)  
+ 'E 16-May-2022 18:19:58.395;   0:< 
+ Jrn.MouseMove    1 ,    670 ,    302
+ 'E 16-May-2022 18:19:58.395;   0:< 
+ Jrn.LButtonUp    0 ,    670 ,    302
+ ' 0:< Candidates (curIdx = 0): 362424 (-8.5296415, +9.8557204, +3.9370079)  
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:19:58.431;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Window"
+ ' 0:< Unnecessary nesting;InsertableInstUI_6;-1;ID_CHANGE_SYMBOL ;N++EB(NB); 
+ ' 0:< ::117:: Delta VM: Avail +1 -> 134210794 MB, Used 742 MB; RAM: Avail +31 -> 18796 MB, Used +0 -> 885 MB, Peak +0 -> 885 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9153, Used 847, User: Used 452 
+ 'E 16-May-2022 18:19:58.542;   0:< 
+ Jrn.MouseMove    0 ,    649 ,    258
+ 'E 16-May-2022 18:19:58.542;   0:< 
+ Jrn.LButtonDown    1 ,    649 ,    258
+ ' 0:< Candidates (curIdx = -1):  
+ ' 0:< Unnecessary nesting;InsertableInstUI_6;-1;ID_CHANGE_SYMBOL ;N++EB(NB); 
+ 'E 16-May-2022 18:19:58.652;   0:< 
+ Jrn.MouseMove    1 ,    649 ,    258
+ 'E 16-May-2022 18:19:58.652;   0:< 
+ Jrn.LButtonUp    0 ,    649 ,    258
+ ' 0:< Candidates (curIdx = -1):  
+ 'E 16-May-2022 18:19:59.146;   0:< 
+ Jrn.MouseMove    0 ,    591 ,    305
+ 'E 16-May-2022 18:19:59.146;   0:< 
+ Jrn.LButtonDown    1 ,    591 ,    305
+ ' 0:< Candidates (curIdx = 0): 362424 (-19.205737, +9.5276364, +3.9370079)  
+ 'E 16-May-2022 18:19:59.289;   0:< 
+ Jrn.MouseMove    1 ,    589 ,    302
+ 'E 16-May-2022 18:19:59.289;   0:< 
+ Jrn.LButtonUp    0 ,    589 ,    302
+ ' 0:< Candidates (curIdx = 0): 362424 (-19.476018, +9.8557204, +3.9370079)  
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:19:59.325;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Window"
+ ' 0:< Unnecessary nesting;InsertableInstUI_6;-1;ID_CHANGE_SYMBOL ;N++EB(NB); 
+ ' 0:< ::125:: Delta VM: Avail +1 -> 134210796 MB, Used 742 MB; RAM: Avail -25 -> 18772 MB, Used 885 MB, Peak +1 -> 887 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9155, Used 845, User: Used 452 
+ 'E 16-May-2022 18:19:59.391;   0:< 
+ Jrn.MouseMove    0 ,    583 ,    262
+ 'E 16-May-2022 18:19:59.391;   0:< 
+ Jrn.LButtonDown    1 ,    583 ,    262
+ ' 0:< Candidates (curIdx = 0): 362887-32977 (-19.491557, +15.493360, +0.0000000)  
+ 'H 16-May-2022 18:19:59.392;   0:< 
+ Jrn.Data "Control"  _
+         , "WtnsLnDragCtrl", 1.00000000000000
+ ' 0:< Containing transaction InsertableInstUI_3,-1, contained transaction ACommandRouter_1,-1, BUTO C++EB 
+ 'E 16-May-2022 18:19:59.487;   0:< 
+ Jrn.MouseMove    1 ,    583 ,    261
+ 'E 16-May-2022 18:19:59.487;   0:< 
+ Jrn.LButtonUp    0 ,    583 ,    261
+ ' 0:< Candidates (curIdx = -1):  
+ 'H 16-May-2022 18:19:59.489;   0:< 
+ Jrn.Data "Dimension reference action"  _
+         , "TOGGLE",  _
+          "GeomSegInPlaneRef; 1 GeomRefs:[ElementId: 362864; Tag: 2; SubTag: -1; in symbol]; Arc side: 0;"
+ 'E 16-May-2022 18:19:59.861;   0:< 
+ Jrn.MouseMove    0 ,     13 ,     13
+ 'E 16-May-2022 18:19:59.861;   0:< 
+ Jrn.Command "AccelKey" , "Cancel the current operation , ID_CANCEL_EDITOR"
+ 'E 16-May-2022 18:20:00.629;   0:< 
+ Jrn.Command "AccelKey" , "Cancel the current operation , ID_CANCEL_EDITOR"
+'C 16-May-2022 18:20:00.638;   0:< idle0_doc 
+' 0:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: ID_BUTTON_SELECT
+'Category: 0
+'Bar list: 
+'	Dialog_Revit_DynamicLabelDBar
+'	Dialog_Essentials_FilterSelectionNew
+'Provider list: 
+'	
+'Product: Revit
+'
+'
+'***********************************************************
+'***********************************************************
+'<<End build CT>> 
+ 'E 16-May-2022 18:20:01.542;   0:< 
+ Jrn.MouseMove    0 ,     36 ,      5
+ 'E 16-May-2022 18:20:01.542;   0:< 
+ Jrn.Command "Ribbon" , "Create a door , ID_OBJECTS_DOOR"
+' 0:< Unnecessary nesting;ArrowUI_4;-1;ID_OBJECTS_DOOR ;N++EB(NB); 
+' 0:< Unnecessary nesting;InsertableInstUI_6;-1;ID_CHANGE_SYMBOL ;N++EB(NB); 
+' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+'H 16-May-2022 18:20:01.644;   1:< 
+Jrn.Data "Transaction Successful"  _
+        , "Set up Placement Tool"
+' 0:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: ID_OBJECTS_DOOR
+'Category: 0
+'Bar list: 
+'	Dialog_Revit_DynamicLabelDBar
+'	Dialog_Revit_FamilyBar
+'	Dialog_Family_ManyInstDbar
+'	Dialog_Essentials_TagOnPlacement
+'	Dialog_Essentials_IndependentTagUiDlgBar
+'Provider list: 
+'	
+'Product: Revit
+'
+'
+'***********************************************************
+'CT [Modify | Place Door]:
+'	{1} spacer_shr
+'	{500} Dialog_Essentials_TagOnPlacement
+'	{10} Dialog_Family_ManyInstDbar
+'
+'***********************************************************
+'<<End build CT>> 
+ 'E 16-May-2022 18:20:02.347;   0:< 
+ Jrn.MouseMove    0 ,    632 ,    484
+ 'E 16-May-2022 18:20:02.347;   0:< 
+ Jrn.LButtonDown    1 ,    632 ,    484
+ ' 0:< Candidates (curIdx = 0): 362522 (-13.664979, -14.750579, +3.9370079)  
+ ' 0:< ::136:: Delta VM: Avail -5 -> 134210791 MB, Used -6 -> 737 MB; RAM: Avail +26 -> 18798 MB, Used -1 -> 884 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9144, Used 856, User: Used 452 
+ 'E 16-May-2022 18:20:02.449;   0:< 
+ Jrn.MouseMove    1 ,    634 ,    487
+ 'E 16-May-2022 18:20:02.449;   0:< 
+ Jrn.LButtonUp    0 ,    634 ,    487
+ ' 0:< Candidates (curIdx = 0): 362522 (-13.394698, -15.078663, +3.9370079)  
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:20:02.525;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Door"
+ ' 0:< Unnecessary nesting;InsertableInstUI_6;-1;ID_CHANGE_SYMBOL ;N++EB(NB); 
+ 'E 16-May-2022 18:20:02.627;   0:< 
+ Jrn.MouseMove    0 ,    635 ,    547
+ 'E 16-May-2022 18:20:02.627;   0:< 
+ Jrn.LButtonDown    1 ,    635 ,    547
+ ' 0:< Candidates (curIdx = 0): 362913-32977 (-13.257961, -23.391079, +0.0000000)  
+ 'H 16-May-2022 18:20:02.627;   0:< 
+ Jrn.Data "Control"  _
+         , "WtnsLnDragCtrl", 1.00000000000000
+ 'E 16-May-2022 18:20:02.741;   0:< 
+ Jrn.MouseMove    1 ,    634 ,    548
+ 'E 16-May-2022 18:20:02.742;   0:< 
+ Jrn.LButtonUp    0 ,    634 ,    548
+ ' 0:< Candidates (curIdx = -1):  
+ 'H 16-May-2022 18:20:02.744;   0:< 
+ Jrn.Data "Dimension reference action"  _
+         , "TOGGLE",  _
+          "GeomSegInPlaneRef; 1 GeomRefs:[ElementId: 362893; Tag: 2; SubTag: -1; in symbol]; Arc side: 0;"
+ 'E 16-May-2022 18:20:03.230;   0:< 
+ Jrn.MouseMove    0 ,    464 ,      1
+ 'E 16-May-2022 18:20:03.230;   0:< 
+ Jrn.Command "AccelKey" , "Cancel the current operation , ID_CANCEL_EDITOR"
+ ' 0:< ::144:: Delta VM: Avail -2 -> 134210789 MB, Used +0 -> 738 MB; RAM: Avail -35 -> 18764 MB, Used +1 -> 886 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9146, Used 854, User: Used 451 
+ 'E 16-May-2022 18:20:04.371;   0:< 
+ Jrn.Command "Ribbon" , "Create Aligned Dimensions , ID_ANNOTATIONS_DIMENSION_ALIGNED"
+' 0:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: ID_ANNOTATIONS_DIMENSION_ALIGNED
+'Category: 0
+'Bar list: 
+'	Dialog_Revit_DynamicLabelDBar
+'	Dialog_Revit_FamilyBar
+'	Dialog_Essentials_DimType
+'	Dialog_Essentials_DimBaselineOffset
+'Provider list: 
+'	
+'Product: Revit
+'
+'
+'***********************************************************
+'CT [Modify | Place Dimensions]:
+'	{160} dimension_ct_shr
+'	{1} spacer_shr
+'
+'***********************************************************
+'<<End build CT>> 
+ 'E 16-May-2022 18:20:05.094;   0:< 
+ Jrn.MouseMove    0 ,    746 ,    443
+ 'E 16-May-2022 18:20:05.094;   0:< 
+ Jrn.LButtonDown    1 ,    746 ,    443
+ ' 0:< Candidates (curIdx = 0): 362550-1 (+1.5058186, -9.1102469, +3.9370079) 362550-5-FACE (+1.5058186, -9.1102469, +3.9370079) 362550-6-FACE (+0.84965061, -9.1102469, +3.9370079) 362550-5-CUTEDGE#7 (+1.5058186, -9.1102469, +3.9370079) 362550-6-CUTEDGE#5 (+0.84965061, -9.1102469, +3.9370079)  
+ 'H 16-May-2022 18:20:05.095;   0:< 
+ Jrn.Data "Selection action"  _
+         , "ADD",  _
+          "SEL DELTA : Walls : Basic Wall : Generic - 200mm : Reference",  _
+          "SEL RESULT: Walls : Basic Wall : Generic - 200mm : Reference"
+ 'H 16-May-2022 18:20:05.096;   0:< 
+ Jrn.Data "Dimension reference action"  _
+         , "ADD",  _
+          "GeomSegInPlaneRef; 1 GeomRefs:[ElementId: 362550; Tag: 1; SubTag: -1]; Arc side: 0;"
+ 'E 16-May-2022 18:20:05.208;   0:< 
+ Jrn.MouseMove    1 ,    738 ,    441
+ 'E 16-May-2022 18:20:05.208;   0:< 
+ Jrn.LButtonUp    0 ,    738 ,    441
+ ' 0:< Candidates (curIdx = 0): 362550-1 (+0.84965061, -8.8399660, +3.9370079) 362550-6-FACE (+0.84965061, -8.8399660, +3.9370079) 362550-5-FACE (+1.5058186, -8.8399660, +3.9370079) 362550-6-CUTEDGE#5 (+0.84965061, -8.8399660, +3.9370079) 362550-5-CUTEDGE#7 (+1.5058186, -8.8399660, +3.9370079)  
+ 'E 16-May-2022 18:20:05.654;   0:< 
+ Jrn.MouseMove    0 ,    610 ,    433
+ 'E 16-May-2022 18:20:05.654;   0:< 
+ Jrn.LButtonDown    1 ,    610 ,    433
+ ' 0:< Candidates (curIdx = 0): 362493-1 (-16.538801, -7.7588424, +3.9370079) 362493-5-FACE (-16.538801, -7.7588424, +3.9370079) 362493-6-FACE (-15.882633, -7.7588424, +3.9370079) 362493-5-CUTEDGE#5 (-16.538801, -7.7588424, +3.9370079) 362493-6-CUTEDGE#8 (-15.882633, -7.7588424, +3.9370079)  
+ 'H 16-May-2022 18:20:05.655;   0:< 
+ Jrn.Data "Selection action"  _
+         , "ADD",  _
+          "SEL DELTA : Walls : Basic Wall : Generic - 200mm : Reference",  _
+          "SEL RESULT: 2 items," & _
+          "Walls 2"
+ 'H 16-May-2022 18:20:05.656;   0:< 
+ Jrn.Data "Dimension reference action"  _
+         , "ADD",  _
+          "GeomSegInPlaneRef; 1 GeomRefs:[ElementId: 362493; Tag: 1; SubTag: -1]; Arc side: 0;"
+ 'E 16-May-2022 18:20:05.778;   0:< 
+ Jrn.MouseMove    1 ,    609 ,    429
+ 'E 16-May-2022 18:20:05.778;   0:< 
+ Jrn.LButtonUp    0 ,    609 ,    429
+ ' 0:< Candidates (curIdx = 0): 362493-1 (-16.538801, -7.2182806, +3.9370079) 362493-5-FACE (-16.538801, -7.2182806, +3.9370079) 362493-6-FACE (-15.882633, -7.2182806, +3.9370079) 362493-5-CUTEDGE#5 (-16.538801, -7.2182806, +3.9370079) 362493-6-CUTEDGE#8 (-15.882633, -7.2182806, +3.9370079)  
+ 'E 16-May-2022 18:20:05.934;   0:< 
+ Jrn.MouseMove    0 ,    572 ,    377
+ 'E 16-May-2022 18:20:05.934;   0:< 
+ Jrn.LButtonDown    1 ,    572 ,    377
+ ' 0:< Candidates (curIdx = 0): 362311-1 (-21.926543, -0.19097725, +3.9370079) 362311-6-FACE (-21.598459, -0.19097725, +3.9370079) 362311-5-FACE (-22.254627, -0.19097725, +3.9370079) 362311-6-CUTEDGE#3 (-21.598459, -0.19097725, +3.9370079) 362311-5-CUTEDGE#4 (-22.254627, -0.19097725, +3.9370079)  
+ 'H 16-May-2022 18:20:05.935;   0:< 
+ Jrn.Data "Selection action"  _
+         , "ADD",  _
+          "SEL DELTA : Walls : Basic Wall : Generic - 200mm : Reference",  _
+          "SEL RESULT: 3 items," & _
+          "Walls 3"
+ 'H 16-May-2022 18:20:05.935;   0:< 
+ Jrn.Data "Dimension reference action"  _
+         , "ADD",  _
+          "GeomSegInPlaneRef; 1 GeomRefs:[ElementId: 362311; Tag: 1; SubTag: -1]; Arc side: 0;"
+ 'E 16-May-2022 18:20:06.092;   0:< 
+ Jrn.MouseMove    1 ,    572 ,    373
+ 'E 16-May-2022 18:20:06.092;   0:< 
+ Jrn.LButtonUp    0 ,    572 ,    373
+ ' 0:< Candidates (curIdx = 0): 362311-1 (-21.926543, +0.34958455, +3.9370079) 362311-6-FACE (-21.598459, +0.34958455, +3.9370079) 362311-5-FACE (-22.254627, +0.34958455, +3.9370079) 362311-6-CUTEDGE#3 (-21.598459, +0.34958455, +3.9370079) 362311-5-CUTEDGE#4 (-22.254627, +0.34958455, +3.9370079)  
+ 'E 16-May-2022 18:20:06.386;   0:< 
+ Jrn.MouseMove    0 ,    564 ,    216
+ 'E 16-May-2022 18:20:06.386;   0:< 
+ Jrn.LButtonDown    1 ,    564 ,    216
+ ' 0:< Candidates (curIdx = -1):  
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:20:06.421;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Place Dimensions"
+ ' 0:< ::159:: Delta VM: Avail 134210789 MB, Used +1 -> 739 MB; RAM: Avail +28 -> 18792 MB, Used -5 -> 881 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9117, Used 883, User: Used 465 
+ 'E 16-May-2022 18:20:06.495;   0:< 
+ Jrn.MouseMove    1 ,    564 ,    220
+ 'E 16-May-2022 18:20:06.495;   0:< 
+ Jrn.LButtonUp    0 ,    564 ,    220
+ ' 0:< Candidates (curIdx = -1):  
+ 'E 16-May-2022 18:20:07.023;   0:< 
+ Jrn.MouseMove    0 ,    779 ,    306
+ 'E 16-May-2022 18:20:07.023;   0:< 
+ Jrn.LButtonDown    1 ,    779 ,    306
+ ' 0:< Candidates (curIdx = 0): 362424-1 (+6.2006675, +9.5276364, +3.9370079) 362424-6-FACE (+6.2006675, +9.5276364, +3.9370079) 362424-5-FACE (+6.2006675, +10.183804, +3.9370079) 362424-6-CUTEDGE#5 (+6.2006675, +9.5276364, +3.9370079) 362424-5-CUTEDGE#15 (+6.2006675, +10.183804, +3.9370079)  
+ 'H 16-May-2022 18:20:07.024;   0:< 
+ Jrn.Data "Selection action"  _
+         , "ADD",  _
+          "SEL DELTA : Walls : Basic Wall : Generic - 200mm : Reference",  _
+          "SEL RESULT: Walls : Basic Wall : Generic - 200mm : Reference"
+ 'H 16-May-2022 18:20:07.025;   0:< 
+ Jrn.Data "Dimension reference action"  _
+         , "ADD",  _
+          "GeomSegInPlaneRef; 1 GeomRefs:[ElementId: 362424; Tag: 1; SubTag: -1]; Arc side: 0;"
+ 'E 16-May-2022 18:20:07.108;   0:< 
+ Jrn.MouseMove    1 ,    780 ,    309
+ 'E 16-May-2022 18:20:07.108;   0:< 
+ Jrn.LButtonUp    0 ,    780 ,    309
+ ' 0:< Candidates (curIdx = 0): 362424-1 (+6.3358079, +9.5276364, +3.9370079) 362424-6-FACE (+6.3358079, +9.5276364, +3.9370079) 362424-6-CUTEDGE#5 (+6.3358079, +9.5276364, +3.9370079)  
+ ' 0:< ::165:: Delta VM: Avail -1 -> 134210788 MB, Used +0 -> 740 MB; RAM: Avail -33 -> 18759 MB, Used +0 -> 882 MB 
+ ' 0:< GUI Resource Usage GDI: Avail 9115, Used 885, User: Used 462 
+ 'E 16-May-2022 18:20:07.551;   0:< 
+ Jrn.MouseMove    0 ,    771 ,    406
+ 'E 16-May-2022 18:20:07.551;   0:< 
+ Jrn.LButtonDown    1 ,    771 ,    406
+ ' 0:< Candidates (curIdx = 0): 362330-1 (+5.1195439, -4.2518912, +3.9370079) 362330-6-FACE (+5.1195439, -3.9238072, +3.9370079) 362330-5-FACE (+5.1195439, -4.5799752, +3.9370079) 362330-6-CUTEDGE#5 (+5.1195439, -3.9238072, +3.9370079) 362330-5-CUTEDGE#6 (+5.1195439, -4.5799752, +3.9370079)  
+ 'H 16-May-2022 18:20:07.552;   0:< 
+ Jrn.Data "Selection action"  _
+         , "ADD",  _
+          "SEL DELTA : Walls : Basic Wall : Generic - 200mm : Reference",  _
+          "SEL RESULT: 2 items," & _
+          "Walls 2"
+ 'H 16-May-2022 18:20:07.553;   0:< 
+ Jrn.Data "Dimension reference action"  _
+         , "ADD",  _
+          "GeomSegInPlaneRef; 1 GeomRefs:[ElementId: 362330; Tag: 1; SubTag: -1]; Arc side: 0;"
+ 'E 16-May-2022 18:20:07.658;   0:< 
+ Jrn.MouseMove    1 ,    768 ,    404
+ 'E 16-May-2022 18:20:07.658;   0:< 
+ Jrn.MouseMove    1 ,    749 ,    391
+ 'E 16-May-2022 18:20:07.667;   0:< 
+ Jrn.MouseMove    1 ,    749 ,    391
+ 'E 16-May-2022 18:20:07.667;   0:< 
+ Jrn.LButtonUp    0 ,    749 ,    391
+ ' 0:< Candidates (curIdx = -1):  
+ 'E 16-May-2022 18:20:07.846;   0:< 
+ Jrn.MouseMove    0 ,    699 ,    358
+ 'E 16-May-2022 18:20:07.846;   0:< 
+ Jrn.LButtonDown    1 ,    699 ,    358
+ ' 0:< Candidates (curIdx = -1):  
+ ' 3:< API_ERROR {  System.InvalidOperationException exception(Sequence contains no elements) was thrown from a handler of Autodesk.Revit.Proxy.DB.Events.DocumentChangedEventArgsProxy event. The API event handler was registered by application BIM_Leaders_Core (cadbff10-ce2c-4729-8cde-b3f5e1abb310). Changes made by this handler are going to be discarded. } 
+ 'H 16-May-2022 18:20:07.860;   1:< 
+ Jrn.Data "Transaction Successful"  _
+         , "Place Dimensions"
+ 'E 16-May-2022 18:20:07.989;   0:< 
+ Jrn.MouseMove    1 ,    699 ,    358
+ 'E 16-May-2022 18:20:07.989;   0:< 
+ Jrn.LButtonUp    0 ,    699 ,    358
+ ' 0:< Candidates (curIdx = -1):  
+ 'E 16-May-2022 18:20:08.085;   0:< 
+ Jrn.MouseMove    0 ,    716 ,    309
+ 'E 16-May-2022 18:20:08.085;   0:< 
+ Jrn.Command "AccelKey" , "Cancel the current operation , ID_CANCEL_EDITOR"
+ 'E 16-May-2022 18:20:08.256;   0:< 
+ Jrn.MouseMove    0 ,    729 ,    218
+ 'E 16-May-2022 18:20:08.256;   0:< 
+ Jrn.Command "AccelKey" , "Cancel the current operation , ID_CANCEL_EDITOR"
+' 1:< OnAbortEditorImpl:Editor ManyDimensionEditor does not request to clear errors in rollback. Well, there is none. 
+'C 16-May-2022 18:20:08.263;   0:< idle0_doc 
+' 0:< <<Begin build CT>>
+'
+'Edit mode: IDR_COMMON
+'Command: ID_BUTTON_SELECT
+'Category: 0
+'Bar list: 
+'	Dialog_Revit_DynamicLabelDBar
+'	Dialog_Essentials_FilterSelectionNew
+'Provider list: 
+'	
+'Product: Revit
+'
+'
+'***********************************************************
+'***********************************************************
+'<<End build CT>> 
+ 'E 16-May-2022 18:20:09.784;   0:< 
+ Jrn.MouseMove    0 ,    657 ,      8
+ 'E 16-May-2022 18:20:09.784;   0:< 
+ Jrn.RibbonEvent "Execute external command:CustomCtrl_%CustomCtrl_%BIM Leaders%Standards%640a76fb-78af-45d4-b56e-574d4c62b7c1:BIM_Leaders_Core.JournalAnalyze"

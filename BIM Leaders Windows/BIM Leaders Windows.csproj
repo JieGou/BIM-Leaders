@@ -94,6 +94,10 @@
     </Compile>
     <Compile Include="Windows\DimensionStairsLandingsData.cs" />
     <Compile Include="Windows\DimensionsPlanCheckData.cs" />
+    <Compile Include="Windows\JournalAnalyzeData.cs" />
+    <Compile Include="Windows\JournalAnalyzeForm.xaml.cs">
+      <DependentUpon>JournalAnalyzeForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\WallsArrangedData.cs" />
     <Compile Include="Windows\DimensionsPlanCheckForm.xaml.cs">
       <DependentUpon>DimensionsPlanCheckForm.xaml</DependentUpon>
@@ -218,6 +222,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\DimensionsPlanCheckForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\JournalAnalyzeForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -99,6 +99,7 @@
     <Compile Include="Commands\PanelElement\ElementPropertiesMatch.cs" />
     <Compile Include="Commands\PanelElement\ElementsJoin.cs" />
     <Compile Include="Commands\PanelFamily\FamilyParameterSet.cs" />
+    <Compile Include="Commands\PanelStandards\JournalAnalyze.cs" />
     <Compile Include="Commands\PanelStandards\WarningsSolve.cs" />
     <Compile Include="Commands\PanelStandards\WallsArranged.cs" />
     <Compile Include="Commands\PanelStandards\HelpStandards.cs" />

@@ -49,53 +49,32 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    reportMessageList.AddRange(CheckPrefixesAll(doc, inputCategories, inputPrefix));
+                    if (inputCategories.Contains(true))
+                        reportMessageList.AddRange(CheckNamesAll(doc, inputCategories, inputPrefix));
 
-                    // Check for empty tags.
                     if (inputModel[0])
                         reportMessageList.AddRange(CheckTags(doc));
-
-                    // Check for count of text notes in the project.
                     if (inputModel[1])
                         reportMessageList.AddRange(CheckTextNotes(doc));
-
-                    // Line Styles Unused check
                     if (inputModel[2])
                         reportMessageList.AddRange(CheckLineStyles(doc));
-
-                    // Check if filters are unused.
                     if (inputModel[3])
                         reportMessageList.AddRange(CheckFilters(doc));
-
-                    // Check for sheet placeholders and empty sheets.
                     if (inputModel[6])
                         reportMessageList.AddRange(CheckSheets(doc));
-
-                    // Warnings check
                     if (inputModel[7])
                         reportMessageList.AddRange(CheckWarnings(doc));
-
-                    // Groups check
                     if (inputModel[8])
                         reportMessageList.AddRange(CheckGroups(doc));
-
-                    // Rooms check
                     if (inputModel[9])
                         reportMessageList.AddRange(CheckRooms(doc));
-
-                    // Check for unplaced and unbounded areas.
                     if (inputModel[10])
                         reportMessageList.AddRange(CheckAreas(doc));
-
-                    // Exterior walls check
                     if (inputModel[13])
                         reportMessageList.AddRange(CheckWallsExterior(doc));
 
-                    // Checking stairs formula
                     if (inputCodes[0])
                         reportMessageList.AddRange(CheckStairsFormula(doc));
-
-                    // Checking stairs head height
                     if (inputCodes[1])
                         reportMessageList.AddRange(CheckStairsHeadHeight(doc, inputHeadHeight));
                     
@@ -109,7 +88,6 @@ namespace BIM_Leaders_Core
                 DataSet reportDataSet = CreateReportDataSet(reportMessageList);
 
                 // Show result
-                //CheckerReportData dataReport = new CheckerReportData(reportDataSet);
                 CheckerReportForm formReport = new CheckerReportForm(reportDataSet);
 
                 formReport.ShowDialog();
@@ -142,7 +120,7 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="doc">Document to process in.</param>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckPrefixesAll(Document doc, List<bool> inputCategories, string prefix)
+        private static IEnumerable<ReportMessage> CheckNamesAll(Document doc, List<bool> inputCategories, string prefix)
         {
             int countPrefixes = 0;
 
@@ -483,13 +461,6 @@ namespace BIM_Leaders_Core
             int countAreasPlacement = 0;
             int countAreasUnbounded = 0;
 
-            Options options = new Options
-            {
-                ComputeReferences = false,
-                View = doc.ActiveView,
-                IncludeNonVisibleObjects = true
-            };
-
             IEnumerable<Area> areas = new FilteredElementCollector(doc)
                 .OfClass(typeof(SpatialElement))
                 .WherePasses(new AreaFilter())
@@ -526,20 +497,13 @@ namespace BIM_Leaders_Core
             int countSpacesPlacement = 0;
             int countSpacesUnbounded = 0;
 
-            Options options = new Options
-            {
-                ComputeReferences = false,
-                View = doc.ActiveView,
-                IncludeNonVisibleObjects = true
-            };
-
             IEnumerable<Space> spaces = new FilteredElementCollector(doc)
                 .OfClass(typeof(SpatialElement))
                 .WherePasses(new SpaceFilter())
                 .ToElements()
                 .Cast<Space>();
 
-            foreach (Space space in areas)
+            foreach (Space space in spaces)
             {
                 if (space.Location is null)
                     countSpacesPlacement++;
@@ -713,7 +677,7 @@ namespace BIM_Leaders_Core
         }
 
         /// <summary>
-        /// Checks all stairs elements in document if they good in the given head height.
+        /// Check all stairs elements in document if they good in the given head height.
         /// </summary>
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckStairsHeadHeight(Document doc, double inputHeadHeight)
