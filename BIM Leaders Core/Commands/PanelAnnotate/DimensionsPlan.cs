@@ -54,8 +54,8 @@ namespace BIM_Leaders_Core
 				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
 				double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, DisplayUnitType.DUT_CENTIMETERS);
 #else
-                double searchStep = UnitUtils.ConvertToInternalUnits(search_step_cm, UnitTypeId.Centimeters);
-				double searchDistance = UnitUtils.ConvertToInternalUnits(search_distance_cm, UnitTypeId.Centimeters);
+                double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, UnitTypeId.Centimeters);
+				double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, UnitTypeId.Centimeters);
 #endif
 				// Collecting model elements to dimension
 				List<Wall> wallsAll = GetWallsStraight(doc);

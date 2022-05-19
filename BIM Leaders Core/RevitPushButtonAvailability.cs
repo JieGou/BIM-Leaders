@@ -76,7 +76,7 @@ namespace BIM_Leaders_Core
     }
 
     /// <summary>
-    /// Return true if view type is FloorPlan
+    /// Return true if view type is AreaPlan, CeilingPlan or FloorPlan
     /// </summary>
     public class ViewIsPlan : IExternalCommandAvailability
     {
@@ -85,7 +85,7 @@ namespace BIM_Leaders_Core
         public bool IsCommandAvailable(UIApplication applicationData, CategorySet selectedCategories)
         {
             ViewType viewType = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
-            if (viewType == ViewType.FloorPlan)
+            if (viewType == ViewType.AreaPlan || viewType == ViewType.CeilingPlan || viewType == ViewType.FloorPlan)
                 return true;
             return false;
         }

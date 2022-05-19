@@ -1,0 +1,60 @@
+Create a default 3D orthographic view. | ID_VIEW_DEFAULT_3DVIEW
+Move selected objects or their copies | ID_EDIT_MOVE
+Cancel the current operation | ID_CANCEL_EDITOR
+Finish Group. | ID_FINISH_GROUP_EDIT_MODE
+Review previously posted warnings | ID_REVIEW_WARNINGS
+Move copies of selected objects | ID_EDIT_MOVE_COPY
+Delete the selection | ID_BUTTON_DELETE
+Pick Lines | ID_OBJECTS_CURVE_PICK_LINES
+Trim/Extend two lines or walls to make a corner. | ID_TRIM_EXTEND_CORNER
+Finish Sketch | ID_FINISH_SKETCH
+Set the host for the railing | ID_RAILING_SET_HOST
+Align references. | ID_ALIGN
+Offset walls and lines. | ID_OFFSET
+ | ID_STAIRSEDITMODE_FINISH
+Create Aligned Dimensions | ID_ANNOTATIONS_DIMENSION_ALIGNED
+Create a straight detail line or a detail arc | ID_OBJECTS_DETAIL_CURVES
+Pick Lines | IDC_RADIO_COPY_CURVE
+Undo the last action | ID_EDIT_UNDO
+Apply a section box around the selected elements. | ID_VIEW_APPLY_SELECTION_BOX
+Pick Lines | ID_BUTTON_STAIRS_LANDING_BOUNDARY_PICK_LINES
+Create Stairs Landing | ID_STAIRS_LANDING
+Convert To Custom | ID_STAIRS_CONVERT_TO_CUSTOM
+Edit Sketch | ID_EDIT_SKETCH
+Save the active project back to the Central Model | ID_FILE_SAVE_TO_MASTER_SHORTCUT
+ | ID_PRJBROWSER_RENAME
+Select the Profile. Profiles can also be selected directly in any view. | ID_SWEEP_PROFILE
+Quit sketching sweep profile | ID_QUIT_SKETCH_PROFILE
+Quit creating/editing the Sweep | ID_QUIT_SWEEP
+Modify predefined types for this family | ID_FAMILY_TYPE
+Load Document into open Projects and close Document | ID_LOAD_INTO_PROJECTS_CLOSE
+Create or edit the path by sketching in a plane | ID_SKETCH_2D_PATH
+Finish sketching the sweep path | ID_FINISH_SKETCH_PATH
+Finish Sweep | ID_FINISH_SWEEP
+Copy the selection and put it on the Clipboard | ID_EDIT_COPY
+Insert Clipboard contents in the same place as the original objects | ID_EDIT_PASTE_ALIGNED_SAME_PLACE
+Create a line | ID_OBJECTS_CURVE_LINE
+Specify project units | ID_SETTINGS_UNITS
+Rotate selected object(s) | ID_EDIT_ROTATE
+Create a new family | ID_FAMILY_NEW
+Create a solid by extruding the sketch orthogonally | ID_OBJECTS_EXTRUSION
+Add new parameter | ID_ADD_PARAMETER
+ | ID_REVIT_SAVE_AS_FAMILY
+Create Angular Dimensions | ID_ANNOTATIONS_DIMENSION_ANGULAR
+Discard Changes to Sketch | ID_CANCEL_SKETCH
+Create a reference plane | ID_OBJECTS_CLINE
+Select elements to join | ID_JOIN_ELEMENTS_EDITOR
+Show materials appearance | ID_SETTINGS_RENDERING_APPEARANCE
+Undo the last action | ID_BUTTON_UNDO
+ | ID_STAIRSEDITMODE_QUIT
+Split walls and lines | ID_SPLIT
+Set a Work Plane for the view or the sketch | ID_SKETCH_PLANE_TOOL
+Sketch Landing | ID_STAIRS_SKETCH_LANDING
+Sketch Run | ID_STAIRS_SKETCH_RUN
+Pick Lines | ID_BUTTON_STAIRS_RUN_BOUNDARY_PICK_LINES
+Restore last selection | ID_EDIT_SELECT_PREVIOUS
+Create Support | ID_STAIRS_SUPPORT
+Select levels you want to paste to by name | ID_EDIT_PASTE_ALIGNED_LEVEL_BY_NAME
+Discard Changes to Group. | ID_CANCEL_GROUP_EDIT_MODE
+Reset Railing System | ID_RESET_RAILING
+Close all views that are inactive | ID_VIEW_CLOSE_INACTIVE
