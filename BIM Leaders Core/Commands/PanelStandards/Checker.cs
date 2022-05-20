@@ -299,32 +299,45 @@ namespace BIM_Leaders_Core
         }
 
         /// <summary>
-        /// Check groups in current document for unused, unpinned, excluded groups.
+        /// Check groups in current document for unused, unpinned (only model groups), excluded groups.
         /// </summary>
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckGroups(Document doc)
         {
             int countGroups = 0;
+            int countModelGroups = 0;
+            int countGroupTypes = 0;
             int countGroupsUnused = 0;
             int countGroupsUnpinned = 0;
             int countGroupsExcluded = 0;
 
-            FilteredElementCollector collectorGroupTypes = new FilteredElementCollector(doc);
-            IEnumerable<GroupType> groupTypes = collectorGroupTypes.OfClass(typeof(GroupType))
-                .ToElements().Cast<GroupType>();
-            FilteredElementCollector collectorGroups = new FilteredElementCollector(doc);
-            IEnumerable<Group> groups = collectorGroups.OfClass(typeof(Group))
-                .ToElements().Cast<Group>();
+            IEnumerable<GroupType> groupTypes = new FilteredElementCollector(doc)
+                .OfClass(typeof(GroupType))
+                .ToElements()
+                .Cast<GroupType>();
+
+            IEnumerable<Group> groups = new FilteredElementCollector(doc)
+                .OfClass(typeof(Group))
+                .ToElements()
+                .Cast<Group>();
 
             // Check size of GroupSet which given from GroupType
             foreach (GroupType groupType in groupTypes)
+            {
+                countGroupTypes++;
                 if (groupType.Groups.Size == 0)
                     countGroupsUnused++;
+            }
+
             foreach (Group group in groups)
             {
                 // Check for unpinned groups
-                if (!group.Pinned)
-                    countGroupsUnpinned++;
+                if (!group.IsAttached)
+                {
+                    countModelGroups++;
+                    if (!group.Pinned)
+                        countGroupsUnpinned++;
+                }
 
                 // Check if group has excluded elements
                 if (group.Name.EndsWith("(members excluded)"))
@@ -335,13 +348,13 @@ namespace BIM_Leaders_Core
 
             string reportMessageText0 = (countGroupsUnused == 0)
                 ? "-"
-                : $"{countGroupsUnused} of {countGroups} groups are not used.";
+                : $"{countGroupsUnused} of {countGroupTypes} group types are not used.";
             ReportMessage reportMessage0 = new ReportMessage("Unused Groups", reportMessageText0);
 
             string reportMessageText1 = (countGroupsUnpinned == 0)
                 ? "-"
-                : $"{countGroupsUnpinned} of {countGroups} groups are not pinned.";
-            ReportMessage reportMessage1 = new ReportMessage("Unpinned Groups", reportMessageText1);
+                : $"{countGroupsUnpinned} of {countModelGroups} model groups are not pinned.";
+            ReportMessage reportMessage1 = new ReportMessage("Unpinned Model Groups", reportMessageText1);
 
             string reportMessageText2 = (countGroupsExcluded == 0)
                 ? "-"

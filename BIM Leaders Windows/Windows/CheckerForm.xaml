@@ -240,7 +240,7 @@
                                 <Label Content="Checks 3D"
                                    Style="{StaticResource SLabelBold}">
                                 </Label>
-                                <CheckBox Content="Groups" ToolTip="Check for unused, unpinned, excluded groups."
+                                <CheckBox Content="Groups" ToolTip="Check for unused, unpinned (only model groups), excluded groups."
                                           IsChecked="{Binding Path=ResultModel[8], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                                 <CheckBox Content="Rooms" ToolTip="Check for unplaced, unbounded and intersecting rooms."
