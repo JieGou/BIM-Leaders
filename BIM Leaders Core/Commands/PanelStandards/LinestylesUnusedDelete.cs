@@ -18,32 +18,10 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
-            int count = 0;
-
             try
             {
-                // Get all used linestyles in the project.
-                IEnumerable<ElementId> lineStylesUsed = new FilteredElementCollector(doc)
-                    .OfClass(typeof(CurveElement))
-                    .WhereElementIsNotElementType()
-                    .ToElements()
-                    .Cast<CurveElement>().ToList()
-                    .ConvertAll(x => x.LineStyle.Id)
-                    .Distinct();
-
-                // Get all line styles in the project (but not built-in).
-                CategoryNameMap lineStylesAllCnm = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
-                List<ElementId> lineStylesAll = new List<ElementId>();
-                foreach (Category category in lineStylesAllCnm)
-                    if (category.Id.IntegerValue > 0)
-                        lineStylesAll.Add(category.Id);
-                    
-
-                List<ElementId> lineStylesDelete = lineStylesAll
-                    .Where(x => !lineStylesUsed.Contains(x))
-                    .ToList();
-
-                count = lineStylesDelete.Count;
+                List<ElementId> lineStylesDelete = GetLineStylesUnused(doc);
+                int count = lineStylesDelete.Count;
 
                 using (Transaction trans = new Transaction(doc, "Delete Unused Linestyles"))
                 {
@@ -67,6 +45,37 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        /// <summary>
+        /// Get LineStyles that are not used in the Document.
+        /// </summary>
+        /// <returns>List of unused LiseStyles Ids.</returns>
+        private static List<ElementId> GetLineStylesUnused(Document doc)
+        {
+            List<ElementId> lineStylesUnused = new List<ElementId>();
+
+            // Get all used linestyles in the project.
+            IEnumerable<ElementId> lineStylesUsed = new FilteredElementCollector(doc)
+                .OfClass(typeof(CurveElement))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<CurveElement>().ToList()
+                .ConvertAll(x => x.LineStyle.Id)
+                .Distinct();
+
+            // Get all line styles in the project (but not built-in).
+            CategoryNameMap lineStylesAllCnm = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
+            List<ElementId> lineStylesAll = new List<ElementId>();
+            foreach (Category category in lineStylesAllCnm)
+                if (category.Id.IntegerValue > 0)
+                    lineStylesAll.Add(category.Id);
+
+            lineStylesUnused = lineStylesAll
+                .Where(x => !lineStylesUsed.Contains(x))
+                .ToList();
+
+            return lineStylesUnused;
         }
         public static string GetPath()
         {

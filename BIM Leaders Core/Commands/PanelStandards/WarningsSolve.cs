@@ -29,7 +29,6 @@ namespace BIM_Leaders_Core
                 bool joins = true;
 
                 IEnumerable<FailureMessage> warnings = doc.GetWarnings();
-
                 IEnumerable<FailureMessage> warningsJoin = warnings
                     .Where(x => x.GetDescriptionText() == "Highlighted elements are joined but do not intersect.");
 

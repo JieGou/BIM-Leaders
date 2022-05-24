@@ -31,7 +31,6 @@ namespace BIM_Leaders_Core
 
                 // Get user provided information from window
                 LinetypesDeleteData data = form.DataContext as LinetypesDeleteData;
-
                 string nameDelete = data.ResultName;
 
                 List<Element> linePatterns = new FilteredElementCollector(doc)

@@ -28,88 +28,10 @@ namespace BIM_Leaders_Core
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>(); //LINQ function;
 
-                /*
-                List<string> namesColumn = new List<string> { "File" };
-                List<string> viewsColumn = new List<string> { "View" };
-                List<string> idsColumn = new List<string> { "Id" };
-                List<string> islinkColumn = new List<string> { "Import Type" };
-
-                foreach (ImportInstance import in imports)
-                {
-                    try
-                    {
-                        namesColumn.Add(import.Category.Name);
-                    }
-                    catch (Exception e)
-                    {
-                        namesColumn.Add(e.Message);
-                    }
-                    
-                    // Checking if 2D or 3D
-                    string viewText = import.ViewSpecific
-                        ? doc.GetElement(import.OwnerViewId).Name
-                        : "Not a view specific import";
-                    viewsColumn.Add(viewText);
-
-                    idsColumn.Add(import.Id.ToString());
-
-                    // Checking if link or import
-                    string importText = import.IsLinked
-                        ? "Link"
-                        : "Import";
-                    islinkColumn.Add(importText);
-                }
+                DataSet dwgDataSet = CreateDwgDataSet(doc, imports);
 
                 // Export to Excel
                 // ...
-                */
-
-                // Create a DataSet
-                DataSet dwgDataSet = new DataSet("dwgDataSet");
-                // Create DataTable
-                DataTable dwgDataTable = new DataTable("DWG");
-                // Create 4 columns, and add them to the table
-                DataColumn dwgColumnFile = new DataColumn("File", typeof(string));
-                DataColumn dwgColumnView = new DataColumn("View", typeof(string));
-                DataColumn dwgColumnId = new DataColumn("Id", typeof(string));
-                DataColumn dwgColumnImportType = new DataColumn("Import Type", typeof(string));
-
-                dwgDataTable.Columns.Add(dwgColumnFile);
-                dwgDataTable.Columns.Add(dwgColumnView);
-                dwgDataTable.Columns.Add(dwgColumnId);
-                dwgDataTable.Columns.Add(dwgColumnImportType);
-
-                // Add the table to the DataSet
-                dwgDataSet.Tables.Add(dwgDataTable);
-
-                // Fill the table
-                foreach (ImportInstance i in imports)
-                {
-                    // Name
-                    string iName = i.Category?.Name ?? "Error";
-
-                    // Checking if 2D or 3D
-                    string iView = (i.ViewSpecific)
-                        ? doc.GetElement(i.OwnerViewId).Name
-                        : "Not a view specific import";
-
-                    // Id
-                    string iId = i.Id.ToString();
-
-                    // Checking if link or import
-                    string iLink = (i.IsLinked)
-                        ? "Link"
-                        : "Import";
-
-                    DataRow newRow1 = dwgDataTable.NewRow();
-                    newRow1["File"] = iName;
-                    newRow1["View"] = iView;
-                    newRow1["Id"] = iId;
-                    newRow1["Import Type"] = iLink;
-
-                    // Add the row to the Customers table.  
-                    dwgDataTable.Rows.Add(newRow1); 
-                }
 
                 // Show result
                 if (imports.Count() > 0)
@@ -128,6 +50,63 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        /// <summary>
+        /// Create DataSet table for report window.
+        /// </summary>
+        /// <returns>DataSet object contains all data.</returns>
+        private static DataSet CreateDwgDataSet(Document doc, IEnumerable<ImportInstance> imports)
+        {
+            // Create a DataSet
+            DataSet dwgDataSet = new DataSet("reportDataSet");
+
+            // Create DataTable
+            DataTable dwgDataTable = new DataTable("DWG");
+            // Create 4 columns, and add them to the table
+            DataColumn dwgColumnFile = new DataColumn("File", typeof(string));
+            DataColumn dwgColumnView = new DataColumn("View", typeof(string));
+            DataColumn dwgColumnId = new DataColumn("Id", typeof(string));
+            DataColumn dwgColumnImportType = new DataColumn("Import Type", typeof(string));
+
+            dwgDataTable.Columns.Add(dwgColumnFile);
+            dwgDataTable.Columns.Add(dwgColumnView);
+            dwgDataTable.Columns.Add(dwgColumnId);
+            dwgDataTable.Columns.Add(dwgColumnImportType);
+
+            // Add the table to the DataSet
+            dwgDataSet.Tables.Add(dwgDataTable);
+
+            // Fill the table
+            foreach (ImportInstance i in imports)
+            {
+                DataRow newRow = dwgDataTable.NewRow();
+
+                // Name
+                string iName = i.Category?.Name ?? "Error";
+
+                // Checking if 2D or 3D
+                string iView = (i.ViewSpecific)
+                    ? doc.GetElement(i.OwnerViewId).Name
+                    : "Not a view specific import";
+
+                // Id
+                string iId = i.Id.ToString();
+
+                // Checking if link or import
+                string iLink = (i.IsLinked)
+                    ? "Link"
+                    : "Import";
+
+                newRow["File"] = iName;
+                newRow["View"] = iView;
+                newRow["Id"] = iId;
+                newRow["Import Type"] = iLink;
+
+                dwgDataTable.Rows.Add(newRow);
+            }
+
+            return dwgDataSet;
         }
         public static string GetPath()
         {
