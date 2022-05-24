@@ -113,6 +113,11 @@ namespace BIM_Leaders_Core
                 MessageName = messageName;
                 MessageText = messageText;
             }
+            public ReportMessage(string messageName)
+            {
+                MessageName = messageName;
+                MessageText = "-";
+            }
         }
 
         /// <summary>
@@ -122,6 +127,8 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckNamesAll(Document doc, List<bool> inputCategories, string prefix)
         {
+            ReportMessage reportMessage = new ReportMessage("Prefixes");
+
             int countPrefixes = 0;
 
             List<Type> types = Categories.GetTypesList(inputCategories);
@@ -129,10 +136,8 @@ namespace BIM_Leaders_Core
             foreach (Type type in types)
                 countPrefixes += CheckPrefixes(doc, prefix, type);
 
-            string reportMessageText = (countPrefixes == 0)
-                ? "-"
-                : $"{countPrefixes} prefixes wrong.";
-            ReportMessage reportMessage = new ReportMessage("Prefixes", reportMessageText);
+            if (countPrefixes != 0)
+                reportMessage.MessageText = $"{countPrefixes} prefixes wrong.";
 
             return new List<ReportMessage>() { reportMessage };
         }
@@ -169,7 +174,7 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckTags(Document doc)
         {
-            int countTags = 0;
+            ReportMessage reportMessage = new ReportMessage("Empty Tags");
 
             IEnumerable<IndependentTag> tags = new FilteredElementCollector(doc)
                 .OfClass(typeof(IndependentTag))
@@ -178,12 +183,9 @@ namespace BIM_Leaders_Core
                 .Cast<IndependentTag>()
                 .Where(x => x.TagText.Length == 0);
 
-            countTags = tags.Count();
-
-            string reportMessageText = (countTags == 0)
-                ? "-"
-                : $"{countTags} tags are empty.";
-            ReportMessage reportMessage = new ReportMessage("Empty Tags", reportMessageText);
+            int countTags = tags.Count();
+            if (countTags != 0)
+                reportMessage.MessageText = $"{countTags} tags are empty.";
 
             return new List<ReportMessage>() { reportMessage };
         }
@@ -194,6 +196,8 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckTextNotes(Document doc)
         {
+            ReportMessage reportMessage = new ReportMessage("Text Notes");
+
             IEnumerable<TextNote> textNotes = new FilteredElementCollector(doc)
                 .OfClass(typeof(TextNote))
                 .WhereElementIsNotElementType()
@@ -201,10 +205,8 @@ namespace BIM_Leaders_Core
                 .Cast<TextNote>();
 
             int countTextNotes = textNotes.Count();
-            string reportMessageText = (countTextNotes == 0)
-                ? "-"
-                : $"{countTextNotes} text notes are in the project.";
-            ReportMessage reportMessage = new ReportMessage("Text Notes", reportMessageText);
+            if (countTextNotes != 0)
+                reportMessage.MessageText = $"{countTextNotes} text notes are in the project.";
 
             return new List<ReportMessage>() { reportMessage };
         }
@@ -215,7 +217,7 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckFilters(Document doc)
         {
-            int countFiltersUnused = 0;
+            ReportMessage reportMessage = new ReportMessage("Unused Filters");
 
             IEnumerable<View> views = new FilteredElementCollector(doc)
                 .OfClass(typeof(View))
@@ -236,12 +238,9 @@ namespace BIM_Leaders_Core
                 filtersUsed.AddRange(viewFilters.Where(x => !filtersUsed.Contains(x)));
             }
 
-            countFiltersUnused = filtersAll.Count - filtersUsed.Count;
-
-            string reportMessageText = (countFiltersUnused == 0)
-                ? "-"
-                : $"{countFiltersUnused} filters are unused.";
-            ReportMessage reportMessage = new ReportMessage("Unused Filters", reportMessageText);
+            int countFiltersUnused = filtersAll.Count - filtersUsed.Count;
+            if (countFiltersUnused != 0)
+                reportMessage.MessageText = $"{countFiltersUnused} filters are unused.";
 
             return new List<ReportMessage>() { reportMessage };
         }
@@ -252,6 +251,9 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckSheets(Document doc)
         {
+            ReportMessage reportMessage0 = new ReportMessage("Placeholder Sheets");
+            ReportMessage reportMessage1 = new ReportMessage("Empty Sheets");
+
             int countPlaceholders = 0;
             int countEmptySheets = 0;
 
@@ -285,15 +287,10 @@ namespace BIM_Leaders_Core
                     countEmptySheets++;
             }
 
-            string reportMessageText0 = (countPlaceholders == 0)
-                ? "-"
-                : $"{countPlaceholders} placeholder sheets are in the project.";
-            ReportMessage reportMessage0 = new ReportMessage("Placeholder Sheets", reportMessageText0);
-
-            string reportMessageText1 = (countEmptySheets == 0)
-                ? "-"
-                : $"{countEmptySheets} empty sheets are in the project.";
-            ReportMessage reportMessage1 = new ReportMessage("Empty Sheets", reportMessageText1);
+            if (countPlaceholders != 0)
+                reportMessage0.MessageText = $"{countPlaceholders} placeholder sheets are in the project.";
+            if (countEmptySheets != 0)
+                reportMessage1.MessageText = $"{countEmptySheets} empty sheets are in the project.";
 
             return new List<ReportMessage>() { reportMessage0, reportMessage1 };
         }
@@ -304,6 +301,10 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckGroups(Document doc)
         {
+            ReportMessage reportMessage0 = new ReportMessage("Unused Groups");
+            ReportMessage reportMessage1 = new ReportMessage("Unpinned Model Groups");
+            ReportMessage reportMessage2 = new ReportMessage("Excluded Groups");
+
             int countGroups = 0;
             int countModelGroups = 0;
             int countGroupTypes = 0;
@@ -346,20 +347,12 @@ namespace BIM_Leaders_Core
                 countGroups++;
             }
 
-            string reportMessageText0 = (countGroupsUnused == 0)
-                ? "-"
-                : $"{countGroupsUnused} of {countGroupTypes} group types are not used.";
-            ReportMessage reportMessage0 = new ReportMessage("Unused Groups", reportMessageText0);
-
-            string reportMessageText1 = (countGroupsUnpinned == 0)
-                ? "-"
-                : $"{countGroupsUnpinned} of {countModelGroups} model groups are not pinned.";
-            ReportMessage reportMessage1 = new ReportMessage("Unpinned Model Groups", reportMessageText1);
-
-            string reportMessageText2 = (countGroupsExcluded == 0)
-                ? "-"
-                : $"{countGroupsExcluded} of {countGroups} group instances are with excluded elements.";
-            ReportMessage reportMessage2 = new ReportMessage("Excluded Groups", reportMessageText2);
+            if (countGroupsUnused != 0)
+                reportMessage0.MessageText = $"{countGroupsUnused} of {countGroupTypes} group types are not used.";
+            if (countGroupsUnpinned != 0)
+                reportMessage1.MessageText = $"{countGroupsUnpinned} of {countModelGroups} model groups are not pinned.";
+            if (countGroupsExcluded != 0)
+                reportMessage2.MessageText = $"{countGroupsExcluded} of {countGroups} group instances are with excluded elements.";
 
             return new List<ReportMessage>() { reportMessage0, reportMessage1, reportMessage2 };
         }
@@ -370,6 +363,8 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckLineStyles(Document doc)
         {
+            ReportMessage reportMessage = new ReportMessage("Line Styles");
+
             int countLinestyles = 0;
 
             IEnumerable<CurveElement> lines = new FilteredElementCollector(doc)
@@ -389,14 +384,13 @@ namespace BIM_Leaders_Core
             List<ElementId> lineStyles = new List<ElementId>();
             foreach (Category category in lineStylesAll)
                 lineStyles.Add(category.Id);
+
             foreach (ElementId lineStyle in lineStyles)
                 if (!lineStylesUsed.Contains(lineStyle))
                     countLinestyles++;
 
-            string reportMessageText = (countLinestyles == 0)
-                ? "-"
-                : $"{countLinestyles} line styles are unused.";
-            ReportMessage reportMessage = new ReportMessage("Line Styles", reportMessageText);
+            if (countLinestyles != 0)
+                reportMessage.MessageText = $"{countLinestyles} line styles are unused.";
 
             return new List<ReportMessage>() { reportMessage };
         }
@@ -407,6 +401,10 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckRooms(Document doc)
         {
+            ReportMessage reportMessage0 = new ReportMessage("Rooms Placement");
+            ReportMessage reportMessage1 = new ReportMessage("Rooms Not Enclosed");
+            ReportMessage reportMessage2 = new ReportMessage("Rooms Overlap");
+
             int countRoomsPlacement = 0;
             int countRoomsUnbounded = 0;
             int countRoomsIntersect = 0;
@@ -447,21 +445,13 @@ namespace BIM_Leaders_Core
                 }
             }
 
-            string reportMessageText0 = (countRoomsPlacement == 0)
-                ? "-"
-                : $"{countRoomsPlacement} rooms are not placed.";
-            ReportMessage reportMessage0 = new ReportMessage("Rooms Placement", reportMessageText0);
-
-            string reportMessageText1 = (countRoomsUnbounded == 0)
-                ? "-"
-                : $"{countRoomsUnbounded} rooms are not enclosed.";
-            ReportMessage reportMessage1 = new ReportMessage("Rooms Not Enclosed", reportMessageText1);
-
-            string reportMessageText2 = (countRoomsIntersect == 0)
-                ? "-"
-                : $"{countRoomsIntersect} rooms overlap.";
-            ReportMessage reportMessage2 = new ReportMessage("Rooms Overlap", reportMessageText2);
-
+            if (countRoomsPlacement != 0)
+                reportMessage0.MessageText = $"{countRoomsPlacement} rooms are not placed.";
+            if (countRoomsUnbounded != 0)
+                reportMessage1.MessageText = $"{countRoomsUnbounded} rooms are not enclosed.";
+            if (countRoomsIntersect != 0)
+                reportMessage2.MessageText = $"{countRoomsIntersect} rooms overlap.";
+            
             return new List<ReportMessage>() { reportMessage0, reportMessage1, reportMessage2 };
         }
 
@@ -471,6 +461,9 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckAreas(Document doc)
         {
+            ReportMessage reportMessage0 = new ReportMessage("Areas Placement");
+            ReportMessage reportMessage1 = new ReportMessage("Areas Not Enclosed");
+
             int countAreasPlacement = 0;
             int countAreasUnbounded = 0;
 
@@ -488,15 +481,10 @@ namespace BIM_Leaders_Core
                     countAreasUnbounded++;
             }
 
-            string reportMessageText0 = (countAreasPlacement == 0)
-                ? "-"
-                : $"{countAreasPlacement} areas are not placed.";
-            ReportMessage reportMessage0 = new ReportMessage("Areas Placement", reportMessageText0);
-
-            string reportMessageText1 = (countAreasUnbounded == 0)
-                ? "-"
-                : $"{countAreasUnbounded} areas are not enclosed.";
-            ReportMessage reportMessage1 = new ReportMessage("Areas Not Enclosed", reportMessageText1);
+            if (countAreasPlacement != 0)
+                reportMessage0.MessageText = $"{countAreasPlacement} areas are not placed.";
+            if (countAreasUnbounded != 0)
+                reportMessage1.MessageText = $"{countAreasUnbounded} areas are not enclosed.";
 
             return new List<ReportMessage>() { reportMessage0, reportMessage1 };
         }
@@ -507,6 +495,9 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckSpaces(Document doc)
         {
+            ReportMessage reportMessage0 = new ReportMessage("Spaces Placement");
+            ReportMessage reportMessage1 = new ReportMessage("Spaces Not Enclosed");
+
             int countSpacesPlacement = 0;
             int countSpacesUnbounded = 0;
 
@@ -524,15 +515,10 @@ namespace BIM_Leaders_Core
                     countSpacesUnbounded++;
             }
 
-            string reportMessageText0 = (countSpacesPlacement == 0)
-                ? "-"
-                : $"{countSpacesPlacement} spaces are not placed.";
-            ReportMessage reportMessage0 = new ReportMessage("Spaces Placement", reportMessageText0);
-
-            string reportMessageText1 = (countSpacesUnbounded == 0)
-                ? "-"
-                : $"{countSpacesUnbounded} spaces are not enclosed.";
-            ReportMessage reportMessage1 = new ReportMessage("Spaces Not Enclosed", reportMessageText1);
+            if (countSpacesPlacement != 0)
+                reportMessage0.MessageText = $"{countSpacesPlacement} spaces are not placed.";
+            if (countSpacesUnbounded != 0)
+                reportMessage1.MessageText = $"{countSpacesUnbounded} spaces are not enclosed.";
 
             return new List<ReportMessage>() { reportMessage0, reportMessage1 };
         }
@@ -543,12 +529,11 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckWarnings(Document doc)
         {
-            int countWarnings = doc.GetWarnings().Count;
+            ReportMessage reportMessage = new ReportMessage("Warnings");
 
-            string reportMessageText = (countWarnings == 0)
-                ? "-"
-                : $"{countWarnings} warnings in the project.";
-            ReportMessage reportMessage = new ReportMessage("Warnings", reportMessageText);
+            int countWarnings = doc.GetWarnings().Count;
+            if (countWarnings != 0)
+                reportMessage.MessageText = $"{countWarnings} warnings in the project.";
 
             return new List<ReportMessage>() { reportMessage };
         }
@@ -559,6 +544,8 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckWallsExterior(Document doc)
         {
+            ReportMessage reportMessage = new ReportMessage("Exterior Walls");
+
             int countWallsInterior = 0;
 
             // Get 3D view with founded first view type, becuase some operations must have 3D in input...
@@ -646,10 +633,8 @@ namespace BIM_Leaders_Core
             foreach (Wall wall in wallsToDelete)
                 doc.Delete(wall.Id);
 
-            string reportMessageText = (countWallsInterior == 0)
-                ? "-"
-                : $"{countWallsInterior} exterior walls have interior type.";
-            ReportMessage reportMessage = new ReportMessage("Exterior Walls", reportMessageText);
+            if (countWallsInterior != 0)
+                reportMessage.MessageText = $"{countWallsInterior} exterior walls have interior type.";
 
             return new List<ReportMessage>() { reportMessage };
         }
@@ -660,6 +645,8 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckStairsFormula(Document doc)
         {
+            ReportMessage reportMessage = new ReportMessage("Stairs Formula");
+
             int countStairsFormula = 0;
 
             FilteredElementCollector collectorStairs = new FilteredElementCollector(doc);
@@ -681,11 +668,9 @@ namespace BIM_Leaders_Core
                     countStairsFormula++;
             }
 
-            string reportMessageText = (countStairsFormula == 0)
-                ? "-"
-                : $"{countStairsFormula} stairs have bad formula.";
-            ReportMessage reportMessage = new ReportMessage("Stairs Formula", reportMessageText);
-
+            if (countStairsFormula != 0)
+                reportMessage.MessageText = $"{countStairsFormula} stairs have bad formula.";
+            
             return new List<ReportMessage>() { reportMessage };
         }
 
@@ -695,6 +680,8 @@ namespace BIM_Leaders_Core
         /// <returns>Checking report messages.</returns>
         private static IEnumerable<ReportMessage> CheckStairsHeadHeight(Document doc, double inputHeadHeight)
         {
+            ReportMessage reportMessage = new ReportMessage("Stairs Head Height");
+
             int countHeightLandings = 0;
             int countHeightRuns = 0;
 
@@ -829,20 +816,22 @@ namespace BIM_Leaders_Core
                 }
             }
 
-            string reportMessageText = "";
-            if (countHeightLandings != 0)
-                reportMessageText += $"{countHeightLandings} stairs landings";
-            if (countHeightRuns != 0)
-                if (reportMessageText.Length != 0)
-                    reportMessageText += " and ";
-                reportMessageText += $"{countHeightLandings} stairs runs";
-            if (reportMessageText.Length != 0)
-                reportMessageText += " have too low head height.";
-            else
-                reportMessageText = "-";
-
-            ReportMessage reportMessage = new ReportMessage("Stairs Head Height", reportMessageText);
-
+            if (countHeightLandings != 0 || countHeightRuns != 0)
+            {
+                reportMessage.MessageText = "";
+                if (countHeightLandings != 0)
+                {
+                    reportMessage.MessageText += $"{countHeightLandings} stairs landings";
+                }
+                if (countHeightRuns != 0)
+                {
+                    if (reportMessage.MessageText.Length != 0)
+                        reportMessage.MessageText += " and ";
+                    reportMessage.MessageText += $"{countHeightLandings} stairs runs";
+                }
+                reportMessage.MessageText += " have too low head height.";
+            }
+            
             return new List<ReportMessage>() { reportMessage };
         }
 
@@ -850,7 +839,7 @@ namespace BIM_Leaders_Core
         /// Create DataSet table for report window.
         /// </summary>
         /// <returns>DataSet object contains all data.</returns>
-        private static DataSet CreateReportDataSet(List<ReportMessage> reportMessages)
+        private static DataSet CreateReportDataSet(IEnumerable<ReportMessage> reportMessages)
         {
             DataSet reportDataSet = new DataSet("reportDataSet");
 
