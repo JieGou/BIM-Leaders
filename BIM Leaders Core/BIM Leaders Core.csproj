@@ -98,6 +98,7 @@
     <Compile Include="Commands\PanelAnnotate\DimensionsPlanCheck.cs" />
     <Compile Include="Commands\PanelElement\ElementPropertiesMatch.cs" />
     <Compile Include="Commands\PanelElement\ElementsJoin.cs" />
+    <Compile Include="Commands\PanelFamily\FamilyParameterChange.cs" />
     <Compile Include="Commands\PanelFamily\FamilyParameterSet.cs" />
     <Compile Include="Commands\PanelStandards\JournalAnalyze.cs" />
     <Compile Include="Commands\PanelStandards\WarningsSolve.cs" />

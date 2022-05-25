@@ -255,7 +255,7 @@ namespace BIM_Leaders
                 ToolTip = "Select voids in a current family.",
                 LongDescription = "Usable if need to select void geometry. This is hard if voids not joined with family geometry.",
                 CommandNamespacePath = FamilyVoidsSelect.GetPath(),
-                IconImageName = "BIM_Leaders_Familiy_Voids_Select.png",
+                IconImageName = "BIM_Leaders_Family_Voids_Select.png",
                 //TooltipImageName = "BIM_Leaders_Familiy_Voids_Select.png",
                 AvailabilityClassName = "BIM_Leaders_Core.DocumentIsFamily"
             };
@@ -291,6 +291,21 @@ namespace BIM_Leaders
             };
             // Create button from provided data
             RevitPushButton.Create(button_4_3_data);
+
+            // Populate button data model
+            RevitPushButtonDataModel button_4_4_data = new RevitPushButtonDataModel
+            {
+                Label = "Change\r\nParameters",
+                Panel = panel_4,
+                ToolTip = "Batch change shared parameters to family parameters.",
+                LongDescription = "Usable if family has many types, and the same value need to be set to all of them.",
+                CommandNamespacePath = FamilyParameterChange.GetPath(),
+                IconImageName = "BIM_Leaders_Family_Parameter_Change.png",
+                //TooltipImageName = "BIM_Leaders_Family_Zero_Coordinates.png",
+                AvailabilityClassName = "BIM_Leaders_Core.DocumentIsFamily"
+            };
+            // Create button from provided data
+            RevitPushButton.Create(button_4_4_data);
 
 
 
