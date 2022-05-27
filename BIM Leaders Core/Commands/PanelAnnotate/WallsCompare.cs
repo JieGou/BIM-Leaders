@@ -42,8 +42,6 @@ namespace BIM_Leaders_Core
             // Get View
             View view = doc.ActiveView;
 
-            int count = 0;
-
             try
             {
                 // Show the dialog.
@@ -69,6 +67,7 @@ namespace BIM_Leaders_Core
                 Transform transform1 = view.CropBox.Transform; // Just new transform, view is dummy
                 Transform transform2 = view.CropBox.Transform; // Just new transform, view is dummy
 
+                // If only one file is a link
                 if (inputLinks)
                 {
                     Reference linkReference = uidoc.Selection.PickObject(ObjectType.Element, selFilter, "Select Link");
@@ -96,66 +95,39 @@ namespace BIM_Leaders_Core
                 }
 
                 // Getting plan loops of walls
-                List<CurveLoop> loops1 = new List<CurveLoop>();
-                foreach (Wall wall in walls1)
-                    if (GetWallsLoops(wall).Count > 0)
-                        loops1.AddRange(GetWallsLoops(wall));
-
-                List<CurveLoop> loops2 = new List<CurveLoop>();
-                foreach (Wall wall in walls2)
-                    if (GetWallsLoops(wall).Count > 0)
-                        loops2.AddRange(GetWallsLoops(wall));
+                List<CurveLoop> loops1 = GetWallsLoops(walls1);
+                List<CurveLoop> loops2 = GetWallsLoops(walls2);
                 
-                // Getting plan loops of wall sets
-                Solid loop1 = GetWallsLoop(loops1);
-                Solid loop2 = GetWallsLoop(loops2);
+                // Getting total plan loop of wall set
+                Solid solid1 = GetWallsLoop(loops1);
+                Solid solid2 = GetWallsLoop(loops2);
 
                 // Transform solids
-                Solid loop1Transformed = SolidUtils.CreateTransformed(loop1, transform1);
-                Solid loop2Transformed = loop2;
+                Solid solid1Transformed = SolidUtils.CreateTransformed(solid1, transform1);
+                Solid solid2Transformed = solid2;
                 if (!inputLinks)
-                    loop2Transformed = SolidUtils.CreateTransformed(loop2, transform2);
+                    solid2Transformed = SolidUtils.CreateTransformed(solid2, transform2);
 
-                
-                IList<CurveLoop> loop = new List<CurveLoop>();
-                List<IList<CurveLoop>> loopList = new List<IList<CurveLoop>>();
-
-                if (loop1Transformed.Volume == 0 || loop2Transformed.Volume == 0)
+                if (solid1Transformed.Volume == 0 || solid2Transformed.Volume == 0)
                 {
                     TaskDialog.Show("Walls comparison", "No intersections found.");
                     return Result.Failed;
                 }
 
-                Solid boolean = BooleanOperationsUtils.ExecuteBooleanOperation(loop1Transformed, loop2Transformed, BooleanOperationsType.Intersect);
-
-                // Create CurveLoop from intersection
-                foreach (Face face in boolean.Faces)
-                {
-                    try
-                    {
-                        PlanarFace facePlanar = face as PlanarFace;
-                        if (facePlanar.FaceNormal.Z == 1)
-                        {
-                            loop = face.GetEdgesAsCurveLoops();
-                            loopList.Add(loop);
-                        }
-                    }
-                    catch { }
-                }
+                // Get list of curveloops by intersecting two solids.
+                List<CurveLoop> loopList = GetCurveLoops(solid1Transformed, solid2Transformed);
 
                 // Drawing filled region
                 using (Transaction trans = new Transaction(doc, "Compare Walls"))
                 {
                     trans.Start();
                     
-                    foreach (IList<CurveLoop> l in loopList)
-                    {
-                        FilledRegion region = FilledRegion.Create(doc, fill.Id, doc.ActiveView.Id, l);
-                        count++;
-                    }
+                    FilledRegion region = FilledRegion.Create(doc, fill.Id, doc.ActiveView.Id, loopList);
 
                     trans.Commit();
                 }
+
+                int count = loopList.Count;
 
                 // Show result
                 string text = $"{count} filled regions created.";
@@ -226,37 +198,45 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="wall">Wall element.</param>
         /// <returns>List of CurveLoops.</returns>
-        private static List<CurveLoop> GetWallsLoops(Wall wall)
+        private static List<CurveLoop> GetWallsLoops(IEnumerable<Wall> walls)
         {
+            List<CurveLoop> loops = new List<CurveLoop>();
+
             Options options = new Options();
 
-            List<CurveLoop> loops = new List<CurveLoop>();
-            GeometryElement geometryElement = wall.get_Geometry(options);
-            foreach (Solid geometrySolid in geometryElement)
+            foreach (Wall wall in walls)
             {
-                foreach (Face face in geometrySolid.Faces)
+                List<CurveLoop> loopsWall = new List<CurveLoop>();
+
+                GeometryElement geometryElement = wall.get_Geometry(options);
+                foreach (Solid geometrySolid in geometryElement)
                 {
-                    if (face is PlanarFace)
+                    foreach (Face face in geometrySolid.Faces)
                     {
-                        PlanarFace facePlanar = face as PlanarFace;
-                        if (facePlanar.FaceNormal.Z == -1)
+                        if (face is PlanarFace)
                         {
-                            double height = facePlanar.Origin.Z;
-                            double heightLowest = height;
-                            // Get the lowest face
-                            if (loops.Count == 0)
-                                loops = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
-                            else
+                            PlanarFace facePlanar = face as PlanarFace;
+                            if (facePlanar.FaceNormal.Z == -1)
                             {
-                                if (height < heightLowest)
+                                double height = facePlanar.Origin.Z;
+                                double heightLowest = height;
+                                // Get the lowest face
+                                if (loopsWall.Count == 0)
+                                    loopsWall = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
+                                else
                                 {
-                                    loops = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
-                                    heightLowest = height;
+                                    if (height < heightLowest)
+                                    {
+                                        loopsWall = facePlanar.GetEdgesAsCurveLoops() as List<CurveLoop>;
+                                        heightLowest = height;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                if (loopsWall.Count > 0)
+                    loops.AddRange(loopsWall);
             }
             return loops;
         }
@@ -283,6 +263,33 @@ namespace BIM_Leaders_Core
                     solids.Add(extrusion);
             }
             return solids.First();
+        }
+
+        /// <summary>
+        /// Get list of curveloops by intersecting two solids.
+        /// </summary>
+        /// <returns>List of CurveLoop objects.</returns>
+        private static List<CurveLoop> GetCurveLoops(Solid solid1, Solid solid2)
+        {
+            List<CurveLoop> loopList = new List<CurveLoop>();
+
+            Solid intersection = BooleanOperationsUtils.ExecuteBooleanOperation(solid1, solid2, BooleanOperationsType.Intersect);
+
+            // Create CurveLoop from intersection
+            foreach (Face face in intersection.Faces)
+            {
+                try
+                {
+                    PlanarFace facePlanar = face as PlanarFace;
+                    if (facePlanar.FaceNormal.Z == 1)
+                    {
+                        IList<CurveLoop> loops = face.GetEdgesAsCurveLoops();
+                        loopList.AddRange(loops);
+                    }
+                }
+                catch { }
+            }
+            return loopList;
         }
 
         public static string GetPath()

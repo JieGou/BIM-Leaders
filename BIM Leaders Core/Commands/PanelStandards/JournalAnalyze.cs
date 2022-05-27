@@ -23,26 +23,25 @@ namespace BIM_Leaders_Core
 
             // Journal Path
             string path = doc.Application.RecordingJournalFilename;
-            string pathNew = path.Substring(path.Length - 4) + "TEMP.txt";
+            string pathNew = path.Substring(0, path.Length - 4) + "TEMP.txt";
 
             try
             {
-                using (Transaction trans = new Transaction(doc, "8"))
+                using (Transaction trans = new Transaction(doc, "Analyze Journal"))
                 {
                     trans.Start();
 
-                    // File.Copy(path, pathNew);
+                    if (File.Exists(pathNew))
+                        File.Delete(pathNew);
 
-                    string pathTemp = @"C:\Users\i.pinchuk\AppData\Local\Autodesk\Revit\Autodesk Revit 2021\Journals\journal.0267.txt";
+                    File.Copy(path, pathNew);
 
-                    //string[] content = File.ReadAllLines(pathNew);
-                    string[] content = File.ReadAllLines(pathTemp); //!
+                    string[] content = File.ReadAllLines(pathNew);
+
+                    File.Delete(pathNew);
+
                     List<string> commands = FindCommands(content);
-
                     Dictionary<string, int> commandsSorted = commands.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
-
-                    string pathTempNew = @"C:\Users\i.pinchuk\AppData\Local\Autodesk\Revit\Autodesk Revit 2021\Journals\journal.0267.NEW.txt";
-                    File.WriteAllLines(pathTempNew, commandsSorted.Keys);
 
                     DataSet commandsDataSet = CreateDataSet(commandsSorted);
 

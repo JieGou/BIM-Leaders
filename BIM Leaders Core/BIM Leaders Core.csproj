@@ -34,6 +34,8 @@
     <OutputPath>..\Output\2021\</OutputPath>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <DefineConstants>VERSION2021</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2022|AnyCPU'">
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
