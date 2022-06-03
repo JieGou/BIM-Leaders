@@ -7,6 +7,8 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class StairsStepsEnumerateData : INotifyPropertyChanged, IDataErrorInfo
     {
+        private const int _resultNumberMinValue = 0;
+
         public string Error { get { return null; } }
         /// <summary>
         /// Default constructor
@@ -14,8 +16,9 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public StairsStepsEnumerateData()
         {
-            ResultSideRight = true;
-            ResultNumber = "1";
+            _resultSideRight = true;
+            _resultNumber = 1;
+            _inputNumber = _resultNumber.ToString();
         }
 
         private bool _resultSideRight;
@@ -29,15 +32,21 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        private string _resultNumber;
-        public string ResultNumber
+        private string _inputNumber;
+        public string InputNumber
         {
-            get { return _resultNumber; }
+            get { return _inputNumber; }
             set
             {
-                _resultNumber = value;
-                OnPropertyChanged(nameof(ResultNumber));
+                _inputNumber = value;
+                OnPropertyChanged(nameof(InputNumber));
             }
+        }
+        private int _resultNumber;
+        public int ResultNumber
+        {
+            get { return _resultNumber; }
+            set { _resultNumber = value; }
         }
 
         public string this[string propertyName]
@@ -57,27 +66,34 @@ namespace BIM_Leaders_Windows
             
             switch (propertyName)
             {
-                case "ResultNumber":
-                    error = ValidateResultNumber();
+                case "InputNumber":
+                    error = ValidateInputIsWholeNumber(out int number, _inputNumber);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ResultNumber = number;
+                        error = ValidateResultNumber();
+                    }
                     break;
             }
             return error;
         }
 
+        private string ValidateInputIsWholeNumber(out int numberParsed, string number)
+        {
+            numberParsed = 0;
+
+            if (string.IsNullOrEmpty(number))
+                return "Input is empty";
+            if (!int.TryParse(number, out numberParsed))
+                return "Not a whole number";
+
+            return null;
+        }
+
         private string ValidateResultNumber()
         {
-            if (string.IsNullOrEmpty(ResultNumber))
-                return "Input is empty";
-            else
-            {
-                if (int.TryParse(ResultNumber, out int y))
-                {
-                    if (y < 0)
-                        return "From 0";
-                }
-                else
-                    return "Invalid input";
-            }
+            if (ResultNumber < _resultNumberMinValue)
+                return $"From {_resultNumberMinValue}";
             return null;
         }
 

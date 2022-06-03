@@ -47,7 +47,7 @@
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxDistanceStep" ToolTip="Distance unit to check. By default, walls need to be located at whole number of centimeters."
-                         Text="{Binding ResultDistanceStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding InputDistanceStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxDistanceStep, Path=(Validation.Errors).CurrentItem.ErrorContent}"
@@ -57,7 +57,7 @@
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxDistanceTolerance" ToolTip="Check tolerance. Walls with accuracy bigger than given tolerance, will not be filtered."
-                         Text="{Binding ResultDistanceTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding InputDistanceTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxDistanceTolerance, Path=(Validation.Errors).CurrentItem.ErrorContent}"

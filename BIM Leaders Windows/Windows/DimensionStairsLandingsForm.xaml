@@ -48,7 +48,7 @@
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxDistance" ToolTip="Landings with distance on plan smaller than given value will be dimensioned in stack."
-                         Text="{Binding ResultDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding InputDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxDistance, Path=(Validation.Errors).CurrentItem.ErrorContent}"

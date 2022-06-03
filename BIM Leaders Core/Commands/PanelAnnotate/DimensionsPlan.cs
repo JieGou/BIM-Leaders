@@ -47,8 +47,8 @@ namespace BIM_Leaders_Core
 				DimensionsPlanData data = form.DataContext as DimensionsPlanData;
 
 				// Getting input from user
-				double searchStepCm = double.Parse(data.ResultSearchStep);
-				double searchDistanceCm = double.Parse(data.ResultSearchDistance);
+				double searchStepCm = data.ResultSearchStep;
+				double searchDistanceCm = data.ResultSearchDistance;
 
 #if VERSION2020
 				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);

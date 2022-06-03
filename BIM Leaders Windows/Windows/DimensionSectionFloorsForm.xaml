@@ -75,7 +75,7 @@
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxThickness" ToolTip="All floors thicker than given value will be recognized as thick."
-                         Text="{Binding ResultThickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding InputThickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxThickness, Path=(Validation.Errors).CurrentItem.ErrorContent}"

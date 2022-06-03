@@ -44,7 +44,7 @@ namespace BIM_Leaders_Core
 
                 // Get user provided information from window
                 DimensionStairsLandingsData data = form.DataContext as DimensionStairsLandingsData;
-                double thresholdCm = double.Parse(data.ResultDistance); // Threshold for sorting landings into lists. Each list contains landings located over each other.
+                int thresholdCm = data.ResultDistance; // Threshold for sorting landings into lists. Each list contains landings located over each other.
 
 #if VERSION2020
                 double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, DisplayUnitType.DUT_CENTIMETERS);

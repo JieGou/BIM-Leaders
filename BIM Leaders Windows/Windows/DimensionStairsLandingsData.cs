@@ -9,24 +9,35 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class DimensionStairsLandingsData : INotifyPropertyChanged, IDataErrorInfo
     {
+        private const int _resultDistanceMinValue = 100;
+        private const int _resultDistanceMaxValue = 200;
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="DimensionStairsLandingsData"/> class.
         /// </summary>
         public DimensionStairsLandingsData()
         {
-            ResultDistance = "150";
+            _resultDistance = 150;
+            _inputDistance = _resultDistance.ToString();
         }
 
-        private string _resultDistance;
-        public string ResultDistance
+
+        private string _inputDistance;
+        public string InputDistance
         {
-            get { return _resultDistance; }
+            get { return _inputDistance; }
             set
             {
-                _resultDistance = value;
-                OnPropertyChanged(nameof(ResultDistance));
+                _inputDistance = value;
+                OnPropertyChanged(nameof(InputDistance));
             }
+        }
+        private int _resultDistance;
+        public int ResultDistance
+        {
+            get { return _resultDistance; }
+            set { _resultDistance = value; }
         }
 
 
@@ -47,27 +58,34 @@ namespace BIM_Leaders_Windows
             
             switch (propertyName)
             {
-                case "ResultDistance":
-                    error = ValidateResultDistance();
+                case "InputDistance":
+                    error = ValidateInputIsWholeNumber(out int distance, _inputDistance);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ResultDistance = distance;
+                        error = ValidateResultDistance();
+                    }
                     break;
             }
             return error;
         }
 
+        private string ValidateInputIsWholeNumber(out int numberParsed, string number)
+        {
+            numberParsed = 0;
+
+            if (string.IsNullOrEmpty(number))
+                return "Input is empty";
+            if (!int.TryParse(number, out numberParsed))
+                return "Not a whole number";
+
+            return null;
+        }
+
         private string ValidateResultDistance()
         {
-            if (string.IsNullOrEmpty(ResultDistance))
-                return "Input is empty";
-            else
-            {
-                if (int.TryParse(ResultDistance, out int y))
-                {
-                    if (y < 100 || y > 200)
-                        return "From 100 to 200 cm";
-                }
-                else
-                    return "Invalid input";
-            }
+            if (ResultDistance < _resultDistanceMinValue || ResultDistance > _resultDistanceMaxValue)
+                return $"From {_resultDistanceMinValue} to {_resultDistanceMaxValue} cm";
             return null;
         }
 

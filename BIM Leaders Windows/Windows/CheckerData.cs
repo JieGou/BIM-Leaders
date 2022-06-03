@@ -9,6 +9,9 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class CheckerData : INotifyPropertyChanged, IDataErrorInfo
     {
+        // Minimal height that can be accepted.
+        private const int _resultHeightMinValue = 200;
+
         public string Error { get { return null; } }
         /// <summary>
         /// Default constructor
@@ -16,12 +19,13 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public CheckerData()
         {
-            ResultPrefix = "PRE_";
-            ResultCategories = Enumerable.Repeat(false, 24).ToList();
-            ResultCategories[6] = true;
-            ResultModel = Enumerable.Repeat(false, 14).ToList();
-            ResultCodes = Enumerable.Repeat(false, 2).ToList();
-            ResultHeight = 210;
+            _resultPrefix = "PRE_";
+            _resultCategories = Enumerable.Repeat(false, 24).ToList();
+            _resultCategories[6] = true;
+            _resultModel = Enumerable.Repeat(false, 14).ToList();
+            _resultCodes = Enumerable.Repeat(false, 2).ToList();
+            _resultHeight = 210;
+            _inputHeight = _resultHeight.ToString();
         }
 
         private string _resultPrefix;
@@ -68,15 +72,21 @@ namespace BIM_Leaders_Windows
             }
         }
 
+        private string _inputHeight { get; set; }
+        public string InputHeight
+        {
+            get { return _inputHeight; }
+            set
+            {
+                _inputHeight = value;
+                OnPropertyChanged(nameof(InputHeight));
+            }
+        }
         private int _resultHeight { get; set; }
         public int ResultHeight
         {
             get { return _resultHeight; }
-            set
-            {
-                _resultHeight = value;
-                OnPropertyChanged(nameof(ResultHeight));
-            }
+            set { _resultHeight = value; }
         }
 
         public string this[string propertyName]
@@ -98,11 +108,13 @@ namespace BIM_Leaders_Windows
                 case "ResultPrefix":
                     error = ValidateResultPrefix();
                     break;
-                case "ResultHeight":
-                    error = ValidateResultCodes();
-                    break;
-                case "ResultCategories":
-                    error = ValidateResultCheckboxes();
+                case "InputHeight":
+                    error = ValidateInputIsWholeNumber(out int height, _inputHeight);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ResultHeight = height;
+                        error = ValidateResultHeight();
+                    }
                     break;
                 default:
                     break;
@@ -129,10 +141,22 @@ namespace BIM_Leaders_Windows
             return null;
         }
 
-        private string ValidateResultCodes()
+        private string ValidateInputIsWholeNumber(out int numberParsed, string number)
         {
-            if (ResultHeight < 200)
-                return "Must be over 200 cm";
+            numberParsed = 0;
+
+            if (string.IsNullOrEmpty(number))
+                return "Input is empty";
+            if (!int.TryParse(number, out numberParsed))
+                return "Not a whole number";
+
+            return null;
+        }
+
+        private string ValidateResultHeight()
+        {
+            if (_resultHeight < _resultHeightMinValue)
+                return $"Must be over {_resultHeightMinValue} cm";
             return null;
         }
 

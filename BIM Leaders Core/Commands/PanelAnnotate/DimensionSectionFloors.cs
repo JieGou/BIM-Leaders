@@ -56,7 +56,7 @@ namespace BIM_Leaders_Core
 
                 bool inputSpots = data.ResultSpots;
                 List<bool> inputPlacement = data.ResultPlacement;
-                double inputThicknessCm = double.Parse(data.ResultThickness);
+                int inputThicknessCm = data.ResultThickness;
 
                 double inputThickness = UnitUtils.ConvertToInternalUnits(inputThicknessCm, units); 
 

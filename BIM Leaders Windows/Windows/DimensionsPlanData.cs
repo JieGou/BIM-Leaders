@@ -9,36 +9,55 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class DimensionsPlanData : INotifyPropertyChanged, IDataErrorInfo
     {
+        int _resultSearchStepMinValue = 1;
+        int _resultSearchStepMaxValue = 100;
+        int _resultSearchDistanceMinValue = 100;
+        int _resultSearchDistanceMaxValue = 10000;
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="DimensionsPlanData"/> class.
         /// </summary>
         public DimensionsPlanData()
         {
-            ResultSearchStep = "15";
-            ResultSearchDistance = "1500";
+            _resultSearchStep = 15;
+            _inputSearchStep = _resultSearchStep.ToString();
+            _resultSearchDistance = 1500;
+            _inputSearchDistance = _resultSearchDistance.ToString();
         }
 
-        private string _resultSearchStep;
-        public string ResultSearchStep
+        private string _inputSearchStep;
+        public string InputSearchStep
+        {
+            get { return _inputSearchStep; }
+            set
+            {
+                _inputSearchStep = value;
+                OnPropertyChanged(nameof(InputSearchStep));
+            }
+        }
+        private int _resultSearchStep;
+        public int ResultSearchStep
         {
             get { return _resultSearchStep; }
-            set
-            {
-                _resultSearchStep = value;
-                OnPropertyChanged(nameof(ResultSearchStep));
-            }
+            set { _resultSearchStep = value; }
         }
 
-        private string _resultSearchDistance;
-        public string ResultSearchDistance
+        private string _inputSearchDistance;
+        public string InputSearchDistance
         {
-            get { return _resultSearchDistance; }
+            get { return _inputSearchDistance; }
             set
             {
-                _resultSearchDistance = value;
-                OnPropertyChanged(nameof(ResultSearchDistance));
+                _inputSearchDistance = value;
+                OnPropertyChanged(nameof(InputSearchDistance));
             }
+        }
+        private int _resultSearchDistance;
+        public int ResultSearchDistance
+        {
+            get { return _resultSearchDistance; }
+            set { _resultSearchDistance = value; }
         }
 
         #region Validation
@@ -58,47 +77,49 @@ namespace BIM_Leaders_Windows
 
             switch (propertyName)
             {
-                case "ResultSearchStep":
-                    error = ValidateResultSearchStep();
+                case "InputSearchStep":
+                    error = ValidateInputIsWholeNumber(out int searchStep, _inputSearchStep);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ResultSearchStep = searchStep;
+                        error = ValidateResultSearchStep();
+                    }
                     break;
-                case "ResultSearchDistance":
-                    error = ValidateResultSearchDistance();
+                case "InputSearchDistance":
+                    error = ValidateInputIsWholeNumber(out int searchDistance, _inputSearchDistance);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ResultSearchDistance = searchDistance;
+                        error = ValidateResultSearchDistance();
+                    }
                     break;
             }
             return error;
         }
 
+        private string ValidateInputIsWholeNumber(out int numberParsed, string number)
+        {
+            numberParsed = 0;
+
+            if (string.IsNullOrEmpty(number))
+                return "Input is empty";
+            if (!int.TryParse(number, out numberParsed))
+                return "Not a whole number";
+
+            return null;
+        }
+
         private string ValidateResultSearchStep()
         {
-            if (string.IsNullOrEmpty(ResultSearchStep))
-                return "Input is empty";
-            else
-            {
-                if (int.TryParse(ResultSearchStep, out int y))
-                {
-                    if (y < 1 || y > 100)
-                        return "From 1 to 100 cm";
-                }
-                else
-                    return "Invalid input";
-            }
+            if (ResultSearchStep < _resultSearchStepMinValue || ResultSearchStep > _resultSearchStepMaxValue)
+                return $"From {_resultSearchStepMinValue} to {_resultSearchStepMaxValue} cm";
             return null;
         }
 
         private string ValidateResultSearchDistance()
         {
-            if (string.IsNullOrEmpty(ResultSearchStep))
-                return "Input is empty";
-            else
-            {
-                if (int.TryParse(ResultSearchStep, out int y))
-                {
-                    if (y < 100 || y > 10000)
-                        return "From 100 to 10000 cm";
-                }
-                else
-                    return "Invalid input";
-            }
+            if (ResultSearchDistance < _resultSearchDistanceMinValue || ResultSearchDistance > _resultSearchDistanceMaxValue)
+                return $"From {_resultSearchDistanceMinValue} to {_resultSearchDistanceMaxValue} cm";
             return null;
         }
 

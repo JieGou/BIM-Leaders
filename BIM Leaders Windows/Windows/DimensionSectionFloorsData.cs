@@ -9,15 +9,18 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class DimensionSectionFloorsData : INotifyPropertyChanged, IDataErrorInfo
     {
+        private const int _resultThicknessMinValue = 1;
+        private const int _resultThicknessMaxValue = 100;
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="DimensionSectionFloorsData"/> class.
         /// </summary>
         public DimensionSectionFloorsData()
         {
-            ResultSpots = true;
-            ResultPlacement = Enumerable.Repeat(true, 3).ToList();
-            ResultThickness = "10";
+            _resultSpots = true;
+            _resultPlacement = Enumerable.Repeat(true, 3).ToList();
+            _resultThickness = 10;
+            _inputThickness = _resultThickness.ToString();
         }
 
         private bool _resultSpots;
@@ -42,15 +45,21 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        private string _resultThickness;
-        public string ResultThickness
+        private string _inputThickness;
+        public string InputThickness
         {
-            get { return _resultThickness; }
+            get { return _inputThickness; }
             set
             {
-                _resultThickness = value;
-                OnPropertyChanged(nameof(ResultThickness));
+                _inputThickness = value;
+                OnPropertyChanged(nameof(InputThickness));
             }
+        }
+        private int _resultThickness;
+        public int ResultThickness
+        {
+            get { return _resultThickness; }
+            set { _resultThickness = value; }
         }
 
 
@@ -74,8 +83,13 @@ namespace BIM_Leaders_Windows
                 case "ResultPlacement":
                     error = ValidateResultPlacement();
                     break;
-                case "ResultThickness":
-                    error = ValidateResultThickness();
+                case "InputThickness":
+                    error = ValidateInputIsWholeNumber(out int thickness, _inputThickness);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ResultThickness = thickness;
+                        error = ValidateResultThickness();
+                    }   
                     break;
             }
             return error;
@@ -88,20 +102,22 @@ namespace BIM_Leaders_Windows
             return null;
         }
 
+        private string ValidateInputIsWholeNumber(out int numberParsed, string number)
+        {
+            numberParsed = 0;
+
+            if (string.IsNullOrEmpty(number))
+                return "Input is empty";
+            if (!int.TryParse(number, out numberParsed))
+                return "Not a whole number";
+
+            return null;
+        }
+
         private string ValidateResultThickness()
         {
-            if (string.IsNullOrEmpty(ResultThickness))
-                return "Input is empty";
-            else
-            {
-                if (int.TryParse(ResultThickness, out int y))
-                {
-                    if (y < 1 || y > 100)
-                        return "From 1 to 100 cm";
-                }
-                else
-                    return "Invalid input";
-            }
+            if (ResultThickness < _resultThicknessMinValue || ResultThickness > _resultThicknessMaxValue)
+                return $"From {_resultThicknessMinValue} to {_resultThicknessMaxValue} cm";
             return null;
         }
 

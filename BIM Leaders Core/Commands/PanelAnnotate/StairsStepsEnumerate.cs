@@ -39,7 +39,7 @@ namespace BIM_Leaders_Core
 
                 // Getting input from user
                 bool inputRightSide = data.ResultSideRight;
-                double inputStartNumber = double.Parse(data.ResultNumber);
+                int inputStartNumber = data.ResultNumber;
 
                 // Get all multistory stairs in the view
                 IEnumerable<MultistoryStairs> stairsMultiAll = new FilteredElementCollector(doc, doc.ActiveView.Id)

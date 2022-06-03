@@ -78,10 +78,10 @@ namespace BIM_Leaders_Core
                 {
                     string commandEvent = line.Trim().Split(" ".ToCharArray()).First().Remove(0, 4);
 
-                    if (Enum.TryParse(commandEvent, out CommandEvents commandEventEnum))
+                    if (Enum.TryParse(commandEvent, out Jrn commandEventEnum))
                         switch (commandEventEnum)
                         {
-                            case CommandEvents.Command:
+                            case Jrn.Command:
                                 {
                                     // Synthaxis:
                                     // Jrn.Command "Internal" , "Display Profile Dialog , ID_DISPLAY_PROFILE_DIALOG"
@@ -121,7 +121,7 @@ namespace BIM_Leaders_Core
                                     }
                                     break;
                                 }
-                            case CommandEvents.Data:
+                            case Jrn.Data:
                                 //"Selection action"
                                 //"ViewManipRotate"
                                 //"ViewManipRotateFlag"
@@ -138,7 +138,7 @@ namespace BIM_Leaders_Core
                                 //"Control"
                                 //"Restricted Propagation"
                                 break;
-                            case CommandEvents.Directive:
+                            case Jrn.Directive:
                                 // Jrn.Directive "ProjToPage"  _
 
                                 //"GlobalToProj"
@@ -160,85 +160,85 @@ namespace BIM_Leaders_Core
                                 //"AllowUnderlaySelection"
                                 //"AllowPinnedSelection"
                                 break;
-                            case CommandEvents.MouseMove:
+                            case Jrn.MouseMove:
                                 // Jrn.MouseMove    0 ,    920 ,    742
                                 break;
-                            case CommandEvents.LButtonUp:
+                            case Jrn.LButtonUp:
                                 // Jrn.LButtonUp    0 ,    399 ,    462
                                 break;
-                            case CommandEvents.LButtonDown:
+                            case Jrn.LButtonDown:
                                 // Jrn.LButtonDown    1 ,    212 ,    409
                                 break;
-                            case CommandEvents.LButtonDblClk:
+                            case Jrn.LButtonDblClk:
                                 break;
-                            case CommandEvents.MButtonUp:
+                            case Jrn.MButtonUp:
                                 // Jrn.MButtonUp    0 ,    421 ,    581
                                 break;
-                            case CommandEvents.MButtonDown:
+                            case Jrn.MButtonDown:
                                 // Jrn.MButtonDown   16 ,    436 ,    192
                                 break;
-                            case CommandEvents.MButtonDblClk:
+                            case Jrn.MButtonDblClk:
                                 break;
-                            case CommandEvents.Wheel:
+                            case Jrn.Wheel:
                                 // Jrn.Wheel      0 ,  120 ,   1215 ,    937
                                 break;
-                            case CommandEvents.Key:
+                            case Jrn.Key:
                                 // Jrn.Key    4 , "VK_SHIFT" , 42
                                 break;
-                            case CommandEvents.Size:
+                            case Jrn.Size:
                                 // Jrn.Size        0 ,   1316 ,    812
                                 break;
-                            case CommandEvents.Browser:
+                            case Jrn.Browser:
                                 // Jrn.Browser "LButtonDblClk" _
                                 //          , ">>Views (??? ????? ??????)>>BIM TEAM>>IVAN>>118>>Floor Plan: -3>>"
                                 break;
-                            case CommandEvents.PropertiesPalette:
+                            case Jrn.PropertiesPalette:
                                 // Jrn.PropertiesPalette "MouseLeave"
                                 break;
-                            case CommandEvents.WidgetEvent:
+                            case Jrn.WidgetEvent:
                                 break;
-                            case CommandEvents.RibbonEvent:
+                            case Jrn.RibbonEvent:
                                 // Jrn.RibbonEvent "CreateBreadcrumb:"
                                 break;
-                            case CommandEvents.AppButtonEvent:
+                            case Jrn.AppButtonEvent:
                                 break;
-                            case CommandEvents.AddInEvent:
+                            case Jrn.AddInEvent:
                                 break;
-                            case CommandEvents.PushButton:
+                            case Jrn.PushButton:
                                 // Jrn.PushButton "ToolBar , {}{} , Dialog_HostObj_SketchEditElevation" _
                                 break;
-                            case CommandEvents.RadioButton:
+                            case Jrn.RadioButton:
                                 // Jrn.RadioButton "ToolBar , {}{} , Dialog_HostObj_WallTopBottom" _
                                 break;
-                            case CommandEvents.ComboBox:
+                            case Jrn.ComboBox:
                                 // Jrn.ComboBox "Modal , New Floor Plan , Dialog_RoomAreaPlan_NewPlanDlg" _
                                 //          , "Control_RoomAreaPlan_NewplanTypeDropdown" _
                                 //          , "SelEndOk" , "Floor Plan"
                                 break;
-                            case CommandEvents.CheckBox:
+                            case Jrn.CheckBox:
                                 // Jrn.CheckBox "Modal , New Floor Plan , Dialog_RoomAreaPlan_NewPlanDlg" _
                                 //          , "Do not duplicate existing views, Control_RoomAreaPlan_NewPlanChkbox" _
                                 //          , False
                                 break;
-                            case CommandEvents.ListBox:
+                            case Jrn.ListBox:
                                 break;
-                            case CommandEvents.Edit:
+                            case Jrn.Edit:
                                 // Jrn.Edit "View , 100003" _
                                 //          , "IDC_EDIT_CONTROL" _
                                 //          , "ReplaceContents" , "3"
                                 break;
-                            case CommandEvents.TreeCtrl:
+                            case Jrn.TreeCtrl:
                                 // Jrn.TreeCtrl "Dialog_Family_FamilyHost" , "2110" _
                                 //          , "ChangeSelection" , ">>Furniture>>"
                                 break;
-                            case CommandEvents.Activate:
+                            case Jrn.Activate:
                                 // Jrn.Activate "[a43c1afd-7b0f-4696-ab65-30d7fc9e4302.rvt]" , "Floor Plan: -3"
                                 break;
-                            case CommandEvents.Grid:
+                            case Jrn.Grid:
                                 // Jrn.Grid "Control; FormView , Properties , IDD_PROPERTIES_PALETTE; IDC_SYMBOL_GRID" _
                                 //          , "Selection" ,  ""
                                 break;
-                            case CommandEvents.Close:
+                            case Jrn.Close:
                                 // Jrn.Close "[a43c1afd-7b0f-4696-ab65-30d7fc9e4302.rvt]" , "Sheet: 000 - ?? ?????"
                                 break;
                             default:
@@ -249,7 +249,7 @@ namespace BIM_Leaders_Core
             return commands;
         }
 
-        private enum CommandEvents
+        private enum Jrn
         {
             Directive,
             Data,

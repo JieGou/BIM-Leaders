@@ -57,7 +57,7 @@
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxNumber"
-                         Text="{Binding ResultNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding InputNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxNumber, Path=(Validation.Errors)/ErrorContent}"

@@ -281,7 +281,7 @@
                                           IsChecked="{Binding Path=ResultCodes[1], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}"/>
                                 <TextBox x:Name="textboxHeight"
-                                         Text="{Binding ResultHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                         Text="{Binding InputHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                          Margin="140,-24,0,0"
                                          Style="{StaticResource STextBox}">
                                 </TextBox>

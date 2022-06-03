@@ -8,6 +8,9 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class WallsArrangedData : INotifyPropertyChanged, IDataErrorInfo
     {
+        private const double _resultDistanceToleranceMinValue = 0.000000000001;
+        private const double _resultDistanceToleranceMaxValue = 0.1;
+
         public string Error { get { return null; } }
         /// <summary>
         /// Default constructor
@@ -15,15 +18,17 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public WallsArrangedData()
         {
-            ResultDistanceStep = "1"; // 1 cm
-            ResultDistanceTolerance = "0.000000001"; // cm (enough is 0.000000030 - 0.000000035 - closer walls after join will be without dividing line)
-            ResultColor0 = new Color
+            _resultDistanceStep = 1;
+            _inputDistanceStep = _resultDistanceStep.ToString();
+            _resultDistanceTolerance = 0.000000001; // cm (enough is 0.000000030 - 0.000000035 - closer walls after join will be without dividing line)
+            _inputDistanceTolerance = _resultDistanceTolerance.ToString();
+            _resultColor0 = new Color
             {
                 R = 255,
                 G = 127,
                 B = 39
             };
-            ResultColor1 = new Color
+            _resultColor1 = new Color
             {
                 R = 255,
                 G = 64,
@@ -31,26 +36,38 @@ namespace BIM_Leaders_Windows
             };
         }
 
-        private string _resultDistanceStep;
-        public string ResultDistanceStep
+        private string _inputDistanceStep;
+        public string InputDistanceStep
         {
-            get { return _resultDistanceStep; }
+            get { return _inputDistanceStep; }
             set
             {
-                _resultDistanceStep = value;
-                OnPropertyChanged(nameof(ResultDistanceStep));
+                _inputDistanceStep = value;
+                OnPropertyChanged(nameof(InputDistanceStep));
             }
         }
-
-        private string _resultDistanceTolerance;
-        public string ResultDistanceTolerance
+        private double _resultDistanceStep;
+        public double ResultDistanceStep
         {
-            get { return _resultDistanceTolerance; }
+            get { return _resultDistanceStep; }
+            set { _resultDistanceStep = value; }
+        }
+
+        private string _inputDistanceTolerance;
+        public string InputDistanceTolerance
+        {
+            get { return _inputDistanceTolerance; }
             set
             {
-                _resultDistanceTolerance = value;
-                OnPropertyChanged(nameof(ResultDistanceTolerance));
+                _inputDistanceTolerance = value;
+                OnPropertyChanged(nameof(InputDistanceTolerance));
             }
+        }
+        private double _resultDistanceTolerance;
+        public double ResultDistanceTolerance
+        {
+            get { return _resultDistanceTolerance; }
+            set { _resultDistanceTolerance = value; }
         }
 
         private Color _resultColor0;
@@ -92,49 +109,51 @@ namespace BIM_Leaders_Windows
             
             switch (propertyName)
             {
-                case "ResultDistanceStep":
-                    error = ValidateResultDistanceStep();
+                case "InputDistanceStep":
+                    error = ValidateInputIsPointNumber(out double distanceStep, _inputDistanceStep);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ResultDistanceStep = distanceStep;
+                        error = ValidateResultDistanceStep();
+                    }
                     break;
-                case "ResultDistanceTolerance":
-                    error = ValidateResultDistanceTolerance();
+                case "InputDistanceTolerance":
+                    error = ValidateInputIsPointNumber(out double distanceTolerance, _inputDistanceTolerance);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ResultDistanceTolerance = distanceTolerance;
+                        error = ValidateResultDistanceTolerance();
+                    }
                     break;
             }
             return error;
         }
 
+        private string ValidateInputIsPointNumber(out double numberParsed, string number)
+        {
+            numberParsed = 0;
+
+            if (string.IsNullOrEmpty(number))
+                return "Input is empty";
+            if (!double.TryParse(number, out numberParsed))
+                return "Invalid input";
+
+            return null;
+        }
+
         private string ValidateResultDistanceStep()
         {
-            if (string.IsNullOrEmpty(ResultDistanceStep))
-                return "Input is empty";
-            else
-            {
-                if (int.TryParse(ResultDistanceStep, out int x))
-                {
-                    if (x == 0)
-                        return "Cannot be 0";
-                }
-                else
-                    return "Invalid input";
-            }
+            if (ResultDistanceStep == 0)
+                return "Cannot be 0";
             return null;
         }
 
         private string ValidateResultDistanceTolerance()
         {
-            if (string.IsNullOrEmpty(ResultDistanceTolerance))
-                return "Input is empty";
-            else
-            {
-                if (double.TryParse(ResultDistanceTolerance, out double x))
-                {
-                    if (x < 0.000000000001)
-                        return "Cannot be lower than 0.000000000001 cm";
-                    else if (x > 0.1)
-                        return "Cannot be bigger than 0.1 cm";
-                }
-                else
-                    return "Invalid input";
-            }
+            if (ResultDistanceTolerance < _resultDistanceToleranceMinValue)
+                return $"Cannot be lower than {_resultDistanceToleranceMinValue} cm";
+            else if (ResultDistanceTolerance > _resultDistanceToleranceMaxValue)
+                return $"Cannot be bigger than {_resultDistanceToleranceMaxValue} cm";
             return null;
         }
 

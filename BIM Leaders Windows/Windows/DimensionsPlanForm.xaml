@@ -46,7 +46,7 @@
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxSearchStep" ToolTip="Step along element faces to create searching lines."
-                         Text="{Binding ResultSearchStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding InputSearchStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxSearchStep, Path=(Validation.Errors).CurrentItem.ErrorContent}"
@@ -57,7 +57,7 @@
                        Style="{StaticResource SLabelBold}">
                 </Label>
                 <TextBox x:Name="textboxSearchDistance" ToolTip="Distance from element face to search other elements."
-                         Text="{Binding ResultSearchDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding InputSearchDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors).CurrentItem.ErrorContent}"

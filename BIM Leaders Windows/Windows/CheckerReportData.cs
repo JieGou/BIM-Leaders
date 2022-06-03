@@ -16,7 +16,7 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public CheckerReportData(DataSet reportDataSet)
         {
-            this._checkReport = reportDataSet;
+            _checkReport = reportDataSet;
         }
 
         private DataSet _checkReport;

@@ -46,8 +46,8 @@ namespace BIM_Leaders_Core
 
                 // Get user provided information from window
                 WallsArrangedData data = form.DataContext as WallsArrangedData;
-                double toleranceDistance = double.Parse(data.ResultDistanceTolerance);
-                double distanceStep = double.Parse(data.ResultDistanceStep);
+                double toleranceDistance = data.ResultDistanceTolerance;
+                double distanceStep = data.ResultDistanceStep;
                 Color filterColor0 = new Color(data.ResultColor0.R, data.ResultColor0.G, data.ResultColor0.B);
                 Color filterColor1 = new Color(data.ResultColor1.R, data.ResultColor1.G, data.ResultColor1.B);
 
