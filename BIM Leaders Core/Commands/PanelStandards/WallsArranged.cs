@@ -63,7 +63,8 @@ namespace BIM_Leaders_Core
                 ReferencePlane reference0 = doc.GetElement(referenceUncheckedList[0].ElementId) as ReferencePlane;
                 ReferencePlane reference1 = doc.GetElement(referenceUncheckedList[1].ElementId) as ReferencePlane;
                 // Checking for perpendicular input
-                if ((Math.Abs(reference0.Direction.X) - Math.Abs(reference1.Direction.Y) <= toleranceAngle) && (Math.Abs(reference0.Direction.Y) - Math.Abs(reference1.Direction.X) <= toleranceAngle)) { }
+                if (   (Math.Abs(reference0.Direction.X) - Math.Abs(reference1.Direction.Y) <= toleranceAngle)
+                    && (Math.Abs(reference0.Direction.Y) - Math.Abs(reference1.Direction.X) <= toleranceAngle)) { }
                 else
                 {
                     TaskDialog.Show("Walls Arranged Check", "Selected reference planes are not perpendicular. Select 2 perendicular reference planes.");
