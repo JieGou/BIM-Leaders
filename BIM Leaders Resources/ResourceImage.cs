@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
 
 namespace BIM_Leaders_Resources
 {

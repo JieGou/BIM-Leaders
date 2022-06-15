@@ -113,7 +113,7 @@ namespace BIM_Leaders_Core
             }
             return (count2D, count);
         }
-
+        
         public static string GetPath()
         {
             // Return constructed namespace path
