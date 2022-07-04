@@ -501,6 +501,10 @@ namespace BIM_Leaders_Core
 						references.Append(face.Reference);
 					}	
 			}
+
+			if (references.Size < 2)
+				return (null, null);
+
 			return (facesIntersected, references);
 		}
 
