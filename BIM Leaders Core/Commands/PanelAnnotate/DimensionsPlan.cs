@@ -28,6 +28,9 @@ namespace BIM_Leaders_Core
 
             double toleranceAngle = uiapp.AngleTolerance / 100; // 0.001 grad
 
+			ViewPlan viewPlan = view as ViewPlan;
+			double viewHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
+
 			double countDim = 0;
 			double countRef = 0;
 
@@ -102,8 +105,8 @@ namespace BIM_Leaders_Core
 						// Make two points, with coordinates from face beginning
 						// Search distance added and multiplied to extend the line for intersections search
 						// lengthPast added in Y only, to move the line across the face
-						XYZ point1 = new XYZ(faceMinA.X + lengthPast, faceMinA.Y + searchDistance * view.UpDirection.Y, 0);
-						XYZ point2 = new XYZ(faceMinA.X + lengthPast, faceMinA.Y - searchDistance * view.UpDirection.Y, 0);
+						XYZ point1 = new XYZ(faceMinA.X + lengthPast, faceMinA.Y + searchDistance * view.UpDirection.Y, viewHeight);
+						XYZ point2 = new XYZ(faceMinA.X + lengthPast, faceMinA.Y - searchDistance * view.UpDirection.Y, viewHeight);
 						Line line = Line.CreateBound(point1, point2);
 
 						// Find faces and its refs that intersect with the line
@@ -166,8 +169,8 @@ namespace BIM_Leaders_Core
 						// Make two points, with coordinates from face beginning
 						// Search distance added and multiplied to extend the line for intersections search
 						// lengthPast added in X only, to move the line across the face
-						XYZ point_1 = new XYZ(faceMinA.X - searchDistance * view.UpDirection.Y, faceMinA.Y + lengthPast, 0);
-						XYZ point_2 = new XYZ(faceMinA.X + searchDistance * view.UpDirection.Y, faceMinA.Y + lengthPast, 0);
+						XYZ point_1 = new XYZ(faceMinA.X - searchDistance * view.UpDirection.Y, faceMinA.Y + lengthPast, viewHeight);
+						XYZ point_2 = new XYZ(faceMinA.X + searchDistance * view.UpDirection.Y, faceMinA.Y + lengthPast, viewHeight);
 						Line line = Line.CreateBound(point_1, point_2);
 
 						// Find faces and its refs that intersect with the line
