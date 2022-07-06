@@ -28,13 +28,8 @@ namespace BIM_Leaders_Core
 
             double toleranceAngle = uiapp.AngleTolerance / 100; // 0.001 grad
 
-			ViewPlan viewPlan = view as ViewPlan;
-			double viewHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
-
-			double countDim = 0;
-			double countRef = 0;
-
-			int stopper = 1000;
+			int countDim = 0;
+			int countRef = 0;
 
 			try
             {
@@ -77,132 +72,10 @@ namespace BIM_Leaders_Core
 				// Get all horizontal faces that need a dimension
 				// !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
 				List<Face> facesHorAll = GetFacesHorizontal(doc, toleranceAngle, elementsHor);
-
-				// Faces buffer for faces with no dimension yet
-				List<Face> facesHorNotDim = facesHorAll;
-
-				// Looping through faces
-				int stopperI = 0;
-				while (facesHorNotDim.Count > 1 && stopperI < stopper)
-                {
-					stopperI++;
-
-					Face faceMin = FindFaceBottom(facesHorNotDim);
-					(XYZ faceMinA, XYZ faceMinB) = FindFacePoints(faceMin);
-
-					// Iterate through space between two points of face
-					// Get max number of intersections
-					List<Face> facesMax = new List<Face>();
-					ReferenceArray refsMax = new ReferenceArray();
-
-					int intersectsMax = 0;
-					
-					Line lineMax = null;
-
-					double lengthPast = 0;
-					while (lengthPast < faceMinA.DistanceTo(faceMinB))
-                    {
-						// Make two points, with coordinates from face beginning
-						// Search distance added and multiplied to extend the line for intersections search
-						// lengthPast added in Y only, to move the line across the face
-						XYZ point1 = new XYZ(faceMinA.X + lengthPast, faceMinA.Y + searchDistance * view.UpDirection.Y, viewHeight);
-						XYZ point2 = new XYZ(faceMinA.X + lengthPast, faceMinA.Y - searchDistance * view.UpDirection.Y, viewHeight);
-						Line line = Line.CreateBound(point1, point2);
-
-						// Find faces and its refs that intersect with the line
-						(List<Face> faceIter, ReferenceArray refsIter) = FindReferences(line, facesHorAll.ToList());
-
-						lengthPast += searchStep;
-
-						if (refsIter.Size == 0)
-							continue;
-
-						if (refsIter.Size > intersectsMax)
-                        {
-							refsMax = refsIter;
-							facesMax = faceIter;
-							intersectsMax = refsMax.Size;
-							lineMax = line;
-						}
-					}
-					if (lineMax != null)
-                    {
-						dimensionsData.Add(lineMax, refsMax);
-						countDim++;
-						countRef += refsMax.Size - 1;
-					}
-					// Wall is too short - no one line found no intersections
-					else
-						facesHorNotDim.Remove(faceMin);
-
-					// Remove dimensioned faces from buffer facesNotDim
-					foreach (Face face in facesMax)
-						facesHorNotDim.Remove(face);
-				}
-
-				// Get all vertical faces that need a dimension
-				// !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
 				List<Face> facesVerAll = GetFacesVertical(doc, toleranceAngle, elementsVer);
 
-				// Faces buffer for faces with no dimension yet
-				List<Face> facesVerNotDim = facesVerAll;
-
-				// Looping through faces
-				stopperI = 0;
-				while (facesVerNotDim.Count > 1 && stopperI < stopper)
-				{
-					stopperI++;
-
-					Face faceMin = FindFaceLeft(facesVerNotDim);
-					(XYZ faceMinA, XYZ faceMinB) = FindFacePoints(faceMin);
-
-					// Iterate through space between two points of face
-					// Get max number of intersections
-					int intersectsMax = 0;
-					List<Face> facesMax = new List<Face>();
-					ReferenceArray refsMax = new ReferenceArray();
-					Line lineMax = null;
-
-					double lengthPast = 0;
-					while (lengthPast < faceMinA.DistanceTo(faceMinB))
-					{
-						// Make two points, with coordinates from face beginning
-						// Search distance added and multiplied to extend the line for intersections search
-						// lengthPast added in X only, to move the line across the face
-						XYZ point_1 = new XYZ(faceMinA.X - searchDistance * view.UpDirection.Y, faceMinA.Y + lengthPast, viewHeight);
-						XYZ point_2 = new XYZ(faceMinA.X + searchDistance * view.UpDirection.Y, faceMinA.Y + lengthPast, viewHeight);
-						Line line = Line.CreateBound(point_1, point_2);
-
-						// Find faces and its refs that intersect with the line
-						(List<Face> faceIter, ReferenceArray refsIter) = FindReferences(line, facesVerAll.ToList());
-
-						lengthPast += searchStep;
-
-						if (refsIter.Size == 0)
-							continue;
-
-						if (refsIter.Size > intersectsMax)
-						{
-							refsMax = refsIter;
-							facesMax = faceIter;
-							intersectsMax = refsMax.Size;
-							lineMax = line;
-						}
-					}
-					if (lineMax != null)
-                    {
-						dimensionsData.Add(lineMax, refsMax);
-						countDim++;
-						countRef += refsMax.Size - 1;
-					}
-					// Wall is too short - no one line found no intersections
-					else
-						facesHorNotDim.Remove(faceMin);
-
-					// Remove dimensioned faces from buffer facesNotDim
-					foreach (Face face in facesMax)
-						facesVerNotDim.Remove(face);
-				}
+				GetDimensionsDataHorizontal(doc, dimensionsData, facesHorAll, searchDistance, searchStep, ref countDim, ref countRef);
+				GetDimensionsDataVertical(doc, dimensionsData, facesVerAll, searchDistance, searchStep, ref countDim, ref countRef);
 
 				using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
                 {
@@ -210,7 +83,7 @@ namespace BIM_Leaders_Core
 
 					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsData)
                     {
-						Dimension dimension = doc.Create.NewDimension(view, dimensionData.Key, dimensionData.Value);
+                        Dimension dimension = doc.Create.NewDimension(view, dimensionData.Key, dimensionData.Value);
 					}
 
 					trans.Commit();
@@ -221,8 +94,9 @@ namespace BIM_Leaders_Core
                     ? "Dimensions creating error."
                     : $"{countDim} dimensions with {countRef} segments were created.";
                 TaskDialog.Show("Dimension Plan", text);
-
-                return Result.Succeeded;
+				
+				return Result.Succeeded;
+				
             }
             catch (Exception e)
             {
@@ -347,7 +221,7 @@ namespace BIM_Leaders_Core
 			{
 				ComputeReferences = true,
 				IncludeNonVisibleObjects = false,
-				View = doc.ActiveView
+				View = view
 			};
 
 			foreach (Element element in elements)
@@ -384,7 +258,7 @@ namespace BIM_Leaders_Core
 			{
 				ComputeReferences = true,
 				IncludeNonVisibleObjects = false,
-				View = doc.ActiveView
+				View = view
 			};
 
 			foreach (Element element in elements)
@@ -405,6 +279,168 @@ namespace BIM_Leaders_Core
 				}
 			}
 			return facesAll;
+		}
+
+		/// <summary>
+		/// Get the data needed to create dimensions.
+		/// </summary>
+		/// <param name="doc"></param>
+		/// <param name="dimensionsData">Dictionary that will be filled after method is run.</param>
+		/// <param name="countDim">Counter of dimensions.</param>
+		/// <param name="countRef">Counter of references.</param>
+		private static void GetDimensionsDataHorizontal(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, List<Face> faces, double searchDistance, double searchStep, ref int countDim, ref int countRef)
+        {
+			View view = doc.ActiveView;
+			ViewPlan viewPlan = view as ViewPlan;
+			double viewHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
+
+			// Faces buffer for faces with no dimension yet
+			List<Face> facesNotDimensioned = new List<Face>(faces);
+
+			// Looping through faces
+			int stopper = 1000;
+			int stopperI = 0;
+			while (facesNotDimensioned.Count > 1 && stopperI < stopper)
+			{
+				stopperI++;
+
+				Face faceCurrent = FindFaceBottom(facesNotDimensioned);
+				(XYZ faceCurrentPointA, XYZ faceCurrentPointB) = FindFacePoints(faceCurrent);
+
+				// Iterate through space between two points of face
+				// Find max number of intersections
+				List<Face> maxIntersectionFaces = new List<Face>();
+				ReferenceArray maxIntersectionRefs = new ReferenceArray();
+				Line maxIntersectionLine = null;
+				int maxIntersectionCount = 0;
+
+				//Line lineMax = null;
+
+				double lengthPast = 0;
+				double lengthAll = faceCurrentPointA.DistanceTo(faceCurrentPointB);
+				while (lengthPast < lengthAll)
+				{
+					// Make two points, with coordinates from face beginning
+					// Search distance added and multiplied to extend the line for intersections search
+					// lengthPast added in Y only, to move the line across the face
+					XYZ point1 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y + searchDistance * view.UpDirection.Y, viewHeight);
+					XYZ point2 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y - searchDistance * view.UpDirection.Y, viewHeight);
+					Line currentIntersectionLine = Line.CreateBound(point1, point2);
+
+					// Find faces and their refs that intersect with the line
+					(List<Face> currentIntersectionFaces, ReferenceArray currentIntersectionRefs) = FindIntersections(currentIntersectionLine, faces);
+					//(List<Face> currentIntersectionFaces, ReferenceArray currentIntersectionRefs) = FindIntersections(currentIntersectionLine, facesNotDimensioned);
+
+					lengthPast += searchStep;
+
+					if (currentIntersectionRefs.Size == 0)
+						continue;
+
+					if (currentIntersectionRefs.Size > maxIntersectionCount)
+					{
+						maxIntersectionRefs = currentIntersectionRefs;
+						maxIntersectionFaces = currentIntersectionFaces;
+						maxIntersectionLine = currentIntersectionLine;
+						maxIntersectionCount = maxIntersectionRefs.Size;
+					}
+				}
+
+				// Line found some intersections
+				if (maxIntersectionLine != null)
+				{
+					if (PurgeIntersectionLine(dimensionsData, maxIntersectionRefs))
+                    {
+						dimensionsData.Add(maxIntersectionLine, maxIntersectionRefs);
+						countDim++;
+						countRef += maxIntersectionRefs.Size - 1;
+					}
+				}
+
+				// Remove current face from buffer
+				facesNotDimensioned.Remove(faceCurrent);
+
+				// Remove dimensioned faces from buffer
+				foreach (Face face in maxIntersectionFaces)
+					facesNotDimensioned.Remove(face);
+			}
+		}
+
+		/// <summary>
+		/// Get the data needed to create dimensions.
+		/// </summary>
+		/// <param name="doc"></param>
+		/// <param name="dimensionsData">Dictionary that will be filled after method is run.</param>
+		/// <param name="countDim">Counter of dimensions.</param>
+		/// <param name="countRef">Counter of references.</param>
+		private static void GetDimensionsDataVertical(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, List<Face> faces, double searchDistance, double searchStep, ref int countDim, ref int countRef)
+		{
+			View view = doc.ActiveView;
+			ViewPlan viewPlan = view as ViewPlan;
+			double viewHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
+
+			// Faces buffer for faces with no dimension yet
+			List<Face> facesNotDimensioned = new List<Face>(faces);
+
+			// Looping through faces
+			int stopper = 1000;
+			int stopperI = 0;
+			while (facesNotDimensioned.Count > 1 && stopperI < stopper)
+			{
+				stopperI++;
+
+				Face faceCurrent = FindFaceLeft(facesNotDimensioned);
+				(XYZ faceCurrentPointA, XYZ faceCurrentPointB) = FindFacePoints(faceCurrent);
+
+				// Iterate through space between two points of face
+				// Find max number of intersections
+				List<Face> maxIntersectionFaces = new List<Face>();
+				ReferenceArray maxIntersectionRefs = new ReferenceArray();
+				Line maxIntersectionLine = null;
+				int maxIntersectionCount = 0;
+
+				double lengthPast = 0;
+				double lengthAll = faceCurrentPointA.DistanceTo(faceCurrentPointB);
+				while (lengthPast < lengthAll)
+				{
+					// Make two points, with coordinates from face beginning
+					// Search distance added and multiplied to extend the line for intersections search
+					// lengthPast added in X only, to move the line across the face
+					XYZ point1 = new XYZ(faceCurrentPointA.X - searchDistance * view.UpDirection.Y, faceCurrentPointA.Y + lengthPast, viewHeight);
+					XYZ point2 = new XYZ(faceCurrentPointA.X + searchDistance * view.UpDirection.Y, faceCurrentPointA.Y + lengthPast, viewHeight);
+					Line currentIntersectionLine = Line.CreateBound(point1, point2);
+
+					// Find faces and its their refs that intersect with the line
+					(List<Face> currentIntersectionFaces, ReferenceArray currentIntersectionRefs) = FindIntersections(currentIntersectionLine, faces); // facesNotDim
+
+					lengthPast += searchStep;
+
+					if (currentIntersectionRefs.Size == 0)
+						continue;
+
+					if (currentIntersectionRefs.Size > maxIntersectionCount)
+					{
+						maxIntersectionRefs = currentIntersectionRefs;
+						maxIntersectionFaces = currentIntersectionFaces;
+						maxIntersectionCount = maxIntersectionRefs.Size;
+						maxIntersectionLine = currentIntersectionLine;
+					}
+				}
+
+				// Line found some intersections
+				if (maxIntersectionLine != null)
+				{
+					dimensionsData.Add(maxIntersectionLine, maxIntersectionRefs);
+					countDim++;
+					countRef += maxIntersectionRefs.Size - 1;
+				}
+
+				// Remove current face from buffer
+				facesNotDimensioned.Remove(faceCurrent);
+
+				// Remove dimensioned faces from buffer
+				foreach (Face face in maxIntersectionFaces)
+					facesNotDimensioned.Remove(face);
+			}
 		}
 
 		/// <summary>
@@ -485,7 +521,7 @@ namespace BIM_Leaders_Core
 		/// Find faces and its references that intersects with the curve.
 		/// </summary>
 		/// <returns>List of faces and their references that intersect the given curve.</returns>
-		private static (List<Face>, ReferenceArray) FindReferences(Curve curve, List<Face> faces)
+		private static (List<Face>, ReferenceArray) FindIntersections(Curve curve, List<Face> faces)
         {
 			List<Face> facesIntersected = new List<Face>();
 			ReferenceArray references = new ReferenceArray();
@@ -503,12 +539,50 @@ namespace BIM_Leaders_Core
 			}
 
 			if (references.Size < 2)
-				return (null, null);
+            {
+				facesIntersected.Clear();
+				references.Clear();
+			}
 
 			return (facesIntersected, references);
 		}
 
-        public static string GetPath()
+		/// <summary>
+		/// We have to purge dimension line to prevent duplicates. Now it only return boolean as a flag, but in future need to add smart purging (if not all references are the same but part of them)
+		/// </summary>
+		/// <param name="dimensionsData">Current data for dimensions creating.</param>
+		/// <param name="maxIntersectionLine">Line to purge.</param>
+		/// <param name="maxIntersectionRefs">References that the Line intersects.</param>
+		/// <returns>True if input line is Okay and is not repeating some other line in dimensionsData. Need to be improved later, to edit the input line and references ad clear duplicates smartly.</returns>
+		private static bool PurgeIntersectionLine(Dictionary<Line, ReferenceArray> dimensionsData, ReferenceArray maxIntersectionRefs)
+        {
+			bool lineIsUnique = true;
+
+			// Converting current ReferenceArray to HashSet
+			HashSet<Reference> referencesSet = new HashSet<Reference>();
+			foreach (Reference reference in maxIntersectionRefs)
+            {
+				referencesSet.Add(reference);
+			}
+
+			// Check if the same HashSet is in the given data
+			HashSet<Reference> referencesSetData = new HashSet<Reference>();
+			foreach (ReferenceArray referenceArray in dimensionsData.Values)
+            {
+				referencesSetData.Clear();
+				foreach (Reference reference in referenceArray)
+                {
+					referencesSetData.Add(reference);
+				}
+
+				if (referencesSet.SetEquals(referencesSetData))
+					lineIsUnique = false;
+			}				
+
+			return lineIsUnique;
+        }
+
+		public static string GetPath()
         {
             // Return constructed namespace path
             return typeof(DimensionsPlan).Namespace + "." + nameof(DimensionsPlan);
