@@ -66,24 +66,32 @@ namespace BIM_Leaders_Core
 				IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
 				IEnumerable<Element> elementsVer = wallsVer.Cast<Element>().Concat(columnsPer.Cast<Element>());
 
-				// Storing data needed to create all dimensions
-				Dictionary<Line, ReferenceArray> dimensionsData = new Dictionary<Line, ReferenceArray>();
-
 				// Get all horizontal faces that need a dimension
 				// !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
 				List<Face> facesHorAll = GetFacesHorizontal(doc, toleranceAngle, elementsHor);
 				List<Face> facesVerAll = GetFacesVertical(doc, toleranceAngle, elementsVer);
 
-				GetDimensionsDataHorizontal(doc, dimensionsData, facesHorAll, searchDistance, searchStep, ref countDim, ref countRef);
-				GetDimensionsDataVertical(doc, dimensionsData, facesVerAll, searchDistance, searchStep, ref countDim, ref countRef);
+				// Storing data needed to create all dimensions
+				Dictionary<Line, ReferenceArray> dimensionsDataHor = new Dictionary<Line, ReferenceArray>();
+				Dictionary<Line, ReferenceArray> dimensionsDataVer = new Dictionary<Line, ReferenceArray>();
+				GetDimensionsData(doc, dimensionsDataHor, facesHorAll, searchDistance, searchStep, true);
+				GetDimensionsData(doc, dimensionsDataVer, facesVerAll, searchDistance, searchStep, false);
 
 				using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
                 {
                     trans.Start();
 
-					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsData)
+					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataHor)
                     {
                         Dimension dimension = doc.Create.NewDimension(view, dimensionData.Key, dimensionData.Value);
+						countDim++;
+						countRef += (dimensionData.Value.Size - 1);
+					}
+					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
+					{
+						Dimension dimension = doc.Create.NewDimension(view, dimensionData.Key, dimensionData.Value);
+						countDim++;
+						countRef += (dimensionData.Value.Size - 1);
 					}
 
 					trans.Commit();
@@ -286,9 +294,8 @@ namespace BIM_Leaders_Core
 		/// </summary>
 		/// <param name="doc"></param>
 		/// <param name="dimensionsData">Dictionary that will be filled after method is run.</param>
-		/// <param name="countDim">Counter of dimensions.</param>
-		/// <param name="countRef">Counter of references.</param>
-		private static void GetDimensionsDataHorizontal(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, List<Face> faces, double searchDistance, double searchStep, ref int countDim, ref int countRef)
+		/// <param name="isHorizontal">Are input faces horizontal.</param>
+		private static void GetDimensionsData(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, List<Face> faces, double searchDistance, double searchStep, bool isHorizontal)
         {
 			View view = doc.ActiveView;
 			ViewPlan viewPlan = view as ViewPlan;
@@ -304,7 +311,12 @@ namespace BIM_Leaders_Core
 			{
 				stopperI++;
 
-				Face faceCurrent = FindFaceBottom(facesNotDimensioned);
+				Face faceCurrent;
+				if (isHorizontal)
+					faceCurrent = FindFaceBottom(facesNotDimensioned);
+                else
+					faceCurrent = FindFaceLeft(facesNotDimensioned);
+				
 				(XYZ faceCurrentPointA, XYZ faceCurrentPointB) = FindFacePoints(faceCurrent);
 
 				// Iterate through space between two points of face
@@ -323,8 +335,19 @@ namespace BIM_Leaders_Core
 					// Make two points, with coordinates from face beginning
 					// Search distance added and multiplied to extend the line for intersections search
 					// lengthPast added in Y only, to move the line across the face
-					XYZ point1 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y + searchDistance * view.UpDirection.Y, viewHeight);
-					XYZ point2 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y - searchDistance * view.UpDirection.Y, viewHeight);
+					XYZ point1;
+					XYZ point2;
+					if (isHorizontal)
+                    {
+						point1 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y + searchDistance * view.UpDirection.Y, viewHeight);
+						point2 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y - searchDistance * view.UpDirection.Y, viewHeight);
+					}
+                    else
+                    {
+						point1 = new XYZ(faceCurrentPointA.X - searchDistance * view.UpDirection.Y, faceCurrentPointA.Y + lengthPast, viewHeight);
+						point2 = new XYZ(faceCurrentPointA.X + searchDistance * view.UpDirection.Y, faceCurrentPointA.Y + lengthPast, viewHeight);
+					}
+					
 					Line currentIntersectionLine = Line.CreateBound(point1, point2);
 
 					// Find faces and their refs that intersect with the line
@@ -347,92 +370,8 @@ namespace BIM_Leaders_Core
 
 				// Line found some intersections
 				if (maxIntersectionLine != null)
-				{
 					if (PurgeIntersectionLine(dimensionsData, maxIntersectionRefs))
-                    {
 						dimensionsData.Add(maxIntersectionLine, maxIntersectionRefs);
-						countDim++;
-						countRef += maxIntersectionRefs.Size - 1;
-					}
-				}
-
-				// Remove current face from buffer
-				facesNotDimensioned.Remove(faceCurrent);
-
-				// Remove dimensioned faces from buffer
-				foreach (Face face in maxIntersectionFaces)
-					facesNotDimensioned.Remove(face);
-			}
-		}
-
-		/// <summary>
-		/// Get the data needed to create dimensions.
-		/// </summary>
-		/// <param name="doc"></param>
-		/// <param name="dimensionsData">Dictionary that will be filled after method is run.</param>
-		/// <param name="countDim">Counter of dimensions.</param>
-		/// <param name="countRef">Counter of references.</param>
-		private static void GetDimensionsDataVertical(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, List<Face> faces, double searchDistance, double searchStep, ref int countDim, ref int countRef)
-		{
-			View view = doc.ActiveView;
-			ViewPlan viewPlan = view as ViewPlan;
-			double viewHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
-
-			// Faces buffer for faces with no dimension yet
-			List<Face> facesNotDimensioned = new List<Face>(faces);
-
-			// Looping through faces
-			int stopper = 1000;
-			int stopperI = 0;
-			while (facesNotDimensioned.Count > 1 && stopperI < stopper)
-			{
-				stopperI++;
-
-				Face faceCurrent = FindFaceLeft(facesNotDimensioned);
-				(XYZ faceCurrentPointA, XYZ faceCurrentPointB) = FindFacePoints(faceCurrent);
-
-				// Iterate through space between two points of face
-				// Find max number of intersections
-				List<Face> maxIntersectionFaces = new List<Face>();
-				ReferenceArray maxIntersectionRefs = new ReferenceArray();
-				Line maxIntersectionLine = null;
-				int maxIntersectionCount = 0;
-
-				double lengthPast = 0;
-				double lengthAll = faceCurrentPointA.DistanceTo(faceCurrentPointB);
-				while (lengthPast < lengthAll)
-				{
-					// Make two points, with coordinates from face beginning
-					// Search distance added and multiplied to extend the line for intersections search
-					// lengthPast added in X only, to move the line across the face
-					XYZ point1 = new XYZ(faceCurrentPointA.X - searchDistance * view.UpDirection.Y, faceCurrentPointA.Y + lengthPast, viewHeight);
-					XYZ point2 = new XYZ(faceCurrentPointA.X + searchDistance * view.UpDirection.Y, faceCurrentPointA.Y + lengthPast, viewHeight);
-					Line currentIntersectionLine = Line.CreateBound(point1, point2);
-
-					// Find faces and its their refs that intersect with the line
-					(List<Face> currentIntersectionFaces, ReferenceArray currentIntersectionRefs) = FindIntersections(currentIntersectionLine, faces); // facesNotDim
-
-					lengthPast += searchStep;
-
-					if (currentIntersectionRefs.Size == 0)
-						continue;
-
-					if (currentIntersectionRefs.Size > maxIntersectionCount)
-					{
-						maxIntersectionRefs = currentIntersectionRefs;
-						maxIntersectionFaces = currentIntersectionFaces;
-						maxIntersectionCount = maxIntersectionRefs.Size;
-						maxIntersectionLine = currentIntersectionLine;
-					}
-				}
-
-				// Line found some intersections
-				if (maxIntersectionLine != null)
-				{
-					dimensionsData.Add(maxIntersectionLine, maxIntersectionRefs);
-					countDim++;
-					countRef += maxIntersectionRefs.Size - 1;
-				}
 
 				// Remove current face from buffer
 				facesNotDimensioned.Remove(faceCurrent);
@@ -552,31 +491,66 @@ namespace BIM_Leaders_Core
 		/// </summary>
 		/// <param name="dimensionsData">Current data for dimensions creating.</param>
 		/// <param name="maxIntersectionLine">Line to purge.</param>
-		/// <param name="maxIntersectionRefs">References that the Line intersects.</param>
+		/// <param name="references">References that the Line intersects.</param>
 		/// <returns>True if input line is Okay and is not repeating some other line in dimensionsData. Need to be improved later, to edit the input line and references ad clear duplicates smartly.</returns>
-		private static bool PurgeIntersectionLine(Dictionary<Line, ReferenceArray> dimensionsData, ReferenceArray maxIntersectionRefs)
+		private static bool PurgeIntersectionLine(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, ReferenceArray references)
         {
 			bool lineIsUnique = true;
 
-			// Converting current ReferenceArray to HashSet
-			HashSet<Reference> referencesSet = new HashSet<Reference>();
-			foreach (Reference reference in maxIntersectionRefs)
-            {
-				referencesSet.Add(reference);
+			// If reference array will contain less unique references,
+			// it will be deleted with transfering references to existing array in the data.
+			int maxUniqueReferences = 5;
+
+			// Get input ReferenceArray Ids
+
+			List<string> referencesIds = new List<string>();
+			foreach (Reference reference in references)
+			{
+				referencesIds.Add(reference.ConvertToStableRepresentation(doc));
 			}
 
-			// Check if the same HashSet is in the given data
-			HashSet<Reference> referencesSetData = new HashSet<Reference>();
-			foreach (ReferenceArray referenceArray in dimensionsData.Values)
+			// Check if the same (or almost the same) ReferenceArray is in the given data
+			foreach (Line dimensionsDataKey in dimensionsData.Keys)
             {
-				referencesSetData.Clear();
-				foreach (Reference reference in referenceArray)
+				ReferenceArray dimensionsDataReferences = dimensionsData[dimensionsDataKey];
+
+				List<string> dimensionsDataReferenceIds = new List<string>();
+				foreach (Reference dimensionsDataReference in dimensionsDataReferences)
                 {
-					referencesSetData.Add(reference);
+					dimensionsDataReferenceIds.Add(dimensionsDataReference.ConvertToStableRepresentation(doc));
 				}
 
-				if (referencesSet.SetEquals(referencesSetData))
+				// Divide all references to 3 lists (2 unique for each ReferenceArray and 1 shared)
+				List<string> referencesIdsUnique = new List<string>();
+				List<string> referencesIdsShared = new List<string>();
+				List<string> dimensionsDataReferenceIdsUnique = new List<string>();
+				foreach (string referencesId in referencesIds)
+                {
+					if (!dimensionsDataReferenceIds.Contains(referencesId))
+						referencesIdsUnique.Add(referencesId);
+					else
+						referencesIdsShared.Add(referencesId);
+				}
+				foreach (string dimensionsDataReferenceId in dimensionsDataReferenceIds)
+				{
+					if (!referencesIds.Contains(dimensionsDataReferenceId))
+						dimensionsDataReferenceIdsUnique.Add(dimensionsDataReferenceId);
+				}
+
+				// If new array contains only already existing elements in the data
+				if (referencesIdsUnique.Count == 0)
+					return false;
+
+				// If 2 arrays are not so different so join current array to existing in the data
+				// Or new array completely contains the old one and even bigger
+				if (referencesIdsUnique.Count + dimensionsDataReferenceIdsUnique.Count < maxUniqueReferences
+					|| dimensionsDataReferenceIdsUnique.Count == 0)
+                {
+					foreach (string s in referencesIdsUnique)
+						dimensionsDataReferences.Append(Reference.ParseFromStableRepresentation(doc, s));
+
 					lineIsUnique = false;
+				}
 			}				
 
 			return lineIsUnique;
