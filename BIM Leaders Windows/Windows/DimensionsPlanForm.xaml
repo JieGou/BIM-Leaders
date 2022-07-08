@@ -62,6 +62,17 @@
                 </TextBox>
                 <Label Content="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors).CurrentItem.ErrorContent}"
                        Style="{StaticResource SLabelError}"/>
+
+                <Label Content="Min Unique References"
+                       Margin="-5,10,0,0"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <TextBox x:Name="textboxReferences" ToolTip="If difference count of references between dimension lines will be lower, they will be joined together."
+                         Text="{Binding InputMinReferences, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Style="{StaticResource STextBox}">
+                </TextBox>
+                <Label Content="{Binding ElementName=textboxReferences, Path=(Validation.Errors)/ErrorContent}"
+                       Style="{StaticResource SLabelError}"/>
             </StackPanel>
         </Grid>
 

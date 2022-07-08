@@ -11,6 +11,8 @@ namespace BIM_Leaders_Windows
         int _resultSearchStepMaxValue = 100;
         int _resultSearchDistanceMinValue = 100;
         int _resultSearchDistanceMaxValue = 10000;
+        int _resultMinReferencesMinValue = 0;
+        int _resultMinReferencesMaxValue = 10;
 
         /// <summary>
         /// Default constructor
@@ -22,6 +24,8 @@ namespace BIM_Leaders_Windows
             _inputSearchStep = _resultSearchStep.ToString();
             _resultSearchDistance = 1500;
             _inputSearchDistance = _resultSearchDistance.ToString();
+            _resultMinReferences = 5;
+            _inputMinReferences = _resultMinReferences.ToString();
         }
 
         private string _inputSearchStep;
@@ -58,6 +62,23 @@ namespace BIM_Leaders_Windows
             set { _resultSearchDistance = value; }
         }
 
+        private string _inputMinReferences;
+        public string InputMinReferences
+        {
+            get { return _inputMinReferences; }
+            set
+            {
+                _inputMinReferences = value;
+                OnPropertyChanged(nameof(InputMinReferences));
+            }
+        }
+        private int _resultMinReferences;
+        public int ResultMinReferences
+        {
+            get { return _resultMinReferences; }
+            set { _resultMinReferences = value; }
+        }
+
         #region Validation
 
         public string Error { get { return null; } }
@@ -91,6 +112,14 @@ namespace BIM_Leaders_Windows
                         error = ValidateResultSearchDistance();
                     }
                     break;
+                case "InputMinReferences":
+                    error = ValidateInputIsWholeNumber(out int minreferences, _inputMinReferences);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        ResultMinReferences = minreferences;
+                        error = ValidateResultMinReferences();
+                    }
+                    break;
             }
             return error;
         }
@@ -118,6 +147,13 @@ namespace BIM_Leaders_Windows
         {
             if (ResultSearchDistance < _resultSearchDistanceMinValue || ResultSearchDistance > _resultSearchDistanceMaxValue)
                 return $"From {_resultSearchDistanceMinValue} to {_resultSearchDistanceMaxValue} cm";
+            return null;
+        }
+
+        private string ValidateResultMinReferences()
+        {
+            if (ResultMinReferences < _resultMinReferencesMinValue || ResultMinReferences > _resultMinReferencesMaxValue)
+                return $"From {_resultMinReferencesMinValue} to {_resultMinReferencesMaxValue}";
             return null;
         }
 

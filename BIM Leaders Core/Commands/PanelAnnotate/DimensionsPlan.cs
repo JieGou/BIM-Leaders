@@ -44,16 +44,18 @@ namespace BIM_Leaders_Core
 				DimensionsPlanData data = form.DataContext as DimensionsPlanData;
 
 				// Getting input from user
-				double searchStepCm = data.ResultSearchStep;
-				double searchDistanceCm = data.ResultSearchDistance;
+				int searchStepCm = data.ResultSearchStep;
+				int searchDistanceCm = data.ResultSearchDistance;
+				int minUniqueReferences = data.ResultMinReferences;
 
 #if VERSION2020
 				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
 				double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, DisplayUnitType.DUT_CENTIMETERS);
 #else
-                double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, UnitTypeId.Centimeters);
+				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, UnitTypeId.Centimeters);
 				double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, UnitTypeId.Centimeters);
 #endif
+
 				// Collecting model elements to dimension
 				List<Wall> wallsAll = GetWallsStraight(doc);
 				List<FamilyInstance> columnsAll = GetColumns(doc);
@@ -74,8 +76,8 @@ namespace BIM_Leaders_Core
 				// Storing data needed to create all dimensions
 				Dictionary<Line, ReferenceArray> dimensionsDataHor = new Dictionary<Line, ReferenceArray>();
 				Dictionary<Line, ReferenceArray> dimensionsDataVer = new Dictionary<Line, ReferenceArray>();
-				GetDimensionsData(doc, dimensionsDataHor, facesHorAll, searchDistance, searchStep, true);
-				GetDimensionsData(doc, dimensionsDataVer, facesVerAll, searchDistance, searchStep, false);
+				GetDimensionsData(doc, dimensionsDataHor, facesHorAll, searchDistance, searchStep, true, minUniqueReferences);
+				GetDimensionsData(doc, dimensionsDataVer, facesVerAll, searchDistance, searchStep, false, minUniqueReferences);
 
 				using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
                 {
@@ -85,13 +87,13 @@ namespace BIM_Leaders_Core
                     {
                         Dimension dimension = doc.Create.NewDimension(view, dimensionData.Key, dimensionData.Value);
 						countDim++;
-						countRef += (dimensionData.Value.Size - 1);
+						countRef += dimensionData.Value.Size - 1;
 					}
 					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
 					{
 						Dimension dimension = doc.Create.NewDimension(view, dimensionData.Key, dimensionData.Value);
 						countDim++;
-						countRef += (dimensionData.Value.Size - 1);
+						countRef += dimensionData.Value.Size - 1;
 					}
 
 					trans.Commit();
@@ -295,7 +297,7 @@ namespace BIM_Leaders_Core
 		/// <param name="doc"></param>
 		/// <param name="dimensionsData">Dictionary that will be filled after method is run.</param>
 		/// <param name="isHorizontal">Are input faces horizontal.</param>
-		private static void GetDimensionsData(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, List<Face> faces, double searchDistance, double searchStep, bool isHorizontal)
+		private static void GetDimensionsData(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, List<Face> faces, double searchDistance, double searchStep, bool isHorizontal, int minUniqueReferences)
         {
 			View view = doc.ActiveView;
 			ViewPlan viewPlan = view as ViewPlan;
@@ -370,7 +372,7 @@ namespace BIM_Leaders_Core
 
 				// Line found some intersections
 				if (maxIntersectionLine != null)
-					if (PurgeIntersectionLine(dimensionsData, maxIntersectionRefs))
+					if (PurgeIntersectionLine(doc, dimensionsData, maxIntersectionRefs, minUniqueReferences))
 						dimensionsData.Add(maxIntersectionLine, maxIntersectionRefs);
 
 				// Remove current face from buffer
@@ -492,17 +494,13 @@ namespace BIM_Leaders_Core
 		/// <param name="dimensionsData">Current data for dimensions creating.</param>
 		/// <param name="maxIntersectionLine">Line to purge.</param>
 		/// <param name="references">References that the Line intersects.</param>
+		/// <param name="minUniqueReferences">If reference array will contain less unique references, it will be deleted with transfering references to existing array in the data.</param>
 		/// <returns>True if input line is Okay and is not repeating some other line in dimensionsData. Need to be improved later, to edit the input line and references ad clear duplicates smartly.</returns>
-		private static bool PurgeIntersectionLine(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, ReferenceArray references)
+		private static bool PurgeIntersectionLine(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, ReferenceArray references, int minUniqueReferences)
         {
 			bool lineIsUnique = true;
 
-			// If reference array will contain less unique references,
-			// it will be deleted with transfering references to existing array in the data.
-			int maxUniqueReferences = 5;
-
 			// Get input ReferenceArray Ids
-
 			List<string> referencesIds = new List<string>();
 			foreach (Reference reference in references)
 			{
@@ -543,7 +541,7 @@ namespace BIM_Leaders_Core
 
 				// If 2 arrays are not so different so join current array to existing in the data
 				// Or new array completely contains the old one and even bigger
-				if (referencesIdsUnique.Count + dimensionsDataReferenceIdsUnique.Count < maxUniqueReferences
+				if (referencesIdsUnique.Count + dimensionsDataReferenceIdsUnique.Count < minUniqueReferences
 					|| dimensionsDataReferenceIdsUnique.Count == 0)
                 {
 					foreach (string s in referencesIdsUnique)
