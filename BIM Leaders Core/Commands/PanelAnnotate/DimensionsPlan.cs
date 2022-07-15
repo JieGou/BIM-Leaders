@@ -501,9 +501,9 @@ namespace BIM_Leaders_Core
 
 			foreach (XYZ point in facePoints)
 			{
-				if (point.X < facePointMin.X)
+				if (point.X < facePointMin.X || point.Y < facePointMin.Y)
 					facePointMin = point;
-				else if (point.X > facePointMax.X)
+				else if (point.X > facePointMax.X || point.Y > facePointMin.Y)
 					facePointMax = point;
 			}
 
