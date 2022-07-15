@@ -56,6 +56,9 @@ namespace BIM_Leaders_Core
 				double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, UnitTypeId.Centimeters);
 #endif
 
+				if (CheckOnPlanRegions(doc))
+					TaskDialog.Show("Dimension Plan", "Plan regions are on the current view. This can cause error \"One or more dimension references are or have become invalid.\"");
+
 				// Collecting model elements to dimension
 				List<Wall> wallsAll = GetWallsStraight(doc);
 				List<FamilyInstance> columnsAll = GetColumns(doc);
@@ -112,6 +115,25 @@ namespace BIM_Leaders_Core
                 return Result.Failed;
             }
         }
+
+		/// <summary>
+		/// Check if tha current view contains plan regions.
+		/// </summary>
+		/// <param name="doc"></param>
+		/// <returns>True if view contains plan regions, othervise false.</returns>
+		private bool CheckOnPlanRegions(Document doc)
+        {
+			bool planContainsRegions = false;
+
+			IList<Element> planRegions = new FilteredElementCollector(doc, doc.ActiveView.Id)
+				.OfCategory(BuiltInCategory.OST_PlanRegion)
+				.ToElements();
+
+			if (planRegions.Count > 0)
+				planContainsRegions = true;
+
+			return planContainsRegions;
+		}
 
 		/// <summary>
 		/// Get list of straight walls visible on active view.
@@ -474,31 +496,18 @@ namespace BIM_Leaders_Core
 		{
 			// Find farest two points of the face
 			List<XYZ> facePoints = face.GetEdgesAsCurveLoops()[0].Select(x => x.GetEndPoint(0)).ToList(); // Get face points
-			XYZ facePointA = facePoints[0];
-			XYZ facePointB = facePoints[1];
+			XYZ facePointMin = facePoints[0];
+			XYZ facePointMax = facePoints[1];
 
-			XYZ normal = face.ComputeNormal(new UV(0, 0));
+			foreach (XYZ point in facePoints)
+			{
+				if (point.X < facePointMin.X)
+					facePointMin = point;
+				else if (point.X > facePointMax.X)
+					facePointMax = point;
+			}
 
-			if (Math.Abs(normal.Y) == 1)
-				foreach (XYZ point in facePoints)
-				{
-					if (point.X < facePointA.X)
-						facePointA = point;
-					else if (point.X > facePointB.X)
-						facePointB = point;
-				}
-			else if (Math.Abs(normal.X) == 1)
-				foreach (XYZ point in facePoints)
-				{
-					if (point.Y < facePointA.Y)
-						facePointA = point;
-					else if (point.Y > facePointB.Y)
-						facePointB = point;
-				}
-			else
-				throw new Exception("FindFacePoints Error. Face is not vertical or horisontal.");
-
-			return (facePointA, facePointB);
+			return (facePointMin, facePointMax);
 		}
 
 		/// <summary>
