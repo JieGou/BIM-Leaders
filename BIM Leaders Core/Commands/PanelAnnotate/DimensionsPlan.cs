@@ -63,21 +63,19 @@ namespace BIM_Leaders_Core
 				// Get lists of walls and columns that are horizontal and vertical
 				(List<Wall> wallsHor, List<Wall> wallsVer) = FilterWallsPer(toleranceAngle, view.UpDirection, wallsAll);
 				List<FamilyInstance> columnsPer = FilterColumnsPer(toleranceAngle, view.UpDirection, columnsAll);
-
+				
 				// Sum columns and walls
 				IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
 				IEnumerable<Element> elementsVer = wallsVer.Cast<Element>().Concat(columnsPer.Cast<Element>());
-
-				// Get all horizontal faces that need a dimension
+				
+				// Get all faces that need a dimension
 				// !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
-				List<Face> facesHorAll = GetFacesHorizontal(doc, toleranceAngle, elementsHor);
-				List<Face> facesVerAll = GetFacesVertical(doc, toleranceAngle, elementsVer);
-
+				List<PlanarFace> facesHorAll = GetFacesHorizontal(doc, toleranceAngle, elementsHor);
+				List<PlanarFace> facesVerAll = GetFacesVertical(doc, toleranceAngle, elementsVer);
+				
 				// Storing data needed to create all dimensions
-				Dictionary<Line, ReferenceArray> dimensionsDataHor = new Dictionary<Line, ReferenceArray>();
-				Dictionary<Line, ReferenceArray> dimensionsDataVer = new Dictionary<Line, ReferenceArray>();
-				GetDimensionsData(doc, dimensionsDataHor, facesHorAll, searchDistance, searchStep, true, minUniqueReferences);
-				GetDimensionsData(doc, dimensionsDataVer, facesVerAll, searchDistance, searchStep, false, minUniqueReferences);
+				Dictionary<Line, ReferenceArray> dimensionsDataHor = GetDimensionsData(doc, facesHorAll, searchDistance, searchStep, true, minUniqueReferences);
+				Dictionary<Line, ReferenceArray> dimensionsDataVer = GetDimensionsData(doc, facesVerAll, searchDistance, searchStep, false, minUniqueReferences);
 
 				using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
                 {
@@ -135,6 +133,7 @@ namespace BIM_Leaders_Core
 					if (lc.Curve.GetType() == typeof(Line))
 						walls.Add(wall);
 			}
+
 			return walls;
 		}
 
@@ -221,9 +220,9 @@ namespace BIM_Leaders_Core
 		/// Get horizontal faces for dimensions.
 		/// </summary>
 		/// <returns>List of faces.</returns>
-		private static List<Face> GetFacesHorizontal(Document doc, double toleranceAngle, IEnumerable<Element> elements)
+		private static List<PlanarFace> GetFacesHorizontal(Document doc, double toleranceAngle, IEnumerable<Element> elements)
         {
-			List<Face> facesAll = new List<Face>();
+			List<PlanarFace> facesAll = new List<PlanarFace>();
 
 			View view = doc.ActiveView;
 
@@ -258,9 +257,9 @@ namespace BIM_Leaders_Core
 		/// Get vertical faces for dimensions.
 		/// </summary>
 		/// <returns>List of faces.</returns>
-		private static List<Face> GetFacesVertical(Document doc, double toleranceAngle, IEnumerable<Element> elements)
+		private static List<PlanarFace> GetFacesVertical(Document doc, double toleranceAngle, IEnumerable<Element> elements)
 		{
-			List<Face> facesAll = new List<Face>();
+			List<PlanarFace> facesAll = new List<PlanarFace>();
 
 			View view = doc.ActiveView;
 
@@ -295,16 +294,17 @@ namespace BIM_Leaders_Core
 		/// Get the data needed to create dimensions.
 		/// </summary>
 		/// <param name="doc"></param>
-		/// <param name="dimensionsData">Dictionary that will be filled after method is run.</param>
 		/// <param name="isHorizontal">Are input faces horizontal.</param>
-		private static void GetDimensionsData(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, List<Face> faces, double searchDistance, double searchStep, bool isHorizontal, int minUniqueReferences)
+		private static Dictionary<Line, ReferenceArray> GetDimensionsData(Document doc, List<PlanarFace> faces, double searchDistance, double searchStep, bool isHorizontal, int minUniqueReferences)
         {
-			View view = doc.ActiveView;
-			ViewPlan viewPlan = view as ViewPlan;
-			double viewHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
+			Dictionary<Line, ReferenceArray> dimensionsData = new Dictionary<Line, ReferenceArray>();
 
-			// Faces buffer for faces with no dimension yet
-			List<Face> facesNotDimensioned = new List<Face>(faces);
+			// Faces buffer for faces with no dimension yet.
+			List<PlanarFace> facesNotDimensioned = new List<PlanarFace>(faces);
+
+			// Collector for all dimension lines and their faces.
+			// This collector can be edited before converting to dimensionsData.
+			Dictionary<Line, List<PlanarFace>> dimensionsDataCollector = new Dictionary<Line, List<PlanarFace>>();
 
 			// Looping through faces
 			int stopper = 1000;
@@ -313,89 +313,66 @@ namespace BIM_Leaders_Core
 			{
 				stopperI++;
 
-				Face faceCurrent;
+				// Get the bottom or the left face
+				PlanarFace faceCurrent;
 				if (isHorizontal)
 					faceCurrent = FindFaceBottom(facesNotDimensioned);
                 else
 					faceCurrent = FindFaceLeft(facesNotDimensioned);
-				
-				(XYZ faceCurrentPointA, XYZ faceCurrentPointB) = FindFacePoints(faceCurrent);
 
-				// Iterate through space between two points of face
-				// Find max number of intersections
-				List<Face> maxIntersectionFaces = new List<Face>();
-				ReferenceArray maxIntersectionRefs = new ReferenceArray();
-				Line maxIntersectionLine = null;
-				int maxIntersectionCount = 0;
-
-				//Line lineMax = null;
-
-				double lengthPast = 0;
-				double lengthAll = faceCurrentPointA.DistanceTo(faceCurrentPointB);
-				while (lengthPast < lengthAll)
-				{
-					// Make two points, with coordinates from face beginning
-					// Search distance added and multiplied to extend the line for intersections search
-					// lengthPast added in Y only, to move the line across the face
-					XYZ point1;
-					XYZ point2;
-					if (isHorizontal)
-                    {
-						point1 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y + searchDistance * view.UpDirection.Y, viewHeight);
-						point2 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y - searchDistance * view.UpDirection.Y, viewHeight);
-					}
-                    else
-                    {
-						point1 = new XYZ(faceCurrentPointA.X - searchDistance * view.UpDirection.Y, faceCurrentPointA.Y + lengthPast, viewHeight);
-						point2 = new XYZ(faceCurrentPointA.X + searchDistance * view.UpDirection.Y, faceCurrentPointA.Y + lengthPast, viewHeight);
-					}
-					
-					Line currentIntersectionLine = Line.CreateBound(point1, point2);
-
-					// Find faces and their refs that intersect with the line
-					(List<Face> currentIntersectionFaces, ReferenceArray currentIntersectionRefs) = FindIntersections(currentIntersectionLine, faces);
-					//(List<Face> currentIntersectionFaces, ReferenceArray currentIntersectionRefs) = FindIntersections(currentIntersectionLine, facesNotDimensioned);
-
-					lengthPast += searchStep;
-
-					if (currentIntersectionRefs.Size == 0)
-						continue;
-
-					if (currentIntersectionRefs.Size > maxIntersectionCount)
-					{
-						maxIntersectionRefs = currentIntersectionRefs;
-						maxIntersectionFaces = currentIntersectionFaces;
-						maxIntersectionLine = currentIntersectionLine;
-						maxIntersectionCount = maxIntersectionRefs.Size;
-					}
-				}
+				(Line maxIntersectionLine, List<PlanarFace> maxIntersectionFaces) = FindMaxIntersections(doc, faceCurrent, faces, searchDistance, searchStep);
 
 				// Line found some intersections
 				if (maxIntersectionLine != null)
-					if (PurgeIntersectionLine(doc, dimensionsData, maxIntersectionRefs, minUniqueReferences))
-						dimensionsData.Add(maxIntersectionLine, maxIntersectionRefs);
+                {
+					List<PlanarFace> maxIntersectionFacesPurged = new List<PlanarFace>();
+					// For the first face just add max to collected
+					if (dimensionsDataCollector.Count == 0)
+                    {
+						dimensionsDataCollector.Add(maxIntersectionLine, maxIntersectionFaces);
+						maxIntersectionFacesPurged = maxIntersectionFaces;
+					}
+					else
+                    {
+						maxIntersectionFacesPurged = PurgeFacesList(doc, dimensionsDataCollector, maxIntersectionFaces, minUniqueReferences);
 
+						// If after purging we still have new dimension
+						if (maxIntersectionFacesPurged != null)
+							dimensionsDataCollector.Add(maxIntersectionLine, maxIntersectionFacesPurged);
+					}
+				}
 				// Remove current face from buffer
 				facesNotDimensioned.Remove(faceCurrent);
-
-				// Remove dimensioned faces from buffer
-				foreach (Face face in maxIntersectionFaces)
-					facesNotDimensioned.Remove(face);
 			}
+
+			// Convert all dimensions raw data (faces lists) to data with ReferenceArrays
+			foreach (Line line in dimensionsDataCollector.Keys)
+            {
+				List<PlanarFace> facesToConvert = dimensionsDataCollector[line];
+
+				ReferenceArray references = new ReferenceArray();
+				foreach (PlanarFace face in facesToConvert)
+				{
+					references.Append(face.Reference);
+				}
+				dimensionsData.Add(line, references);
+			}
+
+			return dimensionsData;
 		}
 
 		/// <summary>
 		/// Find the most bottom (minimal Y coordinate) face on the view.
 		/// </summary>
 		/// <returns>Face.</returns>
-		private static Face FindFaceBottom(List<Face> faces)
+		private static PlanarFace FindFaceBottom(List<PlanarFace> faces)
         {
 			// Select first face as default
-			Face faceMin = faces.First();
+			PlanarFace faceMin = faces.First();
 			double faceMinY = faceMin.EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Y;
 
 			// Find face with minimal coordinate
-			foreach (Face face in faces)
+			foreach (PlanarFace face in faces)
 			{
 				if (face.EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).Y < faceMinY)
 					faceMin = face;
@@ -408,19 +385,85 @@ namespace BIM_Leaders_Core
 		/// Find the most left (minimal X coordinate) face on the view.
 		/// </summary>
 		/// <returns>Face.</returns>
-		private static Face FindFaceLeft(List<Face> faces)
+		private static PlanarFace FindFaceLeft(List<PlanarFace> faces)
 		{
 			// Select first face as default
-			Face faceMin = faces.First();
+			PlanarFace faceMin = faces.First();
 			double faceMinX = faceMin.EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).X;
 
 			// Find face with minimal coordinate
-			foreach (Face face in faces)
+			foreach (PlanarFace face in faces)
 			{
 				if (face.EdgeLoops.get_Item(0).get_Item(0).AsCurve().GetEndPoint(0).X < faceMinX)
 					faceMin = face;
 			}
 			return faceMin;
+		}
+
+		/// <summary>
+		/// Find the best place where to put a dimension on a face. Method analyzes faces list and finds where is the maximum number of intersections.
+		/// </summary>
+		/// <param name="face">Input face.</param>
+		/// <returns></returns>
+		private static (Line, List<PlanarFace>) FindMaxIntersections(Document doc, PlanarFace face, List<PlanarFace> faces, double searchDistance, double searchStep)
+        {
+			Line maxIntersectionLine = null;
+			List<PlanarFace> maxIntersectionFaces = new List<PlanarFace>();
+
+			// Get the face farest points.
+			(XYZ faceCurrentPointA, XYZ faceCurrentPointB) = FindFacePoints(face);
+
+			// Check if face is horizontal
+			View view = doc.ActiveView;
+			ViewPlan viewPlan = view as ViewPlan;
+			double viewHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
+			double angleFaceToView = face.FaceNormal.AngleTo(view.UpDirection);
+			double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
+			bool faceIsHosizontal = angleFaceToView <= toleranceAngle || Math.Abs(angleFaceToView - Math.PI) <= toleranceAngle;
+
+			// Iterate through space between two points
+			int maxIntersectionCount = 0;
+
+			double lengthPast = 0;
+			double lengthAll = faceCurrentPointA.DistanceTo(faceCurrentPointB);
+			while (lengthPast < lengthAll)
+			{
+				// Make two points, with coordinates from face beginning
+				// Search distance added and multiplied to extend the line for intersections search
+				// lengthPast added in Y only, to move the line across the face
+				XYZ point1;
+				XYZ point2;
+				if (faceIsHosizontal)
+				{
+					point1 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y + (searchDistance * view.UpDirection.Y), viewHeight);
+					point2 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y - (searchDistance * view.UpDirection.Y), viewHeight);
+				}
+				else
+				{
+					point1 = new XYZ(faceCurrentPointA.X - (searchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
+					point2 = new XYZ(faceCurrentPointA.X + (searchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
+				}
+
+				Line currentIntersectionLine = Line.CreateBound(point1, point2);
+
+				// Find faces and their refs that intersect with the line
+				List<PlanarFace> currentIntersectionFaces = FindIntersections(currentIntersectionLine, faces);
+				//(List<Face> currentIntersectionFaces, ReferenceArray currentIntersectionRefs) = FindIntersections(currentIntersectionLine, facesNotDimensioned);
+
+				lengthPast += searchStep;
+
+				if (currentIntersectionFaces.Count == 0)
+					continue;
+
+				if (currentIntersectionFaces.Count > maxIntersectionCount)
+				{
+					maxIntersectionFaces = currentIntersectionFaces;
+					maxIntersectionCount = maxIntersectionFaces.Count;
+					maxIntersectionLine = currentIntersectionLine;
+				}
+			}
+
+			return (maxIntersectionLine, maxIntersectionFaces);
 		}
 
 		/// <summary>
@@ -461,98 +504,108 @@ namespace BIM_Leaders_Core
 		/// <summary>
 		/// Find faces and its references that intersects with the curve.
 		/// </summary>
-		/// <returns>List of faces and their references that intersect the given curve.</returns>
-		private static (List<Face>, ReferenceArray) FindIntersections(Curve curve, List<Face> faces)
+		/// <returns>List of faces that intersect the given curve.</returns>
+		private static List<PlanarFace> FindIntersections(Curve curve, List<PlanarFace> faces)
         {
-			List<Face> facesIntersected = new List<Face>();
-			ReferenceArray references = new ReferenceArray();
+			List<PlanarFace> facesIntersected = new List<PlanarFace>();
 			
 			// Iterate through faces and get references
-			foreach (Face face in faces)
+			foreach (PlanarFace face in faces)
             {
 				SetComparisonResult intersection = face.Intersect(curve);
 				if (intersection == SetComparisonResult.Overlap)
 					if (!facesIntersected.Contains(face))
-                    {
 						facesIntersected.Add(face);
-						references.Append(face.Reference);
-					}	
-			}
+            }
 
-			if (references.Size < 2)
-            {
+			if (facesIntersected.Count < 2)
 				facesIntersected.Clear();
-				references.Clear();
-			}
 
-			return (facesIntersected, references);
+			return facesIntersected;
 		}
 
 		/// <summary>
-		/// We have to purge dimension line to prevent duplicates. Now it only return boolean as a flag, but in future need to add smart purging (if not all references are the same but part of them)
+		/// We have to purge dimension line to prevent duplicate or almost the same dimension lines. Now it only return boolean as a flag, but in future need to add smart purging (if not all references are the same but part of them)
 		/// </summary>
-		/// <param name="dimensionsData">Current data for dimensions creating.</param>
-		/// <param name="maxIntersectionLine">Line to purge.</param>
-		/// <param name="references">References that the Line intersects.</param>
+		/// <param name="facesCollectedData">Facescollected in previous iterations.</param>
+		/// <param name="facesNew">New faces.</param>
 		/// <param name="minUniqueReferences">If reference array will contain less unique references, it will be deleted with transfering references to existing array in the data.</param>
-		/// <returns>True if input line is Okay and is not repeating some other line in dimensionsData. Need to be improved later, to edit the input line and references ad clear duplicates smartly.</returns>
-		private static bool PurgeIntersectionLine(Document doc, Dictionary<Line, ReferenceArray> dimensionsData, ReferenceArray references, int minUniqueReferences)
+		/// <returns>Purged list of faces or null if new dimension not needed (its completely inside of collected one or almost inside - then add new items to the collected list).
+		/// Can be improved later, to clear duplicates smartly.</returns>
+		private static List<PlanarFace> PurgeFacesList(Document doc, Dictionary<Line, List<PlanarFace>> dimensionsDataCollector, List<PlanarFace> facesNew, int minUniqueReferences)
         {
-			bool lineIsUnique = true;
+			List<PlanarFace> facesNewPurged = new List<PlanarFace>();
 
-			// Get input ReferenceArray Ids
-			List<string> referencesIds = new List<string>();
-			foreach (Reference reference in references)
-			{
-				referencesIds.Add(reference.ConvertToStableRepresentation(doc));
+			// From collected faces data and new faces list we make data with replaced list of faced by tuples of 3 faces lists (see below)
+			// facesCollectedList[0] + facesNew => facesLists[0](facesUniqueCollected, facesShared, facesUniqueNew)
+			// facesCollectedList[1] + facesNew => facesLists[1](facesUniqueCollected, facesShared, facesUniqueNew)
+			// ...
+			// { | ; ([C], [S], [N]) }   C - collected unique, S - shared, N - new unique.
+			Dictionary<Line, Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>>> facesDividedData = new Dictionary<Line, Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>>>();
+
+			// Go through collected lists and compare each one with the new list.
+			foreach (Line line in dimensionsDataCollector.Keys)
+            {
+				List<PlanarFace> facesCollected = dimensionsDataCollector[line];
+
+				// Recombine 2 faces lists into 3 faces lists (2 unique for each faces lists and 1 shared)
+				// facesCollected + facesNew => facesUniqueNew + facesUniqueCollected + facesShared
+				List<PlanarFace> facesUniqueNew = new List<PlanarFace>();
+				List<PlanarFace> facesUniqueCollected = new List<PlanarFace>();
+				List<PlanarFace> facesShared = new List<PlanarFace>();
+				foreach (PlanarFace faceNew in facesNew)
+                {
+					if (!facesCollected.Contains(faceNew))
+						facesUniqueNew.Add(faceNew);
+					else
+						facesShared.Add(faceNew);
+				}
+				foreach (PlanarFace faceCollected in facesCollected)
+				{
+					if (!facesNew.Contains(faceCollected))
+						facesUniqueCollected.Add(faceCollected);
+				}
+
+				// If new faces list contains only already existing elements in one of the collected faces list.
+				if (facesUniqueNew.Count == 0)
+					return null;
+
+				Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>> facesTuples = new Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>>(facesUniqueCollected, facesShared, facesUniqueNew);
+				facesDividedData.Add(line, facesTuples);
 			}
 
-			// Check if the same (or almost the same) ReferenceArray is in the given data
-			foreach (Line dimensionsDataKey in dimensionsData.Keys)
+			// Now analyze list of tuples
+
+			// Find a new dimension with at least new faces.
+			Line minimalNewKey = facesDividedData.First().Key;
+			Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>> minimalNew = facesDividedData[minimalNewKey];
+			foreach (Line line in facesDividedData.Keys)
             {
-				ReferenceArray dimensionsDataReferences = dimensionsData[dimensionsDataKey];
+				Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>> minimalNewCompare = facesDividedData[line];
 
-				List<string> dimensionsDataReferenceIds = new List<string>();
-				foreach (Reference dimensionsDataReference in dimensionsDataReferences)
-                {
-					dimensionsDataReferenceIds.Add(dimensionsDataReference.ConvertToStableRepresentation(doc));
-				}
+				if (minimalNewCompare.Item3.Count < minimalNew.Item3.Count)
+					minimalNewKey = line;
+			}
 
-				// Divide all references to 3 lists (2 unique for each ReferenceArray and 1 shared)
-				List<string> referencesIdsUnique = new List<string>();
-				List<string> referencesIdsShared = new List<string>();
-				List<string> dimensionsDataReferenceIdsUnique = new List<string>();
-				foreach (string referencesId in referencesIds)
-                {
-					if (!dimensionsDataReferenceIds.Contains(referencesId))
-						referencesIdsUnique.Add(referencesId);
-					else
-						referencesIdsShared.Add(referencesId);
-				}
-				foreach (string dimensionsDataReferenceId in dimensionsDataReferenceIds)
-				{
-					if (!referencesIds.Contains(dimensionsDataReferenceId))
-						dimensionsDataReferenceIdsUnique.Add(dimensionsDataReferenceId);
-				}
+			// If minimal new faces count is less than threshold then add new dimension to this one with minimal.
+			if (facesDividedData[minimalNewKey].Item3.Count < minUniqueReferences)
+            {
+				dimensionsDataCollector[minimalNewKey].AddRange(facesDividedData[minimalNewKey].Item3);
+				return null;
+            }
+            else // edit new dimension
+            {
+				// Find collecteed dimension with minimal unique collected elements
 
-				// If new array contains only already existing elements in the data
-				if (referencesIdsUnique.Count == 0)
-					return false;
+				//Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>> minimalCollected = facesTuples.OrderBy(x => x.Item1.Count).First();
+				//int minimalCollectedIndex = facesTuples.IndexOf(minimalCollected);
 
-				// If 2 arrays are not so different so join current array to existing in the data
-				// Or new array completely contains the old one and even bigger
-				if (referencesIdsUnique.Count + dimensionsDataReferenceIdsUnique.Count < minUniqueReferences
-					|| dimensionsDataReferenceIdsUnique.Count == 0)
-                {
-					foreach (string s in referencesIdsUnique)
-						dimensionsDataReferences.Append(Reference.ParseFromStableRepresentation(doc, s));
+				facesNewPurged.AddRange(facesDividedData[minimalNewKey].Item2);
+				facesNewPurged.AddRange(facesDividedData[minimalNewKey].Item3);
+			}
 
-					lineIsUnique = false;
-				}
-			}				
-
-			return lineIsUnique;
-        }
+			return facesNewPurged;
+		}
 
 		public static string GetPath()
         {
