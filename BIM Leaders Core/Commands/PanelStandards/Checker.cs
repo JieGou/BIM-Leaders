@@ -225,7 +225,7 @@ namespace BIM_Leaders_Core
                 .ToElements()
                 .Cast<View>();
             ICollection<ElementId> filtersAll = new FilteredElementCollector(doc)
-                .OfClass(typeof(ElementFilter))
+                .OfClass(typeof(FilterElement))
                 .WhereElementIsNotElementType()
                 .ToElementIds();
 
@@ -233,9 +233,17 @@ namespace BIM_Leaders_Core
             List<ElementId> filtersUsed = new List<ElementId>();
             foreach (View view in views)
             {
-                // Add to the list if it not contains those filters yet
-                ICollection<ElementId> viewFilters = view.GetFilters();
-                filtersUsed.AddRange(viewFilters.Where(x => !filtersUsed.Contains(x)));
+                // Not all views support View/Graphics override
+                if (view.ViewType == ViewType.AreaPlan     || view.ViewType == ViewType.CeilingPlan
+                    || view.ViewType == ViewType.Detail    || view.ViewType == ViewType.DraftingView
+                    || view.ViewType == ViewType.Elevation || view.ViewType == ViewType.EngineeringPlan
+                    || view.ViewType == ViewType.FloorPlan || view.ViewType == ViewType.Section
+                    || view.ViewType == ViewType.ThreeD)
+                {
+                    // Add to the list if it not contains those filters yet
+                    ICollection<ElementId> viewFilters = view.GetFilters();
+                    filtersUsed.AddRange(viewFilters.Where(x => !filtersUsed.Contains(x)));
+                }
             }
 
             int countFiltersUnused = filtersAll.Count - filtersUsed.Count;
