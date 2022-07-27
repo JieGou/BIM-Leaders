@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         
-        Style="{DynamicResource SWindow}"
+        Style="{StaticResource SWindow}"
         Title="BIM Leaders - Find DWG"
         WindowStartupLocation="CenterScreen"
         Width="800"
@@ -17,12 +17,7 @@
         MouseLeftButtonDown="FormMouseMove">
 
     <Window.Resources>
-        <ResourceDictionary>
-            <Style TargetType="{x:Type Rectangle}" />
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <ResourceDictionary Source="../Resources.xaml" />
     </Window.Resources>
 
     <Grid Background="{x:Null}">
