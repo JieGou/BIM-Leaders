@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BIM_Leaders_Windows
 {
@@ -16,10 +18,57 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public DimensionStairsLandingsData()
         {
+            _resultPlacementDimensionTop = true;
+            _resultPlacementDimensionBot = true;
+            _resultPlacementElevationTop = true;
+            _resultPlacementElevationBot = true;
             _resultDistance = 150;
             _inputDistance = _resultDistance.ToString();
         }
 
+        private bool _resultPlacementDimensionTop;
+        public bool ResultPlacementDimensionTop
+        {
+            get { return _resultPlacementDimensionTop; }
+            set
+            {
+                _resultPlacementDimensionTop = value;
+                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+            }
+        }
+
+        private bool _resultPlacementDimensionBot;
+        public bool ResultPlacementDimensionBot
+        {
+            get { return _resultPlacementDimensionBot; }
+            set
+            {
+                _resultPlacementDimensionBot = value;
+                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
+            }
+        }
+
+        private bool _resultPlacementElevationTop;
+        public bool ResultPlacementElevationTop
+        {
+            get { return _resultPlacementElevationTop; }
+            set
+            {
+                _resultPlacementElevationTop = value;
+                OnPropertyChanged(nameof(ResultPlacementElevationTop));
+            }
+        }
+
+        private bool _resultPlacementElevationBot;
+        public bool ResultPlacementElevationBot
+        {
+            get { return _resultPlacementElevationBot; }
+            set
+            {
+                _resultPlacementElevationBot = value;
+                OnPropertyChanged(nameof(ResultPlacementElevationBot));
+            }
+        }
 
         private string _inputDistance;
         public string InputDistance
@@ -56,6 +105,18 @@ namespace BIM_Leaders_Windows
             
             switch (propertyName)
             {
+                case "ResultPlacementDimensionTop":
+                    error = ValidateResultPlacement();
+                    break;
+                case "ResultPlacementDimensionBot":
+                    error = ValidateResultPlacement();
+                    break;
+                case "ResultPlacementElevationTop":
+                    error = ValidateResultPlacement();
+                    break;
+                case "ResultPlacementElevationBot":
+                    error = ValidateResultPlacement();
+                    break;
                 case "InputDistance":
                     error = ValidateInputIsWholeNumber(out int distance, _inputDistance);
                     if (string.IsNullOrEmpty(error))
@@ -66,6 +127,14 @@ namespace BIM_Leaders_Windows
                     break;
             }
             return error;
+        }
+
+        private string ValidateResultPlacement()
+        {
+            if (ResultPlacementDimensionTop == false && ResultPlacementDimensionBot == false
+                && ResultPlacementElevationTop == false && ResultPlacementElevationBot == false)
+                return "Check at least one placement";
+            return null;
         }
 
         private string ValidateInputIsWholeNumber(out int numberParsed, string number)

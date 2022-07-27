@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         
-        Style="{StaticResource SWindow}"
+        Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Checker"
         WindowStartupLocation="CenterScreen"
         Width="800"
@@ -15,7 +15,7 @@
         
         d:DataContext="{d:DesignInstance Type=local:CheckerData}"
         MouseLeftButtonDown="FormMouseMove">
-
+    
     <Window.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
     </Window.Resources>

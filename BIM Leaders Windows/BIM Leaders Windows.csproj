@@ -98,6 +98,7 @@
     <Compile Include="Windows\JournalAnalyzeForm.xaml.cs">
       <DependentUpon>JournalAnalyzeForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MultivalueBoolConverter.cs" />
     <Compile Include="Windows\WallsArrangedData.cs" />
     <Compile Include="Windows\DimensionsPlanCheckForm.xaml.cs">
       <DependentUpon>DimensionsPlanCheckForm.xaml</DependentUpon>

@@ -15,19 +15,6 @@
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Margin" Value="0" />
-        <!--
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <materialDesign:PackIcon Kind="CancelCircle"
-                                             Width="24" Height="24"
-                                             Foreground="White"
-                                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        -->
     </Style>
 
     <Style x:Key="STabItemLeft" TargetType="TabItem">
@@ -57,11 +44,6 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="{StaticResource SColorText}" />
-                            <!--
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SColorButtonBackground}" />
-                            <Setter TargetName="TextBlock" Property="Foreground" Value="Black" />
-                            <Setter TargetName="Border" Property="Margin" Value="0,0,2,-1" />
-                            -->
                         </Trigger>
                         <Trigger Property="IsSelected" Value="False">
                             <Setter TargetName="Border" Property="Background" Value="{StaticResource SColorBackgroundFooter1}" />

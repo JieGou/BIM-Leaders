@@ -19,6 +19,7 @@
         <ResourceDictionary Source="Styles/Window.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <local:MultivalueErrorConverter  x:Key="MultivalueError" />
     <local:MultivalueBoolInvertConverter  x:Key="MultivalueBoolInvert" />
     <local:MultivalueTextBoxesConverter  x:Key="MultivalueTextBoxes" />
 

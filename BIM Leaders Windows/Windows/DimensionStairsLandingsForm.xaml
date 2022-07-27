@@ -7,8 +7,8 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         
-        Style="{StaticResource SWindow}"
-        Title="BIM Leaders - Dimension Section Floors"
+        Style="{DynamicResource SWindow}"
+        Title="BIM Leaders - Dimension Stairs Landings"
         WindowStartupLocation="CenterScreen"
         
         d:DataContext="{d:DesignInstance Type=local:DimensionStairsLandingsData}"
@@ -37,6 +37,26 @@
 
         <Grid Grid.Row="1">
             <StackPanel Height="260" Margin="20,0">
+                <Label Content="Annotation placement"
+                       Style="{StaticResource SLabelBold}">
+                </Label>
+                <CheckBox x:Name="checkboxPlacementDimensionTop" IsChecked="{Binding Path=ResultPlacementDimensionTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Dimensions - Top" ToolTip="Make dimensions to the top side of landings."
+                          Style="{StaticResource SCheckBox}">
+                </CheckBox>
+                <CheckBox x:Name="checkboxPlacementDimensionBot" IsChecked="{Binding Path=ResultPlacementDimensionBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Dimensions - Bottom" ToolTip="Make dimensions to the bottom side of landings."
+                          Style="{StaticResource SCheckBox}">
+                </CheckBox>
+                <CheckBox x:Name="checkboxPlacementElevationTop" IsChecked="{Binding Path=ResultPlacementElevationTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Elevation Spots - Top" ToolTip="Make spot elevations on the top side of landings."
+                          Style="{StaticResource SCheckBox}">
+                </CheckBox>
+                <CheckBox x:Name="checkboxPlacementElevationBot" IsChecked="{Binding Path=ResultPlacementElevationBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Elevation Spots - Bottom" ToolTip="Make spot elevations on the bottom side of landings."
+                          Style="{StaticResource SCheckBox}">
+                </CheckBox>
+
                 <Label Content="Landings stack max distance (cm)"
                        Margin="-5,5,0,0"
                        ToolTip="If projection of distance between landings centers are less that given value, they will be marked as stacked (situated one-over-other)"
@@ -46,35 +66,39 @@
                          Text="{Binding InputDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}">
                 </TextBox>
-                <Label Content="{Binding ElementName=textboxDistance, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                <Label Content="{Binding ElementName=textboxDistance, Path=(Validation.Errors)[0].ErrorContent}"
                        Style="{StaticResource SLabelError}"/>
             </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Top">
-            <!--
-            <Grid.Background>
-                <LinearGradientBrush EndPoint="0,0" StartPoint="0,1">
-                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter1}, Path=Color}" Offset="0"/>
-                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundFooter2}, Path=Color}" Offset="1"/>
-                </LinearGradientBrush>
-            </Grid.Background>
-            -->
             <StackPanel>
                 <Button x:Name="buttonOk" Click="ButtonOkClick"
                     Content="Magic" ToolTip="Run"
                     Style="{StaticResource SRectangleButton}">
                     <Button.IsEnabled>
                         <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                            <Binding ElementName="textboxThickness" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
-                            <Binding ElementName="checkboxPlacement0" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                            <Binding ElementName="checkboxPlacementDimensionTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                            <Binding ElementName="checkboxPlacementDimensionBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                            <Binding ElementName="checkboxPlacementElevationTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                            <Binding ElementName="checkboxPlacementElevationBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                            <Binding ElementName="textboxDistance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>
-                <Label Content="{Binding ElementName=checkboxPlacement0, Path=(Validation.Errors).CurrentItem.ErrorContent}"
-                       Margin="0,0,20,0"
+
+                <Label Margin="0,0,20,0"
                        Style="{StaticResource SLabelError}">
+                    <Label.Content>
+                        <MultiBinding Converter="{StaticResource MultivalueError}" Mode="TwoWay">
+                            <Binding ElementName="checkboxPlacementDimensionTop" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                            <Binding ElementName="checkboxPlacementDimensionBot" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                            <Binding ElementName="checkboxPlacementElevationTop" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                            <Binding ElementName="checkboxPlacementElevationBot" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>
+                        </MultiBinding>
+                    </Label.Content>
                 </Label>
+                
             </StackPanel>
         </Grid>
     </Grid>

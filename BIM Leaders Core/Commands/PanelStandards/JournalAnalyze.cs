@@ -48,12 +48,12 @@ namespace BIM_Leaders_Core
                     JournalAnalyzeForm form = new JournalAnalyzeForm(commandsDataSet);
                     form.ShowDialog();
 
+                    trans.Commit();
+
                     if (form.DialogResult == false)
                         return Result.Cancelled;
 
                     return Result.Succeeded;
-
-                    trans.Commit();
                 }
             }
             catch (Exception e)
