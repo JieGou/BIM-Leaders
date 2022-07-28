@@ -34,6 +34,9 @@ namespace BIM_Leaders_Windows
             {
                 _resultPlacementDimensionTop = value;
                 OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
+                OnPropertyChanged(nameof(ResultPlacementElevationTop));
+                OnPropertyChanged(nameof(ResultPlacementElevationBot));
             }
         }
 
@@ -44,7 +47,10 @@ namespace BIM_Leaders_Windows
             set
             {
                 _resultPlacementDimensionBot = value;
+                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
                 OnPropertyChanged(nameof(ResultPlacementDimensionBot));
+                OnPropertyChanged(nameof(ResultPlacementElevationTop));
+                OnPropertyChanged(nameof(ResultPlacementElevationBot));
             }
         }
 
@@ -55,7 +61,10 @@ namespace BIM_Leaders_Windows
             set
             {
                 _resultPlacementElevationTop = value;
+                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
                 OnPropertyChanged(nameof(ResultPlacementElevationTop));
+                OnPropertyChanged(nameof(ResultPlacementElevationBot));
             }
         }
 
@@ -66,6 +75,9 @@ namespace BIM_Leaders_Windows
             set
             {
                 _resultPlacementElevationBot = value;
+                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
+                OnPropertyChanged(nameof(ResultPlacementElevationTop));
                 OnPropertyChanged(nameof(ResultPlacementElevationBot));
             }
         }

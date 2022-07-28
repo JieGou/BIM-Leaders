@@ -21,16 +21,6 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
-            // Get View
-            View view = doc.ActiveView;
-
-            Options options = new Options
-            {
-                ComputeReferences = true,
-                IncludeNonVisibleObjects = true,
-                View = view
-            };
-
             int countSpots = 0;
             int countDimensions = 0;
 
@@ -44,6 +34,10 @@ namespace BIM_Leaders_Core
 
                 // Get user provided information from window
                 DimensionStairsLandingsData data = form.DataContext as DimensionStairsLandingsData;
+                bool inputPlacementDimensionTop = data.ResultPlacementDimensionTop;
+                bool inputPlacementDimensionBot = data.ResultPlacementDimensionBot;
+                bool inputPlacementElevationTop = data.ResultPlacementElevationTop;
+                bool inputPlacementElevationBot = data.ResultPlacementElevationBot;
                 int thresholdCm = data.ResultDistance; // Threshold for sorting landings into lists. Each list contains landings located over each other.
 
 #if VERSION2020
@@ -53,7 +47,7 @@ namespace BIM_Leaders_Core
 #endif
 
                 // Selecting all landings in the view
-                List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, view.Id)
+                List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, doc.ActiveView.Id)
                     .OfClass(typeof(StairsLanding))
                     .WhereElementIsNotElementType()
                     .ToElements()
@@ -64,22 +58,24 @@ namespace BIM_Leaders_Core
 
                 List<Line> lines = CalculateLines(doc, landingsSorted);
 
-                List<List<Face>> intersectionFaces = GetIntersections(options, landingsSorted);
+                List<List<Face>> intersectionFaces = GetIntersections(doc, landingsSorted, inputPlacementDimensionTop || inputPlacementElevationTop, inputPlacementDimensionBot || inputPlacementElevationBot);
 
                 // Create annotations
-                using (Transaction trans = new Transaction(doc, "Dimension Runs"))
+                using (Transaction trans = new Transaction(doc, "Annotate Landings"))
                 {
                     trans.Start();
 
-                    countSpots = CreateSpots(doc, lines, intersectionFaces);
-                    countDimensions = CreateDimensions(doc, lines, intersectionFaces);
+                    if (inputPlacementDimensionTop || inputPlacementDimensionBot)
+                        countDimensions = CreateDimensions(doc, lines, intersectionFaces);
+                    if (inputPlacementElevationTop || inputPlacementElevationBot)
+                        countSpots = CreateSpots(doc, lines, intersectionFaces);
 
                     trans.Commit();
                 }
 
                 // Show result
                 string text = (countSpots == 0 && countDimensions == 0)
-                    ? "No annotations created"
+                    ? "No annotations created."
                     : $"{countSpots} spot elevations were created. {countDimensions} dimension lines were created.";
                 TaskDialog.Show("Dimension Stairs", text);
 
@@ -167,15 +163,25 @@ namespace BIM_Leaders_Core
         /// List for all intersection points.
         /// </summary>
         /// <returns>List for all intersection points.</returns>
-        private static List<List<Face>> GetIntersections(Options options, List<List<StairsLanding>> landingsSorted)
+        private static List<List<Face>> GetIntersections(Document doc, List<List<StairsLanding>> landingsSorted, bool getTopFaces, bool getBottomFaces)
         {
             List<List<Face>> intersectionFaces = new List<List<Face>>();
+
+            // Get View
+            View view = doc.ActiveView;
+
+            Options options = new Options
+            {
+                ComputeReferences = true,
+                IncludeNonVisibleObjects = true,
+                View = view
+            };
 
             // Iterate through landings solids and get references and faces
             for (int i = 0; i < landingsSorted.Count; i++)
             {
-                //ReferenceArray iIntersections = new ReferenceArray();
                 List<Face> iIntersectionFaces = new List<Face>();
+
                 foreach (StairsLanding landing in landingsSorted[i])
                 {
                     foreach (Solid solid in landing.get_Geometry(options))
@@ -189,8 +195,12 @@ namespace BIM_Leaders_Core
                                 UV p = new UV(0, 0);
                                 XYZ normal = face.ComputeNormal(p);
                                 if (Math.Round(normal.X) == 0 && Math.Round(normal.Y) == 0)
-                                    if (Math.Round(normal.Z) == 1 || Math.Round(normal.Z) == -1)
+                                {
+                                    if (getTopFaces && Math.Round(normal.Z) == 1)
                                         iIntersectionFaces.Add(face);
+                                    if (getBottomFaces && Math.Round(normal.Z) == -1)
+                                        iIntersectionFaces.Add(face);
+                                }
                             }
                             catch { }
                         }

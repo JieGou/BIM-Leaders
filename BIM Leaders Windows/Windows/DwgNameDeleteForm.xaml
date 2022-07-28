@@ -20,29 +20,25 @@
 
     <Grid Background="{x:Null}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="89"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="89" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
             <TextBlock Text="Delete DWG By Name"
-                       Style="{StaticResource STextBlock}">
-            </TextBlock>
+                       Style="{StaticResource STextBlock}" />
             <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                    Style="{StaticResource SRoundButton}">
-            </Button>
+                    Style="{StaticResource SRoundButton}" />
         </Grid>
 
         <Grid Grid.Row="1">
             <StackPanel Height="231" Margin="20,0">
                 <Label Content="DWG"
-                       Style="{StaticResource SLabelBold}">
-                </Label>
+                       Style="{StaticResource SLabelBold}" />
                 <ComboBox x:Name="comboboxDwgList" SelectedValue="{Binding DwgListSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                           ItemsSource="{Binding DwgList, Mode=OneWay}"
-                          Style="{StaticResource SComboBox}">
-                </ComboBox>
+                          Style="{StaticResource SComboBox}" />
             </StackPanel>
         </Grid>
 
@@ -52,11 +48,10 @@
                     Style="{StaticResource SRectangleButton}">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource MultivalueTextBoxes}" Mode="TwoWay">
-                        <Binding ElementName="comboboxDwgList" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding ElementName="comboboxDwgList" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged" />
                     </MultiBinding>
                 </Button.IsEnabled>
             </Button>
         </Grid>
-        
     </Grid>
 </Window>

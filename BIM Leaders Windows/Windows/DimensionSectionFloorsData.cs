@@ -18,7 +18,9 @@ namespace BIM_Leaders_Windows
         public DimensionSectionFloorsData()
         {
             _resultSpots = true;
-            _resultPlacement = Enumerable.Repeat(true, 3).ToList();
+            _resultPlacementThinTop = true;
+            _resultPlacementThickTop = true;
+            _resultPlacementThickBot = true;
             _resultThickness = 10;
             _inputThickness = _resultThickness.ToString();
         }
@@ -34,14 +36,40 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        private List<bool> _resultPlacement;
-        public List<bool> ResultPlacement
+        private bool _resultPlacementThinTop;
+        public bool ResultPlacementThinTop
         {
-            get { return _resultPlacement; }
+            get { return _resultPlacementThinTop; }
             set
             {
-                _resultPlacement = value;
-                OnPropertyChanged(nameof(ResultPlacement));
+                _resultPlacementThinTop = value;
+                OnPropertyChanged(nameof(ResultPlacementThinTop));
+                OnPropertyChanged(nameof(ResultPlacementThickTop));
+                OnPropertyChanged(nameof(ResultPlacementThickBot));
+            }
+        }
+        private bool _resultPlacementThickTop;
+        public bool ResultPlacementThickTop
+        {
+            get { return _resultPlacementThickTop; }
+            set
+            {
+                _resultPlacementThickTop = value;
+                OnPropertyChanged(nameof(ResultPlacementThinTop));
+                OnPropertyChanged(nameof(ResultPlacementThickTop));
+                OnPropertyChanged(nameof(ResultPlacementThickBot));
+            }
+        }
+        private bool _resultPlacementThickBot;
+        public bool ResultPlacementThickBot
+        {
+            get { return _resultPlacementThickBot; }
+            set
+            {
+                _resultPlacementThickBot = value;
+                OnPropertyChanged(nameof(ResultPlacementThinTop));
+                OnPropertyChanged(nameof(ResultPlacementThickTop));
+                OnPropertyChanged(nameof(ResultPlacementThickBot));
             }
         }
 
@@ -80,7 +108,13 @@ namespace BIM_Leaders_Windows
             
             switch (propertyName)
             {
-                case "ResultPlacement":
+                case "ResultPlacementThinTop":
+                    error = ValidateResultPlacement();
+                    break;
+                case "ResultPlacementThickTop":
+                    error = ValidateResultPlacement();
+                    break;
+                case "ResultPlacementThickBot":
                     error = ValidateResultPlacement();
                     break;
                 case "InputThickness":
@@ -97,7 +131,8 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResultPlacement()
         {
-            if (!ResultPlacement.Contains(true))
+            if (ResultPlacementThinTop == false && ResultPlacementThickTop == false
+                && ResultPlacementThickBot == false)
                 return "Check at least one placement";
             return null;
         }

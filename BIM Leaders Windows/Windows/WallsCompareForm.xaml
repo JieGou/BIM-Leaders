@@ -20,50 +20,41 @@
 
     <Grid Background="{x:Null}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
             <TextBlock Text="Walls Compare"
-                       Style="{StaticResource STextBlock}">
-            </TextBlock>
+                       Style="{StaticResource STextBlock}" />
             <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                    Style="{StaticResource SRoundButton}">
-            </Button>
+                    Style="{StaticResource SRoundButton}" />
         </Grid>
 
         <Grid Grid.Row="1">
             <StackPanel Height="260" Margin="20,0">
                 <Label Content="Links Count"
-                       Style="{StaticResource SLabelBold}">
-                </Label>
+                       Style="{StaticResource SLabelBold}" />
                 <RadioButton x:Name="radiobuttonLinks" GroupName="rbGroup" IsChecked="{Binding Path=ResultLinks, Mode=TwoWay}"
                              Content="1 link and document"
-                             Style="{StaticResource SRadioButton}">
-                </RadioButton>
+                             Style="{StaticResource SRadioButton}" />
                 <RadioButton x:Name="radiobuttonLinks2" GroupName="rbGroup"
                              Content="2 links"
-                             Style="{StaticResource SRadioButton}">
-                </RadioButton>
-                
+                             Style="{StaticResource SRadioButton}" />
+
                 <Label Content="Wall Material"
-                       Style="{StaticResource SLabelBold}">
-                </Label>
+                       Style="{StaticResource SLabelBold}" />
                 <ComboBox x:Name="comboboxMaterials" SelectedValue="{Binding ListMaterialsSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                           ItemsSource="{Binding ListMaterials, Mode=OneWay}"
-                          Style="{StaticResource SComboBox}">
-                </ComboBox>
-                
+                          Style="{StaticResource SComboBox}" />
+
                 <Label Content="Fill Type"
                        Margin="-5,20,0,0"
-                       Style="{StaticResource SLabelBold}">
-                </Label>
+                       Style="{StaticResource SLabelBold}" />
                 <ComboBox x:Name="comboboxFillTypes" SelectedValue="{Binding ListFillTypesSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                           ItemsSource="{Binding ListFillTypes, Mode=OneWay}"
-                          Style="{StaticResource SComboBox}">
-                </ComboBox>
+                          Style="{StaticResource SComboBox}" />
             </StackPanel>
         </Grid>
 
@@ -73,12 +64,11 @@
                     Style="{StaticResource SRectangleButton}">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource MultivalueTextBoxes}" Mode="TwoWay">
-                        <Binding ElementName="comboboxMaterials" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
-                        <Binding ElementName="comboboxFillTypes" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged"/>
+                        <Binding ElementName="comboboxMaterials" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged" />
+                        <Binding ElementName="comboboxFillTypes" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged" />
                     </MultiBinding>
                 </Button.IsEnabled>
             </Button>
         </Grid>
-        
     </Grid>
 </Window>

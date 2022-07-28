@@ -20,53 +20,40 @@
 
     <Grid Background="{x:Null}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
             <TextBlock Text="Levels Align"
-                       Style="{StaticResource STextBlock}">
-            </TextBlock>
+                       Style="{StaticResource STextBlock}" />
             <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                    Style="{StaticResource SRoundButton}">
-            </Button>
+                    Style="{StaticResource SRoundButton}" />
         </Grid>
 
         <Grid Grid.Row="1">
             <StackPanel Height="260" Margin="20,0">
                 <Label Content="Bubbles Side"
-                       Style="{StaticResource SLabelBold}">
-                </Label>
+                       Style="{StaticResource SLabelBold}" />
                 <CheckBox x:Name="checkboxSide1" IsChecked="{Binding Path=ResultSide1, Mode=TwoWay}"
                           Content="Side 1"
-                          Style="{StaticResource SCheckBox}"/>
+                          Style="{StaticResource SCheckBox}" />
                 <CheckBox x:Name="checkboxSide2" IsChecked="{Binding Path=ResultSide2, Mode=TwoWay}"
                           Content="Side 2"
-                          Style="{StaticResource SCheckBox}"/>
-                <!--
-                <RadioButton x:Name="rb_1" GroupName="rb_group" IsChecked="{Binding Path=result_side, Mode=TwoWay}"
-                             Content="Side 1"
-                             Style="{StaticResource SRadioButton}">
-                </RadioButton>
-                <RadioButton x:Name="rb_2" GroupName="rb_group"
-                             Content="Side 2"
-                             Style="{StaticResource SRadioButton}">
-                </RadioButton>
-                -->
+                          Style="{StaticResource SCheckBox}" />
+
                 <CheckBox x:Name="checkboxSwitch" IsChecked="{Binding Path=ResultSwitch, Mode=TwoWay}"
                           Content="Switch to 2D"
                           Margin="0,20,0,0"
-                          Style="{StaticResource SCheckBoxBold}"/>
+                          Style="{StaticResource SCheckBoxBold}" />
             </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Top">
             <Button x:Name="buttonOk" Click="ButtonOkClick"
                     Content="Magic" ToolTip="Run"
-                    Style="{StaticResource SRectangleButton}"/>
+                    Style="{StaticResource SRectangleButton}" />
         </Grid>
-        
     </Grid>
 </Window>

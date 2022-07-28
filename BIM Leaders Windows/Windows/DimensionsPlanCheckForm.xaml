@@ -20,38 +20,25 @@
 
     <Grid Background="{x:Null}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="89"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="89" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
             <TextBlock Text="Dimensions Plan Check"
-                       Style="{StaticResource STextBlock}">
-            </TextBlock>
+                       Style="{StaticResource STextBlock}" />
             <Button x:Name="buttonCancel" IsCancel="True"
-                    Style="{StaticResource SRoundButton}">
-
-            </Button>
+                    Style="{StaticResource SRoundButton}" />
         </Grid>
 
         <Grid Grid.Row="1">
             <StackPanel Height="231" Margin="20,0">
-
                 <Label Content="Filter color"
                        Margin="-5,10,0,0"
-                       Style="{StaticResource SLabelBold}">
-                </Label>
+                       Style="{StaticResource SLabelBold}" />
                 <materialDesign:ColorPicker  x:Name="colorPicker"
-                                             Color="{Binding ResultColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                </materialDesign:ColorPicker>
-
-                <!--
-                <Button x:Name="buttonColor0" Click="ButtonColor0Click"
-                        Content="0" ToolTip="Run"
-                        Style="{StaticResource SColorButton}">
-                </Button>
-                -->
+                                             Color="{Binding ResultColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
         </Grid>
 
@@ -59,8 +46,7 @@
             <StackPanel>
                 <Button x:Name="buttonOk" Click="ButtonOkClick"
                         Content="Magic" ToolTip="Run"
-                        Style="{StaticResource SRectangleButton}">
-                </Button>
+                        Style="{StaticResource SRectangleButton}" />
             </StackPanel>
         </Grid>
     </Grid>

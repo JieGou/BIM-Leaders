@@ -22,20 +22,16 @@
 
     <Grid Background="{x:Null}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="60"></RowDefinition>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="60" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
             <TextBlock Text="Checker Report"
-                       Style="{StaticResource STextBlock}">
-            </TextBlock>
+                       Style="{StaticResource STextBlock}" />
             <Button x:Name="buttonCancel" IsCancel="True"
-                    Style="{StaticResource SRoundButton}">
-            </Button>
-
-            
+                    Style="{StaticResource SRoundButton}" />
         </Grid>
 
         <Grid Grid.Row="1" Height="420">
@@ -55,9 +51,7 @@
             <Button x:Name="buttonOk" Click="ButtonOkClick"
                     Content="OK" ToolTip="Run"
                     Margin="270,0"
-                    Style="{StaticResource SRectangleButton}">
-            </Button>
+                    Style="{StaticResource SRectangleButton}" />
         </Grid>
-        
     </Grid>
 </Window>

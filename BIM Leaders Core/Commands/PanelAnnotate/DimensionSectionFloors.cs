@@ -55,7 +55,9 @@ namespace BIM_Leaders_Core
                 DimensionSectionFloorsData data = form.DataContext as DimensionSectionFloorsData;
 
                 bool inputSpots = data.ResultSpots;
-                List<bool> inputPlacement = data.ResultPlacement;
+                bool inputPlacementThinTop = data.ResultPlacementThinTop;
+                bool inputPlacementThickTop = data.ResultPlacementThickTop;
+                bool inputPlacementThickBot = data.ResultPlacementThickBot;
                 int inputThicknessCm = data.ResultThickness;
 
                 double inputThickness = UnitUtils.ConvertToInternalUnits(inputThicknessCm, units); 
@@ -84,21 +86,21 @@ namespace BIM_Leaders_Core
                 // Lists for intersection points
                 List<Face> intersectionFacesAll = new List<Face>();
 
-                if (inputPlacement[0])
+                if (inputPlacementThinTop)
                 {
                     List<Face> intersectionFacesThinTop = GetIntersections(options, lines[0], floorsThin)[0];
                     intersectionFacesAll.AddRange(intersectionFacesThinTop);
                 }
-                if (inputPlacement[1] || inputPlacement[2])
+                if (inputPlacementThickTop || inputPlacementThickBot)
                 {
                     List<List<Face>> intersectionFacesThick = GetIntersections(options, lines[0], floorsThick);
 
-                    if (inputPlacement[1])
+                    if (inputPlacementThickTop)
                     {
                         List<Face> intersectionFacesThickTop = intersectionFacesThick[0];
                         intersectionFacesAll.AddRange(intersectionFacesThickTop);
                     }
-                    if (inputPlacement[2])
+                    if (inputPlacementThickBot)
                     {
                         List<Face> intersectionFacesThickBot = intersectionFacesThick[1];
                         intersectionFacesAll.AddRange(intersectionFacesThickBot);
