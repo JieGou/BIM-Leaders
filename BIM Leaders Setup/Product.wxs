@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
+	<!-- Сhange ProductCode for creating major upgrade! -->
 	<?if $(var.Configuration)=2020 ?>
 	<?define ProductCode = "{35AA8360-520E-40E2-89E5-B2D1AE4CC919}"?>
 	<?endif?>

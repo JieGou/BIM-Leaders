@@ -128,6 +128,9 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Revit.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == 2020 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2020"

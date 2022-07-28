@@ -19,7 +19,8 @@
   <PropertyGroup />
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationIcon>Revit.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2020|AnyCPU'">
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
@@ -131,9 +132,6 @@
     <None Include="packages.config" />
     <None Include="[Sample].cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Revit.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BIM Leaders Windows\BIM Leaders Windows.csproj">
