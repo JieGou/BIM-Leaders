@@ -34,6 +34,10 @@
 
         <Grid Grid.Row="1">
             <StackPanel Height="260" Margin="20,0">
+                <CheckBox x:Name="checkboxIncludeNotCutting" IsChecked="{Binding Path=ResultIncludeNotCutting, Mode=TwoWay}"
+                          Content="Include Not Cutting Elements" ToolTip="If unchecked, elements only in cut plane will be processed."
+                          Style="{StaticResource SCheckBox}" />
+                
                 <Label Content="Search Step (cm)"
                        Style="{StaticResource SLabelBold}" />
                 <TextBox x:Name="textboxSearchStep" ToolTip="Step along element faces to create searching lines."

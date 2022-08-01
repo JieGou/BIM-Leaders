@@ -47,6 +47,7 @@ namespace BIM_Leaders_Core
 				int searchStepCm = data.ResultSearchStep;
 				int searchDistanceCm = data.ResultSearchDistance;
 				int minUniqueReferences = data.ResultMinReferences;
+				bool includeNotCutting = data.ResultIncludeNotCutting;
 
 #if VERSION2020
 				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
@@ -60,12 +61,12 @@ namespace BIM_Leaders_Core
 					TaskDialog.Show("Dimension Plan", "Plan regions are on the current view. This can cause error \"One or more dimension references are or have become invalid.\"");
 
 				// Collecting model elements to dimension
-				List<Wall> wallsAll = GetWallsStraight(doc);
+				List<Wall> wallsAll = GetWalls(doc);
 				List<FamilyInstance> columnsAll = GetColumns(doc);
 
 				// Get lists of walls and columns that are horizontal and vertical
-				(List<Wall> wallsHor, List<Wall> wallsVer) = FilterWallsPer(toleranceAngle, view.UpDirection, wallsAll);
-				List<FamilyInstance> columnsPer = FilterColumnsPer(toleranceAngle, view.UpDirection, columnsAll);
+				(List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(doc, wallsAll, toleranceAngle, includeNotCutting);
+				List<FamilyInstance> columnsPer = FilterColumns(doc, columnsAll, toleranceAngle, includeNotCutting);
 				
 				// Sum columns and walls
 				IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
@@ -117,7 +118,7 @@ namespace BIM_Leaders_Core
         }
 
 		/// <summary>
-		/// Check if tha current view contains plan regions.
+		/// Check if the current view contains plan regions.
 		/// </summary>
 		/// <param name="doc"></param>
 		/// <returns>True if view contains plan regions, othervise false.</returns>
@@ -139,16 +140,17 @@ namespace BIM_Leaders_Core
 		/// Get list of straight walls visible on active view.
 		/// </summary>
 		/// <returns>List of straight walls visible on active view.</returns>
-		private static List<Wall> GetWallsStraight(Document doc)
+		private static List<Wall> GetWalls(Document doc)
 		{
+			List<Wall> walls = new List<Wall>();
+
 			IEnumerable<Wall> wallsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
-					.OfClass(typeof(Wall))
-					.WhereElementIsNotElementType()
-					.ToElements()
-					.Cast<Wall>();
+				.OfClass(typeof(Wall))
+				.WhereElementIsNotElementType()
+				.ToElements()
+				.Cast<Wall>();
 
 			// Filter line walls
-			List<Wall> walls = new List<Wall>();
 			foreach (Wall wall in wallsAll)
 			{
 				if (wall.Location is LocationCurve lc)
@@ -190,11 +192,12 @@ namespace BIM_Leaders_Core
 		/// Filter list of walls to get walls only parallel or perpendicular to the given vector with the given angle tolerance.
 		/// </summary>
 		/// <returns>List of walls parallel or perpendicular to the vector.</returns>
-		private static (List<Wall>, List<Wall>) FilterWallsPer(double toleranceAngle, XYZ viewDirection, IEnumerable<Wall> walls)
+		private static (List<Wall>, List<Wall>) FilterWalls(Document doc, IEnumerable<Wall> walls, double toleranceAngle, bool includeNotCutting)
 		{
 			List<Wall> wallsPer = new List<Wall>();
 			List<Wall> wallsPar = new List<Wall>();
 
+			XYZ viewDirection = doc.ActiveView.UpDirection;
 			double lineX = Math.Abs(viewDirection.X);
 			double lineY = Math.Abs(viewDirection.Y);
 
@@ -203,17 +206,36 @@ namespace BIM_Leaders_Core
 				double wallX = Math.Abs(wall.Orientation.X);
 				double wallY = Math.Abs(wall.Orientation.Y);
 
-				if ((Math.Abs(wallX) - Math.Abs(lineX) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineY) <= toleranceAngle))
-					wallsPer.Add(wall);
-				if ((Math.Abs(wallX) - Math.Abs(lineY) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineX) <= toleranceAngle))
-					wallsPar.Add(wall);
+				// Filter walls if their top height is lower than current plan view cut plane height.
+				if (!includeNotCutting)
+                {
+					LocationCurve wallLocation = wall.Location as LocationCurve;
+					double wallHeightBottom = wallLocation.Curve.GetEndPoint(0).Z;
+
+#if VERSION2020
+					double wallHeight = wall.GetParameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM).AsDouble();
+#else
+					double wallHeight = wall.GetParameter(ParameterTypeId.WallUserHeightParam).AsDouble();
+#endif
+					ViewPlan viewPlan = doc.ActiveView as ViewPlan;
+					double viewCutPlaneHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
+					if (wallHeightBottom + wallHeight > viewCutPlaneHeight)
+                    {
+						if ((Math.Abs(wallX) - Math.Abs(lineX) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineY) <= toleranceAngle))
+							wallsPer.Add(wall);
+						if ((Math.Abs(wallX) - Math.Abs(lineY) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineX) <= toleranceAngle))
+							wallsPar.Add(wall);
+					}
+				}
 			}
 			return (wallsPer, wallsPar);
 		}
 
-		private static List<FamilyInstance> FilterColumnsPer(double toleranceAngle, XYZ viewDirection, IEnumerable<FamilyInstance> columns)
+		private static List<FamilyInstance> FilterColumns(Document doc, IEnumerable<FamilyInstance> columns, double toleranceAngle, bool includeNotCutting)
         {
 			List<FamilyInstance> columnsPer = new List<FamilyInstance>();
+
+			XYZ viewDirection = doc.ActiveView.UpDirection;
 
 			foreach (FamilyInstance column in columns)
             {
@@ -226,14 +248,26 @@ namespace BIM_Leaders_Core
 				XYZ columnXY = new XYZ(columnX, columnY, 0);
 				double columnAngle = columnXY.AngleTo(viewDirection);
 
-				// Checking if parallel
-				if (Math.Abs(columnAngle) <= toleranceAngle)
-					columnsPer.Add(column);
-				else if (Math.Abs(columnAngle - Math.PI) <= toleranceAngle)
-					columnsPer.Add(column);
-				// Checking if parallel
-				else if (Math.Abs(columnAngle - Math.PI / 2) <= toleranceAngle)
-					columnsPer.Add(column);
+				// Filter columns if their top height is lower than current plan view cut plane height.
+				if (!includeNotCutting)
+				{
+					BoundingBoxXYZ boundingBox = column.get_BoundingBox(doc.ActiveView);
+					double columnHeightTop = boundingBox.Max.Z;
+
+					ViewPlan viewPlan = doc.ActiveView as ViewPlan;
+					double viewCutPlaneHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
+					if (columnHeightTop > viewCutPlaneHeight)
+					{
+						// Checking if parallel
+						if (Math.Abs(columnAngle) <= toleranceAngle)
+							columnsPer.Add(column);
+						else if (Math.Abs(columnAngle - Math.PI) <= toleranceAngle)
+							columnsPer.Add(column);
+						// Checking if parallel
+						else if (Math.Abs(columnAngle - Math.PI / 2) <= toleranceAngle)
+							columnsPer.Add(column);
+					}
+				}
 			}
 			return columnsPer;
 		}
