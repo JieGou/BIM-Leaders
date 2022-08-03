@@ -99,6 +99,10 @@
       <DependentUpon>JournalAnalyzeForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="MultivalueBoolConverter.cs" />
+    <Compile Include="Windows\WarningsSolveData.cs" />
+    <Compile Include="Windows\WarningsSolveForm.xaml.cs">
+      <DependentUpon>WarningsSolveForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\WallsArrangedData.cs" />
     <Compile Include="Windows\DimensionsPlanCheckForm.xaml.cs">
       <DependentUpon>DimensionsPlanCheckForm.xaml</DependentUpon>
@@ -227,6 +231,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\JournalAnalyzeForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\WarningsSolveForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

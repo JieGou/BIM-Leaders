@@ -61,7 +61,8 @@ namespace BIM_Leaders_Core
         }
 
         /// <summary>
-        /// Chaange the given parameter to given value in all family types.
+        /// Change the given parameter to given value in all family types.
+        /// Value is given as string, so depends on parameter type value will be converted.
         /// </summary>
         /// <returns>Count of times when parameter was changed.</returns>
         private static int ChangeParameter(Document doc, FamilyParameter parameter, string parameterValue)
@@ -124,6 +125,7 @@ namespace BIM_Leaders_Core
             if (parameter.StorageType == StorageType.ElementId)
             {
                 ElementId id = new ElementId(0);
+
                 switch (parameter.Definition.ParameterType)
                 {
                     case ParameterType.Invalid:

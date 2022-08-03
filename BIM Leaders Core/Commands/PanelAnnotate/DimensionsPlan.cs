@@ -47,7 +47,6 @@ namespace BIM_Leaders_Core
 				int searchStepCm = data.ResultSearchStep;
 				int searchDistanceCm = data.ResultSearchDistance;
 				int minUniqueReferences = data.ResultMinReferences;
-				bool includeNotCutting = data.ResultIncludeNotCutting;
 
 #if VERSION2020
 				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
@@ -65,8 +64,8 @@ namespace BIM_Leaders_Core
 				List<FamilyInstance> columnsAll = GetColumns(doc);
 
 				// Get lists of walls and columns that are horizontal and vertical
-				(List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(doc, wallsAll, toleranceAngle, includeNotCutting);
-				List<FamilyInstance> columnsPer = FilterColumns(doc, columnsAll, toleranceAngle, includeNotCutting);
+				(List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(doc, wallsAll, toleranceAngle);
+				List<FamilyInstance> columnsPer = FilterColumns(doc, columnsAll, toleranceAngle);
 				
 				// Sum columns and walls
 				IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
@@ -192,7 +191,7 @@ namespace BIM_Leaders_Core
 		/// Filter list of walls to get walls only parallel or perpendicular to the given vector with the given angle tolerance.
 		/// </summary>
 		/// <returns>List of walls parallel or perpendicular to the vector.</returns>
-		private static (List<Wall>, List<Wall>) FilterWalls(Document doc, IEnumerable<Wall> walls, double toleranceAngle, bool includeNotCutting)
+		private static (List<Wall>, List<Wall>) FilterWalls(Document doc, IEnumerable<Wall> walls, double toleranceAngle)
 		{
 			List<Wall> wallsPer = new List<Wall>();
 			List<Wall> wallsPar = new List<Wall>();
@@ -206,32 +205,15 @@ namespace BIM_Leaders_Core
 				double wallX = Math.Abs(wall.Orientation.X);
 				double wallY = Math.Abs(wall.Orientation.Y);
 
-				// Filter walls if their top height is lower than current plan view cut plane height.
-				if (!includeNotCutting)
-                {
-					LocationCurve wallLocation = wall.Location as LocationCurve;
-					double wallHeightBottom = wallLocation.Curve.GetEndPoint(0).Z;
-
-#if VERSION2020
-					double wallHeight = wall.GetParameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM).AsDouble();
-#else
-					double wallHeight = wall.GetParameter(ParameterTypeId.WallUserHeightParam).AsDouble();
-#endif
-					ViewPlan viewPlan = doc.ActiveView as ViewPlan;
-					double viewCutPlaneHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
-					if (wallHeightBottom + wallHeight > viewCutPlaneHeight)
-                    {
-						if ((Math.Abs(wallX) - Math.Abs(lineX) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineY) <= toleranceAngle))
-							wallsPer.Add(wall);
-						if ((Math.Abs(wallX) - Math.Abs(lineY) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineX) <= toleranceAngle))
-							wallsPar.Add(wall);
-					}
-				}
+				if ((Math.Abs(wallX) - Math.Abs(lineX) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineY) <= toleranceAngle))
+					wallsPer.Add(wall);
+				else if ((Math.Abs(wallX) - Math.Abs(lineY) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineX) <= toleranceAngle))
+					wallsPar.Add(wall);
 			}
 			return (wallsPer, wallsPar);
 		}
 
-		private static List<FamilyInstance> FilterColumns(Document doc, IEnumerable<FamilyInstance> columns, double toleranceAngle, bool includeNotCutting)
+		private static List<FamilyInstance> FilterColumns(Document doc, IEnumerable<FamilyInstance> columns, double toleranceAngle)
         {
 			List<FamilyInstance> columnsPer = new List<FamilyInstance>();
 
@@ -248,26 +230,14 @@ namespace BIM_Leaders_Core
 				XYZ columnXY = new XYZ(columnX, columnY, 0);
 				double columnAngle = columnXY.AngleTo(viewDirection);
 
-				// Filter columns if their top height is lower than current plan view cut plane height.
-				if (!includeNotCutting)
-				{
-					BoundingBoxXYZ boundingBox = column.get_BoundingBox(doc.ActiveView);
-					double columnHeightTop = boundingBox.Max.Z;
-
-					ViewPlan viewPlan = doc.ActiveView as ViewPlan;
-					double viewCutPlaneHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
-					if (columnHeightTop > viewCutPlaneHeight)
-					{
-						// Checking if parallel
-						if (Math.Abs(columnAngle) <= toleranceAngle)
-							columnsPer.Add(column);
-						else if (Math.Abs(columnAngle - Math.PI) <= toleranceAngle)
-							columnsPer.Add(column);
-						// Checking if parallel
-						else if (Math.Abs(columnAngle - Math.PI / 2) <= toleranceAngle)
-							columnsPer.Add(column);
-					}
-				}
+				// Checking if parallel
+				if (Math.Abs(columnAngle) <= toleranceAngle)
+					columnsPer.Add(column);
+				else if (Math.Abs(columnAngle - Math.PI) <= toleranceAngle)
+					columnsPer.Add(column);
+				// Checking if parallel
+				else if (Math.Abs(columnAngle - Math.PI / 2) <= toleranceAngle)
+					columnsPer.Add(column);
 			}
 			return columnsPer;
 		}
@@ -579,10 +549,8 @@ namespace BIM_Leaders_Core
         {
 			List<PlanarFace> facesNewPurged = new List<PlanarFace>();
 
-			// From collected faces data and new faces list we make data with replaced list of faced by tuples of 3 faces lists (see below)
-			// facesCollectedList[0] + facesNew => facesLists[0](facesUniqueCollected, facesShared, facesUniqueNew)
-			// facesCollectedList[1] + facesNew => facesLists[1](facesUniqueCollected, facesShared, facesUniqueNew)
-			// ...
+			// From collected faces data and new faces list we make data with replaced: list of faces => tuples of 3 faces lists (see below)
+			// dimensionsDataCollector + facesNew => facesDividedData(facesUniqueCollected, facesShared, facesUniqueNew)
 			// { | ; ([C], [S], [N]) }   C - collected unique, S - shared, N - new unique.
 			Dictionary<Line, Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>>> facesDividedData = new Dictionary<Line, Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>>>();
 
@@ -636,13 +604,9 @@ namespace BIM_Leaders_Core
 				dimensionsDataCollector[minimalNewKey].AddRange(facesDividedData[minimalNewKey].Item3);
 				return null;
             }
-            else // edit new dimension
-            {
-				// Find collecteed dimension with minimal unique collected elements
-
-				//Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>> minimalCollected = facesTuples.OrderBy(x => x.Item1.Count).First();
-				//int minimalCollectedIndex = facesTuples.IndexOf(minimalCollected);
-
+			// Else make new dimension with shared and new faces.
+			else
+			{
 				facesNewPurged.AddRange(facesDividedData[minimalNewKey].Item2);
 				facesNewPurged.AddRange(facesDividedData[minimalNewKey].Item3);
 			}

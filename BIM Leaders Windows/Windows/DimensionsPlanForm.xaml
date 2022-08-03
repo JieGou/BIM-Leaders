@@ -34,10 +34,6 @@
 
         <Grid Grid.Row="1">
             <StackPanel Height="260" Margin="20,0">
-                <CheckBox x:Name="checkboxIncludeNotCutting" IsChecked="{Binding Path=ResultIncludeNotCutting, Mode=TwoWay}"
-                          Content="Include Not Cutting Elements" ToolTip="If unchecked, elements only in cut plane will be processed."
-                          Style="{StaticResource SCheckBox}" />
-                
                 <Label Content="Search Step (cm)"
                        Style="{StaticResource SLabelBold}" />
                 <TextBox x:Name="textboxSearchStep" ToolTip="Step along element faces to create searching lines."
@@ -55,10 +51,10 @@
                 <Label Content="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors).CurrentItem.ErrorContent}"
                        Style="{StaticResource SLabelError}" />
 
-                <Label Content="Min Unique References"
+                <Label Content="Min New References"
                        Margin="-5,10,0,0"
                        Style="{StaticResource SLabelBold}" />
-                <TextBox x:Name="textboxReferences" ToolTip="If difference count of references between dimension lines will be lower, they will be joined together."
+                <TextBox x:Name="textboxReferences" ToolTip="If count of references in the next dimension line will be lower, dimension will be joined with existing one."
                          Text="{Binding InputMinReferences, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}" />
                 <Label Content="{Binding ElementName=textboxReferences, Path=(Validation.Errors)/ErrorContent}"

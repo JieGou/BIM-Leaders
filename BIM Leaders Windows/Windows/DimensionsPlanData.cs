@@ -20,24 +20,12 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public DimensionsPlanData()
         {
-            _resultIncludeNotCutting = true;
             _resultSearchStep = 15;
             _inputSearchStep = _resultSearchStep.ToString();
             _resultSearchDistance = 1500;
             _inputSearchDistance = _resultSearchDistance.ToString();
             _resultMinReferences = 5;
             _inputMinReferences = _resultMinReferences.ToString();
-        }
-
-        private bool _resultIncludeNotCutting;
-        public bool ResultIncludeNotCutting
-        {
-            get { return _resultIncludeNotCutting; }
-            set
-            {
-                _resultIncludeNotCutting = value;
-                OnPropertyChanged(nameof(ResultIncludeNotCutting));
-            }
         }
 
         private string _inputSearchStep;
