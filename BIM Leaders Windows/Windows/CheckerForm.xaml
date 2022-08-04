@@ -214,7 +214,7 @@
                                           IsChecked="{Binding Path=ResultModel[4], Mode=TwoWay}" IsEnabled="False"
                                           Style="{StaticResource SCheckBox}" />
                                 <CheckBox Content="View Templates" ToolTip="Check if view templates are unused."
-                                          IsChecked="{Binding Path=ResultModel[5], Mode=TwoWay}" IsEnabled="False"
+                                          IsChecked="{Binding Path=ResultModel[5], Mode=TwoWay}"
                                           Style="{StaticResource SCheckBox}" />
                                 <CheckBox Content="Sheets" ToolTip="Check for sheet placeholders and empty sheets."
                                           IsChecked="{Binding Path=ResultModel[6], Mode=TwoWay}"

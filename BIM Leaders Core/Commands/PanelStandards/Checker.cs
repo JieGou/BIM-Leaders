@@ -60,6 +60,8 @@ namespace BIM_Leaders_Core
                         reportMessageList.AddRange(CheckLineStyles(doc));
                     if (inputModel[3])
                         reportMessageList.AddRange(CheckFilters(doc));
+                    if (inputModel[5])
+                        reportMessageList.AddRange(CheckViewTemplates(doc));
                     if (inputModel[6])
                         reportMessageList.AddRange(CheckSheets(doc));
                     if (inputModel[7])
@@ -249,6 +251,36 @@ namespace BIM_Leaders_Core
             int countFiltersUnused = filtersAll.Count - filtersUsed.Count;
             if (countFiltersUnused != 0)
                 reportMessage.MessageText = $"{countFiltersUnused} filters are unused.";
+
+            return new List<ReportMessage>() { reportMessage };
+        }
+
+        /// <summary>
+        /// Check if view templates are unused.
+        /// </summary>
+        /// <returns>Checking report messages.</returns>
+        private static IEnumerable<ReportMessage> CheckViewTemplates(Document doc)
+        {
+            ReportMessage reportMessage = new ReportMessage("Unused View Templates");
+
+            IEnumerable<View> viewsAll = new FilteredElementCollector(doc)
+                .OfClass(typeof(View))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<View>();
+
+            IEnumerable<View> views = viewsAll.Where(x => x.IsTemplate == false);
+            IEnumerable<ElementId> templateIds = viewsAll.Where(x => x.IsTemplate == true).Select(x => x.Id);
+
+            foreach (View view in views)
+            {
+                if (templateIds.Contains(view.ViewTemplateId))
+                    templateIds = templateIds.Where(x => x != view.ViewTemplateId);
+            }
+
+            int countViewTemplatesUnused = templateIds.Count();
+            if (countViewTemplatesUnused != 0)
+                reportMessage.MessageText = $"{countViewTemplatesUnused} view templates are unused.";
 
             return new List<ReportMessage>() { reportMessage };
         }
