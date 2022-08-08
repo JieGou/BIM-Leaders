@@ -120,8 +120,7 @@
     <Compile Include="Commands\PanelFamily\FamilyVoidsSelect.cs" />
     <Compile Include="Commands\PanelAnnotate\GridsAlign.cs" />
     <Compile Include="Commands\PanelAnnotate\LevelsAlign.cs" />
-    <Compile Include="Commands\PanelStandards\LinestylesUnusedDelete.cs" />
-    <Compile Include="Commands\PanelStandards\LinetypesDelete.cs" />
+    <Compile Include="Commands\PanelStandards\Purge.cs" />
     <Compile Include="Commands\PanelStandards\Checker.cs" />
     <Compile Include="Commands\PanelStandards\NamesChange.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionStairsLandings.cs" />

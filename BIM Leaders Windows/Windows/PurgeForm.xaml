@@ -1,0 +1,92 @@
+﻿<Window x:Class="BIM_Leaders_Windows.PurgeForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BIM_Leaders_Windows"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        
+        Style="{DynamicResource SWindow}"
+        Title="BIM Leaders - Purge"
+        WindowStartupLocation="CenterScreen"
+        
+        d:DataContext="{d:DesignInstance Type=local:PurgeData}"
+        MouseLeftButtonDown="FormMouseMove">
+
+    <Window.Resources>
+        <ResourceDictionary Source="../Resources.xaml" />
+    </Window.Resources>
+
+    <Grid Background="{x:Null}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="260" />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <TextBlock Text="Purge"
+                       Style="{StaticResource STextBlock}" />
+            <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
+                    Style="{StaticResource SRoundButton}" />
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <StackPanel Height="231" Margin="20,0">
+                <CheckBox x:Name="checkboxRooms" IsChecked="{Binding Path=ResultRooms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Rooms" ToolTip="Unplaced Rooms"
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxTags" IsChecked="{Binding Path=ResultTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Tags" ToolTip="Placed but Empty Tags"
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxFilters" IsChecked="{Binding Path=ResultFilters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Filters" ToolTip="Unused View Filters"
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxViewTemplates" IsChecked="{Binding Path=ResultViewTemplates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="View Templates" ToolTip="Unused View Templates"
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxSheets" IsChecked="{Binding Path=ResultSheets, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Sheets" ToolTip="Empty Sheets with no Views Placed"
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxLineStyles" IsChecked="{Binding Path=ResultLineStyles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Line Styles" ToolTip="Unused Line Styles"
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxLinePatterns" IsChecked="{Binding Path=ResultLinePatterns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Line Patterns" ToolTip="Line patterns that contains specified string. Line patterns from imported DWG files usually contains word &quot;IMPORT&quot;"
+                          Style="{StaticResource SCheckBox}" />
+                <Label Content="Line Patterns Names - String to Search"
+                       Style="{StaticResource SLabelBold}" />
+                <TextBox x:Name="textboxLinePatternsName"
+                         Text="{Binding ResultLinePatternsName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Style="{StaticResource STextBox}" />
+                <Label Content="{Binding ElementName=textboxLinePatternsName, Path=(Validation.Errors)/ErrorContent}"
+                       Style="{StaticResource SLabelError}" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2" VerticalAlignment="Top">
+            <StackPanel>
+                <Button x:Name="buttonOk" Click="ButtonOkClick"
+                    Content="Magic" ToolTip="Run"
+                    Style="{StaticResource SRectangleButton}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                            <Binding ElementName="checkboxRooms" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxTags" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxFilters" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxViewTemplates" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxSheets" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxLineStyles" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxLinePatterns" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="textboxLinePatternsName" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+                <Label Content="{Binding ElementName=checkboxRooms, Path=(Validation.Errors)[0].ErrorContent}"
+                   Margin="20,5,20,0"
+                   Style="{StaticResource SLabelError}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

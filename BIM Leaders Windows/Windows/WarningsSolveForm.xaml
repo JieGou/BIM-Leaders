@@ -49,20 +49,22 @@
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Top">
-            <Button x:Name="buttonOk" Click="ButtonOkClick"
+            <StackPanel>
+                <Button x:Name="buttonOk" Click="ButtonOkClick"
                     Content="Magic" ToolTip="Run"
                     Style="{StaticResource SRectangleButton}">
-                <Button.IsEnabled>
-                    <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                        <Binding ElementName="checkboxFixWarningsJoin" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                        <Binding ElementName="checkboxFixWarningsWallsAttached" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                        <Binding ElementName="checkboxFixWarningsRoomNotEnclosed" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                    </MultiBinding>
-                </Button.IsEnabled>
-            </Button>
-            <Label Content="{Binding ElementName=checkboxFixWarningsJoin, Path=(Validation.Errors)[0].ErrorContent}"
-                   Margin="0,0,20,0"
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                            <Binding ElementName="checkboxFixWarningsJoin" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxFixWarningsWallsAttached" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxFixWarningsRoomNotEnclosed" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+                <Label Content="{Binding ElementName=checkboxFixWarningsJoin, Path=(Validation.Errors)[0].ErrorContent}"
+                   Margin="20,5,20,0"
                    Style="{StaticResource SLabelError}" />
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

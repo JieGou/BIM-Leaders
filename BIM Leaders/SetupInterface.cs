@@ -62,33 +62,19 @@ namespace BIM_Leaders
             // Populate button data model
             RevitPushButtonDataModel button_1_4_data = new RevitPushButtonDataModel
             {
-                Label = "Delete Unused\r\nLine Styles",
+                Label = "Purge",
                 Panel = panel01,
-                ToolTip = "Delete all unused line styles.",
-                LongDescription = "Line styles cannot be deleted via Purge function. Use this command to purge all linestyles that are unneeded.",
-                CommandNamespacePath = LinestylesUnusedDelete.GetPath(),
-                IconImageName = "BIM_Leaders_Linestyles_Unused_Delete.png",
+                ToolTip = "Purge the model.",
+                LongDescription = "Not all categories and elements can be purged with standard purge tool. Use this command for advanced purging.",
+                CommandNamespacePath = Purge.GetPath(),
+                IconImageName = "BIM_Leaders_Purge.png",
                 //TooltipImageName = "BIM_Leaders_Linestyles_Unused_Delete.png"
             };
             // Create button from provided data
             RevitPushButton.Create(button_1_4_data);
 
-            // Populate button data model
-            RevitPushButtonDataModel button_1_5_data = new RevitPushButtonDataModel
-            {
-                Label = "Delete \r\nLine Patterns",
-                Panel = panel01,
-                ToolTip = "Delete all line patterns that contains input string.",
-                LongDescription = "Can be useful to delete IMPORT line patterns after importing DWG files.",
-                CommandNamespacePath = LinetypesDelete.GetPath(),
-                IconImageName = "BIM_Leaders_Linetypes_Delete.png",
-                //TooltipImageName = "BIM_Leaders_Linetypes_Delete.png"
-            };
-            // Create button from provided data
-            RevitPushButton.Create(button_1_5_data);
-
             // Create Pull-down button
-            RevitPulldownButtonDataModel button_1_6_data = new RevitPulldownButtonDataModel
+            RevitPulldownButtonDataModel button_1_5_data = new RevitPulldownButtonDataModel
             {
                 Label = "Walls\r\nCheck",
                 Panel = panel01,
@@ -98,7 +84,7 @@ namespace BIM_Leaders
                 //TooltipImageName = "BIM_Leaders_Walls_Parallel.png"
             };
             // Create button from provided data
-            PulldownButton button_1_5 = RevitPulldownButton.Create(button_1_6_data);
+            PulldownButton button_1_5 = RevitPulldownButton.Create(button_1_5_data);
 
             RevitPushButtonDataModel button_1_6_1_data = new RevitPushButtonDataModel
             {

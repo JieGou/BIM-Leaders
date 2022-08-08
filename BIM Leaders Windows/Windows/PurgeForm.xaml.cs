@@ -10,18 +10,18 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class LinetypesDeleteForm : Window
+    public partial class PurgeForm : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="Linetypes_IMPORT_Delete_Form"/>
+        /// Initializes a new instance of the <see cref="PurgeForm"/>
         /// </summary>
-        public LinetypesDeleteForm()
+        public PurgeForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new LinetypesDeleteData();
+            DataContext = new PurgeData();
         }
 
         private void InitializeMaterialDesign()
