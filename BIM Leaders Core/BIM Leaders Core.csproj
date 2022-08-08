@@ -96,6 +96,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandsAvailability\DocumentIsFamily.cs" />
+    <Compile Include="CommandsAvailability\ViewIsPlan.cs" />
+    <Compile Include="CommandsAvailability\ViewIsSection.cs" />
+    <Compile Include="CommandsAvailability\ViewIsSectionOrElevation.cs" />
+    <Compile Include="CommandsAvailability\ViewIsStandard.cs" />
     <Compile Include="Commands\Helpers\Message.cs" />
     <Compile Include="Commands\Helpers\Categories.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlan.cs" />
@@ -127,7 +132,6 @@
     <Compile Include="Commands\PanelAnnotate\StairsStepsEnumerate.cs" />
     <Compile Include="Commands\PanelAnnotate\WallsCompare.cs" />
     <Compile Include="Commands\PanelStandards\WallsParallel.cs" />
-    <Compile Include="RevitPushButtonAvailability.cs" />
     <None Include="packages.config" />
     <None Include="[Sample].cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
