@@ -25,6 +25,8 @@ namespace BIM_Leaders_Core
             string path = doc.Application.RecordingJournalFilename;
             string pathNew = path.Substring(0, path.Length - 4) + "TEMP.txt";
 
+            string[] content = new string[] { };
+
             try
             {
                 using (Transaction trans = new Transaction(doc, "Analyze Journal"))
@@ -36,25 +38,21 @@ namespace BIM_Leaders_Core
 
                     File.Copy(path, pathNew);
 
-                    string[] content = File.ReadAllLines(pathNew);
+                    content = File.ReadAllLines(pathNew);
 
                     File.Delete(pathNew);
 
-                    List<string> commands = FindCommands(content);
-                    Dictionary<string, int> commandsSorted = commands.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
-
-                    DataSet commandsDataSet = CreateDataSet(commandsSorted);
-
-                    JournalAnalyzeForm form = new JournalAnalyzeForm(commandsDataSet);
-                    form.ShowDialog();
-
                     trans.Commit();
-
-                    if (form.DialogResult == false)
-                        return Result.Cancelled;
-
-                    return Result.Succeeded;
                 }
+
+                List<string> commands = FindCommands(content);
+
+                Dictionary<string, int> commandsSorted = commands.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
+
+                DataSet commandsDataSet = CreateDataSet(commandsSorted);
+                ShowResult(commandsDataSet);
+
+                return Result.Succeeded;
             }
             catch (Exception e)
             {
@@ -339,6 +337,12 @@ namespace BIM_Leaders_Core
                 dataTable.Rows.Add(dataRow);
             }
             return dataSet;
+        }
+
+        private static void ShowResult(DataSet commandsDataSet)
+        {
+            JournalAnalyzeForm form = new JournalAnalyzeForm(commandsDataSet);
+            form.ShowDialog();
         }
 
         public static string GetPath()

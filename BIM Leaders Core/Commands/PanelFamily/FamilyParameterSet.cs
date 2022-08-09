@@ -44,12 +44,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (count == 0)
-                    ? "No parameters set."
-                    : $"{count} parameters set.";
-                TaskDialog.Show("Parameter Set", text);
+                ShowResult(count);
 
                 return Result.Succeeded;
             }
@@ -177,6 +172,16 @@ namespace BIM_Leaders_Core
             }
             return count;
 
+        }
+
+        private static void ShowResult(int count)
+        {
+            // Show result
+            string text = (count == 0)
+                ? "No parameters set."
+                : $"{count} parameters set.";
+            
+            TaskDialog.Show("Parameter Set", text);
         }
 
         public static string GetPath()

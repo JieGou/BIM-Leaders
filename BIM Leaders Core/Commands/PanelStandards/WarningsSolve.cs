@@ -63,30 +63,7 @@ namespace BIM_Leaders_Core
                     
                     trans.Commit();
                 }
-
-                // Show result
-                string text = "";
-                if (countWarningsJoin + countWarningsWallsAttached + countWarningsRoomNotEnclosed == 0)
-                    text = "No warnings solved";
-                else
-                {
-                    if (countWarningsJoin > 0)
-                        text += $"{countWarningsJoin} elements join warnings";
-                    if (countWarningsWallsAttached > 0)
-                    {
-                        if (text.Length > 0)
-                            text += ", ";
-                        text += $"{countWarningsWallsAttached} walls attached warnings";
-                    }
-                    if (countWarningsRoomNotEnclosed > 0)
-                    {
-                        if (text.Length > 0)
-                            text += ", ";
-                        text += $"{countWarningsRoomNotEnclosed} rooms not enclosed warnings";
-                    }
-                    text += " were solved.";
-                }
-                TaskDialog.Show("Solve Warnings", text);
+                ShowResult(countWarningsJoin, countWarningsWallsAttached, countWarningsRoomNotEnclosed);
 
                 return Result.Succeeded;
             }
@@ -180,6 +157,34 @@ namespace BIM_Leaders_Core
                 catch { }
             }
             return count;
+        }
+
+        private static void ShowResult(int countWarningsJoin, int countWarningsWallsAttached, int countWarningsRoomNotEnclosed)
+        {
+            // Show result
+            string text = "";
+            if (countWarningsJoin + countWarningsWallsAttached + countWarningsRoomNotEnclosed == 0)
+                text = "No warnings solved";
+            else
+            {
+                if (countWarningsJoin > 0)
+                    text += $"{countWarningsJoin} elements join warnings";
+                if (countWarningsWallsAttached > 0)
+                {
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{countWarningsWallsAttached} walls attached warnings";
+                }
+                if (countWarningsRoomNotEnclosed > 0)
+                {
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{countWarningsRoomNotEnclosed} rooms not enclosed warnings";
+                }
+                text += " were solved.";
+            }
+            
+            TaskDialog.Show("Solve Warnings", text);
         }
 
         public static string GetPath()

@@ -133,7 +133,6 @@
     <Compile Include="Commands\PanelAnnotate\WallsCompare.cs" />
     <Compile Include="Commands\PanelStandards\WallsParallel.cs" />
     <None Include="packages.config" />
-    <None Include="[Sample].cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

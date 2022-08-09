@@ -43,8 +43,6 @@ namespace BIM_Leaders_Core
                     .ConvertAll(x => x.Id)               //LINQ function
                     .ToList();                           //LINQ function
 
-                count = dwgDelete.Count;
-
                 using (Transaction trans = new Transaction(doc, "Delete DWG by Name"))
                 {
                     trans.Start();
@@ -53,12 +51,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (count == 0)
-                    ? "No DWG deleted"
-                    : $"{count} DWG named {name} deleted";
-                TaskDialog.Show("DWG Deleted", text);
+                ShowResult(dwgDelete.Count, name);
 
                 return Result.Succeeded;
             }
@@ -67,6 +60,16 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        private static void ShowResult(int count, string name)
+        {
+            // Show result
+            string text = (count == 0)
+                ? "No DWG deleted"
+                : $"{count} DWG named {name} deleted";
+            
+            TaskDialog.Show("DWG Deleted", text);
         }
 
         public static string GetPath()

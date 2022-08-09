@@ -46,19 +46,9 @@ namespace BIM_Leaders_Core
                 double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, UnitTypeId.Centimeters);
 #endif
 
-                // Selecting all landings in the view
-                List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, doc.ActiveView.Id)
-                    .OfClass(typeof(StairsLanding))
-                    .WhereElementIsNotElementType()
-                    .ToElements()
-                    .Cast<StairsLanding>()
-                    .ToList();
-
-                List<List<StairsLanding>> landingsSorted = SortLandings(doc, threshold, landingsUnsorted);
-
-                List<Line> lines = CalculateLines(doc, landingsSorted);
-
-                List<List<Face>> intersectionFaces = GetIntersections(doc, landingsSorted, inputPlacementDimensionTop || inputPlacementElevationTop, inputPlacementDimensionBot || inputPlacementElevationBot);
+                List<List<StairsLanding>> landings = GetLandings(doc, threshold);
+                List<Line> lines = CalculateLines(doc, landings);
+                List<List<Face>> intersectionFaces = GetIntersections(doc, landings, inputPlacementDimensionTop || inputPlacementElevationTop, inputPlacementDimensionBot || inputPlacementElevationBot);
 
                 // Create annotations
                 using (Transaction trans = new Transaction(doc, "Annotate Landings"))
@@ -72,12 +62,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (countSpots == 0 && countDimensions == 0)
-                    ? "No annotations created."
-                    : $"{countSpots} spot elevations were created. {countDimensions} dimension lines were created.";
-                TaskDialog.Show("Dimension Stairs", text);
+                ShowResult(countSpots, countDimensions);
 
                 return Result.Succeeded;
             }
@@ -89,12 +74,20 @@ namespace BIM_Leaders_Core
         }
 
         /// <summary>
-        /// Sort landings in groups by coordinates, each group have landings with same locations but different heights.
+        /// Get sorted landings in groups by coordinates, each group have landings with same locations but different heights.
         /// </summary>
-        /// <returns>List of landings.</returns>
-        private static List<List<StairsLanding>> SortLandings(Document doc, double threshold, List<StairsLanding> landingsUnsorted)
+        /// <returns>List of lists of landings.</returns>
+        private static List<List<StairsLanding>> GetLandings(Document doc, double threshold)
         {
             List<List<StairsLanding>> landingsSorted = new List<List<StairsLanding>>();
+
+            // Selecting all landings in the view
+            List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                .OfClass(typeof(StairsLanding))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<StairsLanding>()
+                .ToList();
 
             View view = doc.ActiveView;
 
@@ -284,6 +277,16 @@ namespace BIM_Leaders_Core
                 count++;
             }
             return count;
+        }
+
+        private static void ShowResult(int countSpots, int countDimensions)
+        {
+            // Show result
+            string text = (countSpots == 0 && countDimensions == 0)
+                ? "No annotations created."
+                : $"{countSpots} spot elevations were created. {countDimensions} dimension lines were created.";
+            
+            TaskDialog.Show("Dimension Stairs", text);
         }
 
         public static string GetPath()

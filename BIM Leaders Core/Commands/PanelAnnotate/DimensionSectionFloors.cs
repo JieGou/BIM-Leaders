@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using Autodesk.Revit.UI.Selection;
 
 namespace BIM_Leaders_Core
 {
@@ -19,29 +20,22 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
-            Options options = new Options
-            {
-                ComputeReferences = true,
-                IncludeNonVisibleObjects = false,
-                View = doc.ActiveView
-            };
-
-            // Get length units
-#if VERSION2020
-            DisplayUnitType units = doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
-#else
-            ForgeTypeId units = doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
-#endif
-
             int count = 0;
 
             try
             {
                 // Get the line from user selection
-                IList<ElementId> selectedIds = uidoc.Selection.GetElementIds() as IList<ElementId>;
+                Reference referenceLine = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
+                DetailLine detailLine = doc.GetElement(referenceLine) as DetailLine;
+                if (detailLine == null)
+                {
+                    TaskDialog.Show("Annotate Section", "Wrong selection.");
+                    return Result.Failed;
+                }
+                Line line = detailLine.GeometryCurve as Line;
 
                 // Check and exit if wrong selection
-                if (!ValidateLine(doc, options, selectedIds, out List<Line> lines).Any())
+                if (!ValidateLine(line))
                     return Result.Failed;
 
                 // Collector for data provided in window
@@ -60,82 +54,29 @@ namespace BIM_Leaders_Core
                 bool inputPlacementThickBot = data.ResultPlacementThickBot;
                 int inputThicknessCm = data.ResultThickness;
 
-                double inputThickness = UnitUtils.ConvertToInternalUnits(inputThicknessCm, units); 
-
-                // Get Floors
-                FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-                IEnumerable<Element> floorsAll = collector.OfClass(typeof(Floor))
-                    .WhereElementIsNotElementType()
-                    .ToElements();
-
-                // Divide Floors to thick and thin tor spot elevations arrangement
-                List<Floor> floorsThin = new List<Floor>();
-                List<Floor> floorsThick = new List<Floor>();
-                foreach (Floor floor in floorsAll)
-                {
-                    FloorType floorType = floor.FloorType;
-
-                    double floorThickness = floorType.get_Parameter(BuiltInParameter.FLOOR_ATTR_DEFAULT_THICKNESS_PARAM).AsDouble();
-
-                    if(floorThickness > inputThickness)
-                        floorsThick.Add(floor);
-                    else
-                        floorsThin.Add(floor);
-                }
-
-                // Lists for intersection points
-                List<Face> intersectionFacesAll = new List<Face>();
-
-                if (inputPlacementThinTop)
-                {
-                    List<Face> intersectionFacesThinTop = GetIntersections(options, lines[0], floorsThin)[0];
-                    intersectionFacesAll.AddRange(intersectionFacesThinTop);
-                }
-                if (inputPlacementThickTop || inputPlacementThickBot)
-                {
-                    List<List<Face>> intersectionFacesThick = GetIntersections(options, lines[0], floorsThick);
-
-                    if (inputPlacementThickTop)
-                    {
-                        List<Face> intersectionFacesThickTop = intersectionFacesThick[0];
-                        intersectionFacesAll.AddRange(intersectionFacesThickTop);
-                    }
-                    if (inputPlacementThickBot)
-                    {
-                        List<Face> intersectionFacesThickBot = intersectionFacesThick[1];
-                        intersectionFacesAll.AddRange(intersectionFacesThickBot);
-                    }
-                }
+                GetDividedFloors(doc, inputThicknessCm, out List <Floor> floorsThin, out List<Floor> floorsThick);
+                List<Face> intersectionFacesAll = GetIntersectionFaces(doc, line, floorsThin, floorsThick, inputPlacementThinTop, inputPlacementThickTop, inputPlacementThickBot);
 
                 // Check if no intersections
                 if (intersectionFacesAll.Count == 0)
                 {
-                    TaskDialog.Show("Section Annotations", "No intersections were found");
+                    TaskDialog.Show("Annotate Section", "No intersections were found");
                     return Result.Failed;
                 }
 
                 // Create annotations
-                using (Transaction trans = new Transaction(doc, "Section Dimensions"))
+                using (Transaction trans = new Transaction(doc, "Annotate Section"))
                 {
                     trans.Start();
                     
                     if (inputSpots)
-                        count = CreateSpots(doc, lines[0], intersectionFacesAll);
+                        count = CreateSpots(doc, line, intersectionFacesAll);
                     else
-                        count = CreateDimensions(doc, lines[0], intersectionFacesAll);
+                        count = CreateDimensions(doc, line, intersectionFacesAll);
                     
                     trans.Commit();
                 }
-
-                // Result window
-                string text = "";
-                if (count == 0)
-                    text = "No annotations created.";
-                else
-                    text = (inputSpots)
-                        ? $"{count} spot elevations created."
-                        : $"Dimension with {count} segments created.";
-                TaskDialog.Show("Section Annotations", text);
+                ShowResult(count, inputSpots);
 
                 return Result.Succeeded;
             }
@@ -149,47 +90,110 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Validate if selected line is single and vertical.
         /// </summary>
-        /// <returns>List of lines with line in [0] index if OK. Null if failed.</returns>
-        private static List<Line> ValidateLine(Document doc, Options options, IList<ElementId> selectedIds, out List<Line> lines)
+        /// <returns>True if OK. False if line is wrong.</returns>
+        private static bool ValidateLine(Line line)
         {
-            lines = new List<Line>();
-
-            // If no elements selected
-            if (selectedIds.Count == 0)
-                TaskDialog.Show("Section Annotations", "You haven't selected any lines.");
-            // If more than 1 element is selected.
-            else if (selectedIds.Count > 1)
-                TaskDialog.Show("Section Annotations", "Select only one vertical line.");
-            // If one element selected.
-            else
+            double direction = line.Direction.Z;
+            if (direction != 1 && direction != -1)
             {
-                Element element = doc.GetElement(selectedIds[0]);
+                TaskDialog.Show("Annotate Section", "Selected line is not vertical.");
+                return false;
+            }
 
-                // If no line selected.
-                if (element.Category.Name != "Lines")
-                    TaskDialog.Show("Section Annotations", "Select element is not a line.");
+            return true;
+        }
+
+        /// <summary>
+        /// Get floors in the current document, divided by the given thickness.
+        /// </summary>
+        /// <param name="thickness">Thickness value to divide floors into 2 lists.</param>
+        /// <param name="floorsThin">Floors with thickness less than the given value.</param>
+        /// <param name="floorsThick">Floors with thickness greater than the given value.</param>
+        private static void GetDividedFloors(Document doc, double thickness, out List<Floor> floorsThin, out List<Floor> floorsThick)
+        {
+            floorsThin = new List<Floor>();
+            floorsThick = new List<Floor>();
+
+            // Get length units
+#if VERSION2020
+            DisplayUnitType units = doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
+#else
+            ForgeTypeId units = doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
+#endif
+
+            double inputThickness = UnitUtils.ConvertToInternalUnits(thickness, units);
+
+            // Get Floors
+            FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
+            IEnumerable<Element> floorsAll = collector.OfClass(typeof(Floor))
+                .WhereElementIsNotElementType()
+                .ToElements();
+
+            // Divide Floors to thick and thin tor spot elevations arrangement
+            foreach (Floor floor in floorsAll)
+            {
+                FloorType floorType = floor.FloorType;
+
+                double floorThickness = floorType.get_Parameter(BuiltInParameter.FLOOR_ATTR_DEFAULT_THICKNESS_PARAM).AsDouble();
+
+                if (floorThickness > inputThickness)
+                    floorsThick.Add(floor);
                 else
+                    floorsThin.Add(floor);
+            }
+        }
+
+        /// <summary>
+        /// Get intersection faces of given floors lists for future dimensioning.
+        /// </summary>
+        /// <param name="floorsThin">First list of floors.</param>
+        /// <param name="floorsThick">Second list of floors.</param>
+        /// <param name="line">Line to find intersections.</param>
+        /// <param name="inputPlacementThinTop">True if need to find intersections on top of the first floors list.</param>
+        /// <param name="inputPlacementThickTop">True if need to find intersections on top of the second floors list.</param>
+        /// <param name="inputPlacementThickBot">True if need to find intersections on bottom of the second floors list.</param>
+        /// <returns></returns>
+        private static List<Face> GetIntersectionFaces(Document doc, Line line, List<Floor> floorsThin, List<Floor> floorsThick, bool inputPlacementThinTop, bool inputPlacementThickTop, bool inputPlacementThickBot)
+        {
+            List<Face> intersectionFacesAll = new List<Face>();
+
+            if (inputPlacementThinTop)
+            {
+                List<Face> intersectionFacesThinTop = GetIntersections(doc, line, floorsThin)[0];
+                intersectionFacesAll.AddRange(intersectionFacesThinTop);
+            }
+            if (inputPlacementThickTop || inputPlacementThickBot)
+            {
+                List<List<Face>> intersectionFacesThick = GetIntersections(doc, line, floorsThick);
+
+                if (inputPlacementThickTop)
                 {
-                    foreach (Line l in element.get_Geometry(options))
-                    {
-                        // Checking if not vertical
-                        double d = l.Direction.Z;
-                        if (d != 1 && d != -1)
-                            TaskDialog.Show("Section Annotations", "Selected line is not vertical.");
-                        else
-                            lines.Add(l);
-                    } 
+                    List<Face> intersectionFacesThickTop = intersectionFacesThick[0];
+                    intersectionFacesAll.AddRange(intersectionFacesThickTop);
+                }
+                if (inputPlacementThickBot)
+                {
+                    List<Face> intersectionFacesThickBot = intersectionFacesThick[1];
+                    intersectionFacesAll.AddRange(intersectionFacesThickBot);
                 }
             }
-            return lines;
+
+            return intersectionFacesAll;
         }
 
         /// <summary>
         /// Get intersections from line and list of floors.
         /// </summary>
         /// <returns>List of floor faces that intersect with the given line.</returns>
-        private static List<List<Face>> GetIntersections(Options options, Line line, List<Floor> floors)
+        private static List<List<Face>> GetIntersections(Document doc, Line line, List<Floor> floors)
         {
+            Options options = new Options
+            {
+                ComputeReferences = true,
+                IncludeNonVisibleObjects = false,
+                View = doc.ActiveView
+            };
+
             IntersectionResultArray ira = new IntersectionResultArray();
 
             // List for intersection points. Top[0], Bottom[1].
@@ -340,6 +344,20 @@ namespace BIM_Leaders_Core
                 }
             }
             return count;
+        }
+
+        private static void ShowResult(int count, bool inputSpots)
+        {
+            // Result window
+            string text = "";
+            if (count == 0)
+                text = "No annotations created.";
+            else
+                text = (inputSpots)
+                    ? $"{count} spot elevations created."
+                    : $"Dimension with {count} segments created.";
+
+            TaskDialog.Show("Annotate Section", text);
         }
 
         public static string GetPath()

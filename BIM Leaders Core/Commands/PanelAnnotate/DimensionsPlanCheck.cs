@@ -45,12 +45,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (wallIds.Count == 0)
-                    ? "All walls are dimensioned"
-                    : $"{wallIds.Count} walls added to Walls dimension filter";
-                TaskDialog.Show("Dimension Plan Check", text);
+                ShowResult(wallIds.Count);
 
                 return Result.Succeeded;
             }
@@ -171,6 +166,16 @@ namespace BIM_Leaders_Core
             overrideSettings.SetCutForegroundPatternColor(filterColor);
             overrideSettings.SetCutForegroundPatternId(patternId);
             view.SetFilterOverrides(filterId, overrideSettings);
+        }
+
+        private static void ShowResult(int count)
+        {
+            // Show result
+            string text = (count == 0)
+                ? "All walls are dimensioned"
+                : $"{count} walls added to Walls dimension filter";
+
+            TaskDialog.Show("Dimension Plan Check", text);
         }
 
         public static string GetPath()

@@ -32,12 +32,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (countJoined == 0)
-                    ? "No joins found."
-                    : $"{countCutted} elements cuts a view. {countJoined} elements joins were done.";
-                TaskDialog.Show("Elements Join", text);
+                ShowResult(countCutted, countJoined);
 
                 return Result.Succeeded;
             }
@@ -120,6 +115,16 @@ namespace BIM_Leaders_Core
             }
             catch { }
             return count;
+        }
+
+        private static void ShowResult(int countCutted, int countJoined)
+        {
+            // Show result
+            string text = (countJoined == 0)
+                ? "No joins found."
+                : $"{countCutted} elements cuts a view. {countJoined} elements joins were done.";
+            
+            TaskDialog.Show("Elements Join", text);
         }
 
         public static string GetPath()

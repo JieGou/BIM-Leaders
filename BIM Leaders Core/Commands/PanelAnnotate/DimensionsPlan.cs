@@ -99,15 +99,9 @@ namespace BIM_Leaders_Core
 
 					trans.Commit();
                 }
+				ShowResult(countDim, countRef);
 
-				// Show result
-				string text = (countDim == 0)
-                    ? "Dimensions creating error."
-                    : $"{countDim} dimensions with {countRef} segments were created.";
-                TaskDialog.Show("Dimension Plan", text);
-				
 				return Result.Succeeded;
-				
             }
             catch (Exception e)
             {
@@ -612,6 +606,16 @@ namespace BIM_Leaders_Core
 			}
 
 			return facesNewPurged;
+		}
+
+		private static void ShowResult(int countDim, int countRef)
+        {
+			// Show result
+			string text = (countDim == 0)
+				? "Dimensions creating error."
+				: $"{countDim} dimensions with {countRef} segments were created.";
+
+			TaskDialog.Show("Dimension Plan", text);
 		}
 
 		public static string GetPath()

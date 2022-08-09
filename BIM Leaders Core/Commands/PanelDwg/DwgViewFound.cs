@@ -28,21 +28,15 @@ namespace BIM_Leaders_Core
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>(); //LINQ function;
 
-                DataSet dwgDataSet = CreateDwgDataSet(doc, imports);
-
-                // Export to Excel
-                // ...
-
-                // Show result
-                if (imports.Count() > 0)
-                {
-                    //DwgViewFoundData data = new DwgViewFoundData(dwgDataSet);
-                    DwgViewFoundForm form = new DwgViewFoundForm(dwgDataSet);
-                    form.ShowDialog();
-                }
-                else
+                if (imports.Count() == 0)
                     TaskDialog.Show("Imports", "No imports in the file.");
-                
+                else
+                {
+                    DataSet dwgDataSet = CreateDwgDataSet(doc, imports);
+                    ShowResult(dwgDataSet);
+                    // Export to Excel
+                    // ...
+                }
                 return Result.Succeeded;
             }
             catch (Exception e)
@@ -108,6 +102,15 @@ namespace BIM_Leaders_Core
 
             return dwgDataSet;
         }
+
+        private static void ShowResult(DataSet dwgDataSet)
+        {
+            // Show result
+            DwgViewFoundForm form = new DwgViewFoundForm(dwgDataSet);
+            
+            form.ShowDialog();
+        }
+
         public static string GetPath()
         {
             // Return constructed namespace path

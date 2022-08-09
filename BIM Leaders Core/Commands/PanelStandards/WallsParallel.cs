@@ -55,12 +55,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (wallsFilter.Count == 0)
-                    ? "All walls are clear"
-                    : $"{wallsFilter} walls added to Walls parallel filter";
-                TaskDialog.Show("Walls parallel filter", text);
+                ShowResult(wallsFilter.Count);
 
                 return Result.Succeeded;
             }
@@ -184,6 +179,16 @@ namespace BIM_Leaders_Core
             overrideSettings.SetCutForegroundPatternColor(filterColor);
             overrideSettings.SetCutForegroundPatternId(pattern);
             view.SetFilterOverrides(filterId, overrideSettings);
+        }
+
+        private static void ShowResult(int count)
+        {
+            // Show result
+            string text = (count == 0)
+                ? "All walls are clear"
+                : $"{count} walls added to Walls parallel filter";
+            
+            TaskDialog.Show("Walls parallel filter", text);
         }
 
         public static string GetPath()

@@ -126,12 +126,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                int count = loopList.Count;
-
-                // Show result
-                string text = $"{count} filled regions created.";
-                TaskDialog.Show("Walls comparison", text);
+                ShowResult(loopList.Count);
                 
                 return Result.Succeeded;
             }
@@ -290,6 +285,14 @@ namespace BIM_Leaders_Core
                 catch { }
             }
             return loopList;
+        }
+
+        private static void ShowResult(int count)
+        {
+            // Show result
+            string text = $"{count} filled regions created.";
+
+            TaskDialog.Show("Walls comparison", text);
         }
 
         public static string GetPath()

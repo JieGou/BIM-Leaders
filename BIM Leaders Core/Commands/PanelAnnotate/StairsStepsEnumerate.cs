@@ -89,27 +89,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = "";
-                if (count == 0)
-                    text = "No annotations created";
-                else
-                {
-                    if (countGrouped > 0)
-                        text += $"{countGrouped} stairs are in groups! Exclude them from groups!{Environment.NewLine}";
-                    text += $"{count} runs with {inputStartNumber - 1} threads was numbered.";
-                    if (countUnpinned > 0)
-                        text += $"{Environment.NewLine}{countUnpinned} stairs were unpinned!";
-                    /*
-                    if(pinned > 0)
-                    {
-                        text += pinned.ToString();
-                        text += " stairs are pinned!";
-                    }
-                    */
-                }
-                TaskDialog.Show("Section Annotations", text);
+                ShowResult(count, countGrouped, countUnpinned, inputStartNumber);
 
                 return Result.Succeeded;
             }
@@ -193,6 +173,24 @@ namespace BIM_Leaders_Core
                 catch { count++; }
             }
             return count;
+        }
+
+        private static void ShowResult(int count, int countGrouped, int countUnpinned, int inputStartNumber)
+        {
+            // Show result
+            string text = "";
+            if (count == 0)
+                text = "No annotations created";
+            else
+            {
+                if (countGrouped > 0)
+                    text += $"{countGrouped} stairs are in groups! Exclude them from groups!{Environment.NewLine}";
+                text += $"{count} runs with {inputStartNumber - 1} threads was numbered.";
+                if (countUnpinned > 0)
+                    text += $"{Environment.NewLine}{countUnpinned} stairs were unpinned!";
+            }
+
+            TaskDialog.Show("Section Annotations", text);
         }
 
         public static string GetPath()

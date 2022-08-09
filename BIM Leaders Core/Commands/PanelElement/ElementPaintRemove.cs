@@ -16,8 +16,8 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
-            int facesCountAll = 0;
-            int facesCountCleared = 0;
+            int countAll = 0;
+            int countCleared = 0;
 
             try
             {
@@ -29,16 +29,11 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    (facesCountAll, facesCountCleared) = RemovePaint(doc, element);
+                    (countAll, countCleared) = RemovePaint(doc, element);
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (facesCountCleared == 0)
-                    ? "Painted faces not found."
-                    : $"{facesCountCleared} of {facesCountAll} faces have been cleared from paint.";
-                TaskDialog.Show("Paint remove", text);
+                ShowResult(countAll, countCleared);
 
                 return Result.Succeeded;
             }
@@ -79,6 +74,17 @@ namespace BIM_Leaders_Core
 
             return (count, countCleared);
         }
+
+        private static void ShowResult(int countAll, int countCleared)
+        {
+            // Show result
+            string text = (countCleared == 0)
+                ? "Painted faces not found."
+                : $"{countCleared} of {countAll} faces have been cleared from paint.";
+            
+            TaskDialog.Show("Paint remove", text);
+        }
+
         public static string GetPath()
         {
             // Return constructed namespace path

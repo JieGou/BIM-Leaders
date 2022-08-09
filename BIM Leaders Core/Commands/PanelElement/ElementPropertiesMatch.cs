@@ -40,12 +40,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (countProperties == 0)
-                    ? "No properties set."
-                    : $"{countProperties} properties have been matched.";
-                TaskDialog.Show("Match instance properties", text);
+                ShowResult(countProperties);
 
                 return Result.Succeeded;
             }
@@ -132,6 +127,16 @@ namespace BIM_Leaders_Core
             }
 
             return parametersList;
+        }
+
+        private static void ShowResult(int count)
+        {
+            // Show result
+            string text = (count == 0)
+                ? "No properties set."
+                : $"{count} properties have been matched.";
+            
+            TaskDialog.Show("Match instance properties", text);
         }
 
         public static string GetPath()

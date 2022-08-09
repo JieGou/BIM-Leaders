@@ -70,54 +70,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = "";
-                if (countLineStyles + countFilters == 0)
-                    text = "No elements deleted";
-                else
-                {
-                    if (countRooms > 0)
-                        text += $"{countRooms} non-placed rooms deleted";
-                    if (countTags > 0)
-                    {
-                        if (text.Length > 0)
-                            text += ", ";
-                        text += $"{countTags} empty tags deleted";
-                    }
-                    if (countFilters > 0)
-                    {
-                        if (text.Length > 0)
-                            text += ", ";
-                        text += $"{countFilters} unused filters deleted";
-                    }
-                    if (countViewTemplates > 0)
-                    {
-                        if (text.Length > 0)
-                            text += ", ";
-                        text += $"{countViewTemplates} unused view templates deleted";
-                    }
-                    if (countSheets > 0)
-                    {
-                        if (text.Length > 0)
-                            text += ", ";
-                        text += $"{countSheets} empty sheets deleted";
-                    }
-                    if (countLineStyles > 0)
-                    {
-                        if (text.Length > 0)
-                            text += ", ";
-                        text += $"{countLineStyles} unused linestyles deleted";
-                    }
-                    if (countLinePatterns > 0)
-                    {
-                        if (text.Length > 0)
-                            text += ", ";
-                        text += $"{countLinePatterns} line patterns with names included \"{inputLinePatternsName}\" deleted";
-                    }
-                    text += ".";
-                }
-                TaskDialog.Show("Purge", text);
+                ShowResult(countLineStyles, countFilters, countRooms, countTags, countViewTemplates, countSheets, countLinePatterns);
 
                 return Result.Succeeded;
             }
@@ -347,6 +300,58 @@ namespace BIM_Leaders_Core
             doc.Delete(linePatterns);
 
             return count;
+        }
+
+        private static void ShowResult(int countLineStyles, int countFilters, int countRooms, int countTags, int countViewTemplates, int countSheets, int countLinePatterns)
+        {
+            // Show result
+            string text = "";
+            if (countLineStyles + countFilters == 0)
+                text = "No elements deleted";
+            else
+            {
+                if (countRooms > 0)
+                    text += $"{countRooms} non-placed rooms deleted";
+                if (countTags > 0)
+                {
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{countTags} empty tags deleted";
+                }
+                if (countFilters > 0)
+                {
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{countFilters} unused filters deleted";
+                }
+                if (countViewTemplates > 0)
+                {
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{countViewTemplates} unused view templates deleted";
+                }
+                if (countSheets > 0)
+                {
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{countSheets} empty sheets deleted";
+                }
+                if (countLineStyles > 0)
+                {
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{countLineStyles} unused linestyles deleted";
+                }
+                if (countLinePatterns > 0)
+                {
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{countLinePatterns} line patterns with names included \"{inputLinePatternsName}\" deleted";
+                }
+                text += ".";
+            }
+
+            TaskDialog.Show("Purge", text);
         }
 
         public static string GetPath()

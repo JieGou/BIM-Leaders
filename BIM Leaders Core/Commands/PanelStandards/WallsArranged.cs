@@ -109,12 +109,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                if (wallsFilter.Count == 0 && wallsFilterAngle.Count == 0)
-                    TaskDialog.Show("Walls arranged filter", "All walls are clear");
-                else
-                    TaskDialog.Show("Walls arranged filter", string.Format("{0} walls added to Walls arranged filter", (wallsFilter.Count + wallsFilterAngle.Count).ToString()));
+                ShowResult(wallsFilter.Count + wallsFilterAngle.Count);
 
                 return Result.Succeeded;
             }
@@ -302,6 +297,16 @@ namespace BIM_Leaders_Core
             overrideSettings.SetCutForegroundPatternColor(filterColor);
             overrideSettings.SetCutForegroundPatternId(patternId);
             view.SetFilterOverrides(filterId, overrideSettings);
+        }
+
+        private static void ShowResult(int count)
+        {
+            // Show result
+            string text = (count == 0)
+                ? "All walls are clear"
+                : $"{count} walls added to Walls arranged filter";
+
+            TaskDialog.Show("Walls arranged filter", text);
         }
 
         public static string GetPath()

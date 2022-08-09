@@ -23,21 +23,6 @@ namespace BIM_Leaders_Core
 
             try
             {
-                /*
-                FamilyParameterSetForm form = new FamilyParameterSetForm(uidoc);
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                FamilyParameterSetData data = form.DataContext as FamilyParameterSetData;
-                string parameterName = data.ParametersListSelected;
-                string parameterValue = data.ParameterValue;
-                */
-                // Get parameter
-                //FamilyParameter parameter = doc.FamilyManager.get_Parameter(parameterName);
-
                 using (Transaction trans = new Transaction(doc, "Change Parameter"))
                 {
                     trans.Start();
@@ -46,12 +31,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (count == 0)
-                    ? "No parameters changed."
-                    : $"{count} parameters changed.";
-                TaskDialog.Show("Parameter Change", text);
+                ShowResult(count);
 
                 return Result.Succeeded;
             }
@@ -84,6 +64,16 @@ namespace BIM_Leaders_Core
             }
             count = parameters.Count();
             return count;
+        }
+
+        private static void ShowResult(int count)
+        {
+            // Show result
+            string text = (count == 0)
+                ? "No parameters changed."
+                : $"{count} parameters changed.";
+            
+            TaskDialog.Show("Parameter Change", text);
         }
 
         public static string GetPath()

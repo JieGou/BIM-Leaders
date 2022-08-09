@@ -55,8 +55,6 @@
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="ClassDiagram2.cd" />
-    <None Include="[Ribbon].cs" />
     <Compile Include="ExternalDBAppGroupRestore.cs" />
     <Compile Include="SetupInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

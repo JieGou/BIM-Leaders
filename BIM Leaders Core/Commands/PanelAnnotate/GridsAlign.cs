@@ -55,12 +55,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (count == 0)
-                    ? "No grids aligned"
-                    : $"{count2D} grids switched to 2D and aligned.{Environment.NewLine}{count} grids changed bubbles";
-                TaskDialog.Show("Grids Align", text);
+                ShowResult(count, count2D);
 
                 return Result.Succeeded;
             }
@@ -114,6 +109,16 @@ namespace BIM_Leaders_Core
             return (count2D, count);
         }
         
+        private static void ShowResult(int count, int count2D)
+        {
+            // Show result
+            string text = (count == 0)
+                ? "No grids aligned"
+                : $"{count2D} grids switched to 2D and aligned.{Environment.NewLine}{count} grids changed bubbles";
+            
+            TaskDialog.Show("Grids Align", text);
+        }
+
         public static string GetPath()
         {
             // Return constructed namespace path

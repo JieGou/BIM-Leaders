@@ -52,8 +52,6 @@ namespace BIM_Leaders_Core
                 foreach (Reference i in intersections_columns)
                     references.Append(i);
 
-                int count = references.Size - 1;
-
                 using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
                 {
                     trans.Start();
@@ -62,12 +60,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-
-                // Show result
-                string text = (count == 0)
-                    ? "Dimension creating error."
-                    : $"Dimension with {count} segments was created.";
-                TaskDialog.Show("Dimension Plan Walls", text);
+                ShowResult(references.Size - 1);
 
                 return Result.Succeeded;
             }
@@ -210,6 +203,16 @@ namespace BIM_Leaders_Core
                 }
             }
             return intersections;
+        }
+
+        private static void ShowResult(int count)
+        {
+            // Show result
+            string text = (count == 0)
+                ? "Dimension creating error."
+                : $"Dimension with {count} segments was created.";
+
+            TaskDialog.Show("Dimension Plan Walls", text);
         }
 
         public static string GetPath()

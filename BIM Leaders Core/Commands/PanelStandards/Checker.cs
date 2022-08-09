@@ -86,13 +86,8 @@ namespace BIM_Leaders_Core
                 // Export to Excel
                 // ...
 
-                // Create a DataSet
                 DataSet reportDataSet = CreateReportDataSet(reportMessageList);
-
-                // Show result
-                CheckerReportForm formReport = new CheckerReportForm(reportDataSet);
-
-                formReport.ShowDialog();
+                ShowResult(reportDataSet);
 
                 return Result.Succeeded;
             }
@@ -873,6 +868,14 @@ namespace BIM_Leaders_Core
             }
             
             return new List<ReportMessage>() { reportMessage };
+        }
+
+        private static void ShowResult(DataSet reportDataSet)
+        {
+            // Show result
+            CheckerReportForm formReport = new CheckerReportForm(reportDataSet);
+
+            formReport.ShowDialog();
         }
 
         /// <summary>
