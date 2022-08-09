@@ -39,11 +39,17 @@
                 <CheckBox x:Name="checkboxPlacementDimensionTop" IsChecked="{Binding Path=ResultPlacementDimensionTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                           Content="Dimensions - Top" ToolTip="Make dimensions to the top side of landings."
                           Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxPlacementDimensionMid" IsChecked="{Binding Path=ResultPlacementDimensionMid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Dimensions - Middle" ToolTip="Make dimensions to the middle layers of landings."
+                          Style="{StaticResource SCheckBox}" />
                 <CheckBox x:Name="checkboxPlacementDimensionBot" IsChecked="{Binding Path=ResultPlacementDimensionBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                           Content="Dimensions - Bottom" ToolTip="Make dimensions to the bottom side of landings."
                           Style="{StaticResource SCheckBox}" />
                 <CheckBox x:Name="checkboxPlacementElevationTop" IsChecked="{Binding Path=ResultPlacementElevationTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                           Content="Elevation Spots - Top" ToolTip="Make spot elevations on the top side of landings."
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxPlacementElevationMid" IsChecked="{Binding Path=ResultPlacementElevationMid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Elevation Spots - Top" ToolTip="Make spot elevations on the middle layers of landings."
                           Style="{StaticResource SCheckBox}" />
                 <CheckBox x:Name="checkboxPlacementElevationBot" IsChecked="{Binding Path=ResultPlacementElevationBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                           Content="Elevation Spots - Bottom" ToolTip="Make spot elevations on the bottom side of landings."
@@ -69,8 +75,10 @@
                     <Button.IsEnabled>
                         <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                             <Binding ElementName="checkboxPlacementDimensionTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementDimensionMid" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="checkboxPlacementDimensionBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="checkboxPlacementElevationTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementElevationMid" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="checkboxPlacementElevationBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="textboxDistance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                         </MultiBinding>
@@ -82,8 +90,10 @@
                     <Label.Content>
                         <MultiBinding Converter="{StaticResource MultivalueError}" Mode="TwoWay">
                             <Binding ElementName="checkboxPlacementDimensionTop" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementDimensionMid" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="checkboxPlacementDimensionBot" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="checkboxPlacementElevationTop" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementElevationMid" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="checkboxPlacementElevationBot" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                         </MultiBinding>
                     </Label.Content>

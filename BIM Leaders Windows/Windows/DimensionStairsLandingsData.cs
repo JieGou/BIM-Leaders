@@ -5,7 +5,7 @@ using System.Linq;
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "Dimension_Section_Floors"
+    /// Information and data model for command DimensionStairsLandings
     /// </summary>
     public class DimensionStairsLandingsData : INotifyPropertyChanged, IDataErrorInfo
     {
@@ -19,8 +19,10 @@ namespace BIM_Leaders_Windows
         public DimensionStairsLandingsData()
         {
             _resultPlacementDimensionTop = true;
+            _resultPlacementDimensionMid = true;
             _resultPlacementDimensionBot = true;
             _resultPlacementElevationTop = true;
+            _resultPlacementElevationMid = true;
             _resultPlacementElevationBot = true;
             _resultDistance = 150;
             _inputDistance = _resultDistance.ToString();
@@ -34,8 +36,26 @@ namespace BIM_Leaders_Windows
             {
                 _resultPlacementDimensionTop = value;
                 OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
                 OnPropertyChanged(nameof(ResultPlacementDimensionBot));
                 OnPropertyChanged(nameof(ResultPlacementElevationTop));
+                OnPropertyChanged(nameof(ResultPlacementElevationMid));
+                OnPropertyChanged(nameof(ResultPlacementElevationBot));
+            }
+        }
+
+        private bool _resultPlacementDimensionMid;
+        public bool ResultPlacementDimensionMid
+        {
+            get { return _resultPlacementDimensionMid; }
+            set
+            {
+                _resultPlacementDimensionMid = value;
+                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
+                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
+                OnPropertyChanged(nameof(ResultPlacementElevationTop));
+                OnPropertyChanged(nameof(ResultPlacementElevationMid));
                 OnPropertyChanged(nameof(ResultPlacementElevationBot));
             }
         }
@@ -48,8 +68,10 @@ namespace BIM_Leaders_Windows
             {
                 _resultPlacementDimensionBot = value;
                 OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
                 OnPropertyChanged(nameof(ResultPlacementDimensionBot));
                 OnPropertyChanged(nameof(ResultPlacementElevationTop));
+                OnPropertyChanged(nameof(ResultPlacementElevationMid));
                 OnPropertyChanged(nameof(ResultPlacementElevationBot));
             }
         }
@@ -62,8 +84,26 @@ namespace BIM_Leaders_Windows
             {
                 _resultPlacementElevationTop = value;
                 OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
                 OnPropertyChanged(nameof(ResultPlacementDimensionBot));
                 OnPropertyChanged(nameof(ResultPlacementElevationTop));
+                OnPropertyChanged(nameof(ResultPlacementElevationMid));
+                OnPropertyChanged(nameof(ResultPlacementElevationBot));
+            }
+        }
+
+        private bool _resultPlacementElevationMid;
+        public bool ResultPlacementElevationMid
+        {
+            get { return _resultPlacementElevationMid; }
+            set
+            {
+                _resultPlacementElevationMid = value;
+                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
+                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
+                OnPropertyChanged(nameof(ResultPlacementElevationTop));
+                OnPropertyChanged(nameof(ResultPlacementElevationMid));
                 OnPropertyChanged(nameof(ResultPlacementElevationBot));
             }
         }
@@ -76,8 +116,10 @@ namespace BIM_Leaders_Windows
             {
                 _resultPlacementElevationBot = value;
                 OnPropertyChanged(nameof(ResultPlacementDimensionTop));
+                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
                 OnPropertyChanged(nameof(ResultPlacementDimensionBot));
                 OnPropertyChanged(nameof(ResultPlacementElevationTop));
+                OnPropertyChanged(nameof(ResultPlacementElevationMid));
                 OnPropertyChanged(nameof(ResultPlacementElevationBot));
             }
         }
@@ -120,10 +162,16 @@ namespace BIM_Leaders_Windows
                 case "ResultPlacementDimensionTop":
                     error = ValidateResultPlacement();
                     break;
+                case "ResultPlacementDimensionMid":
+                    error = ValidateResultPlacement();
+                    break;
                 case "ResultPlacementDimensionBot":
                     error = ValidateResultPlacement();
                     break;
                 case "ResultPlacementElevationTop":
+                    error = ValidateResultPlacement();
+                    break;
+                case "ResultPlacementElevationMid":
                     error = ValidateResultPlacement();
                     break;
                 case "ResultPlacementElevationBot":
@@ -143,8 +191,9 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResultPlacement()
         {
-            if (ResultPlacementDimensionTop == false && ResultPlacementDimensionBot == false
-                && ResultPlacementElevationTop == false && ResultPlacementElevationBot == false)
+            if (ResultPlacementDimensionTop == false && ResultPlacementDimensionMid == false
+                && ResultPlacementDimensionBot == false && ResultPlacementElevationTop == false
+                && ResultPlacementElevationMid == false && ResultPlacementElevationBot == false)
                 return "Check at least one placement";
             return null;
         }

@@ -31,8 +31,10 @@ namespace BIM_Leaders_Core
                 // Get user provided information from window
                 DimensionStairsLandingsData data = form.DataContext as DimensionStairsLandingsData;
                 bool inputPlacementDimensionTop = data.ResultPlacementDimensionTop;
+                bool inputPlacementDimensionMid = data.ResultPlacementDimensionMid;
                 bool inputPlacementDimensionBot = data.ResultPlacementDimensionBot;
                 bool inputPlacementElevationTop = data.ResultPlacementElevationTop;
+                bool inputPlacementElevationMid = data.ResultPlacementElevationMid;
                 bool inputPlacementElevationBot = data.ResultPlacementElevationBot;
                 int thresholdCm = data.ResultDistance; // Threshold for sorting landings into lists. Each list contains landings located over each other.
 
@@ -44,16 +46,16 @@ namespace BIM_Leaders_Core
 
                 List<List<StairsLanding>> landings = GetLandings(doc, threshold);
                 List<Line> lines = CalculateLines(doc, landings);
-                List<List<Face>> intersectionFaces = GetIntersections(doc, landings, inputPlacementDimensionTop || inputPlacementElevationTop, inputPlacementDimensionBot || inputPlacementElevationBot);
+                List<List<Face>> intersectionFaces = GetIntersections(doc, landings, inputPlacementDimensionTop || inputPlacementElevationTop, inputPlacementDimensionMid || inputPlacementElevationMid, inputPlacementDimensionBot || inputPlacementElevationBot);
 
                 // Create annotations
                 using (Transaction trans = new Transaction(doc, "Annotate Landings"))
                 {
                     trans.Start();
 
-                    if (inputPlacementDimensionTop || inputPlacementDimensionBot)
+                    if (inputPlacementDimensionTop || inputPlacementDimensionMid || inputPlacementDimensionBot)
                         countDimensions = CreateDimensions(doc, lines, intersectionFaces);
-                    if (inputPlacementElevationTop || inputPlacementElevationBot)
+                    if (inputPlacementElevationTop || inputPlacementElevationMid || inputPlacementElevationBot)
                         countSpots = CreateSpots(doc, lines, intersectionFaces);
 
                     trans.Commit();
@@ -152,7 +154,7 @@ namespace BIM_Leaders_Core
         /// List for all intersection points.
         /// </summary>
         /// <returns>List for all intersection points.</returns>
-        private static List<List<Face>> GetIntersections(Document doc, List<List<StairsLanding>> landingsSorted, bool getTopFaces, bool getBottomFaces)
+        private static List<List<Face>> GetIntersections(Document doc, List<List<StairsLanding>> landingsSorted, bool getTopFaces, bool getMidFaces, bool getBotFaces)
         {
             List<List<Face>> intersectionFaces = new List<List<Face>>();
 
@@ -173,9 +175,16 @@ namespace BIM_Leaders_Core
 
                 foreach (StairsLanding landing in landingsSorted[i])
                 {
-                    foreach (Solid solid in landing.get_Geometry(options))
+                    // Get solids and sort them from top to bottom.
+                    List<Solid> solids = landing.get_Geometry(options)
+                        .Where(x => x.GetType() == typeof(Solid))
+                        .Cast<Solid>()
+                        .OrderBy(x => x.GetBoundingBox().Max.Z)
+                        .ToList();
+
+                    if (getTopFaces)
                     {
-                        foreach (Face face in solid.Faces)
+                        foreach (Face face in solids.First().Faces)
                         {
                             // Some faces are curved so pass them
                             try
@@ -183,19 +192,53 @@ namespace BIM_Leaders_Core
                                 // Check if faces are horisontal
                                 UV p = new UV(0, 0);
                                 XYZ normal = face.ComputeNormal(p);
-                                if (Math.Round(normal.X) == 0 && Math.Round(normal.Y) == 0)
+                                if (Math.Round(normal.X) == 0 && Math.Round(normal.Y) == 0 && Math.Round(normal.Z) == 1)
+                                    iIntersectionFaces.Add(face);
+                            }
+                            catch { }
+                        }
+                    }
+
+                    if (getMidFaces)
+                    {
+                        List<Solid> solidsMid = solids.GetRange(1, solids.Count - 1);
+
+                        foreach (Solid solid in solidsMid)
+                        {
+                            foreach (Face face in solid.Faces)
+                            {
+                                // Some faces are curved so pass them
+                                try
                                 {
-                                    if (getTopFaces && Math.Round(normal.Z) == 1)
-                                        iIntersectionFaces.Add(face);
-                                    if (getBottomFaces && Math.Round(normal.Z) == -1)
+                                    // Check if faces are horisontal
+                                    UV p = new UV(0, 0);
+                                    XYZ normal = face.ComputeNormal(p);
+                                    if (Math.Round(normal.X) == 0 && Math.Round(normal.Y) == 0 && Math.Round(normal.Z) == 1)
                                         iIntersectionFaces.Add(face);
                                 }
+                                catch { }
+                            }
+                        }
+                    }
+
+                    if (getBotFaces)
+                    {
+                        foreach (Face face in solids.Last().Faces)
+                        {
+                            // Some faces are curved so pass them
+                            try
+                            {
+                                // Check if faces are horisontal
+                                UV p = new UV(0, 0);
+                                XYZ normal = face.ComputeNormal(p);
+                                if (Math.Round(normal.X) == 0 && Math.Round(normal.Y) == 0 && Math.Round(normal.Z) == -1)
+                                    iIntersectionFaces.Add(face);
                             }
                             catch { }
                         }
                     }
                 }
-                //intersections.Add(iIntersections);
+
                 intersectionFaces.Add(iIntersectionFaces);
             }
             return intersectionFaces;
