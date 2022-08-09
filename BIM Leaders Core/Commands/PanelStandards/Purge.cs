@@ -14,11 +14,8 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-
             // Get Document
-            Document doc = uidoc.Document;
+            Document doc = commandData.Application.ActiveUIDocument.Document;
 
             int countRooms = 0;
             int countTags = 0;
@@ -70,7 +67,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                ShowResult(countLineStyles, countFilters, countRooms, countTags, countViewTemplates, countSheets, countLinePatterns);
+                ShowResult(countLineStyles, countFilters, countRooms, countTags, countViewTemplates, countSheets, countLinePatterns, inputLinePatternsName);
 
                 return Result.Succeeded;
             }
@@ -302,7 +299,7 @@ namespace BIM_Leaders_Core
             return count;
         }
 
-        private static void ShowResult(int countLineStyles, int countFilters, int countRooms, int countTags, int countViewTemplates, int countSheets, int countLinePatterns)
+        private static void ShowResult(int countLineStyles, int countFilters, int countRooms, int countTags, int countViewTemplates, int countSheets, int countLinePatterns, string inputLinePatternsName)
         {
             // Show result
             string text = "";

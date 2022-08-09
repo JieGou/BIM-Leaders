@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
@@ -17,12 +18,12 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="FamilyParameterSetForm"/>
         /// </summary>
-        public FamilyParameterSetForm(UIDocument uidoc)
+        public FamilyParameterSetForm(Document doc)
         {
             InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new FamilyParameterSetData(uidoc);
+            DataContext = new FamilyParameterSetData(doc);
         }
 
         private void InitializeMaterialDesign()

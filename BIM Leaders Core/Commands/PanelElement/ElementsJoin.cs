@@ -11,11 +11,8 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-
             // Get Document
-            Document doc = uidoc.Document;
+            Document doc = commandData.Application.ActiveUIDocument.Document;
 
             double tolerance = 0.1;
 

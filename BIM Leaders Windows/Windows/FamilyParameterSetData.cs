@@ -10,16 +10,15 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class FamilyParameterSetData : INotifyPropertyChanged, IDataErrorInfo
     {
-        UIDocument Uidoc = null;
-        public string Error { get { return null; } }
+        Document doc = null;
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="FamilyParameterSetData"/> class.
         /// </summary>
-
-        public FamilyParameterSetData(UIDocument uidoc)
+        public FamilyParameterSetData(Document doc)
         {
-            Uidoc = uidoc;
+            this.doc = doc;
         }
 
         /// <summary>
@@ -27,8 +26,6 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public List<string> CreateParametersList()
         {
-            Document doc = Uidoc.Document;
-
             // Get unique parameters
             IList<FamilyParameter> parametersNamesAll = doc.FamilyManager.GetParameters();
             List<FamilyParameter> parameters = new List<FamilyParameter>();
@@ -91,6 +88,8 @@ namespace BIM_Leaders_Windows
         }
 
         #region Validation
+
+        public string Error { get { return null; } }
 
         string GetValidationError(string propertyName)
         {

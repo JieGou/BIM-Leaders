@@ -14,19 +14,10 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-
             // Get Document
-            Document doc = uidoc.Document;
+            Document doc = commandData.Application.ActiveUIDocument.Document;
 
-			// Get View
-			View view = doc.ActiveView;
-
-			// Get Application
-			Application uiapp = doc.Application;
-
-            double toleranceAngle = uiapp.AngleTolerance / 100; // 0.001 grad
+            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
 
 			int countDim = 0;
 			int countRef = 0;
@@ -86,13 +77,13 @@ namespace BIM_Leaders_Core
 
 					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataHor)
                     {
-                        Dimension dimension = doc.Create.NewDimension(view, dimensionData.Key, dimensionData.Value);
+                        Dimension dimension = doc.Create.NewDimension(doc.ActiveView, dimensionData.Key, dimensionData.Value);
 						countDim++;
 						countRef += dimensionData.Value.Size - 1;
 					}
 					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
 					{
-						Dimension dimension = doc.Create.NewDimension(view, dimensionData.Key, dimensionData.Value);
+						Dimension dimension = doc.Create.NewDimension(doc.ActiveView, dimensionData.Key, dimensionData.Value);
 						countDim++;
 						countRef += dimensionData.Value.Size - 1;
 					}

@@ -12,31 +12,10 @@ namespace BIM_Leaders_Core
     [TransactionAttribute(TransactionMode.Manual)]
     public class WallsCompare : IExternalCommand
     {
-        private class LinkSelectionFilter : ISelectionFilter
-        {
-            public bool AllowElement(Element element)
-            {
-                try
-                {
-                    if (element.Category.Name == "RVT Links")
-                        return true;
-                    return false;
-                }
-                catch (NullReferenceException) { return false; }
-            }
-
-            public bool AllowReference(Reference reference, XYZ point)
-            {
-                return false;
-            }
-        }
-
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-
             // Get Document
+            UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
 
             // Get View
@@ -60,8 +39,6 @@ namespace BIM_Leaders_Core
                 double elevation = view.GenLevel.Elevation;
                 
                 // Links selection.
-
-                ISelectionFilter selFilter = new LinkSelectionFilter();
                 List<Wall> walls1 = new List<Wall>();
                 List<Wall> walls2 = new List<Wall>();
                 Transform transform1 = view.CropBox.Transform; // Just new transform, view is dummy
@@ -70,7 +47,7 @@ namespace BIM_Leaders_Core
                 // If only one file is a link
                 if (inputLinks)
                 {
-                    Reference linkReference = uidoc.Selection.PickObject(ObjectType.Element, selFilter, "Select Link");
+                    Reference linkReference = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select Link");
                     RevitLinkInstance link1 = doc.GetElement(linkReference.ElementId) as RevitLinkInstance;
 
                     walls1 = GetWalls(link1.GetLinkDocument(), elevation, materialName);
@@ -81,7 +58,7 @@ namespace BIM_Leaders_Core
                 }
                 else
                 {
-                    IList<Reference> linkReferences = uidoc.Selection.PickObjects(ObjectType.Element, selFilter, "Select 2 Links");
+                    IList<Reference> linkReferences = uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select 2 Links");
                     Reference linkReference1 = linkReferences.First();
                     Reference linkReference2 = linkReferences.Last();
                     RevitLinkInstance link1 = doc.GetElement(linkReference1.ElementId) as RevitLinkInstance;

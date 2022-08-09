@@ -14,16 +14,11 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-
             // Get Document
+            UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            // Get Application
-            Application uiapp = doc.Application;
-
-            double toleranceAngle = uiapp.AngleTolerance / 100; // 0.001 grad
+            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
 
             try
             {

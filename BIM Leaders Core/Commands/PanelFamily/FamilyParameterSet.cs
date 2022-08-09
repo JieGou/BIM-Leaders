@@ -22,7 +22,7 @@ namespace BIM_Leaders_Core
 
             try
             {
-                FamilyParameterSetForm form = new FamilyParameterSetForm(uidoc);
+                FamilyParameterSetForm form = new FamilyParameterSetForm(doc);
                 form.ShowDialog();
 
                 if (form.DialogResult == false)

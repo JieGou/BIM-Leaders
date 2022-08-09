@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Autodesk.Revit.UI;
+using Autodesk.Revit.DB;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 
@@ -17,12 +17,12 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="DwgNameDeleteForm"/>
         /// </summary>
-        public DwgNameDeleteForm(UIDocument uidoc)
+        public DwgNameDeleteForm(Document doc)
         {
             InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new DwgNameDeleteData(uidoc);
+            DataContext = new DwgNameDeleteData(doc);
         }
 
         private void InitializeMaterialDesign()

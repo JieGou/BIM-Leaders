@@ -14,24 +14,11 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-
             // Get Document
+            UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            // Get Application
-            Application uiapp = doc.Application;
-
-            // Get View Id
-            View view = doc.ActiveView;
-
-            Options options = new Options
-            {
-                ComputeReferences = true
-            };
-
-            double toleranceAngle = uiapp.AngleTolerance / 100; // 0.001 grad
+            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
             string filterName = "Walls parallel filter";
             Color filterColor = new Color(255, 127, 39);
 

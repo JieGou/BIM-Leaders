@@ -11,16 +11,15 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class DwgNameDeleteData : INotifyPropertyChanged
     {
-        UIDocument Uidoc = null;
-        public string Error { get { return null; } }
+        private Document doc = null;
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="DwgNameDeleteData"/> class.
         /// </summary>
-
-        public DwgNameDeleteData(UIDocument uidoc)
+        public DwgNameDeleteData(Document doc)
         {
-            Uidoc = uidoc;
+            this.doc = doc;
         }
 
         /// <summary>
@@ -28,8 +27,6 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public SortedDictionary<string, ElementId> createDwgList()
         {
-            Document doc = Uidoc.Document;
-
             // Get DWGs
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             IEnumerable<ImportInstance> dwgTypesAll = collector.OfClass(typeof(ImportInstance)).OrderBy(a => a.Name)

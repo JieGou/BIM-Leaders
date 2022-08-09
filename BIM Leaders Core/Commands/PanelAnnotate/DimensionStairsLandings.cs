@@ -14,12 +14,8 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            UIApplication uiapp = commandData.Application;
-
             // Get Document
-            Document doc = uidoc.Document;
+            Document doc = commandData.Application.ActiveUIDocument.Document;
 
             int countSpots = 0;
             int countDimensions = 0;

@@ -13,17 +13,14 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-
             // Get Document
-            Document doc = uidoc.Document;
+            Document doc = commandData.Application.ActiveUIDocument.Document;
 
             int count = 0;
 
             try
             {
-                DwgNameDeleteForm form = new DwgNameDeleteForm(uidoc);
+                DwgNameDeleteForm form = new DwgNameDeleteForm(doc);
                 form.ShowDialog();
 
                 if (form.DialogResult == false)
