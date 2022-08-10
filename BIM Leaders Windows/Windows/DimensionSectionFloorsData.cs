@@ -21,7 +21,7 @@ namespace BIM_Leaders_Windows
             _resultPlacementThinTop = true;
             _resultPlacementThickTop = true;
             _resultPlacementThickBot = true;
-            _resultThickness = 10;
+            _resultThickness = 15;
             _inputThickness = _resultThickness.ToString();
         }
 

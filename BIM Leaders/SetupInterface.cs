@@ -133,7 +133,7 @@ namespace BIM_Leaders
                 ToolTip = "Standards.",
                 LongDescription = "Analyze the current Revit journal file.",
                 CommandNamespacePath = JournalAnalyze.GetPath(),
-                IconImageName = "BIM_Leaders_Help_Standards.png",
+                IconImageName = "BIM_Leaders_Journal_Analyze.png",
             };
             // Create button from provided data
             RevitPushButton.Create(buttonData06);
