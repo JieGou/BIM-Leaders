@@ -103,6 +103,7 @@
     <Compile Include="CommandsAvailability\ViewIsStandard.cs" />
     <Compile Include="Commands\Helpers\Message.cs" />
     <Compile Include="Commands\Helpers\Categories.cs" />
+    <Compile Include="Commands\Helpers\DimensionUtils.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlan.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlanLine.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlanCheck.cs" />

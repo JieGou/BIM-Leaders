@@ -78,12 +78,16 @@ namespace BIM_Leaders_Core
 					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataHor)
                     {
                         Dimension dimension = doc.Create.NewDimension(doc.ActiveView, dimensionData.Key, dimensionData.Value);
+						DimensionUtils.AdjustText(dimension);
+						dimension.HasLeader = false;
 						countDim++;
 						countRef += dimensionData.Value.Size - 1;
 					}
 					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
 					{
 						Dimension dimension = doc.Create.NewDimension(doc.ActiveView, dimensionData.Key, dimensionData.Value);
+						DimensionUtils.AdjustText(dimension);
+						dimension.HasLeader = false;
 						countDim++;
 						countRef += dimensionData.Value.Size - 1;
 					}

@@ -312,7 +312,11 @@ namespace BIM_Leaders_Core
                     references.Append(face.Reference);
                 }
 
-                doc.Create.NewDimension(view, lines[i], references);
+                Dimension dimension = doc.Create.NewDimension(view, lines[i], references);
+
+                DimensionUtils.AdjustText(dimension);
+                dimension.HasLeader = false;
+
                 count++;
             }
             return count;

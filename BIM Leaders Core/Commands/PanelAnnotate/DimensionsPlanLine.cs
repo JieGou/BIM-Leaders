@@ -51,7 +51,9 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    doc.Create.NewDimension(doc.ActiveView, curve, references);
+                    Dimension dimension = doc.Create.NewDimension(doc.ActiveView, curve, references);
+                    DimensionUtils.AdjustText(dimension);
+                    dimension.HasLeader = false;
 
                     trans.Commit();
                 }

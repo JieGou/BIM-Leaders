@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.DB;
+﻿using System;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI.Selection;
 
 namespace BIM_Leaders_Core
@@ -10,7 +11,7 @@ namespace BIM_Leaders_Core
     public class SelectionFilterByCategory : ISelectionFilter
     {
         // Private variable that holds category name
-        private string mCategory = "";
+        private string _сategory = "";
 
         /// <summary>
         /// Default constructor.
@@ -19,7 +20,7 @@ namespace BIM_Leaders_Core
         /// <param name="category">The category of element, such as Walls, Floors,..</param>
         public SelectionFilterByCategory(string category)
         {
-            mCategory = category;
+            _сategory = category;
         }
 
         /// <summary>
@@ -30,9 +31,13 @@ namespace BIM_Leaders_Core
         /// <exception cref="System.NotImplementedException"></exception>
         public bool AllowElement(Element element)
         {
-            if (element.Category.Name == mCategory)
-                return true;
-            return false;
+            try
+            {
+                if (element.Category.Name == _сategory)
+                    return true;
+                return false;
+            }
+            catch (NullReferenceException) { return false; }
         }
         /// <summary>
         /// Allows the reference.

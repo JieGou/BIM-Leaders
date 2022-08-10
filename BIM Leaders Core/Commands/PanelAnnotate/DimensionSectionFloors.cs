@@ -277,24 +277,13 @@ namespace BIM_Leaders_Core
         {
             int count = 0;
 
-#if VERSION2020
-
-            DisplayUnitType units = doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
-
-#else
-
-            ForgeTypeId units = doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
-
-#endif
-            View view = doc.ActiveView;
-            double scale = view.Scale;
-
             // Convert List<Face> to ReferenceArray
             ReferenceArray references = new ReferenceArray();
             foreach (Face face in intersectionFaces)
                 references.Append(face.Reference);
 
-            Dimension dimension = doc.Create.NewDimension(view, line, references);
+            Dimension dimension = doc.Create.NewDimension(doc.ActiveView, line, references);
+            DimensionUtils.AdjustText(dimension);
 
             ElementTransformUtils.MoveElement(doc, dimension.Id, XYZ.BasisZ);
             ElementTransformUtils.MoveElement(doc, dimension.Id, -XYZ.BasisZ);
@@ -307,40 +296,6 @@ namespace BIM_Leaders_Core
             ElementTransformUtils.MoveElement(doc, dimension.Id, -XYZ.BasisZ);
             doc.Regenerate();
 
-            // Move little segments text
-            DimensionSegmentArray dimensionSegments = dimension.Segments;
-            foreach (DimensionSegment dimensionSegment in dimensionSegments)
-            {
-                count++;
-
-                if (dimensionSegment.IsTextPositionAdjustable())
-                {
-                    double value = UnitUtils.ConvertFromInternalUnits(dimensionSegment.Value.Value, units);
-
-                    double ratio = 0.7; // Ratio of dimension text height to width
-                    if (value > 9)
-                        ratio = 1.5; // For 2-digit dimensions
-                    if (value > 99)
-                        ratio = 2.5; // For 3-digit dimensions
-
-                    double dimensionSizeD = dimension.DimensionType.get_Parameter(BuiltInParameter.TEXT_SIZE).AsDouble();
-                    double dimensionSize = UnitUtils.ConvertFromInternalUnits(dimensionSizeD, units) * ratio; // Size of the dimension along dimension line
-
-                    double factor = value / (scale * dimensionSize); // Factor calculated if dimension should be moved to the side
-
-                    if (factor < 1)
-                    {
-                        // Get the current text XYZ position
-                        XYZ currentTextPosition = dimensionSegment.TextPosition;
-                        // Calculate moving offset
-                        double translationZ = UnitUtils.ConvertToInternalUnits((value + dimensionSize * scale) / 2 + 3, units);
-                        // Calculate a new XYZ position by transforming the current text position
-                        XYZ newTextPosition = Transform.CreateTranslation(new XYZ(0, 0, translationZ)).OfPoint(currentTextPosition);
-                        // Set the new text position for the segment's text
-                        dimensionSegment.TextPosition = newTextPosition;
-                    }
-                }
-            }
             return count;
         }
 
