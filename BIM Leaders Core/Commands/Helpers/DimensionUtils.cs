@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace BIM_Leaders_Core
 {
-    public static class DimensionUtils
+    internal static class DimensionUtils
     {
-        public static void AdjustText(Dimension dimension)
+        internal static void AdjustText(Dimension dimension)
         {
             Document doc = dimension.Document;
             double scale = doc.ActiveView.Scale;
@@ -118,7 +118,7 @@ namespace BIM_Leaders_Core
         /// <param name="dimension">Dimension to which segment belongs.</param>
         /// <param name="moveDistance">Distance to move.</param>
         /// <param name="moveDirection">Direction to move (left/right).</param>
-        private static void MoveSegmentText(DimensionSegment dimensionSegment, Dimension dimension, double moveDistance, MoveDirection moveDirection)
+        internal static void MoveSegmentText(DimensionSegment dimensionSegment, Dimension dimension, double moveDistance, MoveDirection moveDirection)
         {
             // Get moving direction
             Line line = dimension.Curve as Line;
@@ -136,7 +136,7 @@ namespace BIM_Leaders_Core
             dimensionSegment.TextPosition = newTextPosition;
         }
 
-        enum MoveDirection
+        internal enum MoveDirection
         {
             Left,
             Right

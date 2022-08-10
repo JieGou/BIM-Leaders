@@ -36,9 +36,8 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    ElementId filterId = CreateFilter(doc, filterName, wallsFilter.ConvertAll(x => x.Id));
-                    doc.Regenerate();
-                    SetupFilter(doc, filterId, filterColor);
+                    Element filter = ViewFilterUtils.CreateSelectionFilter(doc, filterName, wallsFilter.ConvertAll(x => x.Id));
+                    ViewFilterUtils.SetupFilter(doc, filter, filterColor);
 
                     trans.Commit();
                 }
@@ -121,51 +120,6 @@ namespace BIM_Leaders_Core
                     wallsFilter.Add(wall);
             }
             return wallsFilter;
-        }
-
-        /// <summary>
-        /// Create a selection filter with given set of elements. Applies created filter to the active view.
-        /// </summary>
-        /// <returns>Created filter element Id.</returns>
-        private static ElementId CreateFilter(Document doc, string filterName, List<ElementId> elementIds)
-        {
-            View view = doc.ActiveView;
-
-            // Checking if filter already exists
-            IEnumerable<Element> filters = new FilteredElementCollector(doc).OfClass(typeof(SelectionFilterElement)).ToElements();
-            foreach (Element element in filters)
-                if (element.Name == filterName)
-                    doc.Delete(element.Id);
-
-            SelectionFilterElement filter = SelectionFilterElement.Create(doc, filterName);
-            filter.SetElementIds(elementIds);
-
-            // Add the filter to the view
-            ElementId filterId = filter.Id;
-            view.AddFilter(filterId);
-
-            return filterId;
-        }
-
-        /// <summary>
-        /// Change filter settings. Must be applied after regeneration when filter is new.
-        /// </summary>
-        private static void SetupFilter(Document doc, ElementId filterId, Color filterColor)
-        {
-            View view = doc.ActiveView;
-
-            // Get solid pattern.
-            IEnumerable<Element> patterns = new FilteredElementCollector(doc).OfClass(typeof(FillPatternElement)).ToElements();
-            ElementId pattern = patterns.First().Id;
-            foreach (Element element in patterns)
-                if (element.Name == "<Solid fill>")
-                    pattern = element.Id;
-
-            // Use the existing graphics settings, and change the color.
-            OverrideGraphicSettings overrideSettings = view.GetFilterOverrides(filterId);
-            overrideSettings.SetCutForegroundPatternColor(filterColor);
-            overrideSettings.SetCutForegroundPatternId(pattern);
-            view.SetFilterOverrides(filterId, overrideSettings);
         }
 
         private static void ShowResult(int count)

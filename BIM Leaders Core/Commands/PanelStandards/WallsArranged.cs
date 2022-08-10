@@ -83,15 +83,13 @@ namespace BIM_Leaders_Core
 
                     if (wallsFilter.Count != 0)
                     {
-                        ElementId filter0Id = CreateFilter(doc, filterName0, wallsFilter.ConvertAll(x => x.Id));
-                        doc.Regenerate();
-                        SetupFilter(doc, filter0Id, filterColor0);
+                        Element filter0 = ViewFilterUtils.CreateSelectionFilter(doc, filterName0, wallsFilter.ConvertAll(x => x.Id));
+                        ViewFilterUtils.SetupFilter(doc, filter0, filterColor0);
                     }
                     if (wallsFilterAngle.Count != 0)
                     {
-                        ElementId filter1Id = CreateFilter(doc, filterName1, wallsFilterAngle.ConvertAll(x => x.Id));
-                        doc.Regenerate();
-                        SetupFilter(doc, filter1Id, filterColor1);
+                        Element filter1 = ViewFilterUtils.CreateSelectionFilter(doc, filterName1, wallsFilterAngle.ConvertAll(x => x.Id));
+                        ViewFilterUtils.SetupFilter(doc, filter1, filterColor1);
                     }
 
                     trans.Commit();
@@ -236,54 +234,6 @@ namespace BIM_Leaders_Core
                 wallsFilter.Add(wall);
 
             return wallsFilter;
-        }
-
-        /// <summary>
-        /// Create a selection filter with given set of elements. Applies created filter to the active view.
-        /// </summary>
-        /// <returns>Created filter element Id.</returns>
-        private static ElementId CreateFilter(Document doc, string filterName, List<ElementId> elementIds)
-        {
-            View view = doc.ActiveView;
-
-            // Checking if filter already exists
-            IEnumerable<Element> filters = new FilteredElementCollector(doc)
-                .OfClass(typeof(SelectionFilterElement))
-                .ToElements();
-            foreach (Element element in filters)
-                if (element.Name == filterName)
-                    doc.Delete(element.Id);
-
-            SelectionFilterElement filter = SelectionFilterElement.Create(doc, filterName);
-            filter.SetElementIds(elementIds);
-
-            // Add the filter to the view
-            ElementId filterId = filter.Id;
-            view.AddFilter(filterId);
-
-            return filterId;
-        }
-
-        /// <summary>
-        /// Change filter settings. Must be applied after regeneration when filter is new.
-        /// </summary>
-        private static void SetupFilter(Document doc, ElementId filterId, Color filterColor)
-        {
-            View view = doc.ActiveView;
-
-            // Get solid pattern.
-            ElementId patternId = new FilteredElementCollector(doc)
-                .OfClass(typeof(FillPatternElement))
-                .ToElements()
-                .Cast<FillPatternElement>()
-                .Where(x => x.GetFillPattern().IsSolidFill)
-                .First().Id;
-
-            // Use the existing graphics settings, and change the color.
-            OverrideGraphicSettings overrideSettings = view.GetFilterOverrides(filterId);
-            overrideSettings.SetCutForegroundPatternColor(filterColor);
-            overrideSettings.SetCutForegroundPatternId(patternId);
-            view.SetFilterOverrides(filterId, overrideSettings);
         }
 
         private static void ShowResult(int count)
