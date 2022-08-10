@@ -284,17 +284,7 @@ namespace BIM_Leaders_Core
 
             Dimension dimension = doc.Create.NewDimension(doc.ActiveView, line, references);
             DimensionUtils.AdjustText(dimension);
-
-            ElementTransformUtils.MoveElement(doc, dimension.Id, XYZ.BasisZ);
-            ElementTransformUtils.MoveElement(doc, dimension.Id, -XYZ.BasisZ);
-            doc.Regenerate();
-
-            // Remove leaders
-            dimension.get_Parameter(BuiltInParameter.DIM_LEADER).SetValueString("No");
-
-            ElementTransformUtils.MoveElement(doc, dimension.Id, XYZ.BasisZ);
-            ElementTransformUtils.MoveElement(doc, dimension.Id, -XYZ.BasisZ);
-            doc.Regenerate();
+            dimension.HasLeader = false;
 
             return count;
         }
