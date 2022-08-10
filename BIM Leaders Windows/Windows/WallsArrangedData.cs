@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace BIM_Leaders_Windows
 {
@@ -10,8 +11,9 @@ namespace BIM_Leaders_Windows
     {
         private const double _resultDistanceToleranceMinValue = 0.000000000001;
         private const double _resultDistanceToleranceMaxValue = 0.1;
+        private string _resultDistanceToleranceMinValueFormat = "0.000000000000";
+        private string _resultDistanceToleranceMaxValueFormat = "0.0";
 
-        public string Error { get { return null; } }
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="WallsArrangedData"/> class.
@@ -21,7 +23,7 @@ namespace BIM_Leaders_Windows
             _resultDistanceStep = 1;
             _inputDistanceStep = _resultDistanceStep.ToString();
             _resultDistanceTolerance = 0.000000001; // cm (enough is 0.000000030 - 0.000000035 - closer walls after join will be without dividing line)
-            _inputDistanceTolerance = _resultDistanceTolerance.ToString();
+            _inputDistanceTolerance = _resultDistanceTolerance.ToString("0.000000000", NumberFormatInfo.CurrentInfo);
             _resultColor0 = new Color
             {
                 R = 255,
@@ -103,6 +105,8 @@ namespace BIM_Leaders_Windows
 
         #region Validation
 
+        public string Error { get { return null; } }
+
         string GetValidationError(string propertyName)
         {
             string error = null;
@@ -151,9 +155,15 @@ namespace BIM_Leaders_Windows
         private string ValidateResultDistanceTolerance()
         {
             if (ResultDistanceTolerance < _resultDistanceToleranceMinValue)
-                return $"Cannot be lower than {_resultDistanceToleranceMinValue} cm";
+            {
+                string value = _resultDistanceToleranceMinValue.ToString(_resultDistanceToleranceMinValueFormat, NumberFormatInfo.CurrentInfo);
+                return $"Cannot be lower than {value} cm";
+            }
             else if (ResultDistanceTolerance > _resultDistanceToleranceMaxValue)
-                return $"Cannot be bigger than {_resultDistanceToleranceMaxValue} cm";
+            {
+                string value = _resultDistanceToleranceMaxValue.ToString(_resultDistanceToleranceMaxValueFormat, NumberFormatInfo.CurrentInfo);
+                return $"Cannot be bigger than {value} cm";
+            }
             return null;
         }
 
