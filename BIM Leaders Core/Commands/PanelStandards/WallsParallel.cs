@@ -27,7 +27,7 @@ namespace BIM_Leaders_Core
                 ReferencePlane reference = doc.GetElement(SelectReferencePlane(uidoc).ElementId) as ReferencePlane;
 
                 List<Wall> walls = GetWallsStraight(doc);
-                List<Wall> wallsFilter = FilterWalls(toleranceAngle, reference, walls);
+                ICollection<Element> wallsFilter = FilterWalls(walls, reference, toleranceAngle) as ICollection<Element>;
 
                 if (wallsFilter.Count == 0)
                     return Result.Succeeded;
@@ -36,7 +36,7 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    Element filter = ViewFilterUtils.CreateSelectionFilter(doc, filterName, wallsFilter.ConvertAll(x => x.Id));
+                    Element filter = ViewFilterUtils.CreateSelectionFilter(doc, filterName, wallsFilter);
                     ViewFilterUtils.SetupFilter(doc, filter, filterColor);
 
                     trans.Commit();
@@ -89,7 +89,7 @@ namespace BIM_Leaders_Core
         /// // Filter walls that are parallel and perpendicular to the given reference.
         /// </summary>
         /// <returns>List of filtered walls.</returns>
-        private static List<Wall> FilterWalls(double toleranceAngle, ReferencePlane reference, List<Wall> walls)
+        private static List<Wall> FilterWalls(List<Wall> walls, ReferencePlane reference, double toleranceAngle)
         {
             List<Wall> wallsFilter = new List<Wall>();
 

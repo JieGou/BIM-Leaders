@@ -8,9 +8,10 @@ namespace BIM_Leaders_Core
     {
         /// <summary>
         /// Create a selection filter with given set of elements. Applies created filter to the active view.
+        /// Filters order are not introduced in the API (only get).
         /// </summary>
         /// <returns>Created filter.</returns>
-        internal static SelectionFilterElement CreateSelectionFilter(Document doc, string filterName, List<ElementId> elementIds)
+        internal static SelectionFilterElement CreateSelectionFilter(Document doc, string filterName, ICollection<Element> elements)
         {
             SelectionFilterElement filter;
 
@@ -25,7 +26,7 @@ namespace BIM_Leaders_Core
                     doc.Delete(element.Id);
 
             filter = SelectionFilterElement.Create(doc, filterName);
-            filter.SetElementIds(elementIds);
+            filter.SetElementIds(elements.Select(x => x.Id).ToList());
 
             // Add the filter to the view
             ElementId filterId = filter.Id;

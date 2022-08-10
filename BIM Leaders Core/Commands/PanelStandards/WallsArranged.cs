@@ -19,6 +19,7 @@ namespace BIM_Leaders_Core
             Document doc = uidoc.Document;
 
             double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad.
+
             string filterName0 = "Walls arranged filter. Distances";
             string filterName1 = "Walls arranged filter. Angles";
 
@@ -58,43 +59,26 @@ namespace BIM_Leaders_Core
                     return Result.Failed;
                 }
 
-                List<Wall> walls = GetWallsStraight(doc);
-                List<Wall> wallsPar = FilterWallsPar(toleranceAngle, reference0, walls);
-                List<Wall> wallsPer = FilterWallsPer(toleranceAngle, reference0, walls);
-
-                // Get filters lists.
-                List<Wall> wallsFilter = new List<Wall>();
-                List<Wall> wallsFilterAngle = new List<Wall>();
-                foreach (Wall wall in walls)
-                {
-                    // Checking if in parallel list.
-                    if (wallsPar.Contains(wall))
-                        wallsFilter.AddRange(FilterWallsDistance(toleranceDistance, distanceStep, reference0, wall));
-                    // Checking if in perpendicular list.
-                    else if (wallsPer.Contains(wall))
-                        wallsFilter.AddRange(FilterWallsDistance(toleranceDistance, distanceStep, reference1, wall));
-                    else
-                        wallsFilterAngle.Add(wall);
-                }
+                (ICollection<Element> wallsToFilterDistn, ICollection<Element> wallsToFilterAngle) = GetWallsToFilter(doc, reference0, reference1, toleranceAngle, toleranceDistance, distanceStep);
 
                 using (Transaction trans = new Transaction(doc, "Create Filters for non-arranged Walls"))
                 {
                     trans.Start();
 
-                    if (wallsFilter.Count != 0)
+                    if (wallsToFilterDistn.Count != 0)
                     {
-                        Element filter0 = ViewFilterUtils.CreateSelectionFilter(doc, filterName0, wallsFilter.ConvertAll(x => x.Id));
+                        Element filter0 = ViewFilterUtils.CreateSelectionFilter(doc, filterName0, wallsToFilterDistn);
                         ViewFilterUtils.SetupFilter(doc, filter0, filterColor0);
                     }
-                    if (wallsFilterAngle.Count != 0)
+                    if (wallsToFilterAngle.Count != 0)
                     {
-                        Element filter1 = ViewFilterUtils.CreateSelectionFilter(doc, filterName1, wallsFilterAngle.ConvertAll(x => x.Id));
+                        Element filter1 = ViewFilterUtils.CreateSelectionFilter(doc, filterName1, wallsToFilterAngle);
                         ViewFilterUtils.SetupFilter(doc, filter1, filterColor1);
                     }
 
                     trans.Commit();
                 }
-                ShowResult(wallsFilter.Count + wallsFilterAngle.Count);
+                ShowResult(wallsToFilterDistn.Count + wallsToFilterAngle.Count);
 
                 return Result.Succeeded;
             }
@@ -103,6 +87,34 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        /// <summary>
+        /// Get walls from the current view that need to be set in filter.
+        /// </summary>
+        /// <returns>Tuple of 2 elements lists that can be added to filters later.</returns>
+        private static (ICollection<Element>, ICollection<Element>) GetWallsToFilter(Document doc, ReferencePlane reference0, ReferencePlane reference1, double toleranceAngle, double toleranceDistance, double distanceStep)
+        {
+            List<Element> wallsToFilterDistn = new List<Element>();
+            List<Element> wallsToFilterAngle = new List<Element>();
+
+            List<Wall> walls = GetWallsStraight(doc);
+            List<Wall> wallsPar = FilterWallsPar(walls, reference0, toleranceAngle);
+            List<Wall> wallsPer = FilterWallsPer(walls, reference0, toleranceAngle);
+
+            foreach (Wall wall in walls)
+            {
+                // Checking if in parallel list.
+                if (wallsPar.Contains(wall))
+                    wallsToFilterDistn.AddRange(FilterWallsDistance(wall, reference0, toleranceDistance, distanceStep));
+                // Checking if in perpendicular list.
+                else if (wallsPer.Contains(wall))
+                    wallsToFilterDistn.AddRange(FilterWallsDistance(wall, reference1, toleranceDistance, distanceStep));
+                else
+                    wallsToFilterAngle.Add(wall);
+            }
+
+            return (wallsToFilterDistn, wallsToFilterAngle);
         }
 
         /// <summary>
@@ -132,7 +144,7 @@ namespace BIM_Leaders_Core
         /// Filter list of walls to get walls only parallel to the given reference plane with the given angle tolerance.
         /// </summary>
         /// <returns>List of walls parallel to the reference plane.</returns>
-        private static List<Wall> FilterWallsPar(double toleranceAngle, ReferencePlane reference, List<Wall> walls)
+        private static List<Wall> FilterWallsPar(List<Wall> walls, ReferencePlane reference, double toleranceAngle)
         {
             List<Wall> wallsPar = new List<Wall>();
 
@@ -155,7 +167,7 @@ namespace BIM_Leaders_Core
         /// Filter list of walls to get walls only perpendicular to the given reference plane with the given angle tolerance.
         /// </summary>
         /// <returns>List of walls perpendicular to the reference plane.</returns>
-        private static List<Wall> FilterWallsPer(double toleranceAngle, ReferencePlane reference, List<Wall> walls)
+        private static List<Wall> FilterWallsPer(List<Wall> walls, ReferencePlane reference, double toleranceAngle)
         {
             List<Wall> wallsPer = new List<Wall>();
 
@@ -178,7 +190,7 @@ namespace BIM_Leaders_Core
         /// Check if walls have good distance to a reference plane.
         /// </summary>
         /// <returns>List of walls that have bad distance to the given reference plane.</returns>
-        private static List<Wall> FilterWallsDistance(double toleranceDistance, double distanceStep, ReferencePlane reference, Wall wall)
+        private static List<Wall> FilterWallsDistance(Wall wall, ReferencePlane reference, double toleranceDistance, double distanceStep)
         {
             List<Wall> wallsFilter = new List<Wall>();
 
