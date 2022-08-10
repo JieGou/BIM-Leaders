@@ -5,7 +5,6 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.Attributes;
-using Autodesk.Revit.ApplicationServices;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
@@ -15,11 +14,11 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
+            // Get Document.
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
+            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad.
             string filterName0 = "Walls arranged filter. Distances";
             string filterName1 = "Walls arranged filter. Angles";
 
@@ -31,28 +30,29 @@ namespace BIM_Leaders_Core
                 if (form.DialogResult == false)
                     return Result.Cancelled;
 
-                // Get user provided information from window
+                // Get user provided information from window.
                 WallsArrangedData data = form.DataContext as WallsArrangedData;
                 double toleranceDistance = data.ResultDistanceTolerance;
                 double distanceStep = data.ResultDistanceStep;
                 Color filterColor0 = new Color(data.ResultColor0.R, data.ResultColor0.G, data.ResultColor0.B);
                 Color filterColor1 = new Color(data.ResultColor1.R, data.ResultColor1.G, data.ResultColor1.B);
 
-                // Getting References of Reference Planes
+                // Getting References of Reference Planes.
                 IList<Reference> referenceUncheckedList = uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Two Perpendicular Reference Planes");
-                // Checking for invalid selection
+                
+                // Checking for invalid selection.
                 if (referenceUncheckedList.Count != 2)
                 {
                     TaskDialog.Show("Walls Arranged Check", "Wrong count of reference planes selected. Select 2 perendicular reference planes.");
                     return Result.Failed;
                 }
-                // Getting Reference planes
+
+                // Getting Reference planes.
                 ReferencePlane reference0 = doc.GetElement(referenceUncheckedList[0].ElementId) as ReferencePlane;
                 ReferencePlane reference1 = doc.GetElement(referenceUncheckedList[1].ElementId) as ReferencePlane;
+                
                 // Checking for perpendicular input
-                if (   (Math.Abs(reference0.Direction.X) - Math.Abs(reference1.Direction.Y) <= toleranceAngle)
-                    && (Math.Abs(reference0.Direction.Y) - Math.Abs(reference1.Direction.X) <= toleranceAngle)) { }
-                else
+                if (reference0.Direction.DotProduct(reference1.Direction) > toleranceAngle)
                 {
                     TaskDialog.Show("Walls Arranged Check", "Selected reference planes are not perpendicular. Select 2 perendicular reference planes.");
                     return Result.Failed;
@@ -248,7 +248,7 @@ namespace BIM_Leaders_Core
 
         public static string GetPath()
         {
-            // Return constructed namespace path
+            // Return constructed namespace path.
             return typeof(WallsArranged).Namespace + "." + nameof(WallsArranged);
         }
     }
