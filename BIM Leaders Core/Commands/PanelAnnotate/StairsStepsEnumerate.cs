@@ -61,7 +61,7 @@ namespace BIM_Leaders_Core
         }
 
         /// <summary>
-        /// Get all stairs on the current view.
+        /// Get all unpinned and ungrouped stairs on the current view.
         /// </summary>
         /// <param name="doc">Current document.</param>
         /// <param name="countGrouped">Count of stairs that are in the groups and may make problems with numeration.</param>
