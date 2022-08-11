@@ -10,7 +10,7 @@ namespace BIM_Leaders_Core
     /// </summary>
     public static class Categories
     {
-        private static List<List<Type>> _categoriesList = new List<List<Type>>(){
+        private static readonly List<List<Type>> _categoriesList = new List<List<Type>>(){
             new List<Type>(){ typeof(AreaScheme) },
             new List<Type>(){ typeof(BrowserOrganization) },
             new List<Type>(){ typeof(BuildingPadType) },

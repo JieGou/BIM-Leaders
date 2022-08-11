@@ -36,19 +36,12 @@ namespace BIM_Leaders_Core
                 bool inputSide1 = data.ResultSide1;
                 bool inputSide2 = data.ResultSide2;
 
-                IEnumerable<Level> levels = new FilteredElementCollector(doc, doc.ActiveView.Id)
-                    .OfCategory(BuiltInCategory.OST_Levels)
-                    .ToElements()
-                    .Cast<Level>();
-
-                DatumExtentType extentMode = DatumExtentType.ViewSpecific;
-
                 // Edit extents
                 using (Transaction trans = new Transaction(doc, "Align Levels"))
                 {
                     trans.Start();
 
-                    (count2D, count) = EditExtents(doc, extentMode, levels, inputSwitch, inputSide1, inputSide2);
+                    (count2D, count) = EditExtentsLevels(doc, inputSwitch, inputSide1, inputSide2);
 
                     trans.Commit();
                 }
@@ -67,14 +60,21 @@ namespace BIM_Leaders_Core
         /// Edit levels extents.
         /// </summary>
         /// <returns>Count of levels switched to 2D and count of levels processed.</returns>
-        private static (int, int) EditExtents(Document doc, DatumExtentType extentMode, IEnumerable<Level> levels, bool inputSwitch, bool inputSide1, bool inputSide2)
+        private static (int, int) EditExtentsLevels(Document doc, bool inputSwitch, bool inputSide1, bool inputSide2)
         {
             int count2D = 0;
             int count = 0;
 
             View view = doc.ActiveView;
 
-            Curve curve = levels.First().GetCurvesInView(extentMode, view)[0];
+            DatumExtentType extentMode = DatumExtentType.ViewSpecific;
+
+            IEnumerable<Level> levels = new FilteredElementCollector(doc, view.Id)
+                    .OfCategory(BuiltInCategory.OST_Levels)
+                    .ToElements()
+                    .Cast<Level>();
+
+            Curve curve = levels.FirstOrDefault().GetCurvesInView(extentMode, view)[0];
 
             foreach (Level level in levels)
             {

@@ -36,19 +36,12 @@ namespace BIM_Leaders_Core
                 bool inputSide1 = data.ResultSide1;
                 bool inputSide2 = data.ResultSide2;
 
-                DatumExtentType extentMode = DatumExtentType.ViewSpecific;
-
-                IEnumerable<Grid> grids = new FilteredElementCollector(doc, doc.ActiveView.Id)
-                    .OfCategory(BuiltInCategory.OST_Grids)
-                    .ToElements()
-                    .Cast<Grid>();
-
                 // Edit extents
                 using (Transaction trans = new Transaction(doc, "Align Grids"))
                 {
                     trans.Start();
 
-                    (count2D, count) = EditExtents(doc, extentMode, grids, inputSwitch, inputSide1, inputSide2);
+                    (count2D, count) = EditExtentsGrids(doc, inputSwitch, inputSide1, inputSide2);
 
                     trans.Commit();
                 }
@@ -67,14 +60,21 @@ namespace BIM_Leaders_Core
         /// Edit grids extents.
         /// </summary>
         /// <returns>Count of grids switched to 2D and count of grids processed.</returns>
-        private static (int, int) EditExtents(Document doc, DatumExtentType extentMode, IEnumerable<Grid> grids, bool inputSwitch, bool inputSide1, bool inputSide2)
+        private static (int, int) EditExtentsGrids(Document doc, bool inputSwitch, bool inputSide1, bool inputSide2)
         {
             int count2D = 0;
             int count = 0;
 
             View view = doc.ActiveView;
 
-            Curve curve = grids.First().GetCurvesInView(extentMode, view)[0];
+            DatumExtentType extentMode = DatumExtentType.ViewSpecific;
+
+            IEnumerable<Grid> grids = new FilteredElementCollector(doc, view.Id)
+                    .OfCategory(BuiltInCategory.OST_Grids)
+                    .ToElements()
+                    .Cast<Grid>();
+
+            Curve curve = grids.FirstOrDefault().GetCurvesInView(extentMode, view)[0];
 
             foreach (Grid grid in grids)
             {

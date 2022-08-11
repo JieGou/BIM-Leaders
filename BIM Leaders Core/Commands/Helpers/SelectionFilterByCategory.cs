@@ -11,7 +11,7 @@ namespace BIM_Leaders_Core
     public class SelectionFilterByCategory : ISelectionFilter
     {
         // Private variable that holds category name
-        private string _сategory = "";
+        private readonly string _сategory = "";
 
         /// <summary>
         /// Default constructor.

@@ -18,40 +18,25 @@ namespace BIM_Leaders_Core
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
-
             try
             {
                 // Get the line from user selection
                 Reference referenceLine = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
-                DetailLine line = doc.GetElement(referenceLine) as DetailLine;
-                if (line == null)
+                DetailLine detailLine = doc.GetElement(referenceLine) as DetailLine;
+                if (detailLine == null)
                 {
                     TaskDialog.Show("Dimensions Plan Walls", "Wrong selection.");
                     return Result.Failed;
                 }
-                Line curve = line.GeometryCurve as Line;
 
-                IEnumerable<Wall> walls = GetWallsStraight(doc);
-                IEnumerable<Wall> walls_per = FilterWallsPer(toleranceAngle, curve, walls);
-                IEnumerable<Reference> intersections_walls = FindIntersections(doc, curve, walls_per);
-
-                IEnumerable<FamilyInstance> columns = GetColumns(doc);
-                IEnumerable<FamilyInstance> columns_per = FilterColumnsPer(toleranceAngle, curve, columns);
-                IEnumerable<Reference> intersections_columns = FindIntersections(doc, curve, columns_per);
-
-                // Convert lists to ReferenceArray
-                ReferenceArray references = new ReferenceArray();
-                foreach (Reference i in intersections_walls)
-                    references.Append(i);
-                foreach (Reference i in intersections_columns)
-                    references.Append(i);
+                Line line = detailLine.GeometryCurve as Line;
+                ReferenceArray references = GetReferences(doc, line);
 
                 using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
                 {
                     trans.Start();
 
-                    Dimension dimension = doc.Create.NewDimension(doc.ActiveView, curve, references);
+                    Dimension dimension = doc.Create.NewDimension(doc.ActiveView, line, references);
                     DimensionUtils.AdjustText(dimension);
                     dimension.HasLeader = false;
 
@@ -66,6 +51,35 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        /// <summary>
+        /// Get ReferenceArray of elements that intersects the given line.
+        /// </summary>
+        /// <param name="doc">Current document.</param>
+        /// <param name="line">Line to find the intersections.</param>
+        /// <returns>ReferenceArray that can be used for dimension creating.</returns>
+        private static ReferenceArray GetReferences(Document doc, Line line)
+        {
+            ReferenceArray references = new ReferenceArray();
+
+            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
+
+            IEnumerable<Wall> walls = GetWallsStraight(doc);
+            IEnumerable<Wall> wallsPer = FilterWallsPer(toleranceAngle, line, walls);
+            IEnumerable<Reference> referencesWalls = FindIntersections(doc, line, wallsPer);
+
+            IEnumerable<FamilyInstance> columns = GetColumns(doc);
+            IEnumerable<FamilyInstance> columnsPer = FilterColumnsPer(toleranceAngle, line, columns);
+            IEnumerable<Reference> referencesColumns = FindIntersections(doc, line, columnsPer);
+
+            // Convert lists to ReferenceArray
+            foreach (Reference i in referencesWalls)
+                references.Append(i);
+            foreach (Reference i in referencesColumns)
+                references.Append(i);
+
+            return references;
         }
 
         /// <summary>

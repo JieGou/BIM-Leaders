@@ -4,12 +4,11 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using Autodesk.Revit.ApplicationServices;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+	[TransactionAttribute(TransactionMode.Manual)]
     public class DimensionsPlan : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -24,6 +23,21 @@ namespace BIM_Leaders_Core
 
 			try
             {
+				// Inform user that plan regions are on the view and may cause errors.
+				TaskDialogResult agree = TaskDialogResult.None;
+				if (CheckOnPlanRegions(doc))
+                {
+					TaskDialog dialog = new TaskDialog("Dimension Plan")
+					{
+						MainContent = "Plan regions are on the current view. This can cause error \"One or more dimension references are or have become invalid.\" Continue?",
+						CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No,
+						AllowCancellation = false
+					};
+					agree = dialog.Show();
+					if (agree == TaskDialogResult.No)
+						return Result.Cancelled;
+				}
+
 				// Get user provided information from window
 				DimensionsPlanForm form = new DimensionsPlanForm();
 				form.ShowDialog();
@@ -46,9 +60,6 @@ namespace BIM_Leaders_Core
 				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, UnitTypeId.Centimeters);
 				double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, UnitTypeId.Centimeters);
 #endif
-
-				if (CheckOnPlanRegions(doc))
-					TaskDialog.Show("Dimension Plan", "Plan regions are on the current view. This can cause error \"One or more dimension references are or have become invalid.\"");
 
 				// Collecting model elements to dimension
 				List<Wall> wallsAll = GetWalls(doc);
@@ -339,27 +350,24 @@ namespace BIM_Leaders_Core
 
 				(Line maxIntersectionLine, List<PlanarFace> maxIntersectionFaces) = FindMaxIntersections(doc, faceCurrent, faces, searchDistance, searchStep);
 
-				// Line found some intersections
-				if (maxIntersectionLine != null)
-                {
-					List<PlanarFace> maxIntersectionFacesPurged = new List<PlanarFace>();
-					// For the first face just add max to collected
-					if (dimensionsDataCollector.Count == 0)
-                    {
-						dimensionsDataCollector.Add(maxIntersectionLine, maxIntersectionFaces);
-						maxIntersectionFacesPurged = maxIntersectionFaces;
-					}
-					else
-                    {
-						maxIntersectionFacesPurged = PurgeFacesList(doc, dimensionsDataCollector, maxIntersectionFaces, minUniqueReferences);
-
-						// If after purging we still have new dimension
-						if (maxIntersectionFacesPurged != null)
-							dimensionsDataCollector.Add(maxIntersectionLine, maxIntersectionFacesPurged);
-					}
-				}
 				// Remove current face from buffer
 				facesNotDimensioned.Remove(faceCurrent);
+
+				// Line have not found any intersections
+				if (maxIntersectionLine == null)
+					continue;
+				
+				// For the first face just add max to collected
+				if (dimensionsDataCollector.Count == 0)
+					dimensionsDataCollector.Add(maxIntersectionLine, maxIntersectionFaces);
+				else
+				{
+					List<PlanarFace> maxIntersectionFacesPurged = PurgeFacesList(dimensionsDataCollector, maxIntersectionFaces, minUniqueReferences);
+
+					// If after purging we still have new dimension
+					if (maxIntersectionFacesPurged != null)
+						dimensionsDataCollector.Add(maxIntersectionLine, maxIntersectionFacesPurged);
+				}
 			}
 
 			// Convert all dimensions raw data (faces lists) to data with ReferenceArrays
@@ -536,7 +544,7 @@ namespace BIM_Leaders_Core
 		/// <param name="minUniqueReferences">If reference array will contain less unique references, it will be deleted with transfering references to existing array in the data.</param>
 		/// <returns>Purged list of faces or null if new dimension not needed (its completely inside of collected one or almost inside - then add new items to the collected list).
 		/// Can be improved later, to clear duplicates smartly.</returns>
-		private static List<PlanarFace> PurgeFacesList(Document doc, Dictionary<Line, List<PlanarFace>> dimensionsDataCollector, List<PlanarFace> facesNew, int minUniqueReferences)
+		private static List<PlanarFace> PurgeFacesList(Dictionary<Line, List<PlanarFace>> dimensionsDataCollector, List<PlanarFace> facesNew, int minUniqueReferences)
         {
 			List<PlanarFace> facesNewPurged = new List<PlanarFace>();
 

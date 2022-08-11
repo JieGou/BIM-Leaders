@@ -101,7 +101,6 @@
     <Compile Include="CommandsAvailability\ViewIsSection.cs" />
     <Compile Include="CommandsAvailability\ViewIsSectionOrElevation.cs" />
     <Compile Include="CommandsAvailability\ViewIsStandard.cs" />
-    <Compile Include="Commands\Helpers\Message.cs" />
     <Compile Include="Commands\Helpers\Categories.cs" />
     <Compile Include="Commands\Helpers\DimensionUtils.cs" />
     <Compile Include="Commands\Helpers\ViewFilterUtils.cs" />
@@ -117,7 +116,6 @@
     <Compile Include="Commands\PanelStandards\WallsArranged.cs" />
     <Compile Include="Commands\PanelStandards\HelpStandards.cs" />
     <Compile Include="Commands\Helpers\SelectionFilterByCategory.cs" />
-    <Compile Include="Commands\Helpers\WindowType.cs" />
     <Compile Include="CoreAssembly.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionSectionFloors.cs" />
     <Compile Include="Commands\PanelDwg\DwgNameDelete.cs" />
