@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         
         Style="{DynamicResource SWindow}"
-        Title="BIM Leaders - Dimension Section Floors"
+        Title="BIM Leaders - Dimensions Plan Check"
         WindowStartupLocation="CenterScreen"
         
         d:DataContext="{d:DesignInstance Type=local:DimensionsPlanCheckData}"

@@ -20,8 +20,8 @@ namespace BIM_Leaders_Core
 
             double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad.
 
-            string filterName0 = "Walls arranged filter. Distances";
-            string filterName1 = "Walls arranged filter. Angles";
+            string filterName0 = "Check - Walls arranging. Distances";
+            string filterName1 = "Check - Walls arranging. Angles";
 
             try
             {
@@ -78,7 +78,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                ShowResult(wallsToFilterDistn.Count + wallsToFilterAngle.Count);
+                ShowResult(wallsToFilterDistn.Count, wallsToFilterAngle.Count);
 
                 return Result.Succeeded;
             }
@@ -248,12 +248,23 @@ namespace BIM_Leaders_Core
             return wallsFilter;
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult(int countDistance, int countAngle)
         {
             // Show result
-            string text = (count == 0)
-                ? "All walls are clear"
-                : $"{count} walls added to Walls arranged filter";
+            string text = "";
+            if (countDistance + countAngle == 0)
+                text = "All walls are clear";
+            else
+            {
+                if (countDistance > 0)
+                    text += $"{countDistance} walls added to filter \"Check - Walls arranging. Distances\".";
+                if (countAngle > 0)
+                {
+                    if (text.Length > 0)
+                        text += " ";
+                    text += $"{countAngle} walls added to filter \"Check - Walls arranging. Angles\".";
+                }
+            }
 
             TaskDialog.Show("Walls arranged filter", text);
         }

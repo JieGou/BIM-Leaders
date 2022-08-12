@@ -322,6 +322,20 @@ namespace BIM_Leaders
             // Populate button data model
             RevitPushButtonDataModel buttonData03 = new RevitPushButtonDataModel
             {
+                Label = "Tags\r\nCheck",
+                Panel = panel,
+                ToolTip = "Check if elements are tagged.",
+                LongDescription = "Creates a selection filter on a view that shows non-tagged elements.",
+                CommandNamespacePath = TagsPlanCheck.GetPath(),
+                IconImageName = "BIM_Leaders_Tags_Plan_Check.png",
+                AvailabilityClassName = "BIM_Leaders_Core.ViewIsPlan"
+            };
+            // Create button from provided data
+            RevitPushButton.Create(buttonData03);
+
+            // Populate button data model
+            RevitPushButtonDataModel buttonData04 = new RevitPushButtonDataModel
+            {
                 Label = "Dimension\r\nLine",
                 Panel = panel,
                 ToolTip = "Dimension all walls and columns with given line as a reference.",
@@ -331,10 +345,10 @@ namespace BIM_Leaders
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsPlan"
             };
             // Create button from provided data
-            RevitPushButton.Create(buttonData03);
+            RevitPushButton.Create(buttonData04);
 
             // Populate button data model
-            RevitPushButtonDataModel buttonData04 = new RevitPushButtonDataModel
+            RevitPushButtonDataModel buttonData05 = new RevitPushButtonDataModel
             {
                 Label = "Dimension\r\nPlan",
                 Panel = panel,
@@ -345,12 +359,12 @@ namespace BIM_Leaders
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsPlan"
             };
             // Create button from provided data
-            RevitPushButton.Create(buttonData04);
+            RevitPushButton.Create(buttonData05);
 
             panel.AddSeparator();
 
             // Populate button data model
-            RevitPushButtonDataModel buttonData05 = new RevitPushButtonDataModel
+            RevitPushButtonDataModel buttonData06 = new RevitPushButtonDataModel
             {
                 Label = "Annotate\r\nSection",
                 Panel = panel,
@@ -361,10 +375,10 @@ namespace BIM_Leaders
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
             };
             // Create button from provided data
-            RevitPushButton.Create(buttonData05);
+            RevitPushButton.Create(buttonData06);
 
             // Populate button data model
-            RevitPushButtonDataModel buttonData06 = new RevitPushButtonDataModel
+            RevitPushButtonDataModel buttonData07 = new RevitPushButtonDataModel
             {
                 Label = "Annotate\r\nLandings",
                 Panel = panel,
@@ -375,10 +389,10 @@ namespace BIM_Leaders
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
             };
             // Create button from provided data
-            RevitPushButton.Create(buttonData06);
+            RevitPushButton.Create(buttonData07);
 
             // Populate button data model
-            RevitPushButtonDataModel buttonData07 = new RevitPushButtonDataModel
+            RevitPushButtonDataModel buttonData08 = new RevitPushButtonDataModel
             {
                 Label = "Steps\r\nEnumerate",
                 Panel = panel,
@@ -389,14 +403,14 @@ namespace BIM_Leaders
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsSection"
             };
             // Create button from provided data
-            RevitPushButton.Create(buttonData07);
+            RevitPushButton.Create(buttonData08);
 
 
             panel.AddSeparator();
 
 
             // Populate button data model
-            RevitPushButtonDataModel buttonData08 = new RevitPushButtonDataModel
+            RevitPushButtonDataModel buttonData09 = new RevitPushButtonDataModel
             {
                 Label = "Align\r\nGrids",
                 Panel = panel,
@@ -407,10 +421,10 @@ namespace BIM_Leaders
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsStandard"
             };
             // Create button from provided data
-            RevitPushButton.Create(buttonData08);
+            RevitPushButton.Create(buttonData09);
 
             // Populate button data model
-            RevitPushButtonDataModel buttonData09 = new RevitPushButtonDataModel
+            RevitPushButtonDataModel buttonData10 = new RevitPushButtonDataModel
             {
                 Label = "Align\r\nLevels",
                 Panel = panel,
@@ -421,7 +435,7 @@ namespace BIM_Leaders
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsSectionOrElevation"
             };
             // Create button from provided data
-            RevitPushButton.Create(buttonData09);
+            RevitPushButton.Create(buttonData10);
         }
     }
 }

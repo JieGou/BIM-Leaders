@@ -124,6 +124,7 @@
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Family_Parameter_Change.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Purge.png" />
     <EmbeddedResource Include="Images\Icons\BIM_Leaders_Journal_Analyze.png" />
+    <EmbeddedResource Include="Images\Icons\BIM_Leaders_Tags_Plan_Check.png" />
     <Content Include="Revit.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

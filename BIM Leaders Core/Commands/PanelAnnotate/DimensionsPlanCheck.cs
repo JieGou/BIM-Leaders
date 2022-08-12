@@ -16,7 +16,7 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            string filterName = "Walls dimension filter";
+            string filterName = "Check - Dimensions";
 
             try
             {
@@ -61,21 +61,21 @@ namespace BIM_Leaders_Core
         {
             List<ElementId> wallIds = new List<ElementId>();
 
-            // Get Walls
-            FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-            IEnumerable<Wall> wallsAll = collector.OfClass(typeof(Wall))
+            // Get Walls.
+            IEnumerable<Wall> wallsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                .OfClass(typeof(Wall))
                 .WhereElementIsNotElementType()
                 .ToElements()
                 .Cast<Wall>();
 
-            // Get Dimensions
-            FilteredElementCollector collector1 = new FilteredElementCollector(doc, doc.ActiveView.Id);
-            IEnumerable<Dimension> dimensionsAll = collector1.OfClass(typeof(Dimension))
+            // Get Dimensions.
+            IEnumerable<Dimension> dimensionsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                .OfClass(typeof(Dimension))
                 .WhereElementIsNotElementType()
                 .ToElements()
                 .Cast<Dimension>();
 
-            // Iterate walls
+            // Iterate walls.
             foreach (Wall wall in wallsAll)
             {
                 XYZ normalWall = new XYZ(0, 0, 0);
@@ -84,9 +84,9 @@ namespace BIM_Leaders_Core
                     normalWall = wall.Orientation;
                 }
                 catch { continue; }
-                // List for intersections count for each dimansion
+                // List for intersections count for each dimansion.
                 List<int> countIntersections = new List<int>();
-                // Iterate dimensions
+                // Iterate dimensions.
                 foreach (Dimension dimension in dimensionsAll)
                 {
                     Line dimensionLine = dimension.Curve as Line;
@@ -96,21 +96,21 @@ namespace BIM_Leaders_Core
                         XYZ point0 = dimensionLine.GetEndPoint(0);
                         XYZ point1 = dimensionLine.GetEndPoint(1);
                         XYZ dimensionLoc = point1.Subtract(point0).Normalize();
-                        // Intersections count
+                        // Intersections count.
                         int countIntersection = 0;
 
                         ReferenceArray referenceArray = dimension.References;
-                        // Iterate dimension references
+                        // Iterate dimension references.
                         foreach (Reference reference in referenceArray)
                             if (reference.ElementId == wall.Id)
                                 countIntersection++;
-                        // If 2 dimensions on a wall so check if dimansion is parallel to wall normal
+                        // If 2 dimensions on a wall so check if dimansion is parallel to wall normal.
                         if (countIntersection >= 2)
                             if (Math.Round(Math.Abs((dimensionLoc.AngleTo(normalWall) / Math.PI - 0.5) * 2)) == 1) // Angle is from 0 to PI, so divide by PI - from 0 to 1, then...
                                 countIntersections.Add(countIntersection);
                     }
                 }
-                // Check if no dimensions left
+                // Check if no dimensions left.
                 if (countIntersections.Count == 0)
                     wallIds.Add(wall.Id);
             }
@@ -170,7 +170,7 @@ namespace BIM_Leaders_Core
             // Show result
             string text = (count == 0)
                 ? "All walls are dimensioned"
-                : $"{count} walls added to Walls dimension filter";
+                : $"{count} walls added to filter \"Check - Dimensions\".";
 
             TaskDialog.Show("Dimension Plan Check", text);
         }

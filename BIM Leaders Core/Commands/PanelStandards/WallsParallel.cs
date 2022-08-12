@@ -19,7 +19,7 @@ namespace BIM_Leaders_Core
             Document doc = uidoc.Document;
 
             double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
-            string filterName = "Walls parallel filter";
+            string filterName = "Check - Walls parralel";
             Color filterColor = new Color(255, 127, 39);
 
             try
@@ -127,7 +127,7 @@ namespace BIM_Leaders_Core
             // Show result
             string text = (count == 0)
                 ? "All walls are clear"
-                : $"{count} walls added to Walls parallel filter";
+                : $"{count} walls added to filter \"Check - Walls parralel\".";
             
             TaskDialog.Show("Walls parallel filter", text);
         }

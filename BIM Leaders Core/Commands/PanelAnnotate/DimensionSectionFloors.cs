@@ -284,8 +284,10 @@ namespace BIM_Leaders_Core
 
             Dimension dimension = doc.Create.NewDimension(doc.ActiveView, line, references);
             DimensionUtils.AdjustText(dimension);
-            dimension.HasLeader = false;
 
+#if !VERSION2020
+            dimension.HasLeader = false;
+#endif
             return count;
         }
 
