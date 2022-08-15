@@ -52,11 +52,11 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     if (fixWarningsJoin)
-                        countWarningsJoin = SolveJoin(doc, warningsJoin);
+                        SolveJoin(doc, warningsJoin, ref countWarningsJoin);
                     if (fixWarningsWallsAttached)
-                        countWarningsWallsAttached = SolveWallsAttached(doc, warningsWallsAttached);
+                        SolveWallsAttached(doc, warningsWallsAttached, ref countWarningsWallsAttached);
                     if (fixWarningsRoomNotEnclosed)
-                        countWarningsRoomNotEnclosed = SolveRoomNotEnclosed(doc, warningsRoomNotEnclosed);
+                        SolveRoomNotEnclosed(doc, warningsRoomNotEnclosed, ref countWarningsRoomNotEnclosed);
                     
                     trans.Commit();
                 }
@@ -74,11 +74,8 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Unjoin elements that have a warning about joining.
         /// </summary>
-        /// <returns>Count of solved warnings.</returns>
-        private static int SolveJoin(Document doc, IEnumerable<FailureMessage> warnings)
+        private static void SolveJoin(Document doc, IEnumerable<FailureMessage> warnings, ref int count)
         {
-            int count = 0;
-
             foreach (FailureMessage warning in warnings)
             {
                 List<ElementId> ids = warning.GetFailingElements().ToList();
@@ -99,17 +96,13 @@ namespace BIM_Leaders_Core
                 }
                 catch { }
             }
-            return count;
         }
 
         /// <summary>
         /// Detach walls that have a warning about attachment.
         /// </summary>
-        /// <returns>Count of solved warnings.</returns>
-        private static int SolveWallsAttached(Document doc, IEnumerable<FailureMessage> warnings)
+        private static void SolveWallsAttached(Document doc, IEnumerable<FailureMessage> warnings, ref int count)
         {
-            int count = 0;
-
             foreach (FailureMessage warning in warnings)
             {
                 List<ElementId> ids = warning.GetFailingElements().ToList();
@@ -125,17 +118,13 @@ namespace BIM_Leaders_Core
 
                 /// HERE WILL BE SOLVING IF IT APPEARS IN THE API.
             }
-            return count;
         }
 
         /// <summary>
         /// Delete rooms that are placed but not enclosed.
         /// </summary>
-        /// <returns>Count of solved warnings.</returns>
-        private static int SolveRoomNotEnclosed(Document doc, IEnumerable<FailureMessage> warnings)
+        private static void SolveRoomNotEnclosed(Document doc, IEnumerable<FailureMessage> warnings, ref int count)
         {
-            int count = 0;
-
             foreach (FailureMessage warning in warnings)
             {
                 List<ElementId> ids = warning.GetFailingElements().ToList();
@@ -153,7 +142,6 @@ namespace BIM_Leaders_Core
                 }
                 catch { }
             }
-            return count;
         }
 
         private static void ShowResult(int countWarningsJoin, int countWarningsWallsAttached, int countWarningsRoomNotEnclosed)

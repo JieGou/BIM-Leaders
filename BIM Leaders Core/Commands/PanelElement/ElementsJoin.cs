@@ -25,7 +25,7 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    (countCutted, countJoined) = JoinElements(doc, tolerance);
+                    JoinElements(doc, tolerance, ref countCutted, ref countJoined);
 
                     trans.Commit();
                 }
@@ -43,12 +43,8 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Join all elements that cut the currect section view.
         /// </summary>
-        /// <returns>Count of elements that cuts a section and count of joined elements.</returns>
-        private static (int, int) JoinElements(Document doc, double tolerance)
+        private static void JoinElements(Document doc, double tolerance, ref int countCutted, ref int countJoined)
         {
-            int countCutted = 0;
-            int countJoined = 0;
-
             // Solid of view section plane for filtering
             IList<CurveLoop> viewCrop = doc.ActiveView.GetCropRegionShapeManager().GetCropShape();
             Solid s = GeometryCreationUtilities.CreateExtrusionGeometry(viewCrop, doc.ActiveView.ViewDirection, 1);
@@ -79,19 +75,16 @@ namespace BIM_Leaders_Core
             // Go through elements list and join all elements that close to each element
             foreach (Element elementCut in elementsCut)
             {
-                countJoined += JoinElement(doc, tolerance, elementCut, wallCutIds);
-                countJoined += JoinElement(doc, tolerance, elementCut, floorCutIds);
+                JoinElement(doc, tolerance, elementCut, wallCutIds, ref countJoined);
+                JoinElement(doc, tolerance, elementCut, floorCutIds, ref countJoined);
             }
-            return (countCutted, countJoined);
         }
 
         /// <summary>
         /// Join element with set of elements. Also needs filter as input for better performance (to not calculate same filter couple of times).
         /// </summary>
-        /// <returns>Count of joint elements.</returns>
-        private static int JoinElement(Document doc, double tolerance, Element elementCut, ICollection<ElementId> elementCutIds)
+        private static void JoinElement(Document doc, double tolerance, Element elementCut, ICollection<ElementId> elementCutIds, ref int count)
         {
-            int count = 0;
             try
             {
                 BoundingBoxXYZ bb = elementCut.get_BoundingBox(doc.ActiveView);
@@ -111,7 +104,6 @@ namespace BIM_Leaders_Core
                     }
             }
             catch { }
-            return count;
         }
 
         private static void ShowResult(int countCutted, int countJoined)

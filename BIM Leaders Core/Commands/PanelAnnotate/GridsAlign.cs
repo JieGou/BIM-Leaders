@@ -41,7 +41,7 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    (count2D, count) = EditExtentsGrids(doc, inputSwitch, inputSide1, inputSide2);
+                    EditExtentsGrids(doc, inputSwitch, inputSide1, inputSide2, ref count, ref count2D);
 
                     trans.Commit();
                 }
@@ -59,12 +59,8 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Edit grids extents.
         /// </summary>
-        /// <returns>Count of grids switched to 2D and count of grids processed.</returns>
-        private static (int, int) EditExtentsGrids(Document doc, bool inputSwitch, bool inputSide1, bool inputSide2)
+        private static void EditExtentsGrids(Document doc, bool inputSwitch, bool inputSide1, bool inputSide2, ref int count, ref int count2D)
         {
-            int count2D = 0;
-            int count = 0;
-
             View view = doc.ActiveView;
 
             DatumExtentType extentMode = DatumExtentType.ViewSpecific;
@@ -103,7 +99,6 @@ namespace BIM_Leaders_Core
                     grid.HideBubbleInView(DatumEnds.End1, view);
                 count++;
             }
-            return (count2D, count);
         }
         
         private static void ShowResult(int count, int count2D)

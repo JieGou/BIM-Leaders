@@ -51,19 +51,19 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     if (inputRooms)
-                        countRooms = PurgeRoomsNotPlaced(doc);
+                        PurgeRoomsNotPlaced(doc, ref countRooms);
                     if (inputTags)
-                        countTags = PurgeTagsEmpty(doc);
+                        PurgeTagsEmpty(doc, ref countTags);
                     if (inputFilters)
-                        countFilters = PurgeFiltersUnused(doc);
+                        PurgeFiltersUnused(doc, ref countFilters);
                     if (inputViewTemplates)
-                        countViewTemplates = PurgeViewTemplatesUnused(doc);
+                        PurgeViewTemplatesUnused(doc, ref countViewTemplates);
                     if (inputSheets)
-                        countSheets = PurgeSheetsEmpty(doc);
+                        PurgeSheetsEmpty(doc, ref countSheets);
                     if (inputLineStyles)
-                        countLineStyles = PurgeLineStylesUnused(doc);
+                        PurgeLineStylesUnused(doc, ref countLineStyles);
                     if (inputLinePatterns)
-                        countLinePatterns = PurgeLinePatterns(doc, inputLinePatternsName);
+                        PurgeLinePatterns(doc, inputLinePatternsName, ref countLinePatterns);
 
                     trans.Commit();
                 }
@@ -81,11 +81,8 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Delete unplaced rooms in the document.
         /// </summary>
-        /// <returns>Count of deleted unplaced rooms.</returns>
-        private static int PurgeRoomsNotPlaced(Document doc)
+        private static void PurgeRoomsNotPlaced(Document doc, ref int count)
         {
-            int count = 0;
-
             ICollection<ElementId> rooms = new FilteredElementCollector(doc)
                 .OfClass(typeof(SpatialElement))
                 .WherePasses(new RoomFilter())
@@ -98,18 +95,13 @@ namespace BIM_Leaders_Core
             count = rooms.Count;
 
             doc.Delete(rooms);
-
-            return count;
         }
 
         /// <summary>
         /// Delete empty tags from the document.
         /// </summary>
-        /// <returns>Count of deleted empty tags.</returns>
-        private static int PurgeTagsEmpty(Document doc)
+        private static void PurgeTagsEmpty(Document doc, ref int count)
         {
-            int count = 0;
-
             ICollection<ElementId> tags = new FilteredElementCollector(doc)
                 .OfClass(typeof(IndependentTag))
                 .WhereElementIsNotElementType()
@@ -122,18 +114,13 @@ namespace BIM_Leaders_Core
             count = tags.Count;
 
             doc.Delete(tags);
-
-            return count;
         }
 
         /// <summary>
         /// Delete unused filters from the document.
         /// </summary>
-        /// <returns>Count of deleted unused filters.</returns>
-        private static int PurgeFiltersUnused(Document doc)
+        private static void PurgeFiltersUnused(Document doc, ref int count)
         {
-            int count = 0;
-
             IEnumerable<View> views = new FilteredElementCollector(doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
@@ -166,18 +153,13 @@ namespace BIM_Leaders_Core
             count = filtersUnused.Count;
 
             doc.Delete(filtersUnused);
-
-            return count;
         }
 
         /// <summary>
         /// Delete unused view templates from the document.
         /// </summary>
-        /// <returns>Count of deleted unused view templates.</returns>
-        private static int PurgeViewTemplatesUnused(Document doc)
+        private static void PurgeViewTemplatesUnused(Document doc, ref int count)
         {
-            int count = 0;
-
             IEnumerable<View> viewsAll = new FilteredElementCollector(doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
@@ -199,18 +181,13 @@ namespace BIM_Leaders_Core
             count = templateIds.Count;
 
             doc.Delete(templateIds);
-
-            return count;
         }
 
         /// <summary>
         /// Delete empty sheets witout any placed views from the document.
         /// </summary>
-        /// <returns>Count of deleted empty sheets.</returns>
-        private static int PurgeSheetsEmpty(Document doc)
+        private static void PurgeSheetsEmpty(Document doc, ref int count)
         {
-            int count = 0;
-
             IEnumerable<ViewSheet> sheets = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSheet))
                 .WhereElementIsNotElementType()
@@ -235,18 +212,13 @@ namespace BIM_Leaders_Core
             count = sheetsEmpty.Count;
 
             doc.Delete(sheetsEmpty);
-
-            return count;
         }
 
         /// <summary>
         /// Delete unused linestyles from the document.
         /// </summary>
-        /// <returns>Count of deleted unused linestyles.</returns>
-        private static int PurgeLineStylesUnused(Document doc)
+        private static void PurgeLineStylesUnused(Document doc, ref int count)
         {
-            int count = 0;
-
             ICollection<ElementId> lineStylesUnused = new List<ElementId>();
 
             // Get all used linestyles in the project.
@@ -272,19 +244,14 @@ namespace BIM_Leaders_Core
             count = lineStylesUnused.Count;
 
             doc.Delete(lineStylesUnused);
-
-            return count;
         }
 
         /// <summary>
         /// Delete line patterns by given part of the name.
         /// </summary>
         /// <param name="name">String to search in names.</param>
-        /// <returns>Count of deleted line patterns.</returns>
-        private static int PurgeLinePatterns(Document doc, string name)
+        private static void PurgeLinePatterns(Document doc, string name, ref int count)
         {
-            int count = 0;
-
             ICollection<ElementId> linePatterns = new FilteredElementCollector(doc)
                     .OfClass(typeof(LinePatternElement))
                     .WhereElementIsNotElementType()
@@ -295,8 +262,6 @@ namespace BIM_Leaders_Core
             count = linePatterns.Count;
 
             doc.Delete(linePatterns);
-
-            return count;
         }
 
         private static void ShowResult(int countLineStyles, int countFilters, int countRooms, int countTags, int countViewTemplates, int countSheets, int countLinePatterns, string inputLinePatternsName)

@@ -68,9 +68,9 @@ namespace BIM_Leaders_Core
                     trans.Start();
                     
                     if (inputSpots)
-                        count = CreateSpots(doc, line, intersectionFacesAll);
+                        CreateSpots(doc, line, intersectionFacesAll, ref count);
                     else
-                        count = CreateDimensions(doc, line, intersectionFacesAll);
+                        CreateDimensions(doc, line, intersectionFacesAll, ref count);
                     
                     trans.Commit();
                 }
@@ -243,11 +243,8 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create spot elevations on a faces through a given line.
         /// </summary>
-        /// <returns>Count of created elevation spots.</returns>
-        private static int CreateSpots(Document doc, Line line, List<Face> intersectionFaces)
+        private static void CreateSpots(Document doc, Line line, List<Face> intersectionFaces, ref int count)
         {
-            int count = 0;
-
             View view = doc.ActiveView; 
             XYZ zero = new XYZ(0, 0, 0);
 
@@ -265,18 +262,13 @@ namespace BIM_Leaders_Core
                 }
                 catch { }
             }
-
-            return count;
         }
 
         /// <summary>
         /// Create dimension on a faces through a given line.
         /// </summary>
-        /// <returns>Count of created dimension segments.</returns>
-        private static int CreateDimensions(Document doc, Line line, List<Face> intersectionFaces)
+        private static void CreateDimensions(Document doc, Line line, List<Face> intersectionFaces, ref int count)
         {
-            int count = 0;
-
             // Convert List<Face> to ReferenceArray
             ReferenceArray references = new ReferenceArray();
             foreach (Face face in intersectionFaces)
@@ -288,7 +280,6 @@ namespace BIM_Leaders_Core
 #if !VERSION2020
             dimension.HasLeader = false;
 #endif
-            return count;
         }
 
         private static void ShowResult(int count, bool inputSpots)

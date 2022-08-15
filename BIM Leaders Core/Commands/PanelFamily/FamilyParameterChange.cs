@@ -24,7 +24,7 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    count = SwitchParameter(doc);
+                    SwitchParameter(doc, ref count);
 
                     trans.Commit();
                 }
@@ -42,11 +42,8 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Chaange the given parameter from shared to family parameter.
         /// </summary>
-        /// <returns>Count of parameters changed.</returns>
-        private static int SwitchParameter(Document doc)
+        private static void SwitchParameter(Document doc, ref int count)
         {
-            int count = 0;
-
             IEnumerable<FamilyParameter> parameters = doc.FamilyManager.GetParameters().Where(x => x.IsShared);
             foreach (FamilyParameter parameter in parameters)
             {
@@ -60,7 +57,6 @@ namespace BIM_Leaders_Core
                 count++;
             }
             count = parameters.Count();
-            return count;
         }
 
         private static void ShowResult(int count)

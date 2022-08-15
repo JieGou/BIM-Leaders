@@ -41,7 +41,6 @@ namespace BIM_Leaders_Core
 #if !VERSION2020
                     dimension.HasLeader = false;
 #endif
-
                     trans.Commit();
                 }
                 ShowResult(references.Size - 1);

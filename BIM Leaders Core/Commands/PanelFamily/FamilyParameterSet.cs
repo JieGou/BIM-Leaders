@@ -40,7 +40,7 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    count = ChangeParameter(doc, parameter, parameterValue);
+                    ChangeParameter(doc, parameter, parameterValue, ref count);
 
                     trans.Commit();
                 }
@@ -59,16 +59,13 @@ namespace BIM_Leaders_Core
         /// Change the given parameter to given value in all family types.
         /// Value is given as string, so depends on parameter type value will be converted.
         /// </summary>
-        /// <returns>Count of times when parameter was changed.</returns>
-        private static int ChangeParameter(Document doc, FamilyParameter parameter, string parameterValue)
+        private static void ChangeParameter(Document doc, FamilyParameter parameter, string parameterValue, ref int count)
         {
-            int count = 0;
-
             if (parameter.IsReadOnly)
-                return count;
+                return;
 
             if (parameter.StorageType == StorageType.None)
-                return count;
+                return;
 
             FamilyTypeSet familyTypeSet = doc.FamilyManager.Types;
 
@@ -88,7 +85,7 @@ namespace BIM_Leaders_Core
                         doc.FamilyManager.Set(parameter, Convert.ToInt32(parameterValue));
                     count++;
                 }
-                return count;
+                return;
             }
             if (parameter.StorageType == StorageType.Double)
             {
@@ -106,7 +103,7 @@ namespace BIM_Leaders_Core
                         doc.FamilyManager.Set(parameter, Convert.ToDouble(parameterValue));
                     count++;
                 }
-                return count;
+                return;
             }
             if (parameter.StorageType == StorageType.String)
             {
@@ -115,7 +112,7 @@ namespace BIM_Leaders_Core
                     doc.FamilyManager.Set(parameter, parameterValue);
                     count++;
                 }
-                return count;
+                return;
             }
             if (parameter.StorageType == StorageType.ElementId)
             {
@@ -170,8 +167,6 @@ namespace BIM_Leaders_Core
                         break;
                 }
             }
-            return count;
-
         }
 
         private static void ShowResult(int count)

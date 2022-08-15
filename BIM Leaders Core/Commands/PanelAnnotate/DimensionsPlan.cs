@@ -93,7 +93,6 @@ namespace BIM_Leaders_Core
 #if !VERSION2020
 						dimension.HasLeader = false;
 #endif
-
 						countDim++;
 						countRef += dimensionData.Value.Size - 1;
 					}
@@ -101,11 +100,9 @@ namespace BIM_Leaders_Core
 					{
 						Dimension dimension = doc.Create.NewDimension(doc.ActiveView, dimensionData.Key, dimensionData.Value);
 						DimensionUtils.AdjustText(dimension);
-
 #if !VERSION2020
 						dimension.HasLeader = false;
 #endif
-
 						countDim++;
 						countRef += dimensionData.Value.Size - 1;
 					}

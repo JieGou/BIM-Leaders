@@ -54,9 +54,9 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     if (inputPlacementDimensionTop || inputPlacementDimensionMid || inputPlacementDimensionBot)
-                        countDimensions = CreateDimensions(doc, lines, intersectionFaces);
+                        CreateDimensions(doc, lines, intersectionFaces, ref countDimensions);
                     if (inputPlacementElevationTop || inputPlacementElevationMid || inputPlacementElevationBot)
-                        countSpots = CreateSpots(doc, lines, intersectionFaces);
+                        CreateSpots(doc, lines, intersectionFaces, ref countSpots);
 
                     trans.Commit();
                 }
@@ -247,11 +247,8 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create spot elevations on a faces through a given lines.
         /// </summary>
-        /// <returns>Count of created elevation spots.</returns>
-        private static int CreateSpots(Document doc, List<Line> lines, List<List<Face>> intersectionFaces)
+        private static void CreateSpots(Document doc, List<Line> lines, List<List<Face>> intersectionFaces, ref int count)
         {
-            int count = 0;
-
             View view = doc.ActiveView;
             XYZ zero = new XYZ(0, 0, 0);
 
@@ -289,17 +286,13 @@ namespace BIM_Leaders_Core
                     catch { }
                 }
             }
-            return count;
         }
 
         /// <summary>
         /// Create dimension on a faces through a given lines.
         /// </summary>
-        /// <returns>Count of created dimensions.</returns>
-        private static int CreateDimensions(Document doc, List<Line> lines, List<List<Face>> intersectionFaces)
+        private static void CreateDimensions(Document doc, List<Line> lines, List<List<Face>> intersectionFaces, ref int count)
         {
-            int count = 0;
-
             View view = doc.ActiveView;
 
             for (int i = 0; i < lines.Count; i++)
@@ -321,7 +314,6 @@ namespace BIM_Leaders_Core
 #endif
                 count++;
             }
-            return count;
         }
 
         private static void ShowResult(int countSpots, int countDimensions)

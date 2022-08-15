@@ -27,7 +27,7 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    (countAll, countCleared) = RemovePaint(doc, element);
+                    RemovePaint(doc, element, ref countAll, ref countCleared);
 
                     trans.Commit();
                 }
@@ -45,12 +45,8 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Remove paint from all faces of element.
         /// </summary>
-        /// <returns>Count of all element faces and faced with removed paint.</returns>
-        private static (int, int) RemovePaint(Document doc, Element element)
+        private static void RemovePaint(Document doc, Element element, ref int count, ref int countCleared)
         {
-            int count = 0;
-            int countCleared = 0;
-
             Options options = new Options
             {
                 ComputeReferences = true
@@ -69,8 +65,6 @@ namespace BIM_Leaders_Core
                     }
                 }
             }
-
-            return (count, countCleared);
         }
 
         private static void ShowResult(int countAll, int countCleared)

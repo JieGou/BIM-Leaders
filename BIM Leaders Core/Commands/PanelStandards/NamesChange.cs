@@ -39,7 +39,7 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    count += ReplaceNames(doc, inputSubstringOld, inputSubstringNew, inputPartPrefix, inputPartSuffix, categories);
+                    ReplaceNames(doc, inputSubstringOld, inputSubstringNew, inputPartPrefix, inputPartSuffix, categories, ref count);
 
                     trans.Commit();
                 }
@@ -64,12 +64,8 @@ namespace BIM_Leaders_Core
         /// <param name="substringNew">String to replace with.</param>
         /// <param name="inputPartPrefix">If true, replace prefix part.</param>
         /// <param name="inputPartSuffix">If true, replace suffix part.</param>
-        /// <param name="types">Sytem.Type of needed DB classes (categories).</param>
-        /// <returns>Count of strings with replaced substrings.</returns>
-        private static int ReplaceNames(Document doc, string substringOld, string substringNew, bool inputPartPrefix, bool inputPartSuffix, List<bool> inputCategories)
+        private static void ReplaceNames(Document doc, string substringOld, string substringNew, bool inputPartPrefix, bool inputPartSuffix, List<bool> inputCategories, ref int count)
         {
-            int count = 0;
-
             List<Type> types = Categories.GetTypesList(inputCategories);
 
             ElementMulticlassFilter elementMulticlassFilter = new ElementMulticlassFilter(types);
@@ -80,23 +76,18 @@ namespace BIM_Leaders_Core
 
             // Prefix location replacement
             if (inputPartPrefix)
-                count = ReplaceNamesPrefix(elements, substringOld, substringNew);
+                ReplaceNamesPrefix(elements, substringOld, substringNew, ref count);
             else if (inputPartSuffix)
-                count = ReplaceNamesSuffix(elements, substringOld, substringNew);
+                ReplaceNamesSuffix(elements, substringOld, substringNew, ref count);
             else
-                count = ReplaceNamesCenter(elements, substringOld, substringNew);
-
-            return count;
+                ReplaceNamesCenter(elements, substringOld, substringNew, ref count);
         }
 
         /// <summary>
         /// Replace substring in names of given elements.
         /// </summary>
-        /// <returns>Count of strings with replaced substrings.</returns>
-        private static int ReplaceNamesPrefix(IEnumerable<Element> elements, string substringOld, string substringNew)
+        private static void ReplaceNamesPrefix(IEnumerable<Element> elements, string substringOld, string substringNew, ref int count)
         {
-            int count = 0;
-
             foreach (Element element in elements)
             {
                 string name = element.Name;
@@ -108,18 +99,13 @@ namespace BIM_Leaders_Core
                     count++;
                 }
             }
-
-            return count;
         }
 
         /// <summary>
         /// Replace substring in names of given elements.
         /// </summary>
-        /// <returns>Count of strings with replaced substrings.</returns>
-        private static int ReplaceNamesSuffix(IEnumerable<Element> elements, string substringOld, string substringNew)
+        private static void ReplaceNamesSuffix(IEnumerable<Element> elements, string substringOld, string substringNew, ref int count)
         {
-            int count = 0;
-
             foreach (Element element in elements)
             {
                 string name = element.Name;
@@ -131,18 +117,13 @@ namespace BIM_Leaders_Core
                     count++;
                 }
             }
-
-            return count;
         }
 
         /// <summary>
         /// Replace substring in names of given elements.
         /// </summary>
-        /// <returns>Count of strings with replaced substrings.</returns>
-        private static int ReplaceNamesCenter(IEnumerable<Element> elements, string substringOld, string substringNew)
+        private static void ReplaceNamesCenter(IEnumerable<Element> elements, string substringOld, string substringNew, ref int count)
         {
-            int count = 0;
-
             foreach (Element element in elements)
             {
                 string name = element.Name;
@@ -153,8 +134,6 @@ namespace BIM_Leaders_Core
                     count++;
                 }
             }
-
-            return count;
         }
 
         private static void ShowResult(int count)

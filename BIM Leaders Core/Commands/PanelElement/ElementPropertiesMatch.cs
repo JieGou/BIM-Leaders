@@ -34,7 +34,7 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    countProperties = MatchProperties(elementFrom, elementTo);
+                    MatchProperties(elementFrom, elementTo, ref countProperties);
 
                     trans.Commit();
                 }
@@ -52,11 +52,8 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Copy all instance properties values from one element to other.
         /// </summary>
-        /// <returns>Count of all element properties changed.</returns>
-        private static int MatchProperties(Element elementFrom, Element elementTo)
+        private static void MatchProperties(Element elementFrom, Element elementTo, ref int count)
         {
-            int count = 0;
-
             List<Parameter> parametersFrom = ConvertParameterSet(elementFrom.Parameters);
             List<Parameter> parametersTo = ConvertParameterSet(elementTo.Parameters);
 
@@ -107,7 +104,6 @@ namespace BIM_Leaders_Core
                     }
                 }
             }
-            return count;
         }
 
         /// <summary>
