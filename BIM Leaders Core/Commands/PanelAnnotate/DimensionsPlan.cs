@@ -16,7 +16,7 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
+			double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
 
 			int countDim = 0;
 			int countRef = 0;
@@ -33,6 +33,7 @@ namespace BIM_Leaders_Core
 						CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No,
 						AllowCancellation = false
 					};
+
 					agree = dialog.Show();
 					if (agree == TaskDialogResult.No)
 						return Result.Cancelled;

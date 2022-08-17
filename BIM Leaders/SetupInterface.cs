@@ -226,6 +226,19 @@ namespace BIM_Leaders
             };
             // Create button from provided data
             RevitPushButton.Create(buttonData03);
+
+            // Populate button data model
+            RevitPushButtonDataModel buttonData04 = new RevitPushButtonDataModel
+            {
+                Label = "Create\r\nLists",
+                Panel = panel,
+                ToolTip = "Create lists for aluminium, metal and carpentry elements.",
+                LongDescription = "Elements need to be in categories of Door, Window, Railing or Wall. They must have filled Type Comment parameter that means they need to be counted.",
+                CommandNamespacePath = ListsCreate.GetPath(),
+                IconImageName = "BIM_Leaders_Lists_Create.png",
+            };
+            // Create button from provided data
+            RevitPushButton.Create(buttonData04);
         }
         private void CreatePanel04(UIControlledApplication application, string tabName, string panelName)
         {

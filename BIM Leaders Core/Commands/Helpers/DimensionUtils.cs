@@ -60,7 +60,7 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="dimension">Dimension to calculate the distances.</param>
         /// <returns>List of distances. If dimension segment text don't need or cannot be moved, distance will be 0.</returns>
-        internal static List<double> GetMovingData(Dimension dimension)
+        private static List<double> GetMovingData(Dimension dimension)
         {
             // Get the bool array that indicates if we need to move dimension segment.
             List<double> moveDistances = new List<double>();
@@ -113,16 +113,16 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="value">Dimension segment value.</param>
         /// <returns>Ratio of dimension segment text height to width.</returns>
-        internal static double GetRatio(double value)
+        private static double GetRatio(double value)
         {
-            double ratio = 0.7;
+            double ratio = 0.7;   // For 1-digit dimensions (default).
 
             if (value > 9)
-                ratio = 1.5; // For 2-digit dimensions.
+                ratio = 1.5;      // For 2-digit dimensions.
             else if (value > 99)
-                ratio = 2.5; // For 3-digit dimensions.
+                ratio = 2.5;      // For 3-digit dimensions.
             else if (value > 999)
-                ratio = 3.5; // For 4-digit dimensions.
+                ratio = 3.5;      // For 4-digit dimensions.
 
             return ratio;
         }
@@ -134,7 +134,7 @@ namespace BIM_Leaders_Core
         /// <param name="dimension">Dimension to which segment belongs.</param>
         /// <param name="moveDistance">Distance to move.</param>
         /// <param name="moveDirection">Direction to move (left/right).</param>
-        internal static void MoveSegmentText(DimensionSegment dimensionSegment, Dimension dimension, double moveDistance, MoveDirection moveDirection)
+        private static void MoveSegmentText(DimensionSegment dimensionSegment, Dimension dimension, double moveDistance, MoveDirection moveDirection)
         {
             // Get moving direction
             Line line = dimension.Curve as Line;
@@ -152,7 +152,7 @@ namespace BIM_Leaders_Core
             dimensionSegment.TextPosition = newTextPosition;
         }
 
-        internal enum MoveDirection
+        private enum MoveDirection
         {
             Left,
             Right

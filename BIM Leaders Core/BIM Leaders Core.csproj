@@ -117,6 +117,7 @@
     <Compile Include="Commands\PanelStandards\WallsArranged.cs" />
     <Compile Include="Commands\PanelStandards\HelpStandards.cs" />
     <Compile Include="Commands\Helpers\SelectionFilterByCategory.cs" />
+    <Compile Include="Commands\PanelElement\ListsCreate.cs" />
     <Compile Include="CoreAssembly.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionSectionFloors.cs" />
     <Compile Include="Commands\PanelDwg\DwgNameDelete.cs" />
