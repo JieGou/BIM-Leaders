@@ -22,9 +22,13 @@ namespace BIM_Leaders_Core
             bool createMetal = true;
             bool createCarpentry = true;
             bool sortElements = true;
-            string markAluminium = "A";
-            string markMetal = "M";
-            string markCarpentry = "C";
+
+            string typeCommentsAluminium = "A";
+            string typeCommentsMetal = "M";
+            string typeCommentsCarpentry = "C";
+
+            string typeNamePrefixAluminiumWalls = "Aluminium Walls";
+
             string viewTypeName = "Lists";
             string viewTemplateName = "Lists";
             string viewNamePrefix = "LIST_";
@@ -32,7 +36,8 @@ namespace BIM_Leaders_Core
             string tagFamilyName = "Lists tag GF A4";
             string tagTypeNameAluminium = "Aluminium";
             string tagTypeNameMetal = "Metal";
-            string tagTypeNameCarpentry = "Carpentry";
+            string tagTypeNameCarpentry = "Wood";
+
             double tagPlacementOffsetX = 177.5; // In mm.
             double tagPlacementOffsetY = 208.7;
 
@@ -52,13 +57,13 @@ namespace BIM_Leaders_Core
                 List<Element> elementsAll = GetElements(doc);
 
                 List<Element> elementsAluminium = (createAluminium)
-                    ? FilterElements(elementsAll, markAluminium)
+                    ? FilterElements(elementsAll, typeCommentsAluminium)
                     : null;
                 List<Element> elementsMetal = (createMetal)
-                    ? FilterElements(elementsAll, markMetal)
+                    ? FilterElements(elementsAll, typeCommentsMetal)
                     : null;
                 List<Element> elementsCarpentry = (createCarpentry)
-                    ? FilterElements(elementsAll, markCarpentry)
+                    ? FilterElements(elementsAll, typeCommentsCarpentry)
                     : null;
 
                 if (sortElements)
@@ -79,15 +84,15 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    MarkElements(elementsAluminium);
-                    MarkElements(elementsMetal);
-                    MarkElements(elementsCarpentry);
+                    MarkElements(elementsAluminium, typeNamePrefixAluminiumWalls);
+                    MarkElements(elementsMetal, typeNamePrefixAluminiumWalls);
+                    MarkElements(elementsCarpentry, typeNamePrefixAluminiumWalls);
 
                     List<View> viewsAluminium = CreateListViews(doc, elementsAluminium, viewType, viewTemplate, viewNamePrefix, tagTypeAluminium, tagPlacementOffsetX, tagPlacementOffsetY);
                     List<View> viewsMetal = CreateListViews(doc, elementsMetal, viewType, viewTemplate, viewNamePrefix, tagTypeMetal, tagPlacementOffsetX, tagPlacementOffsetY);
                     List<View> viewsCarpentry = CreateListViews(doc, elementsCarpentry, viewType, viewTemplate, viewNamePrefix, tagTypeCarpentry, tagPlacementOffsetX, tagPlacementOffsetY);
 
-                    ShowResult(viewsAluminium.Count, viewsMetal.Count, viewsCarpentry.Count);
+                    ShowResult(viewsAluminium?.Count, viewsMetal?.Count, viewsCarpentry?.Count);
 
                     trans.Commit();
                 }
@@ -129,18 +134,20 @@ namespace BIM_Leaders_Core
                 .ToElements();
 
             // Get list of elements with only one element of each type.
-            List<ElementId> elementsTypes = new List<ElementId>();
+            List<ElementId> elementsTypesCollected = new List<ElementId>();
             foreach (Element element in elementsAll)
             {
                 ElementId elementType = element.GetTypeId();
 
-                if (elementsTypes.Contains(elementType))
+                if (elementsTypesCollected.Contains(elementType))
                     continue;
 
-                elementsTypes.Add(elementType);
                 elements.Add(element);
-            }
 
+                // Curtain walls need to be added of the same type also, so don't count them in Collected Element Types list.
+                if (element.GetType() != typeof (Wall))
+                    elementsTypesCollected.Add(elementType);
+            }
             return elements;
         }
 
@@ -157,9 +164,9 @@ namespace BIM_Leaders_Core
             // Filter elements for given list.
             foreach (Element element in elements)
             {
-                string typeMark = GetTypeMark(doc, element);
+                string typeComments = GetTypeComments(doc, element);
 
-                if (typeMark == valueTypeComments)
+                if (typeComments == valueTypeComments)
                     elementsFiltered.Add(element);
             }
             return elementsFiltered;
@@ -172,7 +179,7 @@ namespace BIM_Leaders_Core
         /// <returns>Sorted list of elements.</returns>
         private static List<Element> SortElements(List<Element> elements)
         {
-            if (elements == null)
+            if (elements == null || elements.Count == 0)
                 return null;
 
             List<Element> elementsSorted = new List<Element>();
@@ -285,7 +292,7 @@ namespace BIM_Leaders_Core
 
             if (tag.Count() == 0)
             {
-                TaskDialog.Show("Create Lists", "Tag type with given name was not found.");
+                TaskDialog.Show("Create Lists", $"Tag type with given name {tagFamilyName} / {tagTypeName} was not found.");
                 return null;
             }
 
@@ -297,14 +304,12 @@ namespace BIM_Leaders_Core
         /// Set Tape Mark numbers.
         /// </summary>
         /// <param name="elements">List of elements to mark.</param>
-        private static void MarkElements(List<Element> elements)
+        private static void MarkElements(List<Element> elements, string typeNamePrefixAluminiumWalls)
         {
-            if (elements == null)
+            if (elements == null || elements.Count == 0)
                 return;
 
             Document doc = elements.First().Document;
-
-            //SortElements(elements);
 
             int counter = 1;
             foreach (Element element in elements)
@@ -316,13 +321,50 @@ namespace BIM_Leaders_Core
 
                 Element elementType = doc.GetElement(elementTypeId);
 
+                // Arrange Curtain Wall types.
+                if (element.GetType() == typeof(Wall))
+                {
+                    ElementClassFilter wallsFilter = new ElementClassFilter(typeof(Wall));
+                    IList<ElementId> wallsSameType = elementType.GetDependentElements(wallsFilter);
+
+                    string elementNewTypeName = typeNamePrefixAluminiumWalls + " " + counter;
+
+                    if (wallsSameType.Count == 1)
+                    {
+                        try
+                        {
+                            elementType.Name = elementNewTypeName;
+                        }
+                        catch
+                        {
+                            TaskDialog.Show("Create Lists", $"Error renaming aluminium wall type. Name {elementNewTypeName} may be unavailable.");
+                        }
+                    }
+                    else
+                    {
+                        WallType wallType = elementType as WallType;
+                        try
+                        {
+                            ElementType wallTypeNew = wallType.Duplicate(typeNamePrefixAluminiumWalls + counter);
+                            element.ChangeTypeId(wallTypeNew.Id);
+                        }
+                        catch
+                        {
+                            TaskDialog.Show("Create Lists", $"Error creating new aluminium wall type. Name {elementNewTypeName} may be unavailable.");
+                        }
+                    }
+                }
+
 #if VERSION2020 || VERSION2021
                 Parameter parameter = elementType.get_Parameter(BuiltInParameter.WINDOW_TYPE_ID);
 #else
                 Parameter parameter = elementType.GetParameter(ParameterTypeId.WindowTypeId);
 #endif
-                parameter.Set(counter.ToString());
-                counter++;
+                if (parameter != null)
+                {
+                    parameter.Set(counter.ToString());
+                    counter++;
+                }
             }
         }
 
@@ -341,16 +383,16 @@ namespace BIM_Leaders_Core
             foreach (Element element in elements)
             {
                 BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
-                XYZ instanceLocation = new XYZ();
+                XYZ location = new XYZ();
 
                 if (element.GetType() == typeof(FamilyInstance))
                 {
-                    sectionBox = GetSectionBoxInstance(doc, element, SECTION_SIDES_EXTENSION);
-                    instanceLocation = GetLocationInstance(element);
+                    sectionBox = GetSectionBoxInstance(doc, element as FamilyInstance, SECTION_SIDES_EXTENSION);
+                    location = GetElementLocationInstance(element as FamilyInstance);
                 }
                 if (element.GetType() == typeof(Wall))
                 {
-
+                    (sectionBox, location) = GetSectionBoxWall(doc, element as Wall, SECTION_SIDES_EXTENSION);
                 }
                 if (element.GetType() == typeof(Railing))
                 {
@@ -360,13 +402,18 @@ namespace BIM_Leaders_Core
                 ViewSection section = ViewSection.CreateSection(doc, viewType, sectionBox);
 
                 string typeMark = GetTypeMark(doc, element);
+                if (typeMark == "")
+                {
+                    TaskDialog.Show("Create Lists", $"Error creating views. Element {element.Id.ToString()} has empty Type Mark.");
+                    return null;
+                }
                 try
                 {
                     section.Name = viewNamePrefix + typeMark;
                 }
                 catch
                 {
-                    TaskDialog.Show("Create Lists", "Error creating views. Element with empty and/or duplicate Type Marks exist.");
+                    TaskDialog.Show("Create Lists", "Error creating views. Element with duplicate Type Marks exist.");
                     return null;
                 }
 
@@ -386,7 +433,7 @@ namespace BIM_Leaders_Core
                 double moveTagY = -(section.RightDirection.Y * tagPlacementOffsetXconverted * scale);
                 double moveTagZ = (sectionBox.Max.Y - sectionBox.Min.Y) / 2 - tagPlacementOffsetYconverted * scale;
                 XYZ moveTag = new XYZ(moveTagX, moveTagY, moveTagZ);
-                XYZ tagLocation = instanceLocation.Add(moveTag);
+                XYZ tagLocation = location.Add(moveTag);
 
                 IndependentTag.Create(doc, tagType, section.Id, reference, false, TagOrientation.Horizontal, tagLocation);
 
@@ -411,21 +458,54 @@ namespace BIM_Leaders_Core
             Element elementType = doc.GetElement(elementTypeId);
 
 #if VERSION2020 || VERSION2021
-            Parameter parameter = elementType.get_Parameter(BuiltInParameter.ALL_MODEL_TYPE_COMMENTS);
+            Parameter parameter = elementType.get_Parameter(BuiltInParameter.WINDOW_TYPE_ID);
 #else
-                Parameter parameter = elementType.GetParameter(ParameterTypeId.AllModelTypeComments);
+            Parameter parameter = elementType.GetParameter(ParameterTypeId.WindowTypeId);
 #endif
+            if (parameter != null)
+                typeMark = parameter.AsString();
 
             return typeMark;
         }
 
-        private static BoundingBoxXYZ GetSectionBoxInstance(Document doc, Element element, double SECTION_SIDES_EXTENSION)
+        /// <summary>
+        /// Get the Type Comments value from given element.
+        /// </summary>
+        /// <returns>Type Comments value.</returns>
+        private static string GetTypeComments(Document doc, Element element)
+        {
+            string typeComments = "";
+
+            ElementId elementTypeId = element.GetTypeId();
+
+            if (elementTypeId == ElementId.InvalidElementId)
+                return typeComments;
+
+            Element elementType = doc.GetElement(elementTypeId);
+
+#if VERSION2020 || VERSION2021
+            Parameter parameter = elementType.get_Parameter(BuiltInParameter.ALL_MODEL_TYPE_COMMENTS);
+#else
+            Parameter parameter = elementType.GetParameter(ParameterTypeId.AllModelTypeComments);
+#endif
+            if (parameter != null)
+                typeComments = parameter.AsString();
+
+            return typeComments;
+        }
+
+        /// <summary>
+        /// Get bounding box for creating a section view that cuts the given <paramref name="familyInstance"/>.
+        /// </summary>
+        /// <param name="doc">Document.</param>
+        /// <param name="familyInstance">Family instance to cut.</param>
+        /// <param name="SECTION_SIDES_EXTENSION">Extension of the bounding box (will apply to left, right and far side).</param>
+        /// <returns>Bounding box with right coordinates for section creating (Z is looking to the section direction, etc).</returns>
+        private static BoundingBoxXYZ GetSectionBoxInstance(Document doc, FamilyInstance familyInstance, double SECTION_SIDES_EXTENSION)
         {
             BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
 
-            FamilyInstance familyInstance = element as FamilyInstance;
-
-            ElementId elementTypeId = element.GetTypeId();
+            ElementId elementTypeId = familyInstance.GetTypeId();
             if (elementTypeId == ElementId.InvalidElementId)
                 return null;
             Element elementType = doc.GetElement(elementTypeId);
@@ -450,6 +530,14 @@ namespace BIM_Leaders_Core
             double sectionBoxDepth = sectionBoxOriginalHeight;
             double sectionBoxHeight = sectionBoxOriginalDepth;
 
+            // Change the dimensions of the section box.
+            XYZ sectionBoxMin = new XYZ(-sectionBoxWidth / 2, -sectionBoxDepth / 2, 0);
+            XYZ sectionBoxMax = new XYZ(sectionBoxWidth / 2, sectionBoxDepth / 2, sectionBoxHeight);
+            sectionBox.Min = sectionBoxMin;
+            sectionBox.Max = sectionBoxMax;
+
+            // Move the sexion box to the needed coordinates via Transform.
+
             // Get element transform (location, rotation, etc.).
             // Change it via Z rotation because we need to see not front of element but side of it
             // Change it via X rotation because for section creating Z is looking fro section front.
@@ -463,21 +551,86 @@ namespace BIM_Leaders_Core
             Transform moveUp = Transform.CreateTranslation(new XYZ(0, sectionBoxOriginalHeight / 2 - SECTION_SIDES_EXTENSION, 0));
             Transform instanceTransformRaised = instanceTransformRotated.Multiply(moveUp);
 
-            XYZ sectionBoxMin = new XYZ(-sectionBoxWidth / 2, -sectionBoxDepth / 2, 0);
-            XYZ sectionBoxMax = new XYZ(sectionBoxWidth / 2, sectionBoxDepth / 2, sectionBoxHeight);
-
-            sectionBox.Min = sectionBoxMin;
-            sectionBox.Max = sectionBoxMax;
             sectionBox.Transform = instanceTransformRaised;
 
             return sectionBox;
         }
-        
-        private static XYZ GetLocationInstance(Element element)
+
+        /// <summary>
+        /// Get bounding box for creating a section view that cuts the given <paramref name="wall"/>.
+        /// </summary>
+        /// <param name="doc">Document.</param>
+        /// <param name="wall">Wall to cut.</param>
+        /// <param name="SECTION_SIDES_EXTENSION">Extension of the bounding box (will apply to left, right and far side).</param>
+        /// <returns>Bounding box with right coordinates for section creating (Z is looking to the section direction, etc).</returns>
+        private static (BoundingBoxXYZ, XYZ) GetSectionBoxWall(Document doc, Wall wall, double SECTION_SIDES_EXTENSION)
+        {
+            BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
+            XYZ location = new XYZ();
+
+            ElementId elementTypeId = wall.GetTypeId();
+            if (elementTypeId == ElementId.InvalidElementId)
+                return (null, null);
+            Element elementType = doc.GetElement(elementTypeId);
+
+            double wallThickness = wall.WallType.Width;
+
+#if VERSION2020 || VERSION2021
+            double wallLength = wall.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble();
+            double wallHeight = wall.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM).AsDouble();
+#else
+            double wallLength = elementType.GetParameter(ParameterTypeId.CurveElemLength).AsDouble();
+            double wallHeight = wall.GetParameter(ParameterTypeId.WallUserHeightParam).AsDouble();
+#endif
+
+            // Get box dimensions, box will cover one half of the wall + extension.
+            double sectionBoxOriginalWidth = wallThickness + 2 * SECTION_SIDES_EXTENSION;
+            double sectionBoxOriginalDepth = wallLength / 2 + SECTION_SIDES_EXTENSION;
+            double sectionBoxOriginalHeight = wallHeight + 2 * SECTION_SIDES_EXTENSION;
+            // Box will be rotated, so depth and height will interchange.
+            double sectionBoxWidth = sectionBoxOriginalWidth;
+            double sectionBoxDepth = sectionBoxOriginalHeight;
+            double sectionBoxHeight = sectionBoxOriginalDepth;
+
+            // Change the dimensions of the section box.
+            XYZ sectionBoxMin = new XYZ(-sectionBoxWidth / 2, -sectionBoxDepth / 2, 0);
+            XYZ sectionBoxMax = new XYZ(sectionBoxWidth / 2, sectionBoxDepth / 2, sectionBoxHeight);
+            sectionBox.Min = sectionBoxMin;
+            sectionBox.Max = sectionBoxMax;
+
+            // Move the sexion box to the needed coordinates via Transform.
+
+            // Get wall location line
+            LocationCurve wallLocationCurve = wall.Location as LocationCurve;
+            XYZ wallPoint0 = wallLocationCurve.Curve.GetEndPoint(0);
+            XYZ wallPoint1 = wallLocationCurve.Curve.GetEndPoint(1);
+
+            XYZ wallCenter = wallPoint0.Add(wallPoint1.Subtract(wallPoint0) / 2);
+
+            XYZ wallDirection = wallPoint1.Subtract(wallPoint0).Normalize();
+
+            XYZ upDirection = new XYZ(0, 0, 1);
+            Transform transform = Transform.Identity;
+            transform.Origin = wallCenter;
+            transform.BasisY = upDirection;
+            transform.BasisZ = wallDirection;
+            transform.BasisX = upDirection.CrossProduct(wallDirection);
+
+            //XYZ wallOrientation = wall.Orientation;
+
+            sectionBox.Transform = transform;
+
+            return (sectionBox, wallCenter);
+        }
+
+        /// <summary>
+        /// Get point of the location for Family Instance element.
+        /// </summary>
+        /// <param name="element">Element to calculate the location point.</param>
+        /// <returns>XYZ location point.</returns>
+        private static XYZ GetElementLocationInstance(FamilyInstance familyInstance)
         {
             XYZ instanceLocation = new XYZ();
-
-            FamilyInstance familyInstance = element as FamilyInstance;
 
             Transform instanceTransform = familyInstance.GetTransform();
             instanceLocation = instanceTransform.Origin;
@@ -485,11 +638,11 @@ namespace BIM_Leaders_Core
             return instanceLocation;
         }
 
-        private static void ShowResult(int viewsAluminium, int viewsMetal, int viewsCarpentry)
+        private static void ShowResult(int? viewsAluminium, int? viewsMetal, int? viewsCarpentry)
         {
             // Show result
             string text = "";
-            if (viewsAluminium + 0 + 0 == 0)
+            if (viewsAluminium + viewsMetal + viewsCarpentry == 0)
                 text = "No views were created.";
             else
             {
