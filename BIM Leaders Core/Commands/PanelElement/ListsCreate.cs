@@ -76,9 +76,10 @@ namespace BIM_Leaders_Core
                 ElementId viewType = GetViewType(doc, viewTypeName);
                 ElementId viewTemplate = GetViewTemplate(doc, viewTemplateName);
 
-                ElementId tagTypeAluminium = GetTagType(doc, tagFamilyName, tagTypeNameAluminium);
-                ElementId tagTypeMetal = GetTagType(doc, tagFamilyName, tagTypeNameMetal);
-                ElementId tagTypeCarpentry = GetTagType(doc, tagFamilyName, tagTypeNameCarpentry);
+                ElementId tagTypeMultiCategoryAluminium = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagFamilyName, tagTypeNameAluminium);
+                ElementId tagTypeMultiCategoryMetal = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagFamilyName, tagTypeNameMetal);
+                ElementId tagTypeMultiCategoryCarpentry = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagFamilyName, tagTypeNameCarpentry);
+                ElementId tagTypeRailingAluminium = GetTagType(doc, BuiltInCategory.OST_StairsRailingTags, tagFamilyName, tagTypeNameAluminium);
 
                 using (Transaction trans = new Transaction(doc, "Create Lists"))
                 {
@@ -91,6 +92,10 @@ namespace BIM_Leaders_Core
                     List<View> viewsAluminium = CreateListViews(doc, elementsAluminium, viewType, viewTemplate, viewNamePrefix, tagTypeAluminium, tagPlacementOffsetX, tagPlacementOffsetY);
                     List<View> viewsMetal = CreateListViews(doc, elementsMetal, viewType, viewTemplate, viewNamePrefix, tagTypeMetal, tagPlacementOffsetX, tagPlacementOffsetY);
                     List<View> viewsCarpentry = CreateListViews(doc, elementsCarpentry, viewType, viewTemplate, viewNamePrefix, tagTypeCarpentry, tagPlacementOffsetX, tagPlacementOffsetY);
+
+                    // !!! Create sheets
+                    // !!! Place views
+                    // !!! Place legend components
 
                     ShowResult(viewsAluminium?.Count, viewsMetal?.Count, viewsCarpentry?.Count);
 
@@ -114,11 +119,6 @@ namespace BIM_Leaders_Core
             List<Element> elements = new List<Element>();
 
             // Filter.
-            List<BuiltInCategory> categories = new List<BuiltInCategory>()
-            {
-                BuiltInCategory.OST_Doors,
-                BuiltInCategory.OST_Windows,
-            };
             List<Type> classes = new List<Type>()
             {
                 typeof(FamilyInstance),
@@ -279,13 +279,13 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="tagTypeName">Name of the tag type.</param>
         /// <returns>Tag type.</returns>
-        private static ElementId GetTagType(Document doc, string tagFamilyName, string tagTypeName)
+        private static ElementId GetTagType(Document doc, BuiltInCategory category, string tagFamilyName, string tagTypeName)
         {
             ElementId tagType = null;
 
             IEnumerable<FamilySymbol> tag = new FilteredElementCollector(doc)
                 .OfClass(typeof(FamilySymbol))
-                .OfCategory(BuiltInCategory.OST_MultiCategoryTags)
+                .OfCategory(category)
                 .Cast<FamilySymbol>()
                 .Where(x => x.FamilyName == tagFamilyName)
                 .Where(x => x.Name == tagTypeName);
@@ -298,6 +298,58 @@ namespace BIM_Leaders_Core
 
             tagType = tag.First().Id;
             return tagType;
+        }
+
+        /// <summary>
+        /// Get the Type Mark value from given element.
+        /// </summary>
+        /// <returns>Type Mark value.</returns>
+        private static string GetTypeMark(Document doc, Element element)
+        {
+            string typeMark = "";
+
+            ElementId elementTypeId = element.GetTypeId();
+
+            if (elementTypeId == ElementId.InvalidElementId)
+                return typeMark;
+
+            Element elementType = doc.GetElement(elementTypeId);
+
+#if VERSION2020 || VERSION2021
+            Parameter parameter = elementType.get_Parameter(BuiltInParameter.WINDOW_TYPE_ID);
+#else
+            Parameter parameter = elementType.GetParameter(ParameterTypeId.WindowTypeId);
+#endif
+            if (parameter != null)
+                typeMark = parameter.AsString();
+
+            return typeMark;
+        }
+
+        /// <summary>
+        /// Get the Type Comments value from given element.
+        /// </summary>
+        /// <returns>Type Comments value.</returns>
+        private static string GetTypeComments(Document doc, Element element)
+        {
+            string typeComments = "";
+
+            ElementId elementTypeId = element.GetTypeId();
+
+            if (elementTypeId == ElementId.InvalidElementId)
+                return typeComments;
+
+            Element elementType = doc.GetElement(elementTypeId);
+
+#if VERSION2020 || VERSION2021
+            Parameter parameter = elementType.get_Parameter(BuiltInParameter.ALL_MODEL_TYPE_COMMENTS);
+#else
+            Parameter parameter = elementType.GetParameter(ParameterTypeId.AllModelTypeComments);
+#endif
+            if (parameter != null)
+                typeComments = parameter.AsString();
+
+            return typeComments;
         }
 
         /// <summary>
@@ -368,36 +420,23 @@ namespace BIM_Leaders_Core
             }
         }
 
+        /// <summary>
+        /// Create views for given list elements.
+        /// </summary>
+        /// <returns>List of created views.</returns>
         private static List<View> CreateListViews(Document doc, List<Element> elements, ElementId viewType, ElementId viewTemplate, string viewNamePrefix, ElementId tagType, double tagPlacementOffsetX, double tagPlacementOffsetY)
         {
-            if (elements == null)
+            if (elements == null || elements.Count == 0)
                 return null;
 
             List<View> viewsCreated = new List<View>(); 
-
-            const double SECTION_SIDES_EXTENSION = 1;
 
             View view = doc.GetElement(viewTemplate) as View;
             double scale = view.Scale;
 
             foreach (Element element in elements)
             {
-                BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
-                XYZ location = new XYZ();
-
-                if (element.GetType() == typeof(FamilyInstance))
-                {
-                    sectionBox = GetSectionBoxInstance(doc, element as FamilyInstance, SECTION_SIDES_EXTENSION);
-                    location = GetElementLocationInstance(element as FamilyInstance);
-                }
-                if (element.GetType() == typeof(Wall))
-                {
-                    (sectionBox, location) = GetSectionBoxWall(doc, element as Wall, SECTION_SIDES_EXTENSION);
-                }
-                if (element.GetType() == typeof(Railing))
-                {
-
-                }
+                BoundingBoxXYZ sectionBox = GetSectionBox(element);
 
                 ViewSection section = ViewSection.CreateSection(doc, viewType, sectionBox);
 
@@ -420,7 +459,7 @@ namespace BIM_Leaders_Core
                 section.ViewTemplateId = viewTemplate;
 
                 Reference reference = new Reference(element);
-
+                
                 // Move tag on the view because it's on the family point now.
 #if VERSION2020 || VERSION2021
                 double tagPlacementOffsetXconverted = UnitUtils.ConvertToInternalUnits(tagPlacementOffsetX, DisplayUnitType.DUT_MILLIMETERS);
@@ -429,13 +468,16 @@ namespace BIM_Leaders_Core
                 double tagPlacementOffsetXconverted = UnitUtils.ConvertToInternalUnits(tagPlacementOffsetX, UnitTypeId.Millimeters);
                 double tagPlacementOffsetYconverted = UnitUtils.ConvertToInternalUnits(tagPlacementOffsetY, UnitTypeId.Millimeters);
 #endif
+                XYZ tagLocation = sectionBox.Transform.Origin;
+
                 double moveTagX = -(section.RightDirection.X * tagPlacementOffsetXconverted * scale);
                 double moveTagY = -(section.RightDirection.Y * tagPlacementOffsetXconverted * scale);
                 double moveTagZ = (sectionBox.Max.Y - sectionBox.Min.Y) / 2 - tagPlacementOffsetYconverted * scale;
                 XYZ moveTag = new XYZ(moveTagX, moveTagY, moveTagZ);
-                XYZ tagLocation = location.Add(moveTag);
 
-                IndependentTag.Create(doc, tagType, section.Id, reference, false, TagOrientation.Horizontal, tagLocation);
+                XYZ tagLocationMoved = tagLocation.Add(moveTag);
+
+                IndependentTag.Create(doc, tagType, section.Id, reference, false, TagOrientation.Horizontal, tagLocationMoved);
 
                 viewsCreated.Add(section);
             }
@@ -443,55 +485,25 @@ namespace BIM_Leaders_Core
         }
 
         /// <summary>
-        /// Get the Type Mark value from given element.
+        /// Get section box for section creating.
         /// </summary>
-        /// <returns>Type Mark value.</returns>
-        private static string GetTypeMark(Document doc, Element element)
+        /// <param name="element">Element that needs a section.</param>
+        private static BoundingBoxXYZ GetSectionBox(Element element)
         {
-            string typeMark = "";
+            BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
 
-            ElementId elementTypeId = element.GetTypeId();
+            const double SECTION_SIDES_EXTENSION = 1;
 
-            if (elementTypeId == ElementId.InvalidElementId)
-                return typeMark;
+            if (element.GetType() == typeof(FamilyInstance))
+                sectionBox = GetSectionBoxInstance(element as FamilyInstance, SECTION_SIDES_EXTENSION);
+            else if (element.GetType() == typeof(Wall))
+                sectionBox = GetSectionBoxWall(element as Wall, SECTION_SIDES_EXTENSION);
+            else if (element.GetType() == typeof(Railing))
+            {
 
-            Element elementType = doc.GetElement(elementTypeId);
+            }
 
-#if VERSION2020 || VERSION2021
-            Parameter parameter = elementType.get_Parameter(BuiltInParameter.WINDOW_TYPE_ID);
-#else
-            Parameter parameter = elementType.GetParameter(ParameterTypeId.WindowTypeId);
-#endif
-            if (parameter != null)
-                typeMark = parameter.AsString();
-
-            return typeMark;
-        }
-
-        /// <summary>
-        /// Get the Type Comments value from given element.
-        /// </summary>
-        /// <returns>Type Comments value.</returns>
-        private static string GetTypeComments(Document doc, Element element)
-        {
-            string typeComments = "";
-
-            ElementId elementTypeId = element.GetTypeId();
-
-            if (elementTypeId == ElementId.InvalidElementId)
-                return typeComments;
-
-            Element elementType = doc.GetElement(elementTypeId);
-
-#if VERSION2020 || VERSION2021
-            Parameter parameter = elementType.get_Parameter(BuiltInParameter.ALL_MODEL_TYPE_COMMENTS);
-#else
-            Parameter parameter = elementType.GetParameter(ParameterTypeId.AllModelTypeComments);
-#endif
-            if (parameter != null)
-                typeComments = parameter.AsString();
-
-            return typeComments;
+            return sectionBox;
         }
 
         /// <summary>
@@ -501,14 +513,14 @@ namespace BIM_Leaders_Core
         /// <param name="familyInstance">Family instance to cut.</param>
         /// <param name="SECTION_SIDES_EXTENSION">Extension of the bounding box (will apply to left, right and far side).</param>
         /// <returns>Bounding box with right coordinates for section creating (Z is looking to the section direction, etc).</returns>
-        private static BoundingBoxXYZ GetSectionBoxInstance(Document doc, FamilyInstance familyInstance, double SECTION_SIDES_EXTENSION)
+        private static BoundingBoxXYZ GetSectionBoxInstance(FamilyInstance familyInstance, double SECTION_SIDES_EXTENSION)
         {
             BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
 
             ElementId elementTypeId = familyInstance.GetTypeId();
             if (elementTypeId == ElementId.InvalidElementId)
                 return null;
-            Element elementType = doc.GetElement(elementTypeId);
+            Element elementType = familyInstance.Document.GetElement(elementTypeId);
 
             Wall wall = familyInstance.Host as Wall;
             double wallThickness = wall.WallType.Width;
@@ -563,15 +575,16 @@ namespace BIM_Leaders_Core
         /// <param name="wall">Wall to cut.</param>
         /// <param name="SECTION_SIDES_EXTENSION">Extension of the bounding box (will apply to left, right and far side).</param>
         /// <returns>Bounding box with right coordinates for section creating (Z is looking to the section direction, etc).</returns>
-        private static (BoundingBoxXYZ, XYZ) GetSectionBoxWall(Document doc, Wall wall, double SECTION_SIDES_EXTENSION)
+        private static BoundingBoxXYZ GetSectionBoxWall(Wall wall, double SECTION_SIDES_EXTENSION)
         {
             BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
             XYZ location = new XYZ();
 
             ElementId elementTypeId = wall.GetTypeId();
             if (elementTypeId == ElementId.InvalidElementId)
-                return (null, null);
-            Element elementType = doc.GetElement(elementTypeId);
+                return null;
+
+            Element elementType = wall.Document.GetElement(elementTypeId);
 
             double wallThickness = wall.WallType.Width;
 
@@ -620,7 +633,7 @@ namespace BIM_Leaders_Core
 
             sectionBox.Transform = transform;
 
-            return (sectionBox, wallCenter);
+            return sectionBox;
         }
 
         /// <summary>
@@ -671,4 +684,131 @@ namespace BIM_Leaders_Core
             return typeof(ListsCreate).Namespace + "." + nameof(ListsCreate);
         }
     }
+
+
+    interface IElementsListCollection
+    {
+        List<FamilyInstance> GetFamilyInstances(Document doc);
+        List<Railing> GetRailings(Document doc);
+        List<Wall> GetWalls(Document doc);
+
+        List<FamilyInstance> FilterUniqueFamilyInstances(List<FamilyInstance> familyInstances);
+    }
+
+    class ElementsListCollection : IElementsListCollection
+    {
+        public List<FamilyInstance> FamilyInstances;
+        public List<Railing> Railings;
+        public List<Wall> Walls;
+
+        ElementsListCollection(Document doc)
+        {
+            FamilyInstances = GetFamilyInstances(doc);
+            Railings = GetRailings(doc);
+            Walls = GetWalls(doc);
+        }
+
+        private List<FamilyInstance> GetFamilyInstances(Document doc)
+        {
+            // Filter.
+            List<BuiltInCategory> categories = new List<BuiltInCategory>()
+            {
+                BuiltInCategory.OST_Doors,
+                BuiltInCategory.OST_Windows
+            };
+            ElementMulticategoryFilter filter = new ElementMulticategoryFilter(categories);
+
+            // Get elements.
+            List<FamilyInstance> familyInstances = new FilteredElementCollector(doc)
+                .OfClass(typeof(FamilyInstance))
+                .WherePasses(filter)
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<FamilyInstance>()
+                .ToList();
+
+            List<FamilyInstance> familyInstancesUnique = FilterUniqueElements(familyInstances);
+
+            return familyInstancesUnique;
+        }
+
+        private List<Railing> GetRailings(Document doc)
+        {
+            List<Railing> railings = new FilteredElementCollector(doc)
+                .OfClass(typeof(Railing))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<Railing>()
+                .ToList();
+
+            return railings;
+        }
+
+        private List<Wall> GetWalls(Document doc)
+        {
+            List<Wall> walls = new FilteredElementCollector(doc)
+                .OfClass(typeof(Wall))
+                .WhereElementIsNotElementType()
+                .ToElements()
+                .Cast<Wall>()
+                .ToList();
+
+            return walls;
+        }
+
+        private List<FamilyInstance> FilterUniqueFamilyInstances(List<FamilyInstance> familyInstances)
+        {
+            List<FamilyInstance> familyInstancesUnique = new List<FamilyInstance>();
+
+            // Get list of elements with only one element of each type.
+            List<ElementId> elementsTypesCollected = new List<ElementId>();
+
+            foreach (FamilyInstance familyInstance in familyInstances)
+            {
+                ElementId elementType = familyInstance.GetTypeId();
+
+                if (elementsTypesCollected.Contains(elementType))
+                    continue;
+
+                familyInstancesUnique.Add(familyInstance);
+                elementsTypesCollected.Add(elementType);
+            }
+            return familyInstancesUnique;
+        }
+
+        private List<Element> FilterUniqueElements(List<Element> elements)
+        {
+            List<Element> elementsUnique = new List<Element>();
+
+            // Get list of elements with only one element of each type.
+            List<ElementId> elementsTypesCollected = new List<ElementId>();
+
+            foreach (Element element in elements)
+            {
+                ElementId elementType = element.GetTypeId();
+
+                if (elementsTypesCollected.Contains(elementType))
+                    continue;
+
+                elementsUnique.Add(element);
+
+                if (element.GetType() != typeof(Wall))
+                    elementsTypesCollected.Add(elementType);
+            }
+            return elementsUnique;
+        }
+    }
+    /*
+    class ElementsListCollectionAluminium : ElementsListCollection
+    {
+    }
+
+    class ElementsListCollectionMetal : ElementsListCollection
+    {
+    }
+
+    class ElementsListCollectionCarpentry : ElementsListCollection
+    {
+    }
+    */
 }
