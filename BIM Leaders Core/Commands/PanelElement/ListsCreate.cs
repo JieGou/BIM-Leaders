@@ -65,7 +65,7 @@ namespace BIM_Leaders_Core
                 List<Element> elementsCarpentry = (createCarpentry)
                     ? FilterElements(elementsAll, typeCommentsCarpentry)
                     : null;
-
+                
                 if (sortElements)
                 {
                     elementsAluminium = SortElements(elementsAluminium);
@@ -75,11 +75,6 @@ namespace BIM_Leaders_Core
 
                 ElementId viewType = GetViewType(doc, viewTypeName);
                 ElementId viewTemplate = GetViewTemplate(doc, viewTemplateName);
-
-                ElementId tagTypeMultiCategoryAluminium = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagFamilyName, tagTypeNameAluminium);
-                ElementId tagTypeMultiCategoryMetal = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagFamilyName, tagTypeNameMetal);
-                ElementId tagTypeMultiCategoryCarpentry = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagFamilyName, tagTypeNameCarpentry);
-                ElementId tagTypeRailingAluminium = GetTagType(doc, BuiltInCategory.OST_StairsRailingTags, tagFamilyName, tagTypeNameAluminium);
 
                 using (Transaction trans = new Transaction(doc, "Create Lists"))
                 {
@@ -684,131 +679,4 @@ namespace BIM_Leaders_Core
             return typeof(ListsCreate).Namespace + "." + nameof(ListsCreate);
         }
     }
-
-
-    interface IElementsListCollection
-    {
-        List<FamilyInstance> GetFamilyInstances(Document doc);
-        List<Railing> GetRailings(Document doc);
-        List<Wall> GetWalls(Document doc);
-
-        List<FamilyInstance> FilterUniqueFamilyInstances(List<FamilyInstance> familyInstances);
-    }
-
-    class ElementsListCollection : IElementsListCollection
-    {
-        public List<FamilyInstance> FamilyInstances;
-        public List<Railing> Railings;
-        public List<Wall> Walls;
-
-        ElementsListCollection(Document doc)
-        {
-            FamilyInstances = GetFamilyInstances(doc);
-            Railings = GetRailings(doc);
-            Walls = GetWalls(doc);
-        }
-
-        private List<FamilyInstance> GetFamilyInstances(Document doc)
-        {
-            // Filter.
-            List<BuiltInCategory> categories = new List<BuiltInCategory>()
-            {
-                BuiltInCategory.OST_Doors,
-                BuiltInCategory.OST_Windows
-            };
-            ElementMulticategoryFilter filter = new ElementMulticategoryFilter(categories);
-
-            // Get elements.
-            List<FamilyInstance> familyInstances = new FilteredElementCollector(doc)
-                .OfClass(typeof(FamilyInstance))
-                .WherePasses(filter)
-                .WhereElementIsNotElementType()
-                .ToElements()
-                .Cast<FamilyInstance>()
-                .ToList();
-
-            List<FamilyInstance> familyInstancesUnique = FilterUniqueElements(familyInstances);
-
-            return familyInstancesUnique;
-        }
-
-        private List<Railing> GetRailings(Document doc)
-        {
-            List<Railing> railings = new FilteredElementCollector(doc)
-                .OfClass(typeof(Railing))
-                .WhereElementIsNotElementType()
-                .ToElements()
-                .Cast<Railing>()
-                .ToList();
-
-            return railings;
-        }
-
-        private List<Wall> GetWalls(Document doc)
-        {
-            List<Wall> walls = new FilteredElementCollector(doc)
-                .OfClass(typeof(Wall))
-                .WhereElementIsNotElementType()
-                .ToElements()
-                .Cast<Wall>()
-                .ToList();
-
-            return walls;
-        }
-
-        private List<FamilyInstance> FilterUniqueFamilyInstances(List<FamilyInstance> familyInstances)
-        {
-            List<FamilyInstance> familyInstancesUnique = new List<FamilyInstance>();
-
-            // Get list of elements with only one element of each type.
-            List<ElementId> elementsTypesCollected = new List<ElementId>();
-
-            foreach (FamilyInstance familyInstance in familyInstances)
-            {
-                ElementId elementType = familyInstance.GetTypeId();
-
-                if (elementsTypesCollected.Contains(elementType))
-                    continue;
-
-                familyInstancesUnique.Add(familyInstance);
-                elementsTypesCollected.Add(elementType);
-            }
-            return familyInstancesUnique;
-        }
-
-        private List<Element> FilterUniqueElements(List<Element> elements)
-        {
-            List<Element> elementsUnique = new List<Element>();
-
-            // Get list of elements with only one element of each type.
-            List<ElementId> elementsTypesCollected = new List<ElementId>();
-
-            foreach (Element element in elements)
-            {
-                ElementId elementType = element.GetTypeId();
-
-                if (elementsTypesCollected.Contains(elementType))
-                    continue;
-
-                elementsUnique.Add(element);
-
-                if (element.GetType() != typeof(Wall))
-                    elementsTypesCollected.Add(elementType);
-            }
-            return elementsUnique;
-        }
-    }
-    /*
-    class ElementsListCollectionAluminium : ElementsListCollection
-    {
-    }
-
-    class ElementsListCollectionMetal : ElementsListCollection
-    {
-    }
-
-    class ElementsListCollectionCarpentry : ElementsListCollection
-    {
-    }
-    */
 }

@@ -45,16 +45,17 @@ namespace BIM_Leaders_Core
             View view = doc.ActiveView;
 
             // Get solid pattern.
-            IEnumerable<Element> patterns = new FilteredElementCollector(doc).OfClass(typeof(FillPatternElement)).ToElements();
-            ElementId pattern = patterns.First().Id;
-            foreach (Element element in patterns)
-                if (element.Name == "<Solid fill>")
-                    pattern = element.Id;
+            FillPatternElement pattern = new FilteredElementCollector(doc)
+                .OfClass(typeof(FillPatternElement))
+                .ToElements()
+                .Cast<FillPatternElement>()
+                .Where(x => x.GetFillPattern().IsSolidFill)
+                .First();
 
             // Use the existing graphics settings, and change the color.
             OverrideGraphicSettings overrideSettings = view.GetFilterOverrides(filter.Id);
             overrideSettings.SetCutForegroundPatternColor(filterColor);
-            overrideSettings.SetCutForegroundPatternId(pattern);
+            overrideSettings.SetCutForegroundPatternId(pattern.Id);
             view.SetFilterOverrides(filter.Id, overrideSettings);
         }
     }

@@ -15,7 +15,7 @@ namespace BIM_Leaders_Core
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
             double tolerance = 0.1;
-
+            
             int countCutted = 0;
             int countJoined = 0;
 
