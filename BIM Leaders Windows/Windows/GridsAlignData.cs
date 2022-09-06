@@ -15,7 +15,7 @@ namespace BIM_Leaders_Windows
         {
             ResultSide1 = true;
             ResultSide2 = true;
-            ResultSwitch = true;
+            ResultSwitch2D = true;
         }
 
         /// <summary>
@@ -52,23 +52,26 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating if <see cref="GridsAlignData"/> chosen Switch to 2D.
-        /// </summary>
-        /// /// <value>
-        ///     <c>true</c> if Switch to 2D is chosen, if not, then <c>false</c>.
-        /// </value>
-        private bool _resultSwitch;
-        public bool ResultSwitch
+        private bool _resultSwitch2D;
+        public bool ResultSwitch2D
         {
-            get { return _resultSwitch; }
+            get { return _resultSwitch2D; }
             set
             {
-                _resultSwitch = value;
-                OnPropertyChanged(nameof(ResultSwitch));
+                _resultSwitch2D = value;
+                OnPropertyChanged(nameof(ResultSwitch2D));
             }
         }
-
+        private bool _resultSwitch3D;
+        public bool ResultSwitch3D
+        {
+            get { return _resultSwitch3D; }
+            set
+            {
+                _resultSwitch3D = value;
+                OnPropertyChanged(nameof(ResultSwitch3D));
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)

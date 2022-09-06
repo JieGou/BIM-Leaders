@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
@@ -16,7 +14,6 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            int count2D = 0;
             int count = 0;
 
             try
@@ -32,20 +29,21 @@ namespace BIM_Leaders_Core
                 GridsAlignData data = form.DataContext as GridsAlignData;
 
                 // Getting input from user
-                bool inputSwitch = data.ResultSwitch;
                 bool inputSide1 = data.ResultSide1;
                 bool inputSide2 = data.ResultSide2;
+                bool inputSwitch2D = data.ResultSwitch2D;
+                bool inputSwitch3D = data.ResultSwitch3D;
 
                 // Edit extents
                 using (Transaction trans = new Transaction(doc, "Align Grids"))
                 {
                     trans.Start();
 
-                    EditExtentsGrids(doc, inputSwitch, inputSide1, inputSide2, ref count, ref count2D);
+                    DatumPlaneUtils.SetDatumPlanes(doc, typeof(Grid), inputSwitch2D, inputSwitch3D, inputSide1, inputSide2, ref count);
 
                     trans.Commit();
                 }
-                ShowResult(count, count2D);
+                ShowResult(count, inputSwitch2D, inputSwitch3D);
 
                 return Result.Succeeded;
             }
@@ -55,58 +53,18 @@ namespace BIM_Leaders_Core
                 return Result.Failed;
             }
         }
-
-        /// <summary>
-        /// Edit grids extents.
-        /// </summary>
-        private static void EditExtentsGrids(Document doc, bool inputSwitch, bool inputSide1, bool inputSide2, ref int count, ref int count2D)
-        {
-            View view = doc.ActiveView;
-
-            DatumExtentType extentMode = DatumExtentType.ViewSpecific;
-
-            IEnumerable<Grid> grids = new FilteredElementCollector(doc, view.Id)
-                    .OfCategory(BuiltInCategory.OST_Grids)
-                    .ToElements()
-                    .Cast<Grid>();
-
-            Curve curve = grids.FirstOrDefault().GetCurvesInView(extentMode, view)[0];
-
-            foreach (Grid grid in grids)
-            {
-                if (inputSwitch)
-                {
-                    grid.SetDatumExtentType(DatumEnds.End0, view, extentMode);
-                    grid.SetDatumExtentType(DatumEnds.End1, view, extentMode);
-
-                    if (view.ViewType == ViewType.Elevation || view.ViewType == ViewType.Section)
-                    {
-                        Curve gridCurve = grid.GetCurvesInView(extentMode, view)[0];
-                        XYZ point0 = new XYZ(gridCurve.GetEndPoint(0).X, gridCurve.GetEndPoint(0).Y, curve.GetEndPoint(0).Z);
-                        XYZ point1 = new XYZ(gridCurve.GetEndPoint(1).X, gridCurve.GetEndPoint(1).Y, curve.GetEndPoint(1).Z);
-                        Line line = Line.CreateBound(point0, point1);
-                        grid.SetCurveInView(extentMode, view, line);
-                    }
-                    count2D++;
-                }
-                if (inputSide1)
-                    grid.ShowBubbleInView(DatumEnds.End0, view);
-                if (!inputSide1)
-                    grid.HideBubbleInView(DatumEnds.End0, view);
-                if (inputSide2)
-                    grid.ShowBubbleInView(DatumEnds.End1, view);
-                if (!inputSide2)
-                    grid.HideBubbleInView(DatumEnds.End1, view);
-                count++;
-            }
-        }
         
-        private static void ShowResult(int count, int count2D)
+        private static void ShowResult(int count, bool inputSwitch2D, bool inputSwitch3D)
         {
             // Show result
-            string text = (count == 0)
-                ? "No grids aligned"
-                : $"{count2D} grids switched to 2D and aligned.{Environment.NewLine}{count} grids changed bubbles";
+            string text = "No grids aligned.";
+
+            if (inputSwitch2D)
+                text = $"{count} grids switched to 2D and aligned.";
+            else if (inputSwitch3D)
+                text = $"{count} grids switched to 3D and aligned.";
+
+            text += $"{Environment.NewLine}{count} grids changed bubbles";
             
             TaskDialog.Show("Grids Align", text);
         }

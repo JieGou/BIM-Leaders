@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
@@ -16,7 +14,6 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            int count2D = 0;
             int count = 0;
 
             try
@@ -32,20 +29,21 @@ namespace BIM_Leaders_Core
                 LevelsAlignData data = form.DataContext as LevelsAlignData;
 
                 // Getting input from user
-                bool inputSwitch = data.ResultSwitch;
                 bool inputSide1 = data.ResultSide1;
                 bool inputSide2 = data.ResultSide2;
+                bool inputSwitch2D = data.ResultSwitch2D;
+                bool inputSwitch3D = data.ResultSwitch3D;
 
                 // Edit extents
                 using (Transaction trans = new Transaction(doc, "Align Levels"))
                 {
                     trans.Start();
 
-                    EditExtentsLevels(doc, inputSwitch, inputSide1, inputSide2, ref count, ref count2D);
+                    DatumPlaneUtils.SetDatumPlanes(doc, typeof(Level), inputSwitch2D, inputSwitch3D, inputSide1, inputSide2, ref count);
 
                     trans.Commit();
                 }
-                ShowResult(count, count2D);
+                ShowResult(count, inputSwitch2D, inputSwitch3D);
 
                 return Result.Succeeded;
             }
@@ -56,58 +54,18 @@ namespace BIM_Leaders_Core
             }
         }
 
-        /// <summary>
-        /// Edit levels extents.
-        /// </summary>
-        private static void EditExtentsLevels(Document doc, bool inputSwitch, bool inputSide1, bool inputSide2, ref int count, ref int count2D)
-        {
-            View view = doc.ActiveView;
-
-            DatumExtentType extentMode = DatumExtentType.ViewSpecific;
-
-            IEnumerable<Level> levels = new FilteredElementCollector(doc, view.Id)
-                    .OfCategory(BuiltInCategory.OST_Levels)
-                    .ToElements()
-                    .Cast<Level>();
-
-            Curve curve = levels.FirstOrDefault().GetCurvesInView(extentMode, view)[0];
-
-            foreach (Level level in levels)
-            {
-                if (inputSwitch)
-                {
-                    level.SetDatumExtentType(DatumEnds.End0, view, extentMode);
-                    level.SetDatumExtentType(DatumEnds.End1, view, extentMode);
-
-                    if (view.ViewType == ViewType.Elevation || view.ViewType == ViewType.Section)
-                    {
-                        Curve levelCurve = level.GetCurvesInView(extentMode, view)[0];
-                        XYZ point0 = new XYZ(curve.GetEndPoint(0).X, curve.GetEndPoint(0).Y, levelCurve.GetEndPoint(0).Z);
-                        XYZ point1 = new XYZ(curve.GetEndPoint(1).X, curve.GetEndPoint(1).Y, levelCurve.GetEndPoint(1).Z);
-                        Line line = Line.CreateBound(point0, point1);
-                        level.SetCurveInView(extentMode, view, line);
-                    }
-                    count2D++;
-                }
-                if (inputSide1)
-                    level.ShowBubbleInView(DatumEnds.End0, view);
-                if (!inputSide1)
-                    level.HideBubbleInView(DatumEnds.End0, view);
-                if (inputSide2)
-                    level.ShowBubbleInView(DatumEnds.End1, view);
-                if (!inputSide2)
-                    level.HideBubbleInView(DatumEnds.End1, view);
-                count++;
-            }
-        }
-
-        private static void ShowResult(int count, int count2D)
+        private static void ShowResult(int count, bool inputSwitch2D, bool inputSwitch3D)
         {
             // Show result
-            string text = (count == 0)
-                ? "No grids aligned"
-                : $"{count2D} levels switched to 2D and aligned.{Environment.NewLine}{count} levels changed tags";
-            
+            string text = "No levels aligned.";
+
+            if (inputSwitch2D)
+                text = $"{count} levels switched to 2D and aligned.";
+            else if (inputSwitch3D)
+                text = $"{count} levels switched to 3D and aligned.";
+
+            text += $"{Environment.NewLine}{count} levels changed bubbles";
+
             TaskDialog.Show("Levels Align", text);
         }
 

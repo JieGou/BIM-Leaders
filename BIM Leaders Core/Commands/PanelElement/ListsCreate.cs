@@ -33,10 +33,13 @@ namespace BIM_Leaders_Core
             string viewTemplateName = "Lists";
             string viewNamePrefix = "LIST_";
 
-            string tagFamilyName = "Lists tag GF A4";
-            string tagTypeNameAluminium = "Aluminium";
-            string tagTypeNameMetal = "Metal";
-            string tagTypeNameCarpentry = "Wood";
+            string tagGenFamilyName = "Lists tag GF A4";
+            string tagGenTypeNameAluminium = "Aluminium";
+            string tagGenTypeNameMetal = "Metal";
+            string tagGenTypeNameCarpentry = "Wood";
+
+            string tagRailingFamilyName = "Lists tag GF A4 Railing";
+            string tagRailingTypeName = "Aluminium";
 
             double tagPlacementOffsetX = 177.5; // In mm.
             double tagPlacementOffsetY = 208.7;
@@ -75,6 +78,11 @@ namespace BIM_Leaders_Core
 
                 ElementId viewType = GetViewType(doc, viewTypeName);
                 ElementId viewTemplate = GetViewTemplate(doc, viewTemplateName);
+
+                ElementId tagTypeAluminium = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagGenFamilyName, tagGenTypeNameAluminium);
+                ElementId tagTypeMetal = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagGenFamilyName, tagGenTypeNameMetal);
+                ElementId tagTypeCarpentry = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagGenFamilyName, tagGenTypeNameCarpentry);
+                ElementId tagTypeRailing = GetTagType(doc, BuiltInCategory.OST_StairsRailingTags, tagRailingFamilyName, tagRailingTypeName);
 
                 using (Transaction trans = new Transaction(doc, "Create Lists"))
                 {
@@ -276,23 +284,20 @@ namespace BIM_Leaders_Core
         /// <returns>Tag type.</returns>
         private static ElementId GetTagType(Document doc, BuiltInCategory category, string tagFamilyName, string tagTypeName)
         {
-            ElementId tagType = null;
-
-            IEnumerable<FamilySymbol> tag = new FilteredElementCollector(doc)
-                .OfClass(typeof(FamilySymbol))
+            IEnumerable<Element> tags = new FilteredElementCollector(doc)
+                .OfClass(typeof(IndependentTag))
                 .OfCategory(category)
-                .Cast<FamilySymbol>()
-                .Where(x => x.FamilyName == tagFamilyName)
-                .Where(x => x.Name == tagTypeName);
+                .ToElements();
 
-            if (tag.Count() == 0)
+            foreach (Element tag in tags)
             {
-                TaskDialog.Show("Create Lists", $"Tag type with given name {tagFamilyName} / {tagTypeName} was not found.");
-                return null;
+                FamilySymbol tagTypeI = doc.GetElement(tag.GetTypeId()) as FamilySymbol;
+                if (tagTypeI.Name == tagTypeName && tagTypeI.FamilyName == tagFamilyName)
+                    return tagTypeI.Id;
             }
 
-            tagType = tag.First().Id;
-            return tagType;
+            TaskDialog.Show("Create Lists", $"Tag type with given name {tagFamilyName} / {tagTypeName} was not found.");
+            return null;
         }
 
         /// <summary>
