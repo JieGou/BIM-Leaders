@@ -79,10 +79,16 @@ namespace BIM_Leaders_Core
         {
             List<List<StairsLanding>> landingsSorted = new List<List<StairsLanding>>();
 
+            // Solid of view section plane for filtering
+            IList<CurveLoop> viewCrop = doc.ActiveView.GetCropRegionShapeManager().GetCropShape();
+            Solid s = GeometryCreationUtilities.CreateExtrusionGeometry(viewCrop, doc.ActiveView.ViewDirection, 1);
+            ElementIntersectsSolidFilter intersectFilter = new ElementIntersectsSolidFilter(s);
+
             // Selecting all landings in the view
             List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, doc.ActiveView.Id)
                 .OfClass(typeof(StairsLanding))
                 .WhereElementIsNotElementType()
+                .WherePasses(intersectFilter)
                 .ToElements()
                 .Cast<StairsLanding>()
                 .ToList();
