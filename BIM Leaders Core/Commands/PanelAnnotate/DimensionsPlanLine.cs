@@ -32,6 +32,12 @@ namespace BIM_Leaders_Core
                 Line line = detailLine.GeometryCurve as Line;
                 ReferenceArray references = GetReferences(doc, line);
 
+                if (references.Size < 2)
+                {
+                    TaskDialog.Show("Dimensions Plan Walls", "Not enough numbrer references for dimension.");
+                    return Result.Failed;
+                }
+
                 using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
                 {
                     trans.Start();
@@ -190,31 +196,65 @@ namespace BIM_Leaders_Core
         {
             List<Reference> intersections = new List<Reference>();
 
+            foreach (Element element in elements)
+            {
+                List<Solid> solids = GetElementSolids(element);
+                foreach (Solid solid in solids)
+                    intersections.AddRange(FindIntersectionsWithSolid(solid, curve));
+            }
+            return intersections;
+        }
+
+        private static List<Solid> GetElementSolids(Element element)
+        {
+            List<Solid> solids = new List<Solid>();
+
             Options opts = new Options()
             {
                 ComputeReferences = true,
                 IncludeNonVisibleObjects = false,
-                View = doc.ActiveView
+                View = element.Document.ActiveView
             };
 
-            foreach (Element e in elements)
+            GeometryElement geometryElement = element.get_Geometry(opts);
+            foreach (GeometryObject geometryObject in geometryElement)
             {
-                foreach (Solid s in e.get_Geometry(opts))
+                if (geometryObject is GeometryInstance geometryInstance)
                 {
-                    FaceArray faces = s.Faces;
-                    foreach (PlanarFace face in faces)
-                    {
-                        // Check if faces are vertical
-                        if (Math.Round(face.FaceNormal.Z) == 0)
-                        {
-                            SetComparisonResult intersection = face.Intersect(curve);
-                            if (intersection == SetComparisonResult.Overlap)
-                                intersections.Add(face.Reference);
-                        }
-                    }
+                    FamilyInstance elementInstance = element as FamilyInstance;
+                    Transform transform = elementInstance.GetTransform();
+
+                    // Columns not dimension!
+                    // Cause may be that we need take non-transformed geometry for reference...
+                    // But we still need transformed one for intersections finding...
+                    GeometryElement geometryElementInstance = geometryInstance.GetSymbolGeometry().GetTransformed(transform);
+                    foreach (Solid solidInstance in geometryElementInstance)
+                        if (solidInstance.Volume > 0)
+                            solids.Add(solidInstance);
+                }
+                if (geometryObject is Solid solid)
+                    if (solid.Volume > 0)
+                        solids.Add(solid);
+            }
+            return solids;
+        }
+
+        private static List<Reference> FindIntersectionsWithSolid(Solid solid, Line line)
+        {
+            List<Reference> result = new List<Reference>();
+
+            FaceArray faces = solid.Faces;
+            foreach (PlanarFace face in faces)
+            {
+                // Check if faces are vertical
+                if (Math.Round(face.FaceNormal.Z) == 0)
+                {
+                    SetComparisonResult intersection = face.Intersect(line);
+                    if (intersection == SetComparisonResult.Overlap)
+                        result.Add(face.Reference);
                 }
             }
-            return intersections;
+            return result;
         }
 
         private static void ShowResult(int count)

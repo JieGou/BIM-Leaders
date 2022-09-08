@@ -45,19 +45,18 @@ namespace BIM_Leaders_Core
         /// </summary>
         private static void JoinElements(Document doc, double tolerance, ref int countCutted, ref int countJoined)
         {
-            // Solid of view section plane for filtering
-            IList<CurveLoop> viewCrop = doc.ActiveView.GetCropRegionShapeManager().GetCropShape();
-            Solid s = GeometryCreationUtilities.CreateExtrusionGeometry(viewCrop, doc.ActiveView.ViewDirection, 1);
-            ElementIntersectsSolidFilter intersectFilter = new ElementIntersectsSolidFilter(s);
+            View view = doc.ActiveView;
+
+            ElementIntersectsSolidFilter intersectFilter = ViewUtils.GetViewCutIntersectFilter(view);
 
             // Get Walls Ids
-            ICollection<ElementId> wallCutIds = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            ICollection<ElementId> wallCutIds = new FilteredElementCollector(doc, view.Id)
                 .OfClass(typeof(Wall))
                 .WhereElementIsNotElementType()
                 .WherePasses(intersectFilter)
                 .ToElementIds();
             // Get Floors Ids
-            ICollection<ElementId> floorCutIds = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            ICollection<ElementId> floorCutIds = new FilteredElementCollector(doc, view.Id)
                 .OfClass(typeof(Floor))
                 .WhereElementIsNotElementType()
                 .WherePasses(intersectFilter)

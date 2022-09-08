@@ -22,6 +22,9 @@ namespace BIM_Leaders_Core
 
             try
             {
+                if (CheckIfSectionIsSplit(doc))
+                    TaskDialog.Show("Annotate Section", "Current view is a split section. Line may not lay in view plane.");
+
                 // Get the line from user selection
                 Reference referenceLine = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
                 DetailLine detailLine = doc.GetElement(referenceLine) as DetailLine;
@@ -85,6 +88,17 @@ namespace BIM_Leaders_Core
             }
         }
 
+        private static bool CheckIfSectionIsSplit(Document doc)
+        {
+            bool result = false;
+
+            ViewSection view = doc.ActiveView as ViewSection;
+            if (view.IsSplitSection())
+                return true;
+
+            return result;
+        }
+
         /// <summary>
         /// Validate if selected line is single and vertical.
         /// </summary>
@@ -122,8 +136,8 @@ namespace BIM_Leaders_Core
             double inputThickness = UnitUtils.ConvertToInternalUnits(thickness, units);
 
             // Get Floors
-            FilteredElementCollector collector = new FilteredElementCollector(doc, doc.ActiveView.Id);
-            IEnumerable<Element> floorsAll = collector.OfClass(typeof(Floor))
+            IEnumerable<Element> floorsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+                .OfClass(typeof(Floor))
                 .WhereElementIsNotElementType()
                 .ToElements();
 

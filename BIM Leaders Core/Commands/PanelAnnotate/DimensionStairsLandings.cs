@@ -22,6 +22,8 @@ namespace BIM_Leaders_Core
 
             try
             {
+                CheckViewDepth(doc);
+
                 DimensionStairsLandingsForm form = new DimensionStairsLandingsForm();
                 form.ShowDialog();
 
@@ -47,7 +49,7 @@ namespace BIM_Leaders_Core
                 List<List<StairsLanding>> landings = GetLandings(doc, threshold);
                 List<Line> lines = CalculateLines(doc, landings);
                 List<List<Face>> intersectionFaces = GetIntersections(doc, landings, inputPlacementDimensionTop || inputPlacementElevationTop, inputPlacementDimensionMid || inputPlacementElevationMid, inputPlacementDimensionBot || inputPlacementElevationBot);
-
+                
                 // Create annotations
                 using (Transaction trans = new Transaction(doc, "Annotate Landings"))
                 {
@@ -60,6 +62,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
+
                 ShowResult(countSpots, countDimensions);
 
                 return Result.Succeeded;
@@ -71,6 +74,17 @@ namespace BIM_Leaders_Core
             }
         }
 
+        private static void CheckViewDepth(Document doc)
+        {
+            double allowableViewDepth = 1;
+
+            View view = doc.ActiveView;
+            double viewDepth = view.get_Parameter(BuiltInParameter.VIEWER_BOUND_OFFSET_FAR).AsDouble();
+
+            if (viewDepth > allowableViewDepth)
+                TaskDialog.Show("Dimension Stairs", "View depth is too high. This may cause errors. Set far clip offset at most 30 cm.", TaskDialogCommonButtons.Ok);
+        }
+
         /// <summary>
         /// Get sorted landings in groups by coordinates, each group have landings with same locations but different heights.
         /// </summary>
@@ -79,21 +93,15 @@ namespace BIM_Leaders_Core
         {
             List<List<StairsLanding>> landingsSorted = new List<List<StairsLanding>>();
 
-            // Solid of view section plane for filtering
-            IList<CurveLoop> viewCrop = doc.ActiveView.GetCropRegionShapeManager().GetCropShape();
-            Solid s = GeometryCreationUtilities.CreateExtrusionGeometry(viewCrop, doc.ActiveView.ViewDirection, 1);
-            ElementIntersectsSolidFilter intersectFilter = new ElementIntersectsSolidFilter(s);
+            View view = doc.ActiveView;
 
             // Selecting all landings in the view
-            List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, view.Id)
                 .OfClass(typeof(StairsLanding))
                 .WhereElementIsNotElementType()
-                .WherePasses(intersectFilter)
                 .ToElements()
                 .Cast<StairsLanding>()
                 .ToList();
-
-            View view = doc.ActiveView;
 
             int i = 0;
             int j = 0;
@@ -308,16 +316,18 @@ namespace BIM_Leaders_Core
 
                 foreach (Face face in intersectionFaces[i])
                 {
-                    references.Append(face.Reference);
+                    if (face.Reference.ElementId != ElementId.InvalidElementId)
+                        references.Append(face.Reference);
                 }
 
                 Dimension dimension = doc.Create.NewDimension(view, lines[i], references);
 
                 DimensionUtils.AdjustText(dimension);
-
+                
 #if !VERSION2020
                 dimension.HasLeader = false;
 #endif
+                
                 count++;
             }
         }
