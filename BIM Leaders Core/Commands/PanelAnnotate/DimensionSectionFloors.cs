@@ -91,11 +91,11 @@ namespace BIM_Leaders_Core
         private static bool CheckIfSectionIsSplit(Document doc)
         {
             bool result = false;
-
+#if !VERSION2020
             ViewSection view = doc.ActiveView as ViewSection;
             if (view.IsSplitSection())
                 return true;
-
+#endif
             return result;
         }
 
