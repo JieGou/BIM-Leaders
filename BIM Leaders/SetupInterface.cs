@@ -279,7 +279,7 @@ namespace BIM_Leaders
                 Panel = panel,
                 ToolTip = "Batch set parameter values to all types.",
                 LongDescription = "Usable if family has many types, and the same value need to be set to all of them.",
-                CommandNamespacePath = FamilyParameterSet.GetPath(),
+                CommandNamespacePath = BIM_Leaders_Core.FamilyParameterSet.GetPath(),
                 IconImageName = "BIM_Leaders_Family_Zero_Coordinates.png",
                 AvailabilityClassName = "BIM_Leaders_Core.DocumentIsFamily"
             };

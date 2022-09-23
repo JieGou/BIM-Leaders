@@ -8,8 +8,6 @@ namespace BIM_Leaders_Core
     /// </summary>
     public class DocumentIsFamily : IExternalCommandAvailability
     {
-        public static bool IsCommandAvaiable { get; internal set; }
-
         public bool IsCommandAvailable(UIApplication applicationData, CategorySet selectedCategories)
         {
             try

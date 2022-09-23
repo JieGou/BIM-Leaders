@@ -11,6 +11,9 @@
 	<?if $(var.Configuration)=2022 ?>
 	<?define ProductCode = "{306B873F-B0FA-4F4D-9A1D-E3769D29FFF3}"?>
 	<?endif?>
+	<?if $(var.Configuration)=2023 ?>
+	<?define ProductCode = "{A957D9D9-EC85-4DF0-9B58-EC6EE2136B55}"?>
+	<?endif?>
 
 	<!-- Do not change! Must be the same in all versions -->
 	<?define UpgradeCode = "{CF89CF6A-6474-4251-8FD9-A1639E196B41}"?>

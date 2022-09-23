@@ -8,15 +8,14 @@ namespace BIM_Leaders_Core
     /// </summary>
     public class ViewIsSectionOrElevation : IExternalCommandAvailability
     {
-        public static bool IsCommandAvaiable { get; internal set; }
-
         public bool IsCommandAvailable(UIApplication applicationData, CategorySet selectedCategories)
         {
             try
             {
                 ViewType viewType = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
 
-                if (viewType == ViewType.Section || viewType == ViewType.Elevation)
+                if (viewType == ViewType.Section ||
+                    viewType == ViewType.Elevation)
                     return true;
                 return false;
             }
