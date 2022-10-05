@@ -5,17 +5,17 @@ using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class ElementPaintRemove : IExternalCommand
     {
+        private static int _countFacesAll;
+        private static int _countFacesCleared;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
-
-            int countAll = 0;
-            int countCleared = 0;
 
             try
             {
@@ -27,11 +27,11 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    RemovePaint(doc, element, ref countAll, ref countCleared);
+                    RemovePaint(doc, element);
 
                     trans.Commit();
                 }
-                ShowResult(countAll, countCleared);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -45,7 +45,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Remove paint from all faces of element.
         /// </summary>
-        private static void RemovePaint(Document doc, Element element, ref int count, ref int countCleared)
+        private static void RemovePaint(Document doc, Element element)
         {
             Options options = new Options
             {
@@ -55,24 +55,24 @@ namespace BIM_Leaders_Core
             foreach (Solid solid in element.get_Geometry(options))
             {
                 FaceArray faces = solid.Faces;
-                count += faces.Size;
+                _countFacesAll += faces.Size;
                 foreach (Face face in faces)
                 {
                     if (doc.IsPainted(element.Id, face))
                     {
                         doc.RemovePaint(element.Id, face);
-                        countCleared++;
+                        _countFacesCleared++;
                     }
                 }
             }
         }
 
-        private static void ShowResult(int countAll, int countCleared)
+        private static void ShowResult()
         {
             // Show result
-            string text = (countCleared == 0)
+            string text = (_countFacesCleared == 0)
                 ? "Painted faces not found."
-                : $"{countCleared} of {countAll} faces have been cleared from paint.";
+                : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
             
             TaskDialog.Show("Paint remove", text);
         }

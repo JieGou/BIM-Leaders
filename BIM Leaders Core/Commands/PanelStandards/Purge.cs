@@ -9,19 +9,16 @@ using Autodesk.Revit.DB.Architecture;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class Purge : IExternalCommand
     {
-        private static class Counter
-        {
-            public static int Rooms { get; set; }
-            public static int Tags { get; set; }
-            public static int Filters { get; set; }
-            public static int ViewTemplates { get; set; }
-            public static int Sheets { get; set; }
-            public static int LineStyles { get; set; }
-            public static int LinePatterns { get; set; }
-        }
+        private static int _countRooms;
+        private static int _countTags;
+        private static int _countFilters;
+        private static int _countViewTemplates;
+        private static int _countSheets;
+        private static int _countLineStyles;
+        private static int _countLinePatterns;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -95,7 +92,7 @@ namespace BIM_Leaders_Core
                 .Select(x => x.Id)
                 .ToList();
             
-            Counter.Rooms = rooms.Count;
+            _countRooms = rooms.Count;
 
             doc.Delete(rooms);
         }
@@ -114,7 +111,7 @@ namespace BIM_Leaders_Core
                 .Select(x => x.Id)
                 .ToList();
 
-            Counter.Tags = tags.Count;
+            _countTags = tags.Count;
 
             doc.Delete(tags);
         }
@@ -153,7 +150,7 @@ namespace BIM_Leaders_Core
 
             ICollection<ElementId> filtersUnused = filtersAll.Where(x => !filtersUsed.Contains(x)).ToList();
 
-            Counter.Filters = filtersUnused.Count;
+            _countFilters = filtersUnused.Count;
 
             doc.Delete(filtersUnused);
         }
@@ -181,7 +178,7 @@ namespace BIM_Leaders_Core
                     templateIds = templateIds.Where(x => x != view.ViewTemplateId).ToList();
             }
 
-            Counter.ViewTemplates = templateIds.Count;
+            _countViewTemplates = templateIds.Count;
 
             doc.Delete(templateIds);
         }
@@ -212,7 +209,7 @@ namespace BIM_Leaders_Core
                 .Where(x => !schedulesSheets.Contains(x))
                 .ToList();
 
-            Counter.Sheets = sheetsEmpty.Count;
+            _countSheets = sheetsEmpty.Count;
 
             doc.Delete(sheetsEmpty);
         }
@@ -244,7 +241,7 @@ namespace BIM_Leaders_Core
                 .Where(x => !lineStylesUsed.Contains(x))
                 .ToList();
 
-            Counter.LineStyles = lineStylesUnused.Count;
+            _countLineStyles = lineStylesUnused.Count;
 
             doc.Delete(lineStylesUnused);
         }
@@ -262,7 +259,7 @@ namespace BIM_Leaders_Core
                     .Select(x => x.Id)
                     .ToList();
 
-            Counter.LinePatterns = linePatterns.Count;
+            _countLinePatterns = linePatterns.Count;
 
             doc.Delete(linePatterns);
         }
@@ -271,47 +268,47 @@ namespace BIM_Leaders_Core
         {
             // Show result
             string text = "";
-            if (Counter.LineStyles + Counter.Filters == 0)
+            if (_countLineStyles + _countFilters == 0)
                 text = "No elements deleted";
             else
             {
-                if (Counter.Rooms > 0)
-                    text += $"{Counter.Rooms} non-placed rooms deleted";
-                if (Counter.Tags > 0)
+                if (_countRooms > 0)
+                    text += $"{_countRooms} non-placed rooms deleted";
+                if (_countTags > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{Counter.Tags} empty tags deleted";
+                    text += $"{_countTags} empty tags deleted";
                 }
-                if (Counter.Filters > 0)
+                if (_countFilters > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{Counter.Filters} unused filters deleted";
+                    text += $"{_countFilters} unused filters deleted";
                 }
-                if (Counter.ViewTemplates > 0)
+                if (_countViewTemplates > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{Counter.ViewTemplates} unused view templates deleted";
+                    text += $"{_countViewTemplates} unused view templates deleted";
                 }
-                if (Counter.Sheets > 0)
+                if (_countSheets > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{Counter.Sheets} empty sheets deleted";
+                    text += $"{_countSheets} empty sheets deleted";
                 }
-                if (Counter.LineStyles > 0)
+                if (_countLineStyles > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{Counter.LineStyles} unused linestyles deleted";
+                    text += $"{_countLineStyles} unused linestyles deleted";
                 }
-                if (Counter.LinePatterns > 0)
+                if (_countLinePatterns > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{Counter.LinePatterns} line patterns with names included \"{inputLinePatternsName}\" deleted";
+                    text += $"{_countLinePatterns} line patterns with names included \"{inputLinePatternsName}\" deleted";
                 }
                 text += ".";
             }

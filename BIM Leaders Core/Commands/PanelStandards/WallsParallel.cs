@@ -9,9 +9,11 @@ using Autodesk.Revit.ApplicationServices;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class WallsParallel : IExternalCommand
     {
+        private static int _countWallsFiltered;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -41,7 +43,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                ShowResult(wallsFilter.Count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -119,15 +121,18 @@ namespace BIM_Leaders_Core
                 else
                     wallsFilter.Add(wall);
             }
+
+            _countWallsFiltered = wallsFilter.Count;
+
             return wallsFilter;
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countWallsFiltered == 0)
                 ? "All walls are clear"
-                : $"{count} walls added to filter \"Check - Walls parralel\".";
+                : $"{_countWallsFiltered} walls added to filter \"Check - Walls parralel\".";
             
             TaskDialog.Show("Walls parallel filter", text);
         }

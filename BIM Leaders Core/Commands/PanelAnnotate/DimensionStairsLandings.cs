@@ -9,16 +9,16 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DimensionStairsLandings : IExternalCommand
     {
+        private static int _countSpots;
+        private static int _countDimensions;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            int countSpots = 0;
-            int countDimensions = 0;
 
             try
             {
@@ -56,14 +56,14 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     if (inputPlacementDimensionTop || inputPlacementDimensionMid || inputPlacementDimensionBot)
-                        CreateDimensions(doc, lines, intersectionFaces, ref countDimensions);
+                        CreateDimensions(doc, lines, intersectionFaces);
                     if (inputPlacementElevationTop || inputPlacementElevationMid || inputPlacementElevationBot)
-                        CreateSpots(doc, lines, intersectionFaces, ref countSpots);
+                        CreateSpots(doc, lines, intersectionFaces);
 
                     trans.Commit();
                 }
 
-                ShowResult(countSpots, countDimensions);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -261,7 +261,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create spot elevations on a faces through a given lines.
         /// </summary>
-        private static void CreateSpots(Document doc, List<Line> lines, List<List<Face>> intersectionFaces, ref int count)
+        private static void CreateSpots(Document doc, List<Line> lines, List<List<Face>> intersectionFaces)
         {
             View view = doc.ActiveView;
             XYZ zero = new XYZ(0, 0, 0);
@@ -295,7 +295,7 @@ namespace BIM_Leaders_Core
                     try
                     {
                         SpotDimension sd = doc.Create.NewSpotElevation(view, intersectionFaces[i][j].Reference, origin, zero, zero, origin, false);
-                        count++;
+                        _countSpots++;
                     }
                     catch { }
                 }
@@ -305,7 +305,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create dimension on a faces through a given lines.
         /// </summary>
-        private static void CreateDimensions(Document doc, List<Line> lines, List<List<Face>> intersectionFaces, ref int count)
+        private static void CreateDimensions(Document doc, List<Line> lines, List<List<Face>> intersectionFaces)
         {
             View view = doc.ActiveView;
 
@@ -328,16 +328,16 @@ namespace BIM_Leaders_Core
                 dimension.HasLeader = false;
 #endif
                 
-                count++;
+                _countDimensions++;
             }
         }
 
-        private static void ShowResult(int countSpots, int countDimensions)
+        private static void ShowResult()
         {
             // Show result
-            string text = (countSpots == 0 && countDimensions == 0)
+            string text = (_countSpots == 0 && _countDimensions == 0)
                 ? "No annotations created."
-                : $"{countSpots} spot elevations were created. {countDimensions} dimension lines were created.";
+                : $"{_countSpots} spot elevations were created. {_countDimensions} dimension lines were created.";
             
             TaskDialog.Show("Dimension Stairs", text);
         }

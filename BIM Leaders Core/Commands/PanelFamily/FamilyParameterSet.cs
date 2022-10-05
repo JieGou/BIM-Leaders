@@ -7,9 +7,11 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class FamilyParameterSet : IExternalCommand
     {
+        private static int _countParametersSet = 0;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get UIDocument
@@ -17,8 +19,6 @@ namespace BIM_Leaders_Core
 
             // Get Document
             Document doc = uidoc.Document;
-
-            int count = 0;
 
             try
             {
@@ -40,11 +40,11 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    ChangeParameter(doc, parameter, parameterValue, ref count);
+                    ChangeParameter(doc, parameter, parameterValue);
 
                     trans.Commit();
                 }
-                ShowResult(count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -59,7 +59,7 @@ namespace BIM_Leaders_Core
         /// Change the given parameter to given value in all family types.
         /// Value is given as string, so depends on parameter type value will be converted.
         /// </summary>
-        private static void ChangeParameter(Document doc, FamilyParameter parameter, string parameterValue, ref int count)
+        private static void ChangeParameter(Document doc, FamilyParameter parameter, string parameterValue)
         {
             if (parameter.IsReadOnly)
                 return;
@@ -83,7 +83,8 @@ namespace BIM_Leaders_Core
 #endif
                     else
                         doc.FamilyManager.Set(parameter, Convert.ToInt32(parameterValue));
-                    count++;
+                    
+                    _countParametersSet++;
                 }
                 return;
             }
@@ -101,7 +102,8 @@ namespace BIM_Leaders_Core
 #endif
                     else
                         doc.FamilyManager.Set(parameter, Convert.ToDouble(parameterValue));
-                    count++;
+                    
+                    _countParametersSet++;
                 }
                 return;
             }
@@ -110,7 +112,8 @@ namespace BIM_Leaders_Core
                 foreach (FamilyType familyType in familyTypeSet)
                 {
                     doc.FamilyManager.Set(parameter, parameterValue);
-                    count++;
+
+                    _countParametersSet++;
                 }
                 return;
             }
@@ -134,7 +137,7 @@ namespace BIM_Leaders_Core
                                 id = materialId;
 
                         doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF MATERIAL WITH GIVEN NAME NOT FOUND !!!
-                        count++;
+                        _countParametersSet++;
                         break;
 
                     case ParameterType.FamilyType:
@@ -147,7 +150,7 @@ namespace BIM_Leaders_Core
                                 id = familyTypeId;
 
                         doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF FAMILY TYPE WITH GIVEN NAME NOT FOUND !!!
-                        count++;
+                        _countParametersSet++;
                         break;
 
                     case ParameterType.Image:
@@ -160,7 +163,7 @@ namespace BIM_Leaders_Core
                                 id = imageId;
 
                         doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF IMAGE WITH GIVEN NAME NOT FOUND !!!
-                        count++;
+                        _countParametersSet++;
                         break;
 
                     default:
@@ -169,12 +172,12 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countParametersSet == 0)
                 ? "No parameters set."
-                : $"{count} parameters set.";
+                : $"{_countParametersSet} parameters set.";
             
             TaskDialog.Show("Parameter Set", text);
         }

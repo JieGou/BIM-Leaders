@@ -9,18 +9,18 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class StairsStepsEnumerate : IExternalCommand
     {
+        private static int _countStairsGrouped;
+        private static int _countStairsUnpinned;
+        private static int _countRisersNumbers;
+        private static int _countRunsNumbersPlaced;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document.
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            int countGrouped = 0;
-            int countUnpinned = 0;
-            int countRuns = 0;
-            int countTreads = 0;
 
             try
             {
@@ -43,13 +43,13 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    IOrderedEnumerable<Stairs> stairsSorted = GetStairs(doc, ref countGrouped, ref countUnpinned);
-                    ChangeTreadNumbers(stairsSorted, inputStartNumber, ref countTreads);
-                    CreateNumbers(doc, inputRightSide, ref countRuns);
+                    IOrderedEnumerable<Stairs> stairsSorted = GetStairs(doc);
+                    ChangeTreadNumbers(stairsSorted, inputStartNumber);
+                    CreateNumbers(doc, inputRightSide);
 
                     trans.Commit();
                 }
-                ShowResult(countGrouped, countUnpinned, countRuns, countTreads);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -67,7 +67,7 @@ namespace BIM_Leaders_Core
         /// <param name="countGrouped">Count of stairs that are in the groups and may make problems with numeration.</param>
         /// <param name="countUnpinned">Count of stairs that were unpinned from multistory stairs.</param>
         /// <returns>IOrderedEnumerable of stairs from bottom to top.</returns>
-        private static IOrderedEnumerable<Stairs> GetStairs(Document doc, ref int countGrouped, ref int countUnpinned)
+        private static IOrderedEnumerable<Stairs> GetStairs(Document doc)
         {
             IOrderedEnumerable<Stairs> stairsSorted;
 
@@ -89,7 +89,7 @@ namespace BIM_Leaders_Core
                 Element mainStair = doc.GetElement(mainStairId);
                 if (mainStair.GroupId != ElementId.InvalidElementId)
                 {
-                    countGrouped++;
+                    _countStairsGrouped++;
                     continue;
                 }
 
@@ -107,7 +107,7 @@ namespace BIM_Leaders_Core
                         try
                         {
                             multistoryStairs.Unpin(levelId);
-                            countUnpinned++;
+                            _countStairsUnpinned++;
                             stairs.Add(multistoryStairs.GetStairsOnLevel(levelId));
                         }
                         catch { }
@@ -124,7 +124,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Change tread numbers of all given stairs, beginning from the given number.
         /// </summary>
-        private static void ChangeTreadNumbers(IOrderedEnumerable<Stairs> stairsSorted, double inputStartNumber, ref int countTreads)
+        private static void ChangeTreadNumbers(IOrderedEnumerable<Stairs> stairsSorted, double inputStartNumber)
         {
             foreach (Stairs stair in stairsSorted)
             {
@@ -132,7 +132,7 @@ namespace BIM_Leaders_Core
                 parameter.Set(inputStartNumber);
                 inputStartNumber += stair.ActualRisersNumber;
 
-                countTreads += stair.ActualRisersNumber;
+                _countRisersNumbers += stair.ActualRisersNumber;
             }
         }
 
@@ -140,7 +140,7 @@ namespace BIM_Leaders_Core
         /// Creating thread numbers on the view
         /// </summary>
         /// <param name="countRuns">Count of created numberings.</param>
-        private static void CreateNumbers(Document doc, bool inputRightSide, ref int countRuns)
+        private static void CreateNumbers(Document doc, bool inputRightSide)
         {
             // Get all runs in the view
             IEnumerable<StairsRun> runs = new FilteredElementCollector(doc, doc.ActiveView.Id)
@@ -161,25 +161,25 @@ namespace BIM_Leaders_Core
                 try
                 {
                     NumberSystem.Create(doc, doc.ActiveView.Id, runId, refer);
-                    countRuns++;
+                    _countRunsNumbersPlaced++;
                 }
-                catch { countRuns++; }
+                catch { _countRunsNumbersPlaced++; }
             }
         }
 
-        private static void ShowResult(int countGrouped, int countUnpinned, int countRuns, int countTreads)
+        private static void ShowResult()
         {
             // Show result
             string text = "";
-            if (countRuns == 0)
+            if (_countRunsNumbersPlaced == 0)
                 text = "No annotations created";
             else
             {
-                if (countGrouped > 0)
-                    text += $"{countGrouped} stairs are in groups! Exclude them from groups!{Environment.NewLine}";
-                text += $"{countRuns} runs with {countTreads} threads was numbered.";
-                if (countUnpinned > 0)
-                    text += $"{Environment.NewLine}{countUnpinned} stairs were unpinned!";
+                if (_countStairsGrouped > 0)
+                    text += $"{_countStairsGrouped} stairs are in groups! Exclude them from groups!{Environment.NewLine}";
+                text += $"{_countRunsNumbersPlaced} runs with {_countRisersNumbers} threads was numbered.";
+                if (_countStairsUnpinned > 0)
+                    text += $"{Environment.NewLine}{_countStairsUnpinned} stairs were unpinned!";
             }
 
             TaskDialog.Show("Section Annotations", text);

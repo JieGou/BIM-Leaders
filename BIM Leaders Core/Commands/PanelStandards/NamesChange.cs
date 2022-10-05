@@ -7,15 +7,15 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class NamesChange : IExternalCommand
     {
+        private static int _countNamesChanged;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            int count = 0;
 
             try
             {
@@ -39,11 +39,11 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    ReplaceNames(doc, inputSubstringOld, inputSubstringNew, inputPartPrefix, inputPartSuffix, categories, ref count);
+                    ReplaceNames(doc, inputSubstringOld, inputSubstringNew, inputPartPrefix, inputPartSuffix, categories);
 
                     trans.Commit();
                 }
-                ShowResult(count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -64,7 +64,7 @@ namespace BIM_Leaders_Core
         /// <param name="substringNew">String to replace with.</param>
         /// <param name="inputPartPrefix">If true, replace prefix part.</param>
         /// <param name="inputPartSuffix">If true, replace suffix part.</param>
-        private static void ReplaceNames(Document doc, string substringOld, string substringNew, bool inputPartPrefix, bool inputPartSuffix, List<bool> inputCategories, ref int count)
+        private static void ReplaceNames(Document doc, string substringOld, string substringNew, bool inputPartPrefix, bool inputPartSuffix, List<bool> inputCategories)
         {
             List<Type> types = Categories.GetTypesList(inputCategories);
 
@@ -76,17 +76,17 @@ namespace BIM_Leaders_Core
 
             // Prefix location replacement
             if (inputPartPrefix)
-                ReplaceNamesPrefix(elements, substringOld, substringNew, ref count);
+                ReplaceNamesPrefix(elements, substringOld, substringNew);
             else if (inputPartSuffix)
-                ReplaceNamesSuffix(elements, substringOld, substringNew, ref count);
+                ReplaceNamesSuffix(elements, substringOld, substringNew);
             else
-                ReplaceNamesCenter(elements, substringOld, substringNew, ref count);
+                ReplaceNamesCenter(elements, substringOld, substringNew);
         }
 
         /// <summary>
         /// Replace substring in names of given elements.
         /// </summary>
-        private static void ReplaceNamesPrefix(IEnumerable<Element> elements, string substringOld, string substringNew, ref int count)
+        private static void ReplaceNamesPrefix(IEnumerable<Element> elements, string substringOld, string substringNew)
         {
             foreach (Element element in elements)
             {
@@ -96,7 +96,8 @@ namespace BIM_Leaders_Core
                     string nameNew = name.TrimStart(substringOld.ToCharArray());
                     nameNew = substringNew += nameNew;
                     element.Name = nameNew;
-                    count++;
+
+                    _countNamesChanged++;
                 }
             }
         }
@@ -104,7 +105,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Replace substring in names of given elements.
         /// </summary>
-        private static void ReplaceNamesSuffix(IEnumerable<Element> elements, string substringOld, string substringNew, ref int count)
+        private static void ReplaceNamesSuffix(IEnumerable<Element> elements, string substringOld, string substringNew)
         {
             foreach (Element element in elements)
             {
@@ -114,7 +115,8 @@ namespace BIM_Leaders_Core
                     string nameNew = name.TrimEnd(substringOld.ToCharArray());
                     nameNew += substringNew;
                     element.Name = nameNew;
-                    count++;
+
+                    _countNamesChanged++;
                 }
             }
         }
@@ -122,7 +124,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Replace substring in names of given elements.
         /// </summary>
-        private static void ReplaceNamesCenter(IEnumerable<Element> elements, string substringOld, string substringNew, ref int count)
+        private static void ReplaceNamesCenter(IEnumerable<Element> elements, string substringOld, string substringNew)
         {
             foreach (Element element in elements)
             {
@@ -131,17 +133,18 @@ namespace BIM_Leaders_Core
                 {
                     string nameNew = name.Replace(substringOld, substringNew);
                     element.Name = nameNew;
-                    count++;
+
+                    _countNamesChanged++;
                 }
             }
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countNamesChanged == 0)
                 ? "No names changed"
-                : $"{count} names changed";
+                : $"{_countNamesChanged} names changed";
             
             TaskDialog.Show("Names Change", text);
         }

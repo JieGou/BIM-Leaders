@@ -6,15 +6,15 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class GridsAlign : IExternalCommand
     {
+        private static int _countGridsAligned;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            int count = 0;
 
             try
             {
@@ -39,11 +39,11 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    DatumPlaneUtils.SetDatumPlanes(doc, typeof(Grid), inputSwitch2D, inputSwitch3D, inputSide1, inputSide2, ref count);
+                    DatumPlaneUtils.SetDatumPlanes(doc, typeof(Grid), inputSwitch2D, inputSwitch3D, inputSide1, inputSide2, ref _countGridsAligned);
 
                     trans.Commit();
                 }
-                ShowResult(count, inputSwitch2D, inputSwitch3D);
+                ShowResult(inputSwitch2D, inputSwitch3D);
 
                 return Result.Succeeded;
             }
@@ -54,17 +54,17 @@ namespace BIM_Leaders_Core
             }
         }
         
-        private static void ShowResult(int count, bool inputSwitch2D, bool inputSwitch3D)
+        private static void ShowResult(bool inputSwitch2D, bool inputSwitch3D)
         {
             // Show result
             string text = "No grids aligned.";
 
             if (inputSwitch2D)
-                text = $"{count} grids switched to 2D and aligned.";
+                text = $"{_countGridsAligned} grids switched to 2D and aligned.";
             else if (inputSwitch3D)
-                text = $"{count} grids switched to 3D and aligned.";
+                text = $"{_countGridsAligned} grids switched to 3D and aligned.";
 
-            text += $"{Environment.NewLine}{count} grids changed bubbles";
+            text += $"{Environment.NewLine}{_countGridsAligned} grids changed bubbles";
             
             TaskDialog.Show("Grids Align", text);
         }

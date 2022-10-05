@@ -5,23 +5,24 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
-	[TransactionAttribute(TransactionMode.Manual)]
+	[Transaction(TransactionMode.Manual)]
     public class DimensionsPlan : IExternalCommand
-    {
+	{
+        private static int _countDimensions;
+        private static int _countSegments;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
-			double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
+            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
 
-			int countDim = 0;
-			int countRef = 0;
-
-			try
+            try
             {
 				// Inform user that plan regions are on the view and may cause errors.
 				TaskDialogResult agree = TaskDialogResult.None;
@@ -94,8 +95,8 @@ namespace BIM_Leaders_Core
 #if !VERSION2020
 						dimension.HasLeader = false;
 #endif
-						countDim++;
-						countRef += dimensionData.Value.Size - 1;
+                        _countDimensions++;
+						_countSegments += dimensionData.Value.Size - 1;
 					}
 					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
 					{
@@ -104,13 +105,13 @@ namespace BIM_Leaders_Core
 #if !VERSION2020
 						dimension.HasLeader = false;
 #endif
-						countDim++;
-						countRef += dimensionData.Value.Size - 1;
+                        _countDimensions++;
+                        _countSegments += dimensionData.Value.Size - 1;
 					}
 
 					trans.Commit();
                 }
-				ShowResult(countDim, countRef);
+				ShowResult();
 
 				return Result.Succeeded;
             }
@@ -616,12 +617,12 @@ namespace BIM_Leaders_Core
 			return facesNewPurged;
 		}
 
-		private static void ShowResult(int countDim, int countRef)
+		private static void ShowResult()
         {
 			// Show result
-			string text = (countDim == 0)
+			string text = (_countDimensions == 0)
 				? "Dimensions creating error."
-				: $"{countDim} dimensions with {countRef} segments were created.";
+				: $"{_countDimensions} dimensions with {_countSegments} segments were created.";
 
 			TaskDialog.Show("Dimension Plan", text);
 		}

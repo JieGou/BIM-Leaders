@@ -9,7 +9,7 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.ReadOnly)]
+    [Transaction(TransactionMode.ReadOnly)]
     public class DwgViewFound : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)

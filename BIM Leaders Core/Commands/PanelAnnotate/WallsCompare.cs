@@ -9,9 +9,11 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class WallsCompare : IExternalCommand
     {
+        private static int _countFilledRegions;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -103,7 +105,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                ShowResult(loopList.Count);
+                ShowResult();
                 
                 return Result.Succeeded;
             }
@@ -261,13 +263,16 @@ namespace BIM_Leaders_Core
                 }
                 catch { }
             }
+
+            _countFilledRegions = loopList.Count;
+
             return loopList;
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = $"{count} filled regions created.";
+            string text = $"{_countFilledRegions} filled regions created.";
 
             TaskDialog.Show("Walls comparison", text);
         }

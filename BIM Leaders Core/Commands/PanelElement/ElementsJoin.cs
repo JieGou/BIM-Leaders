@@ -6,18 +6,18 @@ using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class ElementsJoin : IExternalCommand
     {
+        private static int _countCutted;
+        private static int _countJoined;
+
+        private const double TOLERANCE = 0.1;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            double tolerance = 0.1;
-            
-            int countCutted = 0;
-            int countJoined = 0;
 
             try
             {
@@ -25,11 +25,11 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    JoinElements(doc, tolerance, ref countCutted, ref countJoined);
+                    JoinElements(doc);
 
                     trans.Commit();
                 }
-                ShowResult(countCutted, countJoined);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -43,7 +43,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Join all elements that cut the currect section view.
         /// </summary>
-        private static void JoinElements(Document doc, double tolerance, ref int countCutted, ref int countJoined)
+        private static void JoinElements(Document doc)
         {
             View view = doc.ActiveView;
 
@@ -69,27 +69,27 @@ namespace BIM_Leaders_Core
             foreach (ElementId id in floorCutIds)
                 elementsCut.Add(doc.GetElement(id));
 
-            countCutted = elementsCut.Count;
+            _countCutted = elementsCut.Count;
 
             // Go through elements list and join all elements that close to each element
             foreach (Element elementCut in elementsCut)
             {
-                JoinElement(doc, tolerance, elementCut, wallCutIds, ref countJoined);
-                JoinElement(doc, tolerance, elementCut, floorCutIds, ref countJoined);
+                JoinElement(doc, elementCut, wallCutIds);
+                JoinElement(doc, elementCut, floorCutIds);
             }
         }
 
         /// <summary>
         /// Join element with set of elements. Also needs filter as input for better performance (to not calculate same filter couple of times).
         /// </summary>
-        private static void JoinElement(Document doc, double tolerance, Element elementCut, ICollection<ElementId> elementCutIds, ref int count)
+        private static void JoinElement(Document doc, Element elementCut, ICollection<ElementId> elementCutIds)
         {
             try
             {
                 BoundingBoxXYZ bb = elementCut.get_BoundingBox(doc.ActiveView);
                 Outline outline = new Outline(bb.Min, bb.Max);
 
-                BoundingBoxIntersectsFilter intersectBoxFilter = new BoundingBoxIntersectsFilter(outline, tolerance);
+                BoundingBoxIntersectsFilter intersectBoxFilter = new BoundingBoxIntersectsFilter(outline, TOLERANCE);
 
                 // Apply filter to elements to find only elements that near the given element.
                 IList<Element> elementsCutClose = new FilteredElementCollector(doc, elementCutIds)
@@ -99,18 +99,18 @@ namespace BIM_Leaders_Core
                     if (!JoinGeometryUtils.AreElementsJoined(doc, elementCut, elementCutClose))
                     {
                         JoinGeometryUtils.JoinGeometry(doc, elementCut, elementCutClose);
-                        count++;
+                        _countJoined++;
                     }
             }
             catch { }
         }
 
-        private static void ShowResult(int countCutted, int countJoined)
+        private static void ShowResult()
         {
             // Show result
-            string text = (countJoined == 0)
+            string text = (_countJoined == 0)
                 ? "No joins found."
-                : $"{countCutted} elements cuts a view. {countJoined} elements joins were done.";
+                : $"{_countCutted} elements cuts a view. {_countJoined} elements joins were done.";
             
             TaskDialog.Show("Elements Join", text);
         }

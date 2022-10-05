@@ -6,26 +6,26 @@ using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class FamilyZeroCoordinates : IExternalCommand
     {
+        private static double _linesLength = 1;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
 
-            double length = 1;
-
             try
             {
                 XYZ zero = new XYZ(0, 0, 0);
 
                 List<XYZ> points = new List<XYZ>();
-                points.Add(new XYZ(length, 0, 0));
-                points.Add(new XYZ(0, length, 0));
-                points.Add(new XYZ(0 - length, 0, 0));
-                points.Add(new XYZ(0, 0 - length, 0));
+                points.Add(new XYZ(_linesLength, 0, 0));
+                points.Add(new XYZ(0, _linesLength, 0));
+                points.Add(new XYZ(0 - _linesLength, 0, 0));
+                points.Add(new XYZ(0, 0 - _linesLength, 0));
 
                 List<Line> lines = points
                     .ConvertAll(x => Line.CreateBound(zero, x));

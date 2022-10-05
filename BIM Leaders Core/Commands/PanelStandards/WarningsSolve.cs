@@ -9,18 +9,17 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class WarningsSolve : IExternalCommand
     {
+        private static int _countWarningsJoin;
+        private static int _countWarningsWallsAttached;
+        private static int _countWarningsRoomNotEnclosed;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            int countWarningsJoin = 0;
-            int countWarningsWallsAttached = 0;
-            int countWarningsRoomNotEnclosed = 0;
 
             try
             {
@@ -52,15 +51,15 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     if (fixWarningsJoin)
-                        SolveJoin(doc, warningsJoin, ref countWarningsJoin);
+                        SolveJoin(doc, warningsJoin);
                     if (fixWarningsWallsAttached)
-                        SolveWallsAttached(doc, warningsWallsAttached, ref countWarningsWallsAttached);
+                        SolveWallsAttached(doc, warningsWallsAttached);
                     if (fixWarningsRoomNotEnclosed)
-                        SolveRoomNotEnclosed(doc, warningsRoomNotEnclosed, ref countWarningsRoomNotEnclosed);
+                        SolveRoomNotEnclosed(doc, warningsRoomNotEnclosed);
                     
                     trans.Commit();
                 }
-                ShowResult(countWarningsJoin, countWarningsWallsAttached, countWarningsRoomNotEnclosed);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -74,7 +73,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Unjoin elements that have a warning about joining.
         /// </summary>
-        private static void SolveJoin(Document doc, IEnumerable<FailureMessage> warnings, ref int count)
+        private static void SolveJoin(Document doc, IEnumerable<FailureMessage> warnings)
         {
             foreach (FailureMessage warning in warnings)
             {
@@ -92,7 +91,7 @@ namespace BIM_Leaders_Core
                 try
                 {
                     JoinGeometryUtils.UnjoinGeometry(doc, element0, element1);
-                    count++;
+                    _countWarningsJoin++;
                 }
                 catch { }
             }
@@ -101,7 +100,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Detach walls that have a warning about attachment.
         /// </summary>
-        private static void SolveWallsAttached(Document doc, IEnumerable<FailureMessage> warnings, ref int count)
+        private static void SolveWallsAttached(Document doc, IEnumerable<FailureMessage> warnings)
         {
             foreach (FailureMessage warning in warnings)
             {
@@ -123,7 +122,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Delete rooms that are placed but not enclosed.
         /// </summary>
-        private static void SolveRoomNotEnclosed(Document doc, IEnumerable<FailureMessage> warnings, ref int count)
+        private static void SolveRoomNotEnclosed(Document doc, IEnumerable<FailureMessage> warnings)
         {
             foreach (FailureMessage warning in warnings)
             {
@@ -138,33 +137,33 @@ namespace BIM_Leaders_Core
                 try
                 {
                     doc.Delete(ids[0]);
-                    count++;
+                    _countWarningsRoomNotEnclosed++;
                 }
                 catch { }
             }
         }
 
-        private static void ShowResult(int countWarningsJoin, int countWarningsWallsAttached, int countWarningsRoomNotEnclosed)
+        private static void ShowResult()
         {
             // Show result
             string text = "";
-            if (countWarningsJoin + countWarningsWallsAttached + countWarningsRoomNotEnclosed == 0)
+            if (_countWarningsJoin + _countWarningsWallsAttached + _countWarningsRoomNotEnclosed == 0)
                 text = "No warnings solved";
             else
             {
-                if (countWarningsJoin > 0)
-                    text += $"{countWarningsJoin} elements join warnings";
-                if (countWarningsWallsAttached > 0)
+                if (_countWarningsJoin > 0)
+                    text += $"{_countWarningsJoin} elements join warnings";
+                if (_countWarningsWallsAttached > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{countWarningsWallsAttached} walls attached warnings";
+                    text += $"{_countWarningsWallsAttached} walls attached warnings";
                 }
-                if (countWarningsRoomNotEnclosed > 0)
+                if (_countWarningsRoomNotEnclosed > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{countWarningsRoomNotEnclosed} rooms not enclosed warnings";
+                    text += $"{_countWarningsRoomNotEnclosed} rooms not enclosed warnings";
                 }
                 text += " were solved.";
             }

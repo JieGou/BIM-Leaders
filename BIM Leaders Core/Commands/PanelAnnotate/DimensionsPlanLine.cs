@@ -9,9 +9,11 @@ using Autodesk.Revit.ApplicationServices;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DimensionsPlanLine : IExternalCommand
     {
+        private static int _countDimensions;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -49,7 +51,7 @@ namespace BIM_Leaders_Core
 #endif
                     trans.Commit();
                 }
-                ShowResult(references.Size - 1);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -85,6 +87,8 @@ namespace BIM_Leaders_Core
                 references.Append(i);
             foreach (Reference i in referencesColumns)
                 references.Append(i);
+
+            _countDimensions = references.Size - 1;
 
             return references;
         }
@@ -257,12 +261,12 @@ namespace BIM_Leaders_Core
             return result;
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countDimensions == 0)
                 ? "Dimension creating error."
-                : $"Dimension with {count} segments was created.";
+                : $"Dimension with {_countDimensions} segments was created.";
 
             TaskDialog.Show("Dimension Plan Walls", text);
         }

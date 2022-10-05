@@ -7,16 +7,16 @@ using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class ElementPropertiesMatch : IExternalCommand
     {
+        private static int _countPropertiesMatched;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
-
-            int countProperties = 0;
 
             try
             {
@@ -34,11 +34,11 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    MatchProperties(elementFrom, elementTo, ref countProperties);
+                    MatchProperties(elementFrom, elementTo);
 
                     trans.Commit();
                 }
-                ShowResult(countProperties);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -52,7 +52,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Copy all instance properties values from one element to other.
         /// </summary>
-        private static void MatchProperties(Element elementFrom, Element elementTo, ref int count)
+        private static void MatchProperties(Element elementFrom, Element elementTo)
         {
             List<Parameter> parametersFrom = ConvertParameterSet(elementFrom.Parameters);
             List<Parameter> parametersTo = ConvertParameterSet(elementTo.Parameters);
@@ -82,22 +82,22 @@ namespace BIM_Leaders_Core
                         case StorageType.Double:
                             double valueD = parameter.AsDouble();
                             parameterTo.Set(valueD);
-                            count++;
+                            _countPropertiesMatched++;
                             break;
                         case StorageType.ElementId:
                             ElementId valueE = parameter.AsElementId();
                             parameterTo.Set(valueE);
-                            count++;
+                            _countPropertiesMatched++;
                             break;
                         case StorageType.Integer:
                             int valueI = parameter.AsInteger();
                             parameterTo.Set(valueI);
-                            count++;
+                            _countPropertiesMatched++;
                             break;
                         case StorageType.String:
                             string valueS = parameter.AsString();
                             parameterTo.Set(valueS);
-                            count++;
+                            _countPropertiesMatched++;
                             break;
                         default:
                             break;
@@ -123,12 +123,12 @@ namespace BIM_Leaders_Core
             return parametersList;
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countPropertiesMatched == 0)
                 ? "No properties set."
-                : $"{count} properties have been matched.";
+                : $"{_countPropertiesMatched} properties have been matched.";
             
             TaskDialog.Show("Match instance properties", text);
         }

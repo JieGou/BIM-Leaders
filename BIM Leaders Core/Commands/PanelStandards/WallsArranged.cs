@@ -9,9 +9,12 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class WallsArranged : IExternalCommand
     {
+        private static int _countWallsFilteredDistance;
+        private static int _countWallsFilteredAngle;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document.
@@ -78,7 +81,7 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                ShowResult(wallsToFilterDistn.Count, wallsToFilterAngle.Count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -113,6 +116,9 @@ namespace BIM_Leaders_Core
                 else
                     wallsToFilterAngle.Add(wall);
             }
+
+            _countWallsFilteredDistance = wallsToFilterDistn.Count;
+            _countWallsFilteredAngle = wallsToFilterAngle.Count;
 
             return (wallsToFilterDistn, wallsToFilterAngle);
         }
@@ -248,21 +254,21 @@ namespace BIM_Leaders_Core
             return wallsFilter;
         }
 
-        private static void ShowResult(int countDistance, int countAngle)
+        private static void ShowResult()
         {
             // Show result
             string text = "";
-            if (countDistance + countAngle == 0)
+            if (_countWallsFilteredDistance + _countWallsFilteredAngle == 0)
                 text = "All walls are clear";
             else
             {
-                if (countDistance > 0)
-                    text += $"{countDistance} walls added to filter \"Check - Walls arranging. Distances\".";
-                if (countAngle > 0)
+                if (_countWallsFilteredDistance > 0)
+                    text += $"{_countWallsFilteredDistance} walls added to filter \"Check - Walls arranging. Distances\".";
+                if (_countWallsFilteredAngle > 0)
                 {
                     if (text.Length > 0)
                         text += " ";
-                    text += $"{countAngle} walls added to filter \"Check - Walls arranging. Angles\".";
+                    text += $"{_countWallsFilteredAngle} walls added to filter \"Check - Walls arranging. Angles\".";
                 }
             }
 

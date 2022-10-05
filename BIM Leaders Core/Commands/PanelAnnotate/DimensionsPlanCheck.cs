@@ -8,15 +8,17 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DimensionsPlanCheck : IExternalCommand
     {
+        private static int _countWallsUndimensioned;
+
+        private const string FILTER_NAME = "Check - Dimensions";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            string filterName = "Check - Dimensions";
 
             try
             {
@@ -36,13 +38,13 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    ElementId filter1Id = CreateFilter(doc, filterName, wallIds);
+                    ElementId filter1Id = CreateFilter(doc, wallIds);
                     doc.Regenerate();
                     SetupFilter(doc, filter1Id, filterColor);
 
                     trans.Commit();
                 }
-                ShowResult(wallIds.Count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -114,6 +116,8 @@ namespace BIM_Leaders_Core
                 if (countIntersections.Count == 0)
                     wallIds.Add(wall.Id);
             }
+            _countWallsUndimensioned = wallIds.Count;
+
             return wallIds;
         }
 
@@ -121,7 +125,7 @@ namespace BIM_Leaders_Core
         /// Create a selection filter with given set of elements. Applies created filter to the active view.
         /// </summary>
         /// <returns>Created filter element Id.</returns>
-        private static ElementId CreateFilter(Document doc, string filterName, List<ElementId> elementIds)
+        private static ElementId CreateFilter(Document doc, List<ElementId> elementIds)
         {
             View view = doc.ActiveView;
 
@@ -130,10 +134,10 @@ namespace BIM_Leaders_Core
                 .OfClass(typeof(SelectionFilterElement))
                 .ToElements();
             foreach (Element element in filters)
-                if (element.Name == filterName)
+                if (element.Name == FILTER_NAME)
                     doc.Delete(element.Id);
 
-            SelectionFilterElement filter = SelectionFilterElement.Create(doc, filterName);
+            SelectionFilterElement filter = SelectionFilterElement.Create(doc, FILTER_NAME);
             filter.SetElementIds(elementIds);
 
             // Add the filter to the view
@@ -165,12 +169,12 @@ namespace BIM_Leaders_Core
             view.SetFilterOverrides(filterId, overrideSettings);
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countWallsUndimensioned == 0)
                 ? "All walls are dimensioned"
-                : $"{count} walls added to filter \"Check - Dimensions\".";
+                : $"{_countWallsUndimensioned} walls added to filter \"Check - Dimensions\".";
 
             TaskDialog.Show("Dimension Plan Check", text);
         }

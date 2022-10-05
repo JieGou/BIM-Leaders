@@ -9,16 +9,17 @@ using Autodesk.Revit.UI.Selection;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DimensionSectionFloors : IExternalCommand
     {
+        private static int _countSpots;
+        private static int _countSegments;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
-
-            int count = 0;
 
             try
             {
@@ -71,13 +72,13 @@ namespace BIM_Leaders_Core
                     trans.Start();
                     
                     if (inputSpots)
-                        CreateSpots(doc, line, intersectionFacesAll, ref count);
+                        CreateSpots(doc, line, intersectionFacesAll);
                     else
-                        CreateDimensions(doc, line, intersectionFacesAll, ref count);
+                        CreateDimensions(doc, line, intersectionFacesAll);
                     
                     trans.Commit();
                 }
-                ShowResult(count, inputSpots);
+                ShowResult(inputSpots);
 
                 return Result.Succeeded;
             }
@@ -257,7 +258,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create spot elevations on a faces through a given line.
         /// </summary>
-        private static void CreateSpots(Document doc, Line line, List<Face> intersectionFaces, ref int count)
+        private static void CreateSpots(Document doc, Line line, List<Face> intersectionFaces)
         {
             View view = doc.ActiveView; 
             XYZ zero = new XYZ(0, 0, 0);
@@ -272,7 +273,7 @@ namespace BIM_Leaders_Core
                 try
                 {
                     SpotDimension sd = doc.Create.NewSpotElevation(view, intersectionFaces[i].Reference, origin, zero, zero, origin, false);
-                    count++;
+                    _countSpots++;
                 }
                 catch { }
             }
@@ -281,7 +282,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create dimension on a faces through a given line.
         /// </summary>
-        private static void CreateDimensions(Document doc, Line line, List<Face> intersectionFaces, ref int count)
+        private static void CreateDimensions(Document doc, Line line, List<Face> intersectionFaces)
         {
             // Convert List<Face> to ReferenceArray
             ReferenceArray references = new ReferenceArray();
@@ -294,18 +295,20 @@ namespace BIM_Leaders_Core
 #if !VERSION2020
             dimension.HasLeader = false;
 #endif
+
+            _countSegments += references.Size - 1;
         }
 
-        private static void ShowResult(int count, bool inputSpots)
+        private static void ShowResult(bool inputSpots)
         {
             // Result window
             string text = "";
-            if (count == 0)
+            if (_countSpots == 0 && _countSegments == 0)
                 text = "No annotations created.";
             else
                 text = (inputSpots)
-                    ? $"{count} spot elevations created."
-                    : $"Dimension with {count} segments created.";
+                    ? $"{_countSpots} spot elevations created."
+                    : $"Dimension with {_countSegments} segments created.";
 
             TaskDialog.Show("Annotate Section", text);
         }

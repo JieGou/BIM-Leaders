@@ -8,15 +8,15 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class FamilyParameterChange : IExternalCommand
     {
+        private static int _countParametersChanged = 0;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            int count = 0;
 
             try
             {
@@ -24,11 +24,11 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    SwitchParameter(doc, ref count);
+                    SwitchParameter(doc);
 
                     trans.Commit();
                 }
-                ShowResult(count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -42,7 +42,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Chaange the given parameter from shared to family parameter.
         /// </summary>
-        private static void SwitchParameter(Document doc, ref int count)
+        private static void SwitchParameter(Document doc)
         {
             IEnumerable<FamilyParameter> parameters = doc.FamilyManager.GetParameters().Where(x => x.IsShared);
             foreach (FamilyParameter parameter in parameters)
@@ -54,17 +54,18 @@ namespace BIM_Leaders_Core
 
                 FamilyParameter parameterNew = doc.FamilyManager.ReplaceParameter(parameter, parameterNameTemp, parameterGroup, parameterIsInstance);
                 doc.FamilyManager.RenameParameter(parameterNew, parameterName);
-                count++;
+                
+                _countParametersChanged++;
             }
-            count = parameters.Count();
+            _countParametersChanged = parameters.Count();
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countParametersChanged == 0)
                 ? "No parameters changed."
-                : $"{count} parameters changed.";
+                : $"{_countParametersChanged} parameters changed.";
             
             TaskDialog.Show("Parameter Change", text);
         }

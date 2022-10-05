@@ -9,16 +9,19 @@ using Autodesk.Revit.DB.Architecture;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class TagsPlanCheck : IExternalCommand
     {
+        private static int _countUntaggedElements;
+        private static int _countUntaggedRailings;
+
+        private const string FILTER_NAME = "Check - Tags";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
-
-            string filterName = "Check - Tags";
 
             try
             {
@@ -39,7 +42,7 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    ElementId filter1Id = CreateFilter(doc, filterName, elementIds);
+                    ElementId filter1Id = CreateFilter(doc, elementIds);
                     doc.Regenerate();
                     SetupFilter(doc, filter1Id, filterColor);
 
@@ -47,7 +50,7 @@ namespace BIM_Leaders_Core
                 }
                 uidoc.Selection.SetElementIds(railingIds);
 
-                ShowResult(elementIds.Count, railingIds.Count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -101,6 +104,8 @@ namespace BIM_Leaders_Core
                 }
             }
 
+            _countUntaggedElements = elementIds.Count;
+
             return elementIds;
         }
 
@@ -139,6 +144,8 @@ namespace BIM_Leaders_Core
                 }
             }
 
+            _countUntaggedRailings = elementIds.Count;
+
             return elementIds;
         }
 
@@ -146,7 +153,7 @@ namespace BIM_Leaders_Core
         /// Create a selection filter with given set of elements. Applies created filter to the active view.
         /// </summary>
         /// <returns>Created filter element Id.</returns>
-        private static ElementId CreateFilter(Document doc, string filterName, List<ElementId> elementIds)
+        private static ElementId CreateFilter(Document doc, List<ElementId> elementIds)
         {
             View view = doc.ActiveView;
 
@@ -155,10 +162,10 @@ namespace BIM_Leaders_Core
                 .OfClass(typeof(SelectionFilterElement))
                 .ToElements();
             foreach (Element element in filters)
-                if (element.Name == filterName)
+                if (element.Name == FILTER_NAME)
                     doc.Delete(element.Id);
 
-            SelectionFilterElement filter = SelectionFilterElement.Create(doc, filterName);
+            SelectionFilterElement filter = SelectionFilterElement.Create(doc, FILTER_NAME);
             filter.SetElementIds(elementIds);
 
             // Add the filter to the view
@@ -194,21 +201,21 @@ namespace BIM_Leaders_Core
             view.SetFilterOverrides(filterId, overrideSettings);
         }
 
-        private static void ShowResult(int elementIds, int railingIds)
+        private static void ShowResult()
         {
             // Show result
             string text = "";
-            if (elementIds + railingIds == 0)
+            if (_countUntaggedElements + _countUntaggedRailings == 0)
                 text = "All elements are tagged";
             else
             {
-                if (elementIds > 0)
-                    text += $"{elementIds} elements added to filter \"Check - Tags\".";
-                if (railingIds > 0)
+                if (_countUntaggedElements > 0)
+                    text += $"{_countUntaggedElements} elements added to filter \"Check - Tags\".";
+                if (_countUntaggedRailings > 0)
                 {
                     if (text.Length > 0)
                         text += " ";
-                    text += $"Railings filters not usable, so {railingIds} untagged railings were selected.";
+                    text += $"Railings filters not usable, so {_countUntaggedRailings} untagged railings were selected.";
                 }
             }
 

@@ -7,7 +7,7 @@ using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.ReadOnly)]
+    [Transaction(TransactionMode.ReadOnly)]
     public class FamilyVoidsSelect : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
