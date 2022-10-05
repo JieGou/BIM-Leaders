@@ -14,69 +14,44 @@ namespace BIM_Leaders_Core
     {
         private static int _countWallsFilteredDistance;
         private static int _countWallsFilteredAngle;
+        private static WallsArrangedData _inputData;
+
+        private const string TRANSACTION_NAME = "Walls Arranged Check";
+        private const string FILTER_NAME_DISTANCE = "Check - Walls arranging. Distances";
+        private const string FILTER_NAME_ANGLE = "Check - Walls arranging. Angles";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document.
             UIDocument uidoc = commandData.Application.ActiveUIDocument;
             Document doc = uidoc.Document;
-
             double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad.
 
-            string filterName0 = "Check - Walls arranging. Distances";
-            string filterName1 = "Check - Walls arranging. Angles";
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
             try
             {
-                WallsArrangedForm form = new WallsArrangedForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window.
-                WallsArrangedData data = form.DataContext as WallsArrangedData;
-                double toleranceDistance = data.ResultDistanceTolerance;
-                double distanceStep = data.ResultDistanceStep;
-                Color filterColor0 = new Color(data.ResultColor0.R, data.ResultColor0.G, data.ResultColor0.B);
-                Color filterColor1 = new Color(data.ResultColor1.R, data.ResultColor1.G, data.ResultColor1.B);
-
-                // Getting References of Reference Planes.
-                IList<Reference> referenceUncheckedList = uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Two Perpendicular Reference Planes");
-                
-                // Checking for invalid selection.
-                if (referenceUncheckedList.Count != 2)
-                {
-                    TaskDialog.Show("Walls Arranged Check", "Wrong count of reference planes selected. Select 2 perendicular reference planes.");
+                (ReferencePlane referencePlane0, ReferencePlane referencePlane1) = GetReferencePlanes(doc, uidoc, toleranceAngle);
+                if (referencePlane0 == null)
                     return Result.Failed;
-                }
 
-                // Getting Reference planes.
-                ReferencePlane reference0 = doc.GetElement(referenceUncheckedList[0].ElementId) as ReferencePlane;
-                ReferencePlane reference1 = doc.GetElement(referenceUncheckedList[1].ElementId) as ReferencePlane;
-                
-                // Checking for perpendicular input
-                if (reference0.Direction.DotProduct(reference1.Direction) > toleranceAngle)
-                {
-                    TaskDialog.Show("Walls Arranged Check", "Selected reference planes are not perpendicular. Select 2 perendicular reference planes.");
-                    return Result.Failed;
-                }
+                (ICollection<Element> wallsToFilterDistance, ICollection<Element> wallsToFilterAngle) = GetWallsToFilter(doc, referencePlane0, referencePlane1, toleranceAngle);
 
-                (ICollection<Element> wallsToFilterDistn, ICollection<Element> wallsToFilterAngle) = GetWallsToFilter(doc, reference0, reference1, toleranceAngle, toleranceDistance, distanceStep);
-
-                using (Transaction trans = new Transaction(doc, "Create Filters for non-arranged Walls"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    if (wallsToFilterDistn.Count != 0)
+                    if (wallsToFilterDistance.Count != 0)
                     {
-                        Element filter0 = ViewFilterUtils.CreateSelectionFilter(doc, filterName0, wallsToFilterDistn);
-                        ViewFilterUtils.SetupFilter(doc, filter0, filterColor0);
+                        Element filter0 = ViewFilterUtils.CreateSelectionFilter(doc, FILTER_NAME_DISTANCE, wallsToFilterDistance);
+                        ViewFilterUtils.SetupFilter(doc, filter0, new Color(_inputData.ResultColor0.R, _inputData.ResultColor0.G, _inputData.ResultColor0.B));
                     }
                     if (wallsToFilterAngle.Count != 0)
                     {
-                        Element filter1 = ViewFilterUtils.CreateSelectionFilter(doc, filterName1, wallsToFilterAngle);
-                        ViewFilterUtils.SetupFilter(doc, filter1, filterColor1);
+                        Element filter1 = ViewFilterUtils.CreateSelectionFilter(doc, FILTER_NAME_ANGLE, wallsToFilterAngle);
+                        ViewFilterUtils.SetupFilter(doc, filter1, new Color(_inputData.ResultColor1.R, _inputData.ResultColor1.G, _inputData.ResultColor1.B));
                     }
 
                     trans.Commit();
@@ -92,11 +67,49 @@ namespace BIM_Leaders_Core
             }
         }
 
+        private static WallsArrangedData GetUserInput()
+        {
+            WallsArrangedForm form = new WallsArrangedForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window.
+            return form.DataContext as WallsArrangedData;
+        }
+
+        private static (ReferencePlane, ReferencePlane) GetReferencePlanes(Document doc, UIDocument uidoc, double toleranceAngle)
+        {
+            // Getting References of Reference Planes.
+            IList<Reference> referenceUncheckedList = uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Two Perpendicular Reference Planes");
+
+            // Checking for invalid selection.
+            if (referenceUncheckedList.Count != 2)
+            {
+                TaskDialog.Show(TRANSACTION_NAME, "Wrong count of reference planes selected. Select 2 perendicular reference planes.");
+                return (null, null);
+            }
+
+            // Getting Reference planes.
+            ReferencePlane reference0 = doc.GetElement(referenceUncheckedList[0].ElementId) as ReferencePlane;
+            ReferencePlane reference1 = doc.GetElement(referenceUncheckedList[1].ElementId) as ReferencePlane;
+
+            // Checking for perpendicular input
+            if (reference0.Direction.DotProduct(reference1.Direction) > toleranceAngle)
+            {
+                TaskDialog.Show(TRANSACTION_NAME, "Selected reference planes are not perpendicular. Select 2 perendicular reference planes.");
+                return (null, null);
+            }
+
+            return (reference0, reference1);
+        }
+
         /// <summary>
         /// Get walls from the current view that need to be set in filter.
         /// </summary>
         /// <returns>Tuple of 2 elements lists that can be added to filters later.</returns>
-        private static (ICollection<Element>, ICollection<Element>) GetWallsToFilter(Document doc, ReferencePlane reference0, ReferencePlane reference1, double toleranceAngle, double toleranceDistance, double distanceStep)
+        private static (ICollection<Element>, ICollection<Element>) GetWallsToFilter(Document doc, ReferencePlane reference0, ReferencePlane reference1, double toleranceAngle)
         {
             List<Element> wallsToFilterDistn = new List<Element>();
             List<Element> wallsToFilterAngle = new List<Element>();
@@ -109,10 +122,10 @@ namespace BIM_Leaders_Core
             {
                 // Checking if in parallel list.
                 if (wallsPar.Contains(wall))
-                    wallsToFilterDistn.AddRange(FilterWallsDistance(wall, reference0, toleranceDistance, distanceStep));
+                    wallsToFilterDistn.AddRange(FilterWallsDistance(wall, reference0));
                 // Checking if in perpendicular list.
                 else if (wallsPer.Contains(wall))
-                    wallsToFilterDistn.AddRange(FilterWallsDistance(wall, reference1, toleranceDistance, distanceStep));
+                    wallsToFilterDistn.AddRange(FilterWallsDistance(wall, reference1));
                 else
                     wallsToFilterAngle.Add(wall);
             }
@@ -196,7 +209,7 @@ namespace BIM_Leaders_Core
         /// Check if walls have good distance to a reference plane.
         /// </summary>
         /// <returns>List of walls that have bad distance to the given reference plane.</returns>
-        private static List<Wall> FilterWallsDistance(Wall wall, ReferencePlane reference, double toleranceDistance, double distanceStep)
+        private static List<Wall> FilterWallsDistance(Wall wall, ReferencePlane reference)
         {
             List<Wall> wallsFilter = new List<Wall>();
 
@@ -247,8 +260,8 @@ namespace BIM_Leaders_Core
             double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, UnitTypeId.Centimeters);
 #endif
             // Calculate precision
-            double precision = distance % distanceStep;
-            if (0.5 - Math.Abs(0.5 - precision) > toleranceDistance)
+            double precision = distance % _inputData.ResultDistanceStep;
+            if (0.5 - Math.Abs(0.5 - precision) > _inputData.ResultDistanceTolerance)
                 wallsFilter.Add(wall);
 
             return wallsFilter;
@@ -263,16 +276,16 @@ namespace BIM_Leaders_Core
             else
             {
                 if (_countWallsFilteredDistance > 0)
-                    text += $"{_countWallsFilteredDistance} walls added to filter \"Check - Walls arranging. Distances\".";
+                    text += $"{_countWallsFilteredDistance} walls added to filter \"{FILTER_NAME_DISTANCE}\".";
                 if (_countWallsFilteredAngle > 0)
                 {
                     if (text.Length > 0)
                         text += " ";
-                    text += $"{_countWallsFilteredAngle} walls added to filter \"Check - Walls arranging. Angles\".";
+                    text += $"{_countWallsFilteredAngle} walls added to filter \"{FILTER_NAME_ANGLE}\".";
                 }
             }
 
-            TaskDialog.Show("Walls arranged filter", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

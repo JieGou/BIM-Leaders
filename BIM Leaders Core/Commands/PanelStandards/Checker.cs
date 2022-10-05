@@ -8,74 +8,37 @@ using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using System.Windows.Markup;
+using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class Checker : IExternalCommand
     {
+        private static CheckerData _inputData;
+        private static List<ReportMessage> _reportMessageList;
+
+        private const string TRANSACTION_NAME = "Check";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
+
             try
             {
-                // Collector for data provided in window
-                CheckerData data = new CheckerData();
-
-                CheckerForm form = new CheckerForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                data = form.DataContext as CheckerData;
-
-                // Getting input data from user
-                string inputPrefix = data.ResultPrefix;
-                List<bool> inputCategories = data.ResultCategories;
-                List<bool> inputModel = data.ResultModel;
-                List<bool> inputCodes = data.ResultCodes;
-                int inputHeadHeight = data.ResultHeight;
-
                 List<ReportMessage> reportMessageList = new List<ReportMessage>();
 
-                using (Transaction trans = new Transaction(doc, "Check"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    if (inputCategories.Contains(true))
-                        reportMessageList.AddRange(CheckNamesAll(doc, inputCategories, inputPrefix));
-
-                    if (inputModel[0])
-                        reportMessageList.AddRange(CheckTags(doc));
-                    if (inputModel[1])
-                        reportMessageList.AddRange(CheckTextNotes(doc));
-                    if (inputModel[2])
-                        reportMessageList.AddRange(CheckLineStyles(doc));
-                    if (inputModel[3])
-                        reportMessageList.AddRange(CheckFilters(doc));
-                    if (inputModel[5])
-                        reportMessageList.AddRange(CheckViewTemplates(doc));
-                    if (inputModel[6])
-                        reportMessageList.AddRange(CheckSheets(doc));
-                    if (inputModel[7])
-                        reportMessageList.AddRange(CheckWarnings(doc));
-                    if (inputModel[8])
-                        reportMessageList.AddRange(CheckGroups(doc));
-                    if (inputModel[9])
-                        reportMessageList.AddRange(CheckRooms(doc));
-                    if (inputModel[10])
-                        reportMessageList.AddRange(CheckAreas(doc));
-                    if (inputModel[13])
-                        reportMessageList.AddRange(CheckWallsExterior(doc));
-
-                    if (inputCodes[0])
-                        reportMessageList.AddRange(CheckStairsFormula(doc));
-                    if (inputCodes[1])
-                        reportMessageList.AddRange(CheckStairsHeadHeight(doc, inputHeadHeight));
+                    _reportMessageList = CheckAll(doc);
                     
                     trans.Commit();
                 }
@@ -93,6 +56,56 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        private static CheckerData GetUserInput()
+        {
+            CheckerForm form = new CheckerForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as CheckerData;
+        }
+
+        private static List<ReportMessage> CheckAll(Document doc)
+        {
+            List<ReportMessage> reportMessageList = new List<ReportMessage>();
+
+            if (_inputData.ResultCategories.Contains(true))
+                reportMessageList.AddRange(CheckNamesAll(doc));
+
+            if (_inputData.ResultModel[0])
+                reportMessageList.AddRange(CheckTags(doc));
+            if (_inputData.ResultModel[1])
+                reportMessageList.AddRange(CheckTextNotes(doc));
+            if (_inputData.ResultModel[2])
+                reportMessageList.AddRange(CheckLineStyles(doc));
+            if (_inputData.ResultModel[3])
+                reportMessageList.AddRange(CheckFilters(doc));
+            if (_inputData.ResultModel[5])
+                reportMessageList.AddRange(CheckViewTemplates(doc));
+            if (_inputData.ResultModel[6])
+                reportMessageList.AddRange(CheckSheets(doc));
+            if (_inputData.ResultModel[7])
+                reportMessageList.AddRange(CheckWarnings(doc));
+            if (_inputData.ResultModel[8])
+                reportMessageList.AddRange(CheckGroups(doc));
+            if (_inputData.ResultModel[9])
+                reportMessageList.AddRange(CheckRooms(doc));
+            if (_inputData.ResultModel[10])
+                reportMessageList.AddRange(CheckAreas(doc));
+            if (_inputData.ResultModel[13])
+                reportMessageList.AddRange(CheckWallsExterior(doc));
+
+            if (_inputData.ResultCodes[0])
+                reportMessageList.AddRange(CheckStairsFormula(doc));
+            if (_inputData.ResultCodes[1])
+                reportMessageList.AddRange(CheckStairsHeadHeight(doc));
+
+            return reportMessageList;
         }
 
         /// <summary>
@@ -119,16 +132,16 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="doc">Document to process in.</param>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckNamesAll(Document doc, List<bool> inputCategories, string prefix)
+        private static IEnumerable<ReportMessage> CheckNamesAll(Document doc)
         {
             ReportMessage reportMessage = new ReportMessage("Prefixes");
 
             int countPrefixes = 0;
 
-            List<Type> types = Categories.GetTypesList(inputCategories);
+            List<Type> types = Categories.GetTypesList(_inputData.ResultCategories);
 
             foreach (Type type in types)
-                countPrefixes += CheckPrefixes(doc, prefix, type);
+                countPrefixes += CheckPrefixes(doc, type);
 
             if (countPrefixes != 0)
                 reportMessage.MessageText = $"{countPrefixes} prefixes wrong.";
@@ -143,10 +156,9 @@ namespace BIM_Leaders_Core
         /// </para>
         /// </summary>
         /// <param name="doc">Document to process in.</param>
-        /// <param name="prefix">String to search.</param>
         /// <param name="type">Sytem.Type of needed DB class (category).</param>
         /// <returns>Count of prefixes that contains given string.</returns>
-        private static int CheckPrefixes(Document doc, string prefix, Type type)
+        private static int CheckPrefixes(Document doc, Type type)
         {
             int count = 0;
 
@@ -155,7 +167,7 @@ namespace BIM_Leaders_Core
             foreach (Element element in elements)
             {
                 string name = element.Name;
-                if (!name.StartsWith(prefix))
+                if (!name.StartsWith(_inputData.ResultPrefix))
                     count++;
             }
 
@@ -710,7 +722,7 @@ namespace BIM_Leaders_Core
         /// Check all stairs elements in document if they good in the given head height.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckStairsHeadHeight(Document doc, double inputHeadHeight)
+        private static IEnumerable<ReportMessage> CheckStairsHeadHeight(Document doc)
         {
             ReportMessage reportMessage = new ReportMessage("Stairs Head Height");
 
@@ -726,11 +738,11 @@ namespace BIM_Leaders_Core
 
 #if VERSION2020
             double heightOffset = UnitUtils.ConvertToInternalUnits(10, DisplayUnitType.DUT_CENTIMETERS);
-            double height = UnitUtils.ConvertToInternalUnits(inputHeadHeight, DisplayUnitType.DUT_CENTIMETERS) - heightOffset;
+            double height = UnitUtils.ConvertToInternalUnits(_inputData.ResultHeight, DisplayUnitType.DUT_CENTIMETERS) - heightOffset;
             double planOffset = UnitUtils.ConvertToInternalUnits(1, DisplayUnitType.DUT_CENTIMETERS); // Offset for not touching walls near stairs
 #else
             double heightOffset = UnitUtils.ConvertToInternalUnits(10, UnitTypeId.Centimeters);
-            double height = UnitUtils.ConvertToInternalUnits(inputHeadHeight, UnitTypeId.Centimeters) - heightOffset;
+            double height = UnitUtils.ConvertToInternalUnits(_inputData.ResultHeight, UnitTypeId.Centimeters) - heightOffset;
             double planOffset = UnitUtils.ConvertToInternalUnits(1, UnitTypeId.Centimeters);
 #endif
             // Get extrusion vector, only direction is needed but for sure the point is on 0 point of solid bottom but Z is on solid top

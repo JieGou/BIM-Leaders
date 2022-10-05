@@ -12,6 +12,7 @@ namespace BIM_Leaders_Core
         private static int _countCutted;
         private static int _countJoined;
 
+        private const string TRANSACTION_NAME = "Join walls and floors on section";
         private const double TOLERANCE = 0.1;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -21,7 +22,7 @@ namespace BIM_Leaders_Core
 
             try
             {
-                using (Transaction trans = new Transaction(doc, "Join walls and floors on section"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -112,7 +113,7 @@ namespace BIM_Leaders_Core
                 ? "No joins found."
                 : $"{_countCutted} elements cuts a view. {_countJoined} elements joins were done.";
             
-            TaskDialog.Show("Elements Join", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

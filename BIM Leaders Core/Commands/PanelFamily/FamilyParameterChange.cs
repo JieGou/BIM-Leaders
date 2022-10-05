@@ -13,6 +13,8 @@ namespace BIM_Leaders_Core
     {
         private static int _countParametersChanged = 0;
 
+        private const string TRANSACTION_NAME = "Change Parameter";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -20,7 +22,7 @@ namespace BIM_Leaders_Core
 
             try
             {
-                using (Transaction trans = new Transaction(doc, "Change Parameter"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -67,7 +69,7 @@ namespace BIM_Leaders_Core
                 ? "No parameters changed."
                 : $"{_countParametersChanged} parameters changed.";
             
-            TaskDialog.Show("Parameter Change", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

@@ -8,13 +8,13 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class HelpStandards : IExternalCommand
     {
-        private static string _url = @"https://bimleaders.sharepoint.com/sites/Standards/SitePages/Israel%20Standards.aspx";
+        private const string URL = @"https://bimleaders.sharepoint.com/sites/Standards/SitePages/Israel%20Standards.aspx";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             try
             {
-                System.Diagnostics.Process.Start(_url);
+                System.Diagnostics.Process.Start(URL);
 
                 return Result.Succeeded;
             }

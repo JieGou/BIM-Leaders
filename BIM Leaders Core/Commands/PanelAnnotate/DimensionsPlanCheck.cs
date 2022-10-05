@@ -13,6 +13,7 @@ namespace BIM_Leaders_Core
     {
         private static int _countWallsUndimensioned;
 
+        private const string TRANSACTION_NAME = "Create Filter for non-dimensioned Walls";
         private const string FILTER_NAME = "Check - Dimensions";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -34,7 +35,7 @@ namespace BIM_Leaders_Core
 
                 List<ElementId> wallIds = GetWallIds(doc);
 
-                using (Transaction trans = new Transaction(doc, "Create Filter for non-dimensioned Walls"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -176,7 +177,7 @@ namespace BIM_Leaders_Core
                 ? "All walls are dimensioned"
                 : $"{_countWallsUndimensioned} walls added to filter \"Check - Dimensions\".";
 
-            TaskDialog.Show("Dimension Plan Check", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

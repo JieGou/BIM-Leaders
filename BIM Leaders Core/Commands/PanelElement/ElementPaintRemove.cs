@@ -11,6 +11,8 @@ namespace BIM_Leaders_Core
         private static int _countFacesAll;
         private static int _countFacesCleared;
 
+        private const string TRANSACTION_NAME = "Remove Paint from Element";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -23,7 +25,7 @@ namespace BIM_Leaders_Core
                 Reference reference = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
                 Element element = doc.GetElement(reference.ElementId);
 
-                using (Transaction trans = new Transaction(doc, "Remove Paint from Element"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -74,7 +76,7 @@ namespace BIM_Leaders_Core
                 ? "Painted faces not found."
                 : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
             
-            TaskDialog.Show("Paint remove", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

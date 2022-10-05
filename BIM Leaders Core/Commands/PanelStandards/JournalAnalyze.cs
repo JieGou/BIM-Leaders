@@ -13,6 +13,8 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class JournalAnalyze : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Analyze Journal";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -26,7 +28,7 @@ namespace BIM_Leaders_Core
 
             try
             {
-                using (Transaction trans = new Transaction(doc, "Analyze Journal"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -43,10 +45,9 @@ namespace BIM_Leaders_Core
                 }
 
                 List<string> commands = FindCommands(content);
-
                 Dictionary<string, int> commandsSorted = commands.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
-
                 DataSet commandsDataSet = CreateDataSet(commandsSorted);
+                
                 ShowResult(commandsDataSet);
 
                 return Result.Succeeded;

@@ -12,6 +12,8 @@ namespace BIM_Leaders_Core
     {
         private static int _countPropertiesMatched;
 
+        private const string TRANSACTION_NAME = "Match instance properties";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -30,7 +32,7 @@ namespace BIM_Leaders_Core
                 Reference reference1 = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, category);
                 Element elementTo = doc.GetElement(reference1.ElementId);
 
-                using (Transaction trans = new Transaction(doc, "Match instance properties"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -130,7 +132,7 @@ namespace BIM_Leaders_Core
                 ? "No properties set."
                 : $"{_countPropertiesMatched} properties have been matched.";
             
-            TaskDialog.Show("Match instance properties", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

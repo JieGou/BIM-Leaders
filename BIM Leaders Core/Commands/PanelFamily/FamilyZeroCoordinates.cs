@@ -11,6 +11,8 @@ namespace BIM_Leaders_Core
     {
         private static double _linesLength = 1;
 
+        private const string TRANSACTION_NAME = "Family Zero Coordinates"; 
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -30,7 +32,7 @@ namespace BIM_Leaders_Core
                 List<Line> lines = points
                     .ConvertAll(x => Line.CreateBound(zero, x));
 
-                using (Transaction trans = new Transaction(doc, "Family Zero Coordinates"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 

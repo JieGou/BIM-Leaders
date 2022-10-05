@@ -15,6 +15,8 @@ namespace BIM_Leaders_Core
         private static int _countDimensions;
         private static int _countSegments;
 
+        private const string TRANSACTION_NAME = "Dimension Plan Walls";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -28,7 +30,7 @@ namespace BIM_Leaders_Core
 				TaskDialogResult agree = TaskDialogResult.None;
 				if (CheckOnPlanRegions(doc))
                 {
-					TaskDialog dialog = new TaskDialog("Dimension Plan")
+					TaskDialog dialog = new TaskDialog(TRANSACTION_NAME)
 					{
 						MainContent = "Plan regions are on the current view. This can cause error \"One or more dimension references are or have become invalid.\" Continue?",
 						CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No,
@@ -84,7 +86,7 @@ namespace BIM_Leaders_Core
 				Dictionary<Line, ReferenceArray> dimensionsDataHor = GetDimensionsData(doc, facesHorAll, searchDistance, searchStep, true, minUniqueReferences);
 				Dictionary<Line, ReferenceArray> dimensionsDataVer = GetDimensionsData(doc, facesVerAll, searchDistance, searchStep, false, minUniqueReferences);
 
-				using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
+				using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -624,7 +626,7 @@ namespace BIM_Leaders_Core
 				? "Dimensions creating error."
 				: $"{_countDimensions} dimensions with {_countSegments} segments were created.";
 
-			TaskDialog.Show("Dimension Plan", text);
+			TaskDialog.Show(TRANSACTION_NAME, text);
 		}
 
 		public static string GetPath()

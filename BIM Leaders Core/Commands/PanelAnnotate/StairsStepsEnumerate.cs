@@ -17,6 +17,8 @@ namespace BIM_Leaders_Core
         private static int _countRisersNumbers;
         private static int _countRunsNumbersPlaced;
 
+        private const string TRANSACTION_NAME = "Enumerate stairs";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document.
@@ -39,7 +41,7 @@ namespace BIM_Leaders_Core
                 int inputStartNumber = data.ResultNumber;
                 
                 // Create annotations.
-                using (Transaction trans = new Transaction(doc, "Enumerate stairs"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -182,7 +184,7 @@ namespace BIM_Leaders_Core
                     text += $"{Environment.NewLine}{_countStairsUnpinned} stairs were unpinned!";
             }
 
-            TaskDialog.Show("Section Annotations", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

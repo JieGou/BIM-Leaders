@@ -14,6 +14,10 @@ namespace BIM_Leaders_Core
     {
         private static int _countWallsFiltered;
 
+        private const string TRANSACTION_NAME = "Walls Parralel Check";
+        private const string FILTER_NAME = "Check - Walls parralel";
+        private readonly Color FILTER_COLOR = new Color(255, 127, 39);
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -21,8 +25,6 @@ namespace BIM_Leaders_Core
             Document doc = uidoc.Document;
 
             double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
-            string filterName = "Check - Walls parralel";
-            Color filterColor = new Color(255, 127, 39);
 
             try
             {
@@ -34,12 +36,12 @@ namespace BIM_Leaders_Core
                 if (wallsFilter.Count == 0)
                     return Result.Succeeded;
 
-                using (Transaction trans = new Transaction(doc, "Create Filter for non-parallel Walls"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    Element filter = ViewFilterUtils.CreateSelectionFilter(doc, filterName, wallsFilter);
-                    ViewFilterUtils.SetupFilter(doc, filter, filterColor);
+                    Element filter = ViewFilterUtils.CreateSelectionFilter(doc, FILTER_NAME, wallsFilter);
+                    ViewFilterUtils.SetupFilter(doc, filter, FILTER_COLOR);
 
                     trans.Commit();
                 }
@@ -132,9 +134,9 @@ namespace BIM_Leaders_Core
             // Show result
             string text = (_countWallsFiltered == 0)
                 ? "All walls are clear"
-                : $"{_countWallsFiltered} walls added to filter \"Check - Walls parralel\".";
+                : $"{_countWallsFiltered} walls added to filter \"{FILTER_NAME}\".";
             
-            TaskDialog.Show("Walls parallel filter", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

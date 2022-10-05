@@ -15,6 +15,7 @@ namespace BIM_Leaders_Core
         private static int _countUntaggedElements;
         private static int _countUntaggedRailings;
 
+        private const string TRANSACTION_NAME = "Tags Plan Check";
         private const string FILTER_NAME = "Check - Tags";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -38,7 +39,7 @@ namespace BIM_Leaders_Core
                 List<ElementId> elementIds = GetUntaggedElementIds(doc);
                 List<ElementId> railingIds = GetUntaggedRailingIds(doc);
 
-                using (Transaction trans = new Transaction(doc, "Create Filter for non-dimensioned Walls"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -219,7 +220,7 @@ namespace BIM_Leaders_Core
                 }
             }
 
-            TaskDialog.Show("Tags Plan Check", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

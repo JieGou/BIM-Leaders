@@ -11,6 +11,8 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class DwgNameDelete : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Delete DWG by Name";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -38,7 +40,7 @@ namespace BIM_Leaders_Core
                     .ConvertAll(x => x.Id)               //LINQ function
                     .ToList();                           //LINQ function
 
-                using (Transaction trans = new Transaction(doc, "Delete DWG by Name"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -64,7 +66,7 @@ namespace BIM_Leaders_Core
                 ? "No DWG deleted"
                 : $"{count} DWG named {name} deleted";
             
-            TaskDialog.Show("DWG Deleted", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

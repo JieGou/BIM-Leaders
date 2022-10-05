@@ -11,6 +11,8 @@ namespace BIM_Leaders_Core
     {
         private static int _countGridsAligned;
 
+        private const string TRANSACTION_NAME = "Align Grids";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -35,7 +37,7 @@ namespace BIM_Leaders_Core
                 bool inputSwitch3D = data.ResultSwitch3D;
 
                 // Edit extents
-                using (Transaction trans = new Transaction(doc, "Align Grids"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -66,7 +68,7 @@ namespace BIM_Leaders_Core
 
             text += $"{Environment.NewLine}{_countGridsAligned} grids changed bubbles";
             
-            TaskDialog.Show("Grids Align", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

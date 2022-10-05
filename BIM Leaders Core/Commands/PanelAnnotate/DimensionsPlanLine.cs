@@ -14,6 +14,8 @@ namespace BIM_Leaders_Core
     {
         private static int _countDimensions;
 
+        private const string TRANSACTION_NAME = "Dimension Plan Walls";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -27,7 +29,7 @@ namespace BIM_Leaders_Core
                 DetailLine detailLine = doc.GetElement(referenceLine) as DetailLine;
                 if (detailLine == null)
                 {
-                    TaskDialog.Show("Dimensions Plan Walls", "Wrong selection.");
+                    TaskDialog.Show(TRANSACTION_NAME, "Wrong selection.");
                     return Result.Failed;
                 }
 
@@ -36,11 +38,11 @@ namespace BIM_Leaders_Core
 
                 if (references.Size < 2)
                 {
-                    TaskDialog.Show("Dimensions Plan Walls", "Not enough numbrer references for dimension.");
+                    TaskDialog.Show(TRANSACTION_NAME, "Not enough numbrer references for dimension.");
                     return Result.Failed;
                 }
 
-                using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -268,7 +270,7 @@ namespace BIM_Leaders_Core
                 ? "Dimension creating error."
                 : $"Dimension with {_countDimensions} segments was created.";
 
-            TaskDialog.Show("Dimension Plan Walls", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

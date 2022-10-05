@@ -15,48 +15,27 @@ namespace BIM_Leaders_Core
         private static int _countWarningsJoin;
         private static int _countWarningsWallsAttached;
         private static int _countWarningsRoomNotEnclosed;
+        private static WarningsSolveData _inputData;
+
+        private const string TRANSACTION_NAME = "Solve Warnings";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
+
             try
             {
-                WarningsSolveForm form = new WarningsSolveForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                WarningsSolveData data = form.DataContext as WarningsSolveData;
-
-                // Getting input data from user
-                bool fixWarningsJoin = data.ResultFixWarningsJoin;
-                bool fixWarningsWallsAttached = data.ResultFixWarningsWallsAttached;
-                bool fixWarningsRoomNotEnclosed = data.ResultFixWarningsRoomNotEnclosed;
-
-
-                IEnumerable<FailureMessage> warnings = doc.GetWarnings();
-                IEnumerable<FailureMessage> warningsJoin = warnings
-                    .Where(x => x.GetDescriptionText() == "Highlighted elements are joined but do not intersect.");
-                IEnumerable<FailureMessage> warningsWallsAttached = warnings
-                    .Where(x => x.GetDescriptionText() == "Highlighted walls are attached to, but miss, the highlighted targets.");
-                IEnumerable<FailureMessage> warningsRoomNotEnclosed = warnings
-                    .Where(x => x.GetDescriptionText() == "Room is not in a properly enclosed region");
-
-                using (Transaction trans = new Transaction(doc, "Solve Warnings"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    if (fixWarningsJoin)
-                        SolveJoin(doc, warningsJoin);
-                    if (fixWarningsWallsAttached)
-                        SolveWallsAttached(doc, warningsWallsAttached);
-                    if (fixWarningsRoomNotEnclosed)
-                        SolveRoomNotEnclosed(doc, warningsRoomNotEnclosed);
-                    
+                    SolveAll(doc);
+
                     trans.Commit();
                 }
                 ShowResult();
@@ -68,6 +47,36 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        private static WarningsSolveData GetUserInput()
+        {
+            WarningsSolveForm form = new WarningsSolveForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as WarningsSolveData;
+        }
+
+        private static void SolveAll(Document doc)
+        {
+            IEnumerable<FailureMessage> warnings = doc.GetWarnings();
+            IEnumerable<FailureMessage> warningsJoin = warnings
+                    .Where(x => x.GetDescriptionText() == "Highlighted elements are joined but do not intersect.");
+            IEnumerable<FailureMessage> warningsWallsAttached = warnings
+                .Where(x => x.GetDescriptionText() == "Highlighted walls are attached to, but miss, the highlighted targets.");
+            IEnumerable<FailureMessage> warningsRoomNotEnclosed = warnings
+                .Where(x => x.GetDescriptionText() == "Room is not in a properly enclosed region");
+
+            if (_inputData.ResultFixWarningsJoin)
+                SolveJoin(doc, warningsJoin);
+            if (_inputData.ResultFixWarningsWallsAttached)
+                SolveWallsAttached(doc, warningsWallsAttached);
+            if (_inputData.ResultFixWarningsRoomNotEnclosed)
+                SolveRoomNotEnclosed(doc, warningsRoomNotEnclosed);
         }
 
         /// <summary>
@@ -168,7 +177,7 @@ namespace BIM_Leaders_Core
                 text += " were solved.";
             }
             
-            TaskDialog.Show("Solve Warnings", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

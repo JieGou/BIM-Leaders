@@ -6,68 +6,44 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
 using Autodesk.Revit.DB.Architecture;
+using System.Windows.Forms;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class Purge : IExternalCommand
     {
-        private static int _countRooms;
-        private static int _countTags;
-        private static int _countFilters;
-        private static int _countViewTemplates;
-        private static int _countSheets;
-        private static int _countLineStyles;
+        private static PurgeData _inputData;
+        private static int _countRoomsNotPlaced;
+        private static int _countTagsEmpty;
+        private static int _countFiltersUnused;
+        private static int _countViewTemplatesUnused;
+        private static int _countSheetsEmpty;
+        private static int _countLineStylesUnused;
         private static int _countLinePatterns;
+
+        private const string TRANSACTION_NAME = "Purge";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
+
             // Get Document
             Document doc = commandData.Application.ActiveUIDocument.Document;
 
             try
             {
-                PurgeForm form = new PurgeForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                PurgeData data = form.DataContext as PurgeData;
-
-                // Getting input data from user
-                bool inputRooms = data.ResultRooms;
-                bool inputTags = data.ResultTags;
-                bool inputFilters = data.ResultFilters;
-                bool inputViewTemplates = data.ResultViewTemplates;
-                bool inputSheets = data.ResultSheets;
-                bool inputLineStyles = data.ResultLineStyles;
-                bool inputLinePatterns = data.ResultLinePatterns;
-                string inputLinePatternsName = data.ResultLinePatternsName;
-
-                using (Transaction trans = new Transaction(doc, "Purge"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    if (inputRooms)
-                        PurgeRoomsNotPlaced(doc);
-                    if (inputTags)
-                        PurgeTagsEmpty(doc);
-                    if (inputFilters)
-                        PurgeFiltersUnused(doc);
-                    if (inputViewTemplates)
-                        PurgeViewTemplatesUnused(doc);
-                    if (inputSheets)
-                        PurgeSheetsEmpty(doc);
-                    if (inputLineStyles)
-                        PurgeLineStylesUnused(doc);
-                    if (inputLinePatterns)
-                        PurgeLinePatterns(doc, inputLinePatternsName);
+                    RunPurges(doc);
 
                     trans.Commit();
                 }
-                ShowResult(inputLinePatternsName);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -76,6 +52,36 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        private static PurgeData GetUserInput()
+        {
+            PurgeForm form = new PurgeForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as PurgeData;
+        }
+
+        private static void RunPurges(Document doc)
+        {
+            if (_inputData.ResultRooms)
+                PurgeRoomsNotPlaced(doc);
+            if (_inputData.ResultTags)
+                PurgeTagsEmpty(doc);
+            if (_inputData.ResultFilters)
+                PurgeFiltersUnused(doc);
+            if (_inputData.ResultViewTemplates)
+                PurgeViewTemplatesUnused(doc);
+            if (_inputData.ResultSheets)
+                PurgeSheetsEmpty(doc);
+            if (_inputData.ResultLineStyles)
+                PurgeLineStylesUnused(doc);
+            if (_inputData.ResultLinePatterns)
+                PurgeLinePatterns(doc, _inputData.ResultLinePatternsName);
         }
 
         /// <summary>
@@ -92,7 +98,7 @@ namespace BIM_Leaders_Core
                 .Select(x => x.Id)
                 .ToList();
             
-            _countRooms = rooms.Count;
+            _countRoomsNotPlaced = rooms.Count;
 
             doc.Delete(rooms);
         }
@@ -111,7 +117,7 @@ namespace BIM_Leaders_Core
                 .Select(x => x.Id)
                 .ToList();
 
-            _countTags = tags.Count;
+            _countTagsEmpty = tags.Count;
 
             doc.Delete(tags);
         }
@@ -150,7 +156,7 @@ namespace BIM_Leaders_Core
 
             ICollection<ElementId> filtersUnused = filtersAll.Where(x => !filtersUsed.Contains(x)).ToList();
 
-            _countFilters = filtersUnused.Count;
+            _countFiltersUnused = filtersUnused.Count;
 
             doc.Delete(filtersUnused);
         }
@@ -178,7 +184,7 @@ namespace BIM_Leaders_Core
                     templateIds = templateIds.Where(x => x != view.ViewTemplateId).ToList();
             }
 
-            _countViewTemplates = templateIds.Count;
+            _countViewTemplatesUnused = templateIds.Count;
 
             doc.Delete(templateIds);
         }
@@ -209,7 +215,7 @@ namespace BIM_Leaders_Core
                 .Where(x => !schedulesSheets.Contains(x))
                 .ToList();
 
-            _countSheets = sheetsEmpty.Count;
+            _countSheetsEmpty = sheetsEmpty.Count;
 
             doc.Delete(sheetsEmpty);
         }
@@ -241,7 +247,7 @@ namespace BIM_Leaders_Core
                 .Where(x => !lineStylesUsed.Contains(x))
                 .ToList();
 
-            _countLineStyles = lineStylesUnused.Count;
+            _countLineStylesUnused = lineStylesUnused.Count;
 
             doc.Delete(lineStylesUnused);
         }
@@ -259,61 +265,61 @@ namespace BIM_Leaders_Core
                     .Select(x => x.Id)
                     .ToList();
 
-            _countLinePatterns = linePatterns.Count;
-
             doc.Delete(linePatterns);
+
+            _countLinePatterns = linePatterns.Count;
         }
 
-        private static void ShowResult(string inputLinePatternsName)
+        private static void ShowResult()
         {
             // Show result
             string text = "";
-            if (_countLineStyles + _countFilters == 0)
+            if (_countLineStylesUnused + _countFiltersUnused == 0)
                 text = "No elements deleted";
             else
             {
-                if (_countRooms > 0)
-                    text += $"{_countRooms} non-placed rooms deleted";
-                if (_countTags > 0)
+                if (_countRoomsNotPlaced > 0)
+                    text += $"{_countRoomsNotPlaced} non-placed rooms deleted";
+                if (_countTagsEmpty > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{_countTags} empty tags deleted";
+                    text += $"{_countTagsEmpty} empty tags deleted";
                 }
-                if (_countFilters > 0)
+                if (_countFiltersUnused > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{_countFilters} unused filters deleted";
+                    text += $"{_countFiltersUnused} unused filters deleted";
                 }
-                if (_countViewTemplates > 0)
+                if (_countViewTemplatesUnused > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{_countViewTemplates} unused view templates deleted";
+                    text += $"{_countViewTemplatesUnused} unused view templates deleted";
                 }
-                if (_countSheets > 0)
+                if (_countSheetsEmpty > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{_countSheets} empty sheets deleted";
+                    text += $"{_countSheetsEmpty} empty sheets deleted";
                 }
-                if (_countLineStyles > 0)
+                if (_countLineStylesUnused > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{_countLineStyles} unused linestyles deleted";
+                    text += $"{_countLineStylesUnused} unused linestyles deleted";
                 }
                 if (_countLinePatterns > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{_countLinePatterns} line patterns with names included \"{inputLinePatternsName}\" deleted";
+                    text += $"{_countLinePatterns} line patterns with names included \"{_inputData.ResultLinePatternsName}\" deleted";
                 }
                 text += ".";
             }
 
-            TaskDialog.Show("Purge", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

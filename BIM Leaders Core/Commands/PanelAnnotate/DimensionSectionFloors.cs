@@ -15,6 +15,8 @@ namespace BIM_Leaders_Core
         private static int _countSpots;
         private static int _countSegments;
 
+        private const string TRANSACTION_NAME = "Annotate Section";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -24,14 +26,14 @@ namespace BIM_Leaders_Core
             try
             {
                 if (CheckIfSectionIsSplit(doc))
-                    TaskDialog.Show("Annotate Section", "Current view is a split section. Line may not lay in view plane.");
+                    TaskDialog.Show(TRANSACTION_NAME, "Current view is a split section. Line may not lay in view plane.");
 
                 // Get the line from user selection
                 Reference referenceLine = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
                 DetailLine detailLine = doc.GetElement(referenceLine) as DetailLine;
                 if (detailLine == null)
                 {
-                    TaskDialog.Show("Annotate Section", "Wrong selection.");
+                    TaskDialog.Show(TRANSACTION_NAME, "Wrong selection.");
                     return Result.Failed;
                 }
                 Line line = detailLine.GeometryCurve as Line;
@@ -62,12 +64,12 @@ namespace BIM_Leaders_Core
                 // Check if no intersections
                 if (intersectionFacesAll.Count == 0)
                 {
-                    TaskDialog.Show("Annotate Section", "No intersections were found");
+                    TaskDialog.Show(TRANSACTION_NAME, "No intersections were found");
                     return Result.Failed;
                 }
 
                 // Create annotations
-                using (Transaction trans = new Transaction(doc, "Annotate Section"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
                     
@@ -310,7 +312,7 @@ namespace BIM_Leaders_Core
                     ? $"{_countSpots} spot elevations created."
                     : $"Dimension with {_countSegments} segments created.";
 
-            TaskDialog.Show("Annotate Section", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

@@ -14,6 +14,8 @@ namespace BIM_Leaders_Core
     {
         private static int _countFilledRegions;
 
+        private const string TRANSACTION_NAME = "Compare Walls";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -89,7 +91,7 @@ namespace BIM_Leaders_Core
 
                 if (solid1Transformed.Volume == 0 || solid2Transformed.Volume == 0)
                 {
-                    TaskDialog.Show("Walls comparison", "No intersections found.");
+                    TaskDialog.Show(TRANSACTION_NAME, "No intersections found.");
                     return Result.Failed;
                 }
 
@@ -97,7 +99,7 @@ namespace BIM_Leaders_Core
                 List<CurveLoop> loopList = GetCurveLoops(solid1Transformed, solid2Transformed);
 
                 // Drawing filled region
-                using (Transaction trans = new Transaction(doc, "Compare Walls"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
                     
@@ -274,7 +276,7 @@ namespace BIM_Leaders_Core
             // Show result
             string text = $"{_countFilledRegions} filled regions created.";
 
-            TaskDialog.Show("Walls comparison", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

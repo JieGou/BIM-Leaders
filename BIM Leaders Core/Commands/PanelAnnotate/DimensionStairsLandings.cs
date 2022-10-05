@@ -15,6 +15,8 @@ namespace BIM_Leaders_Core
         private static int _countSpots;
         private static int _countDimensions;
 
+        private const string TRANSACTION_NAME = "Annotate Landings";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
@@ -51,7 +53,7 @@ namespace BIM_Leaders_Core
                 List<List<Face>> intersectionFaces = GetIntersections(doc, landings, inputPlacementDimensionTop || inputPlacementElevationTop, inputPlacementDimensionMid || inputPlacementElevationMid, inputPlacementDimensionBot || inputPlacementElevationBot);
                 
                 // Create annotations
-                using (Transaction trans = new Transaction(doc, "Annotate Landings"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -339,7 +341,7 @@ namespace BIM_Leaders_Core
                 ? "No annotations created."
                 : $"{_countSpots} spot elevations were created. {_countDimensions} dimension lines were created.";
             
-            TaskDialog.Show("Dimension Stairs", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

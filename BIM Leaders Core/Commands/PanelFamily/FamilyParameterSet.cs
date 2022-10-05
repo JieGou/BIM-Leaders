@@ -11,6 +11,9 @@ namespace BIM_Leaders_Core
     public class FamilyParameterSet : IExternalCommand
     {
         private static int _countParametersSet = 0;
+        private static FamilyParameterSetData _inputData;
+
+        private const string TRANSACTION_NAME = "Set Parameter";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -20,27 +23,17 @@ namespace BIM_Leaders_Core
             // Get Document
             Document doc = uidoc.Document;
 
+            _inputData = GetUserInput(doc);
+            if (_inputData == null)
+                return Result.Cancelled;
+
             try
             {
-                FamilyParameterSetForm form = new FamilyParameterSetForm(doc);
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                FamilyParameterSetData data = form.DataContext as FamilyParameterSetData;
-                string parameterName = data.ParametersListSelected;
-                string parameterValue = data.ParameterValue;
-
-                // Get parameter
-                FamilyParameter parameter = doc.FamilyManager.get_Parameter(parameterName);
-
-                using (Transaction trans = new Transaction(doc, "Set Parameter"))
+                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    ChangeParameter(doc, parameter, parameterValue);
+                    ChangeParameter(doc);
 
                     trans.Commit();
                 }
@@ -55,12 +48,27 @@ namespace BIM_Leaders_Core
             }
         }
 
+        private static FamilyParameterSetData GetUserInput(Document doc)
+        {
+            FamilyParameterSetForm form = new FamilyParameterSetForm(doc);
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as FamilyParameterSetData;
+        }
+
         /// <summary>
         /// Change the given parameter to given value in all family types.
         /// Value is given as string, so depends on parameter type value will be converted.
         /// </summary>
-        private static void ChangeParameter(Document doc, FamilyParameter parameter, string parameterValue)
+        private static void ChangeParameter(Document doc)
         {
+            // Get parameter
+            FamilyParameter parameter = doc.FamilyManager.get_Parameter(_inputData.ParametersListSelected);
+
             if (parameter.IsReadOnly)
                 return;
 
@@ -76,13 +84,13 @@ namespace BIM_Leaders_Core
                     doc.FamilyManager.CurrentType = familyType;
 #if VERSION2020
                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
-                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(parameterValue), DisplayUnitType.DUT_CENTIMETERS));
+                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(_inputData.ParameterValue), DisplayUnitType.DUT_CENTIMETERS));
 #else
                     if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
-                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(parameterValue), UnitTypeId.Centimeters));
+                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(_inputData.ParameterValue), UnitTypeId.Centimeters));
 #endif
                     else
-                        doc.FamilyManager.Set(parameter, Convert.ToInt32(parameterValue));
+                        doc.FamilyManager.Set(parameter, Convert.ToInt32(_inputData.ParameterValue));
                     
                     _countParametersSet++;
                 }
@@ -95,13 +103,13 @@ namespace BIM_Leaders_Core
                     doc.FamilyManager.CurrentType = familyType;
 #if VERSION2020
                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
-                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(parameterValue), DisplayUnitType.DUT_CENTIMETERS));
+                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(_inputData.ParameterValue), DisplayUnitType.DUT_CENTIMETERS));
 #else
                     if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
-                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(parameterValue), UnitTypeId.Centimeters));
+                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(_inputData.ParameterValue), UnitTypeId.Centimeters));
 #endif
                     else
-                        doc.FamilyManager.Set(parameter, Convert.ToDouble(parameterValue));
+                        doc.FamilyManager.Set(parameter, Convert.ToDouble(_inputData.ParameterValue));
                     
                     _countParametersSet++;
                 }
@@ -111,7 +119,7 @@ namespace BIM_Leaders_Core
             {
                 foreach (FamilyType familyType in familyTypeSet)
                 {
-                    doc.FamilyManager.Set(parameter, parameterValue);
+                    doc.FamilyManager.Set(parameter, _inputData.ParameterValue);
 
                     _countParametersSet++;
                 }
@@ -133,7 +141,7 @@ namespace BIM_Leaders_Core
                             .WhereElementIsNotElementType()
                             .ToElementIds();
                         foreach (ElementId materialId in materialIds)
-                            if (doc.GetElement(materialId).Name == parameterValue)
+                            if (doc.GetElement(materialId).Name == _inputData.ParameterValue)
                                 id = materialId;
 
                         doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF MATERIAL WITH GIVEN NAME NOT FOUND !!!
@@ -146,7 +154,7 @@ namespace BIM_Leaders_Core
                             .WhereElementIsNotElementType()
                             .ToElementIds();
                         foreach (ElementId familyTypeId in familyTypeIds)
-                            if (doc.GetElement(familyTypeId).Name == parameterValue)
+                            if (doc.GetElement(familyTypeId).Name == _inputData.ParameterValue)
                                 id = familyTypeId;
 
                         doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF FAMILY TYPE WITH GIVEN NAME NOT FOUND !!!
@@ -159,7 +167,7 @@ namespace BIM_Leaders_Core
                             .WhereElementIsNotElementType()
                             .ToElementIds();
                         foreach (ElementId imageId in imageIds)
-                            if (doc.GetElement(imageId).Name == parameterValue)
+                            if (doc.GetElement(imageId).Name == _inputData.ParameterValue)
                                 id = imageId;
 
                         doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF IMAGE WITH GIVEN NAME NOT FOUND !!!
@@ -179,7 +187,7 @@ namespace BIM_Leaders_Core
                 ? "No parameters set."
                 : $"{_countParametersSet} parameters set.";
             
-            TaskDialog.Show("Parameter Set", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()
