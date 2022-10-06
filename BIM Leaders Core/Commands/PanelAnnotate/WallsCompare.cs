@@ -13,7 +13,7 @@ namespace BIM_Leaders_Core
     public class WallsCompare : IExternalCommand
     {
         private static UIDocument _uidoc;
-        private static Document _doc = _uidoc.Document;
+        private static Document _doc;
         private static WallsCompareData _inputData;
         private static int _countFilledRegions;
 
@@ -21,8 +21,8 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
             _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             try
             {

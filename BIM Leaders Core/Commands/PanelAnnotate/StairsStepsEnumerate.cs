@@ -75,7 +75,7 @@ namespace BIM_Leaders_Core
 
             // Get all stairs in the view.
             // If multistairs, unpinned or unique (different hight) stairs will separate Stairs instance.
-            IEnumerable<Stairs> stairsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<Stairs> stairsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfClass(typeof(Stairs))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -88,7 +88,7 @@ namespace BIM_Leaders_Core
                 // Checking for stairs in groups.
                 // Multistory stairs can be added in group only as a whole, so extract MultistoryStairs from Stairs.
                 ElementId mainStairId = stair.MultistoryStairsId ?? stair.Id;
-                Element mainStair = doc.GetElement(mainStairId);
+                Element mainStair = _doc.GetElement(mainStairId);
                 if (mainStair.GroupId != ElementId.InvalidElementId)
                 {
                     _countStairsGrouped++;
@@ -102,7 +102,7 @@ namespace BIM_Leaders_Core
                     stairs.Add(stair);
                 else
                 {
-                    MultistoryStairs multistoryStairs = doc.GetElement(stair.MultistoryStairsId) as MultistoryStairs;
+                    MultistoryStairs multistoryStairs = _doc.GetElement(stair.MultistoryStairsId) as MultistoryStairs;
                     ISet<ElementId> levelIds = multistoryStairs.GetStairsPlacementLevels(stair);
                     foreach (ElementId levelId in levelIds)
                     {

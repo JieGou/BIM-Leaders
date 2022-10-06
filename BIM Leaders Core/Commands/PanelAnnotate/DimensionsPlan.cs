@@ -13,7 +13,7 @@ namespace BIM_Leaders_Core
     public class DimensionsPlan : IExternalCommand
 	{
         private static Document _doc;
-		private static double _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
+		private static double _toleranceAngle;
         private static DimensionsPlanData _inputData;
         private static int _countDimensions;
         private static int _countSegments;
@@ -23,6 +23,7 @@ namespace BIM_Leaders_Core
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
+            _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
 
             try
             {

@@ -13,7 +13,7 @@ namespace BIM_Leaders_Core
     public class DimensionSectionFloors : IExternalCommand
     {
         private static UIDocument _uidoc;
-        private static Document _doc = _uidoc.Document;
+        private static Document _doc;
         private static DimensionSectionFloorsData _inputData;
         private static int _countSpots;
         private static int _countSegments;
@@ -23,6 +23,7 @@ namespace BIM_Leaders_Core
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             try
             {
@@ -47,14 +48,8 @@ namespace BIM_Leaders_Core
                 if (_inputData == null)
                     return Result.Cancelled;
 
-                bool inputSpots = data.ResultSpots;
-                bool inputPlacementThinTop = data.ResultPlacementThinTop;
-                bool inputPlacementThickTop = data.ResultPlacementThickTop;
-                bool inputPlacementThickBot = data.ResultPlacementThickBot;
-                int inputThicknessCm = data.ResultThickness;
-
-                GetDividedFloors(inputThicknessCm, out List <Floor> floorsThin, out List<Floor> floorsThick);
-                List<Face> intersectionFacesAll = GetIntersectionFaces(line, floorsThin, floorsThick, inputPlacementThinTop, inputPlacementThickTop, inputPlacementThickBot);
+                GetDividedFloors(out List <Floor> floorsThin, out List<Floor> floorsThick);
+                List<Face> intersectionFacesAll = GetIntersectionFaces(line, floorsThin, floorsThick);
 
                 // Check if no intersections
                 if (intersectionFacesAll.Count == 0)
@@ -68,14 +63,14 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
                     
-                    if (inputSpots)
+                    if (_inputData.ResultSpots)
                         CreateSpots(line, intersectionFacesAll);
                     else
                         CreateDimensions(line, intersectionFacesAll);
                     
                     trans.Commit();
                 }
-                ShowResult(inputSpots);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -132,7 +127,7 @@ namespace BIM_Leaders_Core
         /// <param name="thickness">Thickness value to divide floors into 2 lists.</param>
         /// <param name="floorsThin">Floors with thickness less than the given value.</param>
         /// <param name="floorsThick">Floors with thickness greater than the given value.</param>
-        private static void GetDividedFloors(double thickness, out List<Floor> floorsThin, out List<Floor> floorsThick)
+        private static void GetDividedFloors(out List<Floor> floorsThin, out List<Floor> floorsThick)
         {
             floorsThin = new List<Floor>();
             floorsThick = new List<Floor>();
@@ -144,7 +139,7 @@ namespace BIM_Leaders_Core
             ForgeTypeId units = _doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
 #endif
 
-            double inputThickness = UnitUtils.ConvertToInternalUnits(thickness, units);
+            double inputThickness = UnitUtils.ConvertToInternalUnits(_inputData.ResultThickness, units);
 
             // Get Floors
             IEnumerable<Element> floorsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
@@ -176,25 +171,25 @@ namespace BIM_Leaders_Core
         /// <param name="inputPlacementThickTop">True if need to find intersections on top of the second floors list.</param>
         /// <param name="inputPlacementThickBot">True if need to find intersections on bottom of the second floors list.</param>
         /// <returns></returns>
-        private static List<Face> GetIntersectionFaces(Line line, List<Floor> floorsThin, List<Floor> floorsThick, bool inputPlacementThinTop, bool inputPlacementThickTop, bool inputPlacementThickBot)
+        private static List<Face> GetIntersectionFaces(Line line, List<Floor> floorsThin, List<Floor> floorsThick)
         {
             List<Face> intersectionFacesAll = new List<Face>();
 
-            if (inputPlacementThinTop)
+            if (_inputData.ResultPlacementThinTop)
             {
                 List<Face> intersectionFacesThinTop = GetIntersections(line, floorsThin)[0];
                 intersectionFacesAll.AddRange(intersectionFacesThinTop);
             }
-            if (inputPlacementThickTop || inputPlacementThickBot)
+            if (_inputData.ResultPlacementThickTop || _inputData.ResultPlacementThickBot)
             {
                 List<List<Face>> intersectionFacesThick = GetIntersections(line, floorsThick);
 
-                if (inputPlacementThickTop)
+                if (_inputData.ResultPlacementThickTop)
                 {
                     List<Face> intersectionFacesThickTop = intersectionFacesThick[0];
                     intersectionFacesAll.AddRange(intersectionFacesThickTop);
                 }
-                if (inputPlacementThickBot)
+                if (_inputData.ResultPlacementThickBot)
                 {
                     List<Face> intersectionFacesThickBot = intersectionFacesThick[1];
                     intersectionFacesAll.AddRange(intersectionFacesThickBot);
@@ -309,14 +304,14 @@ namespace BIM_Leaders_Core
             _countSegments += references.Size - 1;
         }
 
-        private static void ShowResult(bool inputSpots)
+        private static void ShowResult()
         {
             // Result window
             string text = "";
             if (_countSpots == 0 && _countSegments == 0)
                 text = "No annotations created.";
             else
-                text = (inputSpots)
+                text = (_inputData.ResultSpots)
                     ? $"{_countSpots} spot elevations created."
                     : $"Dimension with {_countSegments} segments created.";
 

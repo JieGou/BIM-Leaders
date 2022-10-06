@@ -11,7 +11,7 @@ namespace BIM_Leaders_Core
     public class ElementPropertiesMatch : IExternalCommand
     {
         private static UIDocument _uidoc;
-        private static Document _doc = _uidoc.Document;
+        private static Document _doc;
         private static int _countPropertiesMatched;
 
         private const string TRANSACTION_NAME = "Match instance properties";
@@ -19,6 +19,7 @@ namespace BIM_Leaders_Core
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             try
             {

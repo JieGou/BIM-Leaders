@@ -7,8 +7,6 @@ namespace BIM_Leaders_UI
     // Revit pull-down button methods
     public static class RevitPulldownButton
     {
-        private static readonly string _name = Guid.NewGuid().ToString();
-
         // Create the push button data provided in <see cref="RevitPushButtonDataModel">
         public static PulldownButton Create(RevitPulldownButtonDataModel data)
         {
@@ -20,8 +18,10 @@ namespace BIM_Leaders_UI
 
         private static PulldownButtonData MakePulldownButtonData(RevitPulldownButtonDataModel data)
         {
+            string name = Guid.NewGuid().ToString();
+
             // Sets the button data
-            PulldownButtonData buttonData = new PulldownButtonData(_name, data.Label)
+            PulldownButtonData buttonData = new PulldownButtonData(name, data.Label)
             {
                 ToolTip = data.ToolTip,
                 LongDescription = data.LongDescription,

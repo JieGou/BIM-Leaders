@@ -11,11 +11,12 @@ namespace BIM_Leaders_Core
     public class FamilyVoidsSelect : IExternalCommand
     {
         private static UIDocument _uidoc;
-        private static Document _doc = _uidoc.Document;
+        private static Document _doc;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             try
             {

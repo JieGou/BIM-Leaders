@@ -13,7 +13,7 @@ namespace BIM_Leaders_Core
     public class TagsPlanCheck : IExternalCommand
     {
         private static UIDocument _uidoc;
-        private static Document _doc = _uidoc.Document;
+        private static Document _doc;
         private static TagsPlanCheckData _inputData;
         private static int _countUntaggedElements;
         private static int _countUntaggedRailings;
@@ -24,6 +24,7 @@ namespace BIM_Leaders_Core
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             _inputData = GetUserInput();
             if (_inputData == null)

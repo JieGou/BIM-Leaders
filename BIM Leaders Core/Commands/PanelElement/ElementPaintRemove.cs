@@ -9,7 +9,7 @@ namespace BIM_Leaders_Core
     public class ElementPaintRemove : IExternalCommand
     {
         private static UIDocument _uidoc;
-        private static Document _doc = _uidoc.Document;
+        private static Document _doc;
         private static int _countFacesAll;
         private static int _countFacesCleared;
 
@@ -18,6 +18,7 @@ namespace BIM_Leaders_Core
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             try
             {

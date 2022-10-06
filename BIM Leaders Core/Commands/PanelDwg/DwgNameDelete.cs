@@ -13,7 +13,7 @@ namespace BIM_Leaders_Core
     {
         private static Document _doc;
         private static DwgNameDeleteData _inputData;
-        private static string _dwgName = _doc.GetElement(_inputData.DwgListSelected).Category.Name;
+        private static string _dwgName = _doc?.GetElement(_inputData.DwgListSelected).Category.Name;
         private static int _countDwgDeleted;
 
         private const string TRANSACTION_NAME = "Delete DWG by Name";

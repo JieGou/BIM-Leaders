@@ -14,8 +14,8 @@ namespace BIM_Leaders_Core
     public class DimensionsPlanLine : IExternalCommand
     {
         private static UIDocument _uidoc;
-        private static Document _doc = _uidoc.Document;
-        private static double _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
+        private static Document _doc;
+        private static double _toleranceAngle;
         private static int _countDimensions;
 
         private const string TRANSACTION_NAME = "Dimension Plan Walls";
@@ -23,6 +23,8 @@ namespace BIM_Leaders_Core
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
+            _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
 
             try
             {

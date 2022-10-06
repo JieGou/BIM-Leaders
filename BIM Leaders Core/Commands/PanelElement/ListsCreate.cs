@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
-using Autodesk.Revit.DB.Architecture;
 
 namespace BIM_Leaders_Core
 {
@@ -241,7 +241,7 @@ namespace BIM_Leaders_Core
 
             if (viewType == null)
             {
-                TaskDialog.Show(TRANSACTION_NAME, "View type with given name was not found.");
+                TaskDialog.Show(TRANSACTION_NAME, $"View type with given name \"{_viewTypeName}\" was not found.");
                 return null;
             }
 
@@ -273,7 +273,7 @@ namespace BIM_Leaders_Core
             }
 
             if (viewTemplate == null)
-                TaskDialog.Show(TRANSACTION_NAME, "View template with given name was not found.");
+                TaskDialog.Show(TRANSACTION_NAME, $"View template with given name \"{_viewTemplateName}\" was not found.");
 
             return viewTemplate;
         }
