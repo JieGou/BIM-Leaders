@@ -10,11 +10,12 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.ReadOnly)]
     public class FamilyVoidsSelect : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc = _uidoc.Document;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            _uidoc = commandData.Application.ActiveUIDocument;
 
             try
             {
@@ -28,7 +29,7 @@ namespace BIM_Leaders_Core
                 ElementMulticlassFilter elementMulticlassFilter = new ElementMulticlassFilter(types);
 
                 // Get Geometry primitives
-                List<GenericForm> voids = new FilteredElementCollector(doc)
+                List<GenericForm> voids = new FilteredElementCollector(_doc)
                     .WherePasses(elementMulticlassFilter)
                     .ToElements()
                     .Cast<GenericForm>()              //LINQ function
@@ -41,7 +42,7 @@ namespace BIM_Leaders_Core
                     return Result.Failed;
                 }
 
-                uidoc.Selection.SetElementIds(voids.ConvertAll(x => x.Id));
+                _uidoc.Selection.SetElementIds(voids.ConvertAll(x => x.Id));
 
                 return Result.Succeeded;
             }

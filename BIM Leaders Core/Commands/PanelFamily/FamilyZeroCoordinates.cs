@@ -9,15 +9,15 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class FamilyZeroCoordinates : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc = _uidoc.Document;
         private static double _linesLength = 1;
 
         private const string TRANSACTION_NAME = "Family Zero Coordinates"; 
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            _uidoc = commandData.Application.ActiveUIDocument;
 
             try
             {
@@ -32,17 +32,17 @@ namespace BIM_Leaders_Core
                 List<Line> lines = points
                     .ConvertAll(x => Line.CreateBound(zero, x));
 
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
                     List<DetailCurve> curves = lines
-                        .ConvertAll(x => doc.FamilyCreate.NewDetailCurve(doc.ActiveView, x));
+                        .ConvertAll(x => _doc.FamilyCreate.NewDetailCurve(_doc.ActiveView, x));
 
                     List<ElementId> curveIds = curves
                         .ConvertAll(x => x.Id);
                     
-                    uidoc.Selection.SetElementIds(curveIds);
+                    _uidoc.Selection.SetElementIds(curveIds);
 
                     trans.Commit();
                 }

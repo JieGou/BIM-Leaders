@@ -9,43 +9,31 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class LevelsAlign : IExternalCommand
     {
+        private static Document _doc;
+        private static LevelsAlignData _inputData;
         private static int _countLevelsAligned;
 
         private const string TRANSACTION_NAME = "Align Levels";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
+
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
             try
             {
-                // Get user provided information from window
-                LevelsAlignForm form = new LevelsAlignForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Collector for data provided in window
-                LevelsAlignData data = form.DataContext as LevelsAlignData;
-
-                // Getting input from user
-                bool inputSide1 = data.ResultSide1;
-                bool inputSide2 = data.ResultSide2;
-                bool inputSwitch2D = data.ResultSwitch2D;
-                bool inputSwitch3D = data.ResultSwitch3D;
-
-                // Edit extents
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    DatumPlaneUtils.SetDatumPlanes(doc, typeof(Level), inputSwitch2D, inputSwitch3D, inputSide1, inputSide2, ref _countLevelsAligned);
+                    DatumPlaneUtils.SetDatumPlanes(_doc, typeof(Level), _inputData.ResultSwitch2D, _inputData.ResultSwitch3D, _inputData.ResultSide1, _inputData.ResultSide2, ref _countLevelsAligned);
 
                     trans.Commit();
                 }
-                ShowResult(inputSwitch2D, inputSwitch3D);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -56,14 +44,27 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static void ShowResult(bool inputSwitch2D, bool inputSwitch3D)
+        private static LevelsAlignData GetUserInput()
+        {
+            // Get user provided information from window
+            LevelsAlignForm form = new LevelsAlignForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Collector for data provided in window
+            return form.DataContext as LevelsAlignData;
+        }
+
+        private static void ShowResult()
         {
             // Show result
             string text = "No levels aligned.";
 
-            if (inputSwitch2D)
+            if (_inputData.ResultSwitch2D)
                 text = $"{_countLevelsAligned} levels switched to 2D and aligned.";
-            else if (inputSwitch3D)
+            else if (_inputData.ResultSwitch3D)
                 text = $"{_countLevelsAligned} levels switched to 3D and aligned.";
 
             text += $"{Environment.NewLine}{_countLevelsAligned} levels changed bubbles";

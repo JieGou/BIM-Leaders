@@ -11,22 +11,22 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class FamilyParameterChange : IExternalCommand
     {
+        private static Document _doc;
         private static int _countParametersChanged = 0;
 
         private const string TRANSACTION_NAME = "Change Parameter";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             try
             {
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    SwitchParameter(doc);
+                    SwitchParameter();
 
                     trans.Commit();
                 }
@@ -44,9 +44,9 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Chaange the given parameter from shared to family parameter.
         /// </summary>
-        private static void SwitchParameter(Document doc)
+        private static void SwitchParameter()
         {
-            IEnumerable<FamilyParameter> parameters = doc.FamilyManager.GetParameters().Where(x => x.IsShared);
+            IEnumerable<FamilyParameter> parameters = _doc.FamilyManager.GetParameters().Where(x => x.IsShared);
             foreach (FamilyParameter parameter in parameters)
             {
                 string parameterName = parameter.Definition.Name;
@@ -54,8 +54,8 @@ namespace BIM_Leaders_Core
                 BuiltInParameterGroup parameterGroup = parameter.Definition.ParameterGroup;
                 bool parameterIsInstance = parameter.IsInstance;
 
-                FamilyParameter parameterNew = doc.FamilyManager.ReplaceParameter(parameter, parameterNameTemp, parameterGroup, parameterIsInstance);
-                doc.FamilyManager.RenameParameter(parameterNew, parameterName);
+                FamilyParameter parameterNew = _doc.FamilyManager.ReplaceParameter(parameter, parameterNameTemp, parameterGroup, parameterIsInstance);
+                _doc.FamilyManager.RenameParameter(parameterNew, parameterName);
                 
                 _countParametersChanged++;
             }

@@ -13,22 +13,23 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class JournalAnalyze : IExternalCommand
     {
+        private static Document _doc;
+
         private const string TRANSACTION_NAME = "Analyze Journal";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             // Journal Path
-            string path = doc.Application.RecordingJournalFilename;
+            string path = _doc.Application.RecordingJournalFilename;
             string pathNew = path.Substring(0, path.Length - 4) + "TEMP.txt";
 
             string[] content = new string[] { };
 
             try
             {
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 

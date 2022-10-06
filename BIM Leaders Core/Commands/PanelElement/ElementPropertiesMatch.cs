@@ -10,29 +10,29 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class ElementPropertiesMatch : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc = _uidoc.Document;
         private static int _countPropertiesMatched;
 
         private const string TRANSACTION_NAME = "Match instance properties";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            _uidoc = commandData.Application.ActiveUIDocument;
 
             try
             {
                 // Pick first element
-                Reference reference0 = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
-                Element elementFrom = doc.GetElement(reference0.ElementId);
+                Reference reference0 = _uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
+                Element elementFrom = _doc.GetElement(reference0.ElementId);
 
                 // Pick second element
                 SelectionFilterByCategory category = new SelectionFilterByCategory(elementFrom.Category.Name);
 
-                Reference reference1 = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, category);
-                Element elementTo = doc.GetElement(reference1.ElementId);
+                Reference reference1 = _uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, category);
+                Element elementTo = _doc.GetElement(reference1.ElementId);
 
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 

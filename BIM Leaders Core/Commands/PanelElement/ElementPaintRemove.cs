@@ -8,6 +8,8 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class ElementPaintRemove : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc = _uidoc.Document;
         private static int _countFacesAll;
         private static int _countFacesCleared;
 
@@ -15,21 +17,19 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            _uidoc = commandData.Application.ActiveUIDocument;
 
             try
             {
                 // Pick Object
-                Reference reference = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
-                Element element = doc.GetElement(reference.ElementId);
+                Reference reference = _uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
+                Element element = _doc.GetElement(reference.ElementId);
 
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    RemovePaint(doc, element);
+                    RemovePaint(element);
 
                     trans.Commit();
                 }
@@ -47,7 +47,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Remove paint from all faces of element.
         /// </summary>
-        private static void RemovePaint(Document doc, Element element)
+        private static void RemovePaint(Element element)
         {
             Options options = new Options
             {
@@ -60,9 +60,9 @@ namespace BIM_Leaders_Core
                 _countFacesAll += faces.Size;
                 foreach (Face face in faces)
                 {
-                    if (doc.IsPainted(element.Id, face))
+                    if (_doc.IsPainted(element.Id, face))
                     {
-                        doc.RemovePaint(element.Id, face);
+                        _doc.RemovePaint(element.Id, face);
                         _countFacesCleared++;
                     }
                 }

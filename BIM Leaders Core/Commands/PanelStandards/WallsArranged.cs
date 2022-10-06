@@ -12,6 +12,9 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class WallsArranged : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc = _uidoc.Document;
+        private static double _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad.
         private static int _countWallsFilteredDistance;
         private static int _countWallsFilteredAngle;
         private static WallsArrangedData _inputData;
@@ -22,10 +25,7 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document.
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
-            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad.
+            _uidoc = commandData.Application.ActiveUIDocument;
 
             _inputData = GetUserInput();
             if (_inputData == null)
@@ -33,25 +33,25 @@ namespace BIM_Leaders_Core
 
             try
             {
-                (ReferencePlane referencePlane0, ReferencePlane referencePlane1) = GetReferencePlanes(doc, uidoc, toleranceAngle);
+                (ReferencePlane referencePlane0, ReferencePlane referencePlane1) = GetReferencePlanes();
                 if (referencePlane0 == null)
                     return Result.Failed;
 
-                (ICollection<Element> wallsToFilterDistance, ICollection<Element> wallsToFilterAngle) = GetWallsToFilter(doc, referencePlane0, referencePlane1, toleranceAngle);
+                (ICollection<Element> wallsToFilterDistance, ICollection<Element> wallsToFilterAngle) = GetWallsToFilter(referencePlane0, referencePlane1);
 
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
                     if (wallsToFilterDistance.Count != 0)
                     {
-                        Element filter0 = ViewFilterUtils.CreateSelectionFilter(doc, FILTER_NAME_DISTANCE, wallsToFilterDistance);
-                        ViewFilterUtils.SetupFilter(doc, filter0, new Color(_inputData.ResultColor0.R, _inputData.ResultColor0.G, _inputData.ResultColor0.B));
+                        Element filter0 = ViewFilterUtils.CreateSelectionFilter(_doc, FILTER_NAME_DISTANCE, wallsToFilterDistance);
+                        ViewFilterUtils.SetupFilter(_doc, filter0, new Color(_inputData.ResultColor0.R, _inputData.ResultColor0.G, _inputData.ResultColor0.B));
                     }
                     if (wallsToFilterAngle.Count != 0)
                     {
-                        Element filter1 = ViewFilterUtils.CreateSelectionFilter(doc, FILTER_NAME_ANGLE, wallsToFilterAngle);
-                        ViewFilterUtils.SetupFilter(doc, filter1, new Color(_inputData.ResultColor1.R, _inputData.ResultColor1.G, _inputData.ResultColor1.B));
+                        Element filter1 = ViewFilterUtils.CreateSelectionFilter(_doc, FILTER_NAME_ANGLE, wallsToFilterAngle);
+                        ViewFilterUtils.SetupFilter(_doc, filter1, new Color(_inputData.ResultColor1.R, _inputData.ResultColor1.G, _inputData.ResultColor1.B));
                     }
 
                     trans.Commit();
@@ -79,10 +79,10 @@ namespace BIM_Leaders_Core
             return form.DataContext as WallsArrangedData;
         }
 
-        private static (ReferencePlane, ReferencePlane) GetReferencePlanes(Document doc, UIDocument uidoc, double toleranceAngle)
+        private static (ReferencePlane, ReferencePlane) GetReferencePlanes()
         {
             // Getting References of Reference Planes.
-            IList<Reference> referenceUncheckedList = uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Two Perpendicular Reference Planes");
+            IList<Reference> referenceUncheckedList = _uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Two Perpendicular Reference Planes");
 
             // Checking for invalid selection.
             if (referenceUncheckedList.Count != 2)
@@ -92,11 +92,11 @@ namespace BIM_Leaders_Core
             }
 
             // Getting Reference planes.
-            ReferencePlane reference0 = doc.GetElement(referenceUncheckedList[0].ElementId) as ReferencePlane;
-            ReferencePlane reference1 = doc.GetElement(referenceUncheckedList[1].ElementId) as ReferencePlane;
+            ReferencePlane reference0 = _doc.GetElement(referenceUncheckedList[0].ElementId) as ReferencePlane;
+            ReferencePlane reference1 = _doc.GetElement(referenceUncheckedList[1].ElementId) as ReferencePlane;
 
             // Checking for perpendicular input
-            if (reference0.Direction.DotProduct(reference1.Direction) > toleranceAngle)
+            if (reference0.Direction.DotProduct(reference1.Direction) > _toleranceAngle)
             {
                 TaskDialog.Show(TRANSACTION_NAME, "Selected reference planes are not perpendicular. Select 2 perendicular reference planes.");
                 return (null, null);
@@ -109,14 +109,14 @@ namespace BIM_Leaders_Core
         /// Get walls from the current view that need to be set in filter.
         /// </summary>
         /// <returns>Tuple of 2 elements lists that can be added to filters later.</returns>
-        private static (ICollection<Element>, ICollection<Element>) GetWallsToFilter(Document doc, ReferencePlane reference0, ReferencePlane reference1, double toleranceAngle)
+        private static (ICollection<Element>, ICollection<Element>) GetWallsToFilter(ReferencePlane reference0, ReferencePlane reference1)
         {
             List<Element> wallsToFilterDistn = new List<Element>();
             List<Element> wallsToFilterAngle = new List<Element>();
 
-            List<Wall> walls = GetWallsStraight(doc);
-            List<Wall> wallsPar = FilterWallsPar(walls, reference0, toleranceAngle);
-            List<Wall> wallsPer = FilterWallsPer(walls, reference0, toleranceAngle);
+            List<Wall> walls = GetWallsStraight();
+            List<Wall> wallsPar = FilterWallsPar(walls, reference0);
+            List<Wall> wallsPer = FilterWallsPer(walls, reference0);
 
             foreach (Wall wall in walls)
             {
@@ -140,9 +140,9 @@ namespace BIM_Leaders_Core
         /// Get list of straight walls visible on active view.
         /// </summary>
         /// <returns>List of straight walls visible on active view.</returns>
-        private static List<Wall> GetWallsStraight(Document doc)
+        private static List<Wall> GetWallsStraight()
         {
-            IEnumerable<Wall> wallsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<Wall> wallsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                     .OfClass(typeof(Wall))
                     .WhereElementIsNotElementType()
                     .ToElements()
@@ -163,7 +163,7 @@ namespace BIM_Leaders_Core
         /// Filter list of walls to get walls only parallel to the given reference plane with the given angle tolerance.
         /// </summary>
         /// <returns>List of walls parallel to the reference plane.</returns>
-        private static List<Wall> FilterWallsPar(List<Wall> walls, ReferencePlane reference, double toleranceAngle)
+        private static List<Wall> FilterWallsPar(List<Wall> walls, ReferencePlane reference)
         {
             List<Wall> wallsPar = new List<Wall>();
 
@@ -176,7 +176,7 @@ namespace BIM_Leaders_Core
                 double wallX = Math.Abs(wall.Orientation.X);
                 double wallY = Math.Abs(wall.Orientation.Y);
 
-                if ((Math.Abs(wallX) - Math.Abs(referenceX) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(referenceY) <= toleranceAngle))
+                if ((Math.Abs(wallX) - Math.Abs(referenceX) <= _toleranceAngle) && (Math.Abs(wallY) - Math.Abs(referenceY) <= _toleranceAngle))
                     wallsPar.Add(wall);
             }
             return wallsPar;
@@ -186,7 +186,7 @@ namespace BIM_Leaders_Core
         /// Filter list of walls to get walls only perpendicular to the given reference plane with the given angle tolerance.
         /// </summary>
         /// <returns>List of walls perpendicular to the reference plane.</returns>
-        private static List<Wall> FilterWallsPer(List<Wall> walls, ReferencePlane reference, double toleranceAngle)
+        private static List<Wall> FilterWallsPer(List<Wall> walls, ReferencePlane reference)
         {
             List<Wall> wallsPer = new List<Wall>();
 
@@ -199,7 +199,7 @@ namespace BIM_Leaders_Core
                 double wallX = Math.Abs(wall.Orientation.X);
                 double wallY = Math.Abs(wall.Orientation.Y);
 
-                if ((Math.Abs(wallX) - Math.Abs(referenceY) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(referenceX) <= toleranceAngle))
+                if ((Math.Abs(wallX) - Math.Abs(referenceY) <= _toleranceAngle) && (Math.Abs(wallY) - Math.Abs(referenceX) <= _toleranceAngle))
                     wallsPer.Add(wall);
             }
             return wallsPer;
@@ -255,7 +255,7 @@ namespace BIM_Leaders_Core
             else
                 distanceInternal = wallLocationCurve.Project(point).Distance + lineOffset;
 #if VERSION2020
-                        double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, DisplayUnitType.DUT_CENTIMETERS);
+            double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, DisplayUnitType.DUT_CENTIMETERS);
 #else
             double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, UnitTypeId.Centimeters);
 #endif

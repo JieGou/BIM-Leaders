@@ -10,6 +10,7 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class FamilyParameterSet : IExternalCommand
     {
+        private static Document _doc;
         private static int _countParametersSet = 0;
         private static FamilyParameterSetData _inputData;
 
@@ -17,23 +18,19 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
-            // Get Document
-            Document doc = uidoc.Document;
-
-            _inputData = GetUserInput(doc);
+            _inputData = GetUserInput();
             if (_inputData == null)
                 return Result.Cancelled;
 
             try
             {
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    ChangeParameter(doc);
+                    ChangeParameter();
 
                     trans.Commit();
                 }
@@ -48,9 +45,9 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static FamilyParameterSetData GetUserInput(Document doc)
+        private static FamilyParameterSetData GetUserInput()
         {
-            FamilyParameterSetForm form = new FamilyParameterSetForm(doc);
+            FamilyParameterSetForm form = new FamilyParameterSetForm(_doc);
             form.ShowDialog();
 
             if (form.DialogResult == false)
@@ -64,10 +61,10 @@ namespace BIM_Leaders_Core
         /// Change the given parameter to given value in all family types.
         /// Value is given as string, so depends on parameter type value will be converted.
         /// </summary>
-        private static void ChangeParameter(Document doc)
+        private static void ChangeParameter()
         {
             // Get parameter
-            FamilyParameter parameter = doc.FamilyManager.get_Parameter(_inputData.ParametersListSelected);
+            FamilyParameter parameter = _doc.FamilyManager.get_Parameter(_inputData.ParametersListSelected);
 
             if (parameter.IsReadOnly)
                 return;
@@ -75,22 +72,22 @@ namespace BIM_Leaders_Core
             if (parameter.StorageType == StorageType.None)
                 return;
 
-            FamilyTypeSet familyTypeSet = doc.FamilyManager.Types;
+            FamilyTypeSet familyTypeSet = _doc.FamilyManager.Types;
 
             if (parameter.StorageType == StorageType.Integer)
             {
                 foreach (FamilyType familyType in familyTypeSet)
                 {
-                    doc.FamilyManager.CurrentType = familyType;
+                    _doc.FamilyManager.CurrentType = familyType;
 #if VERSION2020
                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
-                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(_inputData.ParameterValue), DisplayUnitType.DUT_CENTIMETERS));
+                        _doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(_inputData.ParameterValue), DisplayUnitType.DUT_CENTIMETERS));
 #else
                     if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
-                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(_inputData.ParameterValue), UnitTypeId.Centimeters));
+                        _doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(_inputData.ParameterValue), UnitTypeId.Centimeters));
 #endif
                     else
-                        doc.FamilyManager.Set(parameter, Convert.ToInt32(_inputData.ParameterValue));
+                        _doc.FamilyManager.Set(parameter, Convert.ToInt32(_inputData.ParameterValue));
                     
                     _countParametersSet++;
                 }
@@ -100,16 +97,16 @@ namespace BIM_Leaders_Core
             {
                 foreach (FamilyType familyType in familyTypeSet)
                 {
-                    doc.FamilyManager.CurrentType = familyType;
+                    _doc.FamilyManager.CurrentType = familyType;
 #if VERSION2020
                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
                         doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(_inputData.ParameterValue), DisplayUnitType.DUT_CENTIMETERS));
 #else
                     if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
-                        doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(_inputData.ParameterValue), UnitTypeId.Centimeters));
+                        _doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(_inputData.ParameterValue), UnitTypeId.Centimeters));
 #endif
                     else
-                        doc.FamilyManager.Set(parameter, Convert.ToDouble(_inputData.ParameterValue));
+                        _doc.FamilyManager.Set(parameter, Convert.ToDouble(_inputData.ParameterValue));
                     
                     _countParametersSet++;
                 }
@@ -119,7 +116,7 @@ namespace BIM_Leaders_Core
             {
                 foreach (FamilyType familyType in familyTypeSet)
                 {
-                    doc.FamilyManager.Set(parameter, _inputData.ParameterValue);
+                    _doc.FamilyManager.Set(parameter, _inputData.ParameterValue);
 
                     _countParametersSet++;
                 }
@@ -136,41 +133,41 @@ namespace BIM_Leaders_Core
                     case ParameterType.Text:
                         break;
                     case ParameterType.Material:
-                        ICollection<ElementId> materialIds = new FilteredElementCollector(doc)
+                        ICollection<ElementId> materialIds = new FilteredElementCollector(_doc)
                             .OfClass(typeof(Material))
                             .WhereElementIsNotElementType()
                             .ToElementIds();
                         foreach (ElementId materialId in materialIds)
-                            if (doc.GetElement(materialId).Name == _inputData.ParameterValue)
+                            if (_doc.GetElement(materialId).Name == _inputData.ParameterValue)
                                 id = materialId;
 
-                        doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF MATERIAL WITH GIVEN NAME NOT FOUND !!!
+                        _doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF MATERIAL WITH GIVEN NAME NOT FOUND !!!
                         _countParametersSet++;
                         break;
 
                     case ParameterType.FamilyType:
-                        ICollection<ElementId> familyTypeIds = new FilteredElementCollector(doc)
+                        ICollection<ElementId> familyTypeIds = new FilteredElementCollector(_doc)
                             .OfClass(typeof(FamilyType))
                             .WhereElementIsNotElementType()
                             .ToElementIds();
                         foreach (ElementId familyTypeId in familyTypeIds)
-                            if (doc.GetElement(familyTypeId).Name == _inputData.ParameterValue)
+                            if (_doc.GetElement(familyTypeId).Name == _inputData.ParameterValue)
                                 id = familyTypeId;
 
-                        doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF FAMILY TYPE WITH GIVEN NAME NOT FOUND !!!
+                        _doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF FAMILY TYPE WITH GIVEN NAME NOT FOUND !!!
                         _countParametersSet++;
                         break;
 
                     case ParameterType.Image:
-                        ICollection<ElementId> imageIds = new FilteredElementCollector(doc)
+                        ICollection<ElementId> imageIds = new FilteredElementCollector(_doc)
                             .OfClass(typeof(ImageType))
                             .WhereElementIsNotElementType()
                             .ToElementIds();
                         foreach (ElementId imageId in imageIds)
-                            if (doc.GetElement(imageId).Name == _inputData.ParameterValue)
+                            if (_doc.GetElement(imageId).Name == _inputData.ParameterValue)
                                 id = imageId;
 
-                        doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF IMAGE WITH GIVEN NAME NOT FOUND !!!
+                        _doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF IMAGE WITH GIVEN NAME NOT FOUND !!!
                         _countParametersSet++;
                         break;
 

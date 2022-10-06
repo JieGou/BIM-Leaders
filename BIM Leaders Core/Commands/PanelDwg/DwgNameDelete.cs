@@ -11,44 +11,32 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class DwgNameDelete : IExternalCommand
     {
+        private static Document _doc;
+        private static DwgNameDeleteData _inputData;
+        private static string _dwgName = _doc.GetElement(_inputData.DwgListSelected).Category.Name;
+        private static int _countDwgDeleted;
+
         private const string TRANSACTION_NAME = "Delete DWG by Name";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
+
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
             try
             {
-                DwgNameDeleteForm form = new DwgNameDeleteForm(doc);
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                DwgNameDeleteData data = form.DataContext as DwgNameDeleteData;
-
-                string name = doc.GetElement(data.DwgListSelected).Category.Name;
-
-                // Get all Imports with name same as input from a form
-                ICollection<ElementId> dwgDelete = new FilteredElementCollector(doc)
-                    .OfClass(typeof(ImportInstance))
-                    .WhereElementIsNotElementType()
-                    .Where(x => x.Category.Name == name) //LINQ function
-                    .ToList()                            //LINQ function
-                    .ConvertAll(x => x.Id)               //LINQ function
-                    .ToList();                           //LINQ function
-
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    doc.Delete(dwgDelete);  
+                    DeleteDwg();  
 
                     trans.Commit();
                 }
-                ShowResult(dwgDelete.Count, name);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -59,12 +47,40 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static void ShowResult(int count, string name)
+        private static DwgNameDeleteData GetUserInput()
+        {
+            DwgNameDeleteForm form = new DwgNameDeleteForm(_doc);
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as DwgNameDeleteData;
+        }
+
+        private static void DeleteDwg()
+        {
+            // Get all Imports with name same as input from a form
+            ICollection<ElementId> dwgDelete = new FilteredElementCollector(_doc)
+                .OfClass(typeof(ImportInstance))
+                .WhereElementIsNotElementType()
+                .Where(x => x.Category.Name == _dwgName)
+                .ToList()
+                .ConvertAll(x => x.Id)
+                .ToList();
+
+            _doc.Delete(dwgDelete);
+
+            _countDwgDeleted = dwgDelete.Count;
+        }
+
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countDwgDeleted == 0)
                 ? "No DWG deleted"
-                : $"{count} DWG named {name} deleted";
+                : $"{_countDwgDeleted} DWG named {_dwgName} deleted";
             
             TaskDialog.Show(TRANSACTION_NAME, text);
         }

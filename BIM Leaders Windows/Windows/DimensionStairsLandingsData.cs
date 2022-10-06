@@ -9,8 +9,8 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class DimensionStairsLandingsData : INotifyPropertyChanged, IDataErrorInfo
     {
-        private const int _resultDistanceMinValue = 100;
-        private const int _resultDistanceMaxValue = 200;
+        private const double _resultDistanceMinValue = 100;
+        private const double _resultDistanceMaxValue = 200;
 
         /// <summary>
         /// Default constructor
@@ -134,8 +134,8 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(InputDistance));
             }
         }
-        private int _resultDistance;
-        public int ResultDistance
+        private double _resultDistance;
+        public double ResultDistance
         {
             get { return _resultDistance; }
             set { _resultDistance = value; }

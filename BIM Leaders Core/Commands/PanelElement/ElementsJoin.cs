@@ -9,6 +9,7 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class ElementsJoin : IExternalCommand
     {
+        private static Document _doc;
         private static int _countCutted;
         private static int _countJoined;
 
@@ -17,16 +18,15 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             try
             {
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    JoinElements(doc);
+                    JoinElements();
 
                     trans.Commit();
                 }
@@ -44,20 +44,20 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Join all elements that cut the currect section view.
         /// </summary>
-        private static void JoinElements(Document doc)
+        private static void JoinElements()
         {
-            View view = doc.ActiveView;
+            View view = _doc.ActiveView;
 
             ElementIntersectsSolidFilter intersectFilter = ViewUtils.GetViewCutIntersectFilter(view);
 
             // Get Walls Ids
-            ICollection<ElementId> wallCutIds = new FilteredElementCollector(doc, view.Id)
+            ICollection<ElementId> wallCutIds = new FilteredElementCollector(_doc, view.Id)
                 .OfClass(typeof(Wall))
                 .WhereElementIsNotElementType()
                 .WherePasses(intersectFilter)
                 .ToElementIds();
             // Get Floors Ids
-            ICollection<ElementId> floorCutIds = new FilteredElementCollector(doc, view.Id)
+            ICollection<ElementId> floorCutIds = new FilteredElementCollector(_doc, view.Id)
                 .OfClass(typeof(Floor))
                 .WhereElementIsNotElementType()
                 .WherePasses(intersectFilter)
@@ -66,40 +66,40 @@ namespace BIM_Leaders_Core
             // Get all Walls and Floors as Elements
             List<Element> elementsCut = new List<Element>();
             foreach (ElementId id in wallCutIds)
-                elementsCut.Add(doc.GetElement(id));
+                elementsCut.Add(_doc.GetElement(id));
             foreach (ElementId id in floorCutIds)
-                elementsCut.Add(doc.GetElement(id));
+                elementsCut.Add(_doc.GetElement(id));
 
             _countCutted = elementsCut.Count;
 
             // Go through elements list and join all elements that close to each element
             foreach (Element elementCut in elementsCut)
             {
-                JoinElement(doc, elementCut, wallCutIds);
-                JoinElement(doc, elementCut, floorCutIds);
+                JoinElement(elementCut, wallCutIds);
+                JoinElement(elementCut, floorCutIds);
             }
         }
 
         /// <summary>
         /// Join element with set of elements. Also needs filter as input for better performance (to not calculate same filter couple of times).
         /// </summary>
-        private static void JoinElement(Document doc, Element elementCut, ICollection<ElementId> elementCutIds)
+        private static void JoinElement(Element elementCut, ICollection<ElementId> elementCutIds)
         {
             try
             {
-                BoundingBoxXYZ bb = elementCut.get_BoundingBox(doc.ActiveView);
+                BoundingBoxXYZ bb = elementCut.get_BoundingBox(_doc.ActiveView);
                 Outline outline = new Outline(bb.Min, bb.Max);
 
                 BoundingBoxIntersectsFilter intersectBoxFilter = new BoundingBoxIntersectsFilter(outline, TOLERANCE);
 
                 // Apply filter to elements to find only elements that near the given element.
-                IList<Element> elementsCutClose = new FilteredElementCollector(doc, elementCutIds)
+                IList<Element> elementsCutClose = new FilteredElementCollector(_doc, elementCutIds)
                     .WherePasses(intersectBoxFilter)
                     .ToElements();
                 foreach (Element elementCutClose in elementsCutClose)
-                    if (!JoinGeometryUtils.AreElementsJoined(doc, elementCut, elementCutClose))
+                    if (!JoinGeometryUtils.AreElementsJoined(_doc, elementCut, elementCutClose))
                     {
-                        JoinGeometryUtils.JoinGeometry(doc, elementCut, elementCutClose);
+                        JoinGeometryUtils.JoinGeometry(_doc, elementCut, elementCutClose);
                         _countJoined++;
                     }
             }

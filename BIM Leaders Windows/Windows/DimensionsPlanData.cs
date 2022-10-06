@@ -7,12 +7,12 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class DimensionsPlanData : INotifyPropertyChanged, IDataErrorInfo
     {
-        int _resultSearchStepMinValue = 1;
-        int _resultSearchStepMaxValue = 100;
-        int _resultSearchDistanceMinValue = 100;
-        int _resultSearchDistanceMaxValue = 10000;
-        int _resultMinReferencesMinValue = 0;
-        int _resultMinReferencesMaxValue = 10;
+        double _resultSearchStepMinValue = 1;
+        double _resultSearchStepMaxValue = 100;
+        double _resultSearchDistanceMinValue = 100;
+        double _resultSearchDistanceMaxValue = 10000;
+        double _resultMinReferencesMinValue = 0;
+        double _resultMinReferencesMaxValue = 10;
 
         /// <summary>
         /// Default constructor
@@ -38,8 +38,8 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(InputSearchStep));
             }
         }
-        private int _resultSearchStep;
-        public int ResultSearchStep
+        private double _resultSearchStep;
+        public double ResultSearchStep
         {
             get { return _resultSearchStep; }
             set { _resultSearchStep = value; }
@@ -55,8 +55,8 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(InputSearchDistance));
             }
         }
-        private int _resultSearchDistance;
-        public int ResultSearchDistance
+        private double _resultSearchDistance;
+        public double ResultSearchDistance
         {
             get { return _resultSearchDistance; }
             set { _resultSearchDistance = value; }
@@ -72,8 +72,8 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(InputMinReferences));
             }
         }
-        private int _resultMinReferences;
-        public int ResultMinReferences
+        private double _resultMinReferences;
+        public double ResultMinReferences
         {
             get { return _resultMinReferences; }
             set { _resultMinReferences = value; }

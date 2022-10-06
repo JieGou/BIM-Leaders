@@ -9,43 +9,31 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class GridsAlign : IExternalCommand
     {
+        private static Document _doc;
+        private static GridsAlignData _inputData;
         private static int _countGridsAligned;
 
         private const string TRANSACTION_NAME = "Align Grids";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
+
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
             try
             {
-                // Get user provided information from window
-                GridsAlignForm form = new GridsAlignForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Collector for data provided in window
-                GridsAlignData data = form.DataContext as GridsAlignData;
-
-                // Getting input from user
-                bool inputSide1 = data.ResultSide1;
-                bool inputSide2 = data.ResultSide2;
-                bool inputSwitch2D = data.ResultSwitch2D;
-                bool inputSwitch3D = data.ResultSwitch3D;
-
-                // Edit extents
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    DatumPlaneUtils.SetDatumPlanes(doc, typeof(Grid), inputSwitch2D, inputSwitch3D, inputSide1, inputSide2, ref _countGridsAligned);
+                    DatumPlaneUtils.SetDatumPlanes(_doc, typeof(Grid), _inputData.ResultSwitch2D, _inputData.ResultSwitch3D, _inputData.ResultSide1, _inputData.ResultSide2, ref _countGridsAligned);
 
                     trans.Commit();
                 }
-                ShowResult(inputSwitch2D, inputSwitch3D);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -56,14 +44,27 @@ namespace BIM_Leaders_Core
             }
         }
         
-        private static void ShowResult(bool inputSwitch2D, bool inputSwitch3D)
+        private static GridsAlignData GetUserInput()
+        {
+            // Get user provided information from window
+            GridsAlignForm form = new GridsAlignForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Collector for data provided in window
+            return form.DataContext as GridsAlignData;
+        }
+
+        private static void ShowResult()
         {
             // Show result
             string text = "No grids aligned.";
 
-            if (inputSwitch2D)
+            if (_inputData.ResultSwitch2D)
                 text = $"{_countGridsAligned} grids switched to 2D and aligned.";
-            else if (inputSwitch3D)
+            else if (_inputData.ResultSwitch3D)
                 text = $"{_countGridsAligned} grids switched to 3D and aligned.";
 
             text += $"{Environment.NewLine}{_countGridsAligned} grids changed bubbles";

@@ -12,6 +12,9 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class WallsParallel : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc = _uidoc.Document;
+        private static double _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad.
         private static int _countWallsFiltered;
 
         private const string TRANSACTION_NAME = "Walls Parralel Check";
@@ -20,28 +23,24 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
-
-            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
+            _uidoc = commandData.Application.ActiveUIDocument;
 
             try
             {
-                ReferencePlane reference = doc.GetElement(SelectReferencePlane(uidoc).ElementId) as ReferencePlane;
+                ReferencePlane reference = _doc.GetElement(SelectReferencePlane().ElementId) as ReferencePlane;
 
-                List<Wall> walls = GetWallsStraight(doc);
-                ICollection<Element> wallsFilter = FilterWalls(walls, reference, toleranceAngle) as ICollection<Element>;
+                List<Wall> walls = GetWallsStraight();
+                ICollection<Element> wallsFilter = FilterWalls(walls, reference) as ICollection<Element>;
 
                 if (wallsFilter.Count == 0)
                     return Result.Succeeded;
 
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    Element filter = ViewFilterUtils.CreateSelectionFilter(doc, FILTER_NAME, wallsFilter);
-                    ViewFilterUtils.SetupFilter(doc, filter, FILTER_COLOR);
+                    Element filter = ViewFilterUtils.CreateSelectionFilter(_doc, FILTER_NAME, wallsFilter);
+                    ViewFilterUtils.SetupFilter(_doc, filter, FILTER_COLOR);
 
                     trans.Commit();
                 }
@@ -60,9 +59,9 @@ namespace BIM_Leaders_Core
         /// Allow user to select an element of Reference Plane category.
         /// </summary>
         /// <returns>Reference as a result of user selection.</returns>
-        private static Reference SelectReferencePlane(UIDocument doc)
+        private static Reference SelectReferencePlane()
         {
-            Reference lineReference = doc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Reference Plane");
+            Reference lineReference = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Reference Plane");
             return lineReference;
         }
 
@@ -70,9 +69,9 @@ namespace BIM_Leaders_Core
         /// Get list of straight walls visible on active view.
         /// </summary>
         /// <returns>List of straight walls visible on active view.</returns>
-        private static List<Wall> GetWallsStraight(Document doc)
+        private static List<Wall> GetWallsStraight()
         {
-            IEnumerable<Wall> wallsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<Wall> wallsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                     .OfClass(typeof(Wall))
                     .WhereElementIsNotElementType()
                     .ToElements()
@@ -93,7 +92,7 @@ namespace BIM_Leaders_Core
         /// // Filter walls that are parallel and perpendicular to the given reference.
         /// </summary>
         /// <returns>List of filtered walls.</returns>
-        private static List<Wall> FilterWalls(List<Wall> walls, ReferencePlane reference, double toleranceAngle)
+        private static List<Wall> FilterWalls(List<Wall> walls, ReferencePlane reference)
         {
             List<Wall> wallsFilter = new List<Wall>();
 
@@ -110,9 +109,9 @@ namespace BIM_Leaders_Core
                 double wallY = Math.Abs(wall.Orientation.Y);
 
                 // Checking if parallel
-                if (Math.Abs(wallX - referenceX) <= toleranceAngle && Math.Abs(wallY - referenceY) <= toleranceAngle)
+                if (Math.Abs(wallX - referenceX) <= _toleranceAngle && Math.Abs(wallY - referenceY) <= _toleranceAngle)
                     wallsPar.Add(wall);
-                if (Math.Abs(wallX - referenceY) <= toleranceAngle && Math.Abs(wallY - referenceX) <= toleranceAngle)
+                if (Math.Abs(wallX - referenceY) <= _toleranceAngle && Math.Abs(wallY - referenceX) <= _toleranceAngle)
                     wallsPer.Add(wall);
             }
 

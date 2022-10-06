@@ -12,6 +12,8 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class StairsStepsEnumerate : IExternalCommand
     {
+        private static Document _doc;
+        private static StairsStepsEnumerateData _inputData;
         private static int _countStairsGrouped;
         private static int _countStairsUnpinned;
         private static int _countRisersNumbers;
@@ -21,33 +23,21 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document.
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
+
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
             try
             {
-                // Collector for data provided in window.
-                StairsStepsEnumerateForm form = new StairsStepsEnumerateForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window.
-                StairsStepsEnumerateData data = form.DataContext as StairsStepsEnumerateData;
-
-                // Getting input from user.
-                bool inputRightSide = data.ResultSideRight;
-                int inputStartNumber = data.ResultNumber;
-                
-                // Create annotations.
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    IOrderedEnumerable<Stairs> stairsSorted = GetStairs(doc);
-                    ChangeTreadNumbers(stairsSorted, inputStartNumber);
-                    CreateNumbers(doc, inputRightSide);
+                    IOrderedEnumerable<Stairs> stairsSorted = GetStairs();
+                    ChangeTreadNumbers(stairsSorted);
+                    CreateNumbers();
 
                     trans.Commit();
                 }
@@ -62,14 +52,24 @@ namespace BIM_Leaders_Core
             }
         }
 
+        private static StairsStepsEnumerateData GetUserInput()
+        {
+            // Get user provided information from window
+            StairsStepsEnumerateForm form = new StairsStepsEnumerateForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Collector for data provided in window
+            return form.DataContext as StairsStepsEnumerateData;
+        }
+
         /// <summary>
         /// Get all unpinned and ungrouped stairs on the current view.
         /// </summary>
-        /// <param name="doc">Current document.</param>
-        /// <param name="countGrouped">Count of stairs that are in the groups and may make problems with numeration.</param>
-        /// <param name="countUnpinned">Count of stairs that were unpinned from multistory stairs.</param>
         /// <returns>IOrderedEnumerable of stairs from bottom to top.</returns>
-        private static IOrderedEnumerable<Stairs> GetStairs(Document doc)
+        private static IOrderedEnumerable<Stairs> GetStairs()
         {
             IOrderedEnumerable<Stairs> stairsSorted;
 
@@ -126,13 +126,13 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Change tread numbers of all given stairs, beginning from the given number.
         /// </summary>
-        private static void ChangeTreadNumbers(IOrderedEnumerable<Stairs> stairsSorted, double inputStartNumber)
+        private static void ChangeTreadNumbers(IOrderedEnumerable<Stairs> stairsSorted)
         {
             foreach (Stairs stair in stairsSorted)
             {
                 Parameter parameter = stair.get_Parameter(BuiltInParameter.STAIRS_TRISER_NUMBER_BASE_INDEX);
-                parameter.Set(inputStartNumber);
-                inputStartNumber += stair.ActualRisersNumber;
+                parameter.Set(_inputData.ResultNumber);
+                _inputData.ResultNumber += stair.ActualRisersNumber;
 
                 _countRisersNumbers += stair.ActualRisersNumber;
             }
@@ -141,11 +141,10 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Creating thread numbers on the view
         /// </summary>
-        /// <param name="countRuns">Count of created numberings.</param>
-        private static void CreateNumbers(Document doc, bool inputRightSide)
+        private static void CreateNumbers()
         {
             // Get all runs in the view
-            IEnumerable<StairsRun> runs = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<StairsRun> runs = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfClass(typeof(StairsRun))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -155,14 +154,14 @@ namespace BIM_Leaders_Core
             {
                 Reference refer = run.GetNumberSystemReference(StairsNumberSystemReferenceOption.LeftQuarter);
 
-                if (inputRightSide)
+                if (_inputData.ResultSideRight)
                     refer = run.GetNumberSystemReference(StairsNumberSystemReferenceOption.RightQuarter);
 
                 LinkElementId runId = new LinkElementId(run.Id);
 
                 try
                 {
-                    NumberSystem.Create(doc, doc.ActiveView.Id, runId, refer);
+                    NumberSystem.Create(_doc, _doc.ActiveView.Id, runId, refer);
                     _countRunsNumbersPlaced++;
                 }
                 catch { _countRunsNumbersPlaced++; }

@@ -12,6 +12,9 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class WallsCompare : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc = _uidoc.Document;
+        private static WallsCompareData _inputData;
         private static int _countFilledRegions;
 
         private const string TRANSACTION_NAME = "Compare Walls";
@@ -19,16 +22,14 @@ namespace BIM_Leaders_Core
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
-
-            // Get View
-            View view = doc.ActiveView;
+            _uidoc = commandData.Application.ActiveUIDocument;
 
             try
             {
+
+
                 // Show the dialog.
-                WallsCompareForm form = new WallsCompareForm(uidoc);
+                WallsCompareForm form = new WallsCompareForm(_uidoc);
                 form.ShowDialog();
 
                 if (form.DialogResult == false)
@@ -37,36 +38,36 @@ namespace BIM_Leaders_Core
                 WallsCompareData data = form.DataContext as WallsCompareData;
                 
                 bool inputLinks = data.ResultLinks;
-                string materialName = doc.GetElement(data.ListMaterialsSelected).Name;
-                FilledRegionType fill = doc.GetElement(data.ListFillTypesSelected) as FilledRegionType;
+                string materialName = _doc.GetElement(data.ListMaterialsSelected).Name;
+                FilledRegionType fill = _doc.GetElement(data.ListFillTypesSelected) as FilledRegionType;
                 
-                double elevation = view.GenLevel.Elevation;
+                double elevation = _doc.ActiveView.GenLevel.Elevation;
                 
                 // Links selection.
                 List<Wall> walls1 = new List<Wall>();
                 List<Wall> walls2 = new List<Wall>();
-                Transform transform1 = view.CropBox.Transform; // Just new transform, view is dummy
-                Transform transform2 = view.CropBox.Transform; // Just new transform, view is dummy
+                Transform transform1 = _doc.ActiveView.CropBox.Transform; // Just new transform, view is dummy
+                Transform transform2 = _doc.ActiveView.CropBox.Transform; // Just new transform, view is dummy
 
                 // If only one file is a link
                 if (inputLinks)
                 {
-                    Reference linkReference = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select Link");
-                    RevitLinkInstance link1 = doc.GetElement(linkReference.ElementId) as RevitLinkInstance;
+                    Reference linkReference = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select Link");
+                    RevitLinkInstance link1 = _doc.GetElement(linkReference.ElementId) as RevitLinkInstance;
 
                     walls1 = GetWalls(link1.GetLinkDocument(), elevation, materialName);
-                    walls2 = GetWalls(doc, elevation, materialName);
+                    walls2 = GetWalls(_doc, elevation, materialName);
 
                     transform1 = link1.GetTotalTransform();
                     transform2 = transform1; // Don't need this because its doc file itself
                 }
                 else
                 {
-                    IList<Reference> linkReferences = uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select 2 Links");
+                    IList<Reference> linkReferences = _uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select 2 Links");
                     Reference linkReference1 = linkReferences.First();
                     Reference linkReference2 = linkReferences.Last();
-                    RevitLinkInstance link1 = doc.GetElement(linkReference1.ElementId) as RevitLinkInstance;
-                    RevitLinkInstance link2 = doc.GetElement(linkReference2.ElementId) as RevitLinkInstance;
+                    RevitLinkInstance link1 = _doc.GetElement(linkReference1.ElementId) as RevitLinkInstance;
+                    RevitLinkInstance link2 = _doc.GetElement(linkReference2.ElementId) as RevitLinkInstance;
 
                     walls1 = GetWalls(link1.GetLinkDocument(), elevation, materialName);
                     walls2 = GetWalls(link2.GetLinkDocument(), elevation, materialName);
@@ -99,11 +100,11 @@ namespace BIM_Leaders_Core
                 List<CurveLoop> loopList = GetCurveLoops(solid1Transformed, solid2Transformed);
 
                 // Drawing filled region
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
                     
-                    FilledRegion region = FilledRegion.Create(doc, fill.Id, doc.ActiveView.Id, loopList);
+                    FilledRegion region = FilledRegion.Create(_doc, fill.Id, _doc.ActiveView.Id, loopList);
 
                     trans.Commit();
                 }

@@ -10,6 +10,7 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class NamesChange : IExternalCommand
     {
+        private static Document _doc;
         private static int _countNamesChanged;
         private static NamesChangeData _inputData;
 
@@ -17,8 +18,7 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             _inputData = GetUserInput();
             if (_inputData == null)
@@ -26,11 +26,11 @@ namespace BIM_Leaders_Core
 
             try
             {
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    ReplaceNames(doc);
+                    ReplaceNames();
 
                     trans.Commit();
                 }
@@ -68,13 +68,13 @@ namespace BIM_Leaders_Core
         /// <param name="substringNew">String to replace with.</param>
         /// <param name="inputPartPrefix">If true, replace prefix part.</param>
         /// <param name="inputPartSuffix">If true, replace suffix part.</param>
-        private static void ReplaceNames(Document doc)
+        private static void ReplaceNames()
         {
             List<Type> types = Categories.GetTypesList(_inputData.ResultCategories);
 
             ElementMulticlassFilter elementMulticlassFilter = new ElementMulticlassFilter(types);
 
-            IEnumerable<Element> elements = new FilteredElementCollector(doc)
+            IEnumerable<Element> elements = new FilteredElementCollector(_doc)
                 .WherePasses(elementMulticlassFilter)
                 .ToElements();
 

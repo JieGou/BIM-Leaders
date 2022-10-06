@@ -6,13 +6,13 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
 using Autodesk.Revit.DB.Architecture;
-using System.Windows.Forms;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class Purge : IExternalCommand
     {
+        private static Document _doc;
         private static PurgeData _inputData;
         private static int _countRoomsNotPlaced;
         private static int _countTagsEmpty;
@@ -26,20 +26,19 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _doc = commandData.Application.ActiveUIDocument.Document;
+
             _inputData = GetUserInput();
             if (_inputData == null)
                 return Result.Cancelled;
 
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
-
             try
             {
-                using (Transaction trans = new Transaction(doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    RunPurges(doc);
+                    RunPurges();
 
                     trans.Commit();
                 }
@@ -66,30 +65,30 @@ namespace BIM_Leaders_Core
             return form.DataContext as PurgeData;
         }
 
-        private static void RunPurges(Document doc)
+        private static void RunPurges()
         {
             if (_inputData.ResultRooms)
-                PurgeRoomsNotPlaced(doc);
+                PurgeRoomsNotPlaced();
             if (_inputData.ResultTags)
-                PurgeTagsEmpty(doc);
+                PurgeTagsEmpty();
             if (_inputData.ResultFilters)
-                PurgeFiltersUnused(doc);
+                PurgeFiltersUnused();
             if (_inputData.ResultViewTemplates)
-                PurgeViewTemplatesUnused(doc);
+                PurgeViewTemplatesUnused();
             if (_inputData.ResultSheets)
-                PurgeSheetsEmpty(doc);
+                PurgeSheetsEmpty();
             if (_inputData.ResultLineStyles)
-                PurgeLineStylesUnused(doc);
+                PurgeLineStylesUnused();
             if (_inputData.ResultLinePatterns)
-                PurgeLinePatterns(doc, _inputData.ResultLinePatternsName);
+                PurgeLinePatterns();
         }
 
         /// <summary>
         /// Delete unplaced rooms in the document.
         /// </summary>
-        private static void PurgeRoomsNotPlaced(Document doc)
+        private static void PurgeRoomsNotPlaced()
         {
-            ICollection<ElementId> rooms = new FilteredElementCollector(doc)
+            ICollection<ElementId> rooms = new FilteredElementCollector(_doc)
                 .OfClass(typeof(SpatialElement))
                 .WherePasses(new RoomFilter())
                 .ToElements()
@@ -100,15 +99,15 @@ namespace BIM_Leaders_Core
             
             _countRoomsNotPlaced = rooms.Count;
 
-            doc.Delete(rooms);
+            _doc.Delete(rooms);
         }
 
         /// <summary>
         /// Delete empty tags from the document.
         /// </summary>
-        private static void PurgeTagsEmpty(Document doc)
+        private static void PurgeTagsEmpty()
         {
-            ICollection<ElementId> tags = new FilteredElementCollector(doc)
+            ICollection<ElementId> tags = new FilteredElementCollector(_doc)
                 .OfClass(typeof(IndependentTag))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -119,20 +118,20 @@ namespace BIM_Leaders_Core
 
             _countTagsEmpty = tags.Count;
 
-            doc.Delete(tags);
+            _doc.Delete(tags);
         }
 
         /// <summary>
         /// Delete unused filters from the document.
         /// </summary>
-        private static void PurgeFiltersUnused(Document doc)
+        private static void PurgeFiltersUnused()
         {
-            IEnumerable<View> views = new FilteredElementCollector(doc)
+            IEnumerable<View> views = new FilteredElementCollector(_doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
                 .ToElements()
                 .Cast<View>();
-            ICollection<ElementId> filtersAll = new FilteredElementCollector(doc)
+            ICollection<ElementId> filtersAll = new FilteredElementCollector(_doc)
                 .OfClass(typeof(FilterElement))
                 .WhereElementIsNotElementType()
                 .ToElementIds();
@@ -158,15 +157,15 @@ namespace BIM_Leaders_Core
 
             _countFiltersUnused = filtersUnused.Count;
 
-            doc.Delete(filtersUnused);
+            _doc.Delete(filtersUnused);
         }
 
         /// <summary>
         /// Delete unused view templates from the document.
         /// </summary>
-        private static void PurgeViewTemplatesUnused(Document doc)
+        private static void PurgeViewTemplatesUnused()
         {
-            IEnumerable<View> viewsAll = new FilteredElementCollector(doc)
+            IEnumerable<View> viewsAll = new FilteredElementCollector(_doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -186,15 +185,15 @@ namespace BIM_Leaders_Core
 
             _countViewTemplatesUnused = templateIds.Count;
 
-            doc.Delete(templateIds);
+            _doc.Delete(templateIds);
         }
 
         /// <summary>
         /// Delete empty sheets witout any placed views from the document.
         /// </summary>
-        private static void PurgeSheetsEmpty(Document doc)
+        private static void PurgeSheetsEmpty()
         {
-            IEnumerable<ViewSheet> sheets = new FilteredElementCollector(doc)
+            IEnumerable<ViewSheet> sheets = new FilteredElementCollector(_doc)
                 .OfClass(typeof(ViewSheet))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -203,7 +202,7 @@ namespace BIM_Leaders_Core
                 .Where(x => x.IsPlaceholder == false);
 
             // "Empty" sheets can contain schedules still, so filter sheets without schedules.
-            IEnumerable<ElementId> schedulesSheets = new FilteredElementCollector(doc)
+            IEnumerable<ElementId> schedulesSheets = new FilteredElementCollector(_doc)
                 .OfClass(typeof(ScheduleSheetInstance))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -217,18 +216,18 @@ namespace BIM_Leaders_Core
 
             _countSheetsEmpty = sheetsEmpty.Count;
 
-            doc.Delete(sheetsEmpty);
+            _doc.Delete(sheetsEmpty);
         }
 
         /// <summary>
         /// Delete unused linestyles from the document.
         /// </summary>
-        private static void PurgeLineStylesUnused(Document doc)
+        private static void PurgeLineStylesUnused()
         {
             ICollection<ElementId> lineStylesUnused = new List<ElementId>();
 
             // Get all used linestyles in the project.
-            IEnumerable<ElementId> lineStylesUsed = new FilteredElementCollector(doc)
+            IEnumerable<ElementId> lineStylesUsed = new FilteredElementCollector(_doc)
                 .OfClass(typeof(CurveElement))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -237,7 +236,7 @@ namespace BIM_Leaders_Core
                 .Distinct();
 
             // Get all line styles in the project (but not built-in).
-            CategoryNameMap lineStylesAllCnm = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
+            CategoryNameMap lineStylesAllCnm = _doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
             ICollection<ElementId> lineStylesAll = new List<ElementId>();
             foreach (Category category in lineStylesAllCnm)
                 if (category.Id.IntegerValue > 0)
@@ -249,23 +248,23 @@ namespace BIM_Leaders_Core
 
             _countLineStylesUnused = lineStylesUnused.Count;
 
-            doc.Delete(lineStylesUnused);
+            _doc.Delete(lineStylesUnused);
         }
 
         /// <summary>
         /// Delete line patterns by given part of the name.
         /// </summary>
         /// <param name="name">String to search in names.</param>
-        private static void PurgeLinePatterns(Document doc, string name)
+        private static void PurgeLinePatterns()
         {
-            ICollection<ElementId> linePatterns = new FilteredElementCollector(doc)
+            ICollection<ElementId> linePatterns = new FilteredElementCollector(_doc)
                     .OfClass(typeof(LinePatternElement))
                     .WhereElementIsNotElementType()
-                    .Where(x => x.Name.Contains(name))
+                    .Where(x => x.Name.Contains(_inputData.ResultLinePatternsName))
                     .Select(x => x.Id)
                     .ToList();
 
-            doc.Delete(linePatterns);
+            _doc.Delete(linePatterns);
 
             _countLinePatterns = linePatterns.Count;
         }
