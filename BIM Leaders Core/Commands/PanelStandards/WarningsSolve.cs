@@ -9,58 +9,36 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class WarningsSolve : IExternalCommand
     {
+        private static Document _doc;
+        private static int _countWarningsJoin;
+        private static int _countWarningsWallsAttached;
+        private static int _countWarningsRoomNotEnclosed;
+        private static WarningsSolveData _inputData;
+
+        private const string TRANSACTION_NAME = "Solve Warnings";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
-            int countWarningsJoin = 0;
-            int countWarningsWallsAttached = 0;
-            int countWarningsRoomNotEnclosed = 0;
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
             try
             {
-                WarningsSolveForm form = new WarningsSolveForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                WarningsSolveVM data = form.DataContext as WarningsSolveVM;
-
-                // Getting input data from user
-                bool fixWarningsJoin = data.ResultFixWarningsJoin;
-                bool fixWarningsWallsAttached = data.ResultFixWarningsWallsAttached;
-                bool fixWarningsRoomNotEnclosed = data.ResultFixWarningsRoomNotEnclosed;
-
-
-                IEnumerable<FailureMessage> warnings = doc.GetWarnings();
-                IEnumerable<FailureMessage> warningsJoin = warnings
-                    .Where(x => x.GetDescriptionText() == "Highlighted elements are joined but do not intersect.");
-                IEnumerable<FailureMessage> warningsWallsAttached = warnings
-                    .Where(x => x.GetDescriptionText() == "Highlighted walls are attached to, but miss, the highlighted targets.");
-                IEnumerable<FailureMessage> warningsRoomNotEnclosed = warnings
-                    .Where(x => x.GetDescriptionText() == "Room is not in a properly enclosed region");
-
-                using (Transaction trans = new Transaction(doc, "Solve Warnings"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    if (fixWarningsJoin)
-                        SolveJoin(doc, warningsJoin, ref countWarningsJoin);
-                    if (fixWarningsWallsAttached)
-                        SolveWallsAttached(doc, warningsWallsAttached, ref countWarningsWallsAttached);
-                    if (fixWarningsRoomNotEnclosed)
-                        SolveRoomNotEnclosed(doc, warningsRoomNotEnclosed, ref countWarningsRoomNotEnclosed);
-                    
+                    SolveAll();
+
                     trans.Commit();
                 }
-                ShowResult(countWarningsJoin, countWarningsWallsAttached, countWarningsRoomNotEnclosed);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -71,28 +49,58 @@ namespace BIM_Leaders_Core
             }
         }
 
+        private static WarningsSolveData GetUserInput()
+        {
+            WarningsSolveForm form = new WarningsSolveForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as WarningsSolveData;
+        }
+
+        private static void SolveAll()
+        {
+            IEnumerable<FailureMessage> warnings = _doc.GetWarnings();
+            IEnumerable<FailureMessage> warningsJoin = warnings
+                    .Where(x => x.GetDescriptionText() == "Highlighted elements are joined but do not intersect.");
+            IEnumerable<FailureMessage> warningsWallsAttached = warnings
+                .Where(x => x.GetDescriptionText() == "Highlighted walls are attached to, but miss, the highlighted targets.");
+            IEnumerable<FailureMessage> warningsRoomNotEnclosed = warnings
+                .Where(x => x.GetDescriptionText() == "Room is not in a properly enclosed region");
+
+            if (_inputData.ResultFixWarningsJoin)
+                SolveJoin(warningsJoin);
+            if (_inputData.ResultFixWarningsWallsAttached)
+                SolveWallsAttached(warningsWallsAttached);
+            if (_inputData.ResultFixWarningsRoomNotEnclosed)
+                SolveRoomNotEnclosed(warningsRoomNotEnclosed);
+        }
+
         /// <summary>
         /// Unjoin elements that have a warning about joining.
         /// </summary>
-        private static void SolveJoin(Document doc, IEnumerable<FailureMessage> warnings, ref int count)
+        private static void SolveJoin(IEnumerable<FailureMessage> warnings)
         {
             foreach (FailureMessage warning in warnings)
             {
                 List<ElementId> ids = warning.GetFailingElements().ToList();
 
                 // Filter elements in workshared document that are editable
-                if (doc.IsWorkshared)
-                    ids = WorksharingUtils.CheckoutElements(doc, ids).ToList();
+                if (_doc.IsWorkshared)
+                    ids = WorksharingUtils.CheckoutElements(_doc, ids).ToList();
                 if (ids.Count < 2)
                     continue;
 
-                Element element0 = doc.GetElement(ids[0]);
-                Element element1 = doc.GetElement(ids[1]);
+                Element element0 = _doc.GetElement(ids[0]);
+                Element element1 = _doc.GetElement(ids[1]);
 
                 try
                 {
-                    JoinGeometryUtils.UnjoinGeometry(doc, element0, element1);
-                    count++;
+                    JoinGeometryUtils.UnjoinGeometry(_doc, element0, element1);
+                    _countWarningsJoin++;
                 }
                 catch { }
             }
@@ -101,20 +109,20 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Detach walls that have a warning about attachment.
         /// </summary>
-        private static void SolveWallsAttached(Document doc, IEnumerable<FailureMessage> warnings, ref int count)
+        private static void SolveWallsAttached(IEnumerable<FailureMessage> warnings)
         {
             foreach (FailureMessage warning in warnings)
             {
                 List<ElementId> ids = warning.GetFailingElements().ToList();
 
                 // Filter elements in workshared document that are editable
-                if (doc.IsWorkshared)
-                    ids = WorksharingUtils.CheckoutElements(doc, ids).ToList();
+                if (_doc.IsWorkshared)
+                    ids = WorksharingUtils.CheckoutElements(_doc, ids).ToList();
                 if (ids.Count < 2)
                     continue;
 
-                Element element0 = doc.GetElement(ids[0]);
-                Element element1 = doc.GetElement(ids[1]);
+                Element element0 = _doc.GetElement(ids[0]);
+                Element element1 = _doc.GetElement(ids[1]);
 
                 /// HERE WILL BE SOLVING IF IT APPEARS IN THE API.
             }
@@ -123,53 +131,53 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Delete rooms that are placed but not enclosed.
         /// </summary>
-        private static void SolveRoomNotEnclosed(Document doc, IEnumerable<FailureMessage> warnings, ref int count)
+        private static void SolveRoomNotEnclosed(IEnumerable<FailureMessage> warnings)
         {
             foreach (FailureMessage warning in warnings)
             {
                 List<ElementId> ids = warning.GetFailingElements().ToList();
 
                 // Filter elements in workshared document that are editable
-                if (doc.IsWorkshared)
-                    ids = WorksharingUtils.CheckoutElements(doc, ids).ToList();
+                if (_doc.IsWorkshared)
+                    ids = WorksharingUtils.CheckoutElements(_doc, ids).ToList();
                 if (ids.Count != 1)
                     continue;
 
                 try
                 {
-                    doc.Delete(ids[0]);
-                    count++;
+                    _doc.Delete(ids[0]);
+                    _countWarningsRoomNotEnclosed++;
                 }
                 catch { }
             }
         }
 
-        private static void ShowResult(int countWarningsJoin, int countWarningsWallsAttached, int countWarningsRoomNotEnclosed)
+        private static void ShowResult()
         {
             // Show result
             string text = "";
-            if (countWarningsJoin + countWarningsWallsAttached + countWarningsRoomNotEnclosed == 0)
+            if (_countWarningsJoin + _countWarningsWallsAttached + _countWarningsRoomNotEnclosed == 0)
                 text = "No warnings solved";
             else
             {
-                if (countWarningsJoin > 0)
-                    text += $"{countWarningsJoin} elements join warnings";
-                if (countWarningsWallsAttached > 0)
+                if (_countWarningsJoin > 0)
+                    text += $"{_countWarningsJoin} elements join warnings";
+                if (_countWarningsWallsAttached > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{countWarningsWallsAttached} walls attached warnings";
+                    text += $"{_countWarningsWallsAttached} walls attached warnings";
                 }
-                if (countWarningsRoomNotEnclosed > 0)
+                if (_countWarningsRoomNotEnclosed > 0)
                 {
                     if (text.Length > 0)
                         text += ", ";
-                    text += $"{countWarningsRoomNotEnclosed} rooms not enclosed warnings";
+                    text += $"{_countWarningsRoomNotEnclosed} rooms not enclosed warnings";
                 }
                 text += " were solved.";
             }
             
-            TaskDialog.Show("Solve Warnings", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

@@ -8,7 +8,6 @@ namespace BIM_Leaders_UI
     // Revit push button methods
     public static class RevitPushButton
     {
-        private static readonly string _name = Guid.NewGuid().ToString();
         private static readonly string _assembly = CoreAssembly.GetAssemblyLocation();
 
         // Create the push button data provided in <see cref="RevitPushButtonDataModel">
@@ -30,8 +29,10 @@ namespace BIM_Leaders_UI
 
         private static PushButtonData MakePushButtonData(RevitPushButtonDataModel data)
         {
+            string name = Guid.NewGuid().ToString();
+
             // Sets the button data
-            PushButtonData buttonData = new PushButtonData(_name, data.Label, _assembly, data.CommandNamespacePath)
+            PushButtonData buttonData = new PushButtonData(name, data.Label, _assembly, data.CommandNamespacePath)
             {
                 ToolTip = data.ToolTip,
                 LongDescription = data.LongDescription,

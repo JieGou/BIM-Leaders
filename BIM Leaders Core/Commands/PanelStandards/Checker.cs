@@ -11,27 +11,25 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class Checker : IExternalCommand
     {
+        private static Document _doc;
+        private static CheckerData _inputData;
+        private static List<ReportMessage> _reportMessageList;
+
+        private const string TRANSACTION_NAME = "Check";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
-            try
-            {
-                // Collector for data provided in window
-                CheckerVM data = new CheckerVM();
-
-                CheckerForm form = new CheckerForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
                 // Get user provided information from window
-                data = form.DataContext as CheckerVM;
+                data = form.DataContext as CheckerData;
 
                 // Getting input data from user
                 string inputPrefix = data.ResultPrefix;
@@ -42,40 +40,11 @@ namespace BIM_Leaders_Core
 
                 List<ReportMessage> reportMessageList = new List<ReportMessage>();
 
-                using (Transaction trans = new Transaction(doc, "Check"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    if (inputCategories.Contains(true))
-                        reportMessageList.AddRange(CheckNamesAll(doc, inputCategories, inputPrefix));
-
-                    if (inputModel[0])
-                        reportMessageList.AddRange(CheckTags(doc));
-                    if (inputModel[1])
-                        reportMessageList.AddRange(CheckTextNotes(doc));
-                    if (inputModel[2])
-                        reportMessageList.AddRange(CheckLineStyles(doc));
-                    if (inputModel[3])
-                        reportMessageList.AddRange(CheckFilters(doc));
-                    if (inputModel[5])
-                        reportMessageList.AddRange(CheckViewTemplates(doc));
-                    if (inputModel[6])
-                        reportMessageList.AddRange(CheckSheets(doc));
-                    if (inputModel[7])
-                        reportMessageList.AddRange(CheckWarnings(doc));
-                    if (inputModel[8])
-                        reportMessageList.AddRange(CheckGroups(doc));
-                    if (inputModel[9])
-                        reportMessageList.AddRange(CheckRooms(doc));
-                    if (inputModel[10])
-                        reportMessageList.AddRange(CheckAreas(doc));
-                    if (inputModel[13])
-                        reportMessageList.AddRange(CheckWallsExterior(doc));
-
-                    if (inputCodes[0])
-                        reportMessageList.AddRange(CheckStairsFormula(doc));
-                    if (inputCodes[1])
-                        reportMessageList.AddRange(CheckStairsHeadHeight(doc, inputHeadHeight));
+                    _reportMessageList = CheckAll();
                     
                     trans.Commit();
                 }
@@ -93,6 +62,56 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        private static CheckerData GetUserInput()
+        {
+            CheckerForm form = new CheckerForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as CheckerData;
+        }
+
+        private static List<ReportMessage> CheckAll()
+        {
+            List<ReportMessage> reportMessageList = new List<ReportMessage>();
+
+            if (_inputData.ResultCategories.Contains(true))
+                reportMessageList.AddRange(CheckNamesAll());
+
+            if (_inputData.ResultModel[0])
+                reportMessageList.AddRange(CheckTags());
+            if (_inputData.ResultModel[1])
+                reportMessageList.AddRange(CheckTextNotes());
+            if (_inputData.ResultModel[2])
+                reportMessageList.AddRange(CheckLineStyles());
+            if (_inputData.ResultModel[3])
+                reportMessageList.AddRange(CheckFilters());
+            if (_inputData.ResultModel[5])
+                reportMessageList.AddRange(CheckViewTemplates());
+            if (_inputData.ResultModel[6])
+                reportMessageList.AddRange(CheckSheets());
+            if (_inputData.ResultModel[7])
+                reportMessageList.AddRange(CheckWarnings());
+            if (_inputData.ResultModel[8])
+                reportMessageList.AddRange(CheckGroups());
+            if (_inputData.ResultModel[9])
+                reportMessageList.AddRange(CheckRooms());
+            if (_inputData.ResultModel[10])
+                reportMessageList.AddRange(CheckAreas());
+            if (_inputData.ResultModel[13])
+                reportMessageList.AddRange(CheckWallsExterior());
+
+            if (_inputData.ResultCodes[0])
+                reportMessageList.AddRange(CheckStairsFormula());
+            if (_inputData.ResultCodes[1])
+                reportMessageList.AddRange(CheckStairsHeadHeight());
+
+            return reportMessageList;
         }
 
         /// <summary>
@@ -119,16 +138,16 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="doc">Document to process in.</param>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckNamesAll(Document doc, List<bool> inputCategories, string prefix)
+        private static IEnumerable<ReportMessage> CheckNamesAll()
         {
             ReportMessage reportMessage = new ReportMessage("Prefixes");
 
             int countPrefixes = 0;
 
-            List<Type> types = Categories.GetTypesList(inputCategories);
+            List<Type> types = Categories.GetTypesList(_inputData.ResultCategories);
 
             foreach (Type type in types)
-                countPrefixes += CheckPrefixes(doc, prefix, type);
+                countPrefixes += CheckPrefixes(type);
 
             if (countPrefixes != 0)
                 reportMessage.MessageText = $"{countPrefixes} prefixes wrong.";
@@ -143,19 +162,18 @@ namespace BIM_Leaders_Core
         /// </para>
         /// </summary>
         /// <param name="doc">Document to process in.</param>
-        /// <param name="prefix">String to search.</param>
         /// <param name="type">Sytem.Type of needed DB class (category).</param>
         /// <returns>Count of prefixes that contains given string.</returns>
-        private static int CheckPrefixes(Document doc, string prefix, Type type)
+        private static int CheckPrefixes(Type type)
         {
             int count = 0;
 
-            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            FilteredElementCollector collector = new FilteredElementCollector(_doc);
             IEnumerable<Element> elements = collector.OfClass(type).ToElements();
             foreach (Element element in elements)
             {
                 string name = element.Name;
-                if (!name.StartsWith(prefix))
+                if (!name.StartsWith(_inputData.ResultPrefix))
                     count++;
             }
 
@@ -166,11 +184,11 @@ namespace BIM_Leaders_Core
         /// Checks if any empty tags in the model.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckTags(Document doc)
+        private static IEnumerable<ReportMessage> CheckTags()
         {
             ReportMessage reportMessage = new ReportMessage("Empty Tags");
 
-            IEnumerable<IndependentTag> tags = new FilteredElementCollector(doc)
+            IEnumerable<IndependentTag> tags = new FilteredElementCollector(_doc)
                 .OfClass(typeof(IndependentTag))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -188,11 +206,11 @@ namespace BIM_Leaders_Core
         /// Check for count of text notes in the project.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckTextNotes(Document doc)
+        private static IEnumerable<ReportMessage> CheckTextNotes()
         {
             ReportMessage reportMessage = new ReportMessage("Text Notes");
 
-            IEnumerable<TextNote> textNotes = new FilteredElementCollector(doc)
+            IEnumerable<TextNote> textNotes = new FilteredElementCollector(_doc)
                 .OfClass(typeof(TextNote))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -209,16 +227,16 @@ namespace BIM_Leaders_Core
         /// Check if filters are unused.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckFilters(Document doc)
+        private static IEnumerable<ReportMessage> CheckFilters()
         {
             ReportMessage reportMessage = new ReportMessage("Unused Filters");
 
-            IEnumerable<View> views = new FilteredElementCollector(doc)
+            IEnumerable<View> views = new FilteredElementCollector(_doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
                 .ToElements()
                 .Cast<View>();
-            ICollection<ElementId> filtersAll = new FilteredElementCollector(doc)
+            ICollection<ElementId> filtersAll = new FilteredElementCollector(_doc)
                 .OfClass(typeof(FilterElement))
                 .WhereElementIsNotElementType()
                 .ToElementIds();
@@ -251,11 +269,11 @@ namespace BIM_Leaders_Core
         /// Check if view templates are unused.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckViewTemplates(Document doc)
+        private static IEnumerable<ReportMessage> CheckViewTemplates()
         {
             ReportMessage reportMessage = new ReportMessage("Unused View Templates");
 
-            IEnumerable<View> viewsAll = new FilteredElementCollector(doc)
+            IEnumerable<View> viewsAll = new FilteredElementCollector(_doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -281,7 +299,7 @@ namespace BIM_Leaders_Core
         /// Check for sheet placeholders and empty sheets.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckSheets(Document doc)
+        private static IEnumerable<ReportMessage> CheckSheets()
         {
             ReportMessage reportMessage0 = new ReportMessage("Placeholder Sheets");
             ReportMessage reportMessage1 = new ReportMessage("Empty Sheets");
@@ -289,7 +307,7 @@ namespace BIM_Leaders_Core
             int countPlaceholders = 0;
             int countEmptySheets = 0;
 
-            IEnumerable<ViewSheet> sheets = new FilteredElementCollector(doc)
+            IEnumerable<ViewSheet> sheets = new FilteredElementCollector(_doc)
                 .OfClass(typeof(ViewSheet))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -306,7 +324,7 @@ namespace BIM_Leaders_Core
             }
 
             // "Empty" sheets can contain schedules still, so filter sheets without schedules.
-            IEnumerable<ElementId> schedulesSheets = new FilteredElementCollector(doc)
+            IEnumerable<ElementId> schedulesSheets = new FilteredElementCollector(_doc)
                 .OfClass(typeof(ScheduleSheetInstance))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -331,7 +349,7 @@ namespace BIM_Leaders_Core
         /// Check groups in current document for unused, unpinned (only model groups), excluded groups.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckGroups(Document doc)
+        private static IEnumerable<ReportMessage> CheckGroups()
         {
             ReportMessage reportMessage0 = new ReportMessage("Unused Groups");
             ReportMessage reportMessage1 = new ReportMessage("Unpinned Model Groups");
@@ -344,12 +362,12 @@ namespace BIM_Leaders_Core
             int countGroupsUnpinned = 0;
             int countGroupsExcluded = 0;
 
-            IEnumerable<GroupType> groupTypes = new FilteredElementCollector(doc)
+            IEnumerable<GroupType> groupTypes = new FilteredElementCollector(_doc)
                 .OfClass(typeof(GroupType))
                 .ToElements()
                 .Cast<GroupType>();
 
-            IEnumerable<Group> groups = new FilteredElementCollector(doc)
+            IEnumerable<Group> groups = new FilteredElementCollector(_doc)
                 .OfClass(typeof(Group))
                 .ToElements()
                 .Cast<Group>();
@@ -393,13 +411,13 @@ namespace BIM_Leaders_Core
         /// Checks if all existing linestyles are used in the document.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckLineStyles(Document doc)
+        private static IEnumerable<ReportMessage> CheckLineStyles()
         {
             ReportMessage reportMessage = new ReportMessage("Line Styles");
 
             int countLinestyles = 0;
 
-            IEnumerable<CurveElement> lines = new FilteredElementCollector(doc)
+            IEnumerable<CurveElement> lines = new FilteredElementCollector(_doc)
                 .OfClass(typeof(CurveElement))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -412,7 +430,7 @@ namespace BIM_Leaders_Core
                     lineStylesUsed.Add(lineStyle);
             }
             // Selecting all line styles in the project
-            CategoryNameMap lineStylesAll = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
+            CategoryNameMap lineStylesAll = _doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
             List<ElementId> lineStyles = new List<ElementId>();
             foreach (Category category in lineStylesAll)
                 lineStyles.Add(category.Id);
@@ -431,7 +449,7 @@ namespace BIM_Leaders_Core
         /// Checks all rooms in the document.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckRooms(Document doc)
+        private static IEnumerable<ReportMessage> CheckRooms()
         {
             ReportMessage reportMessage0 = new ReportMessage("Rooms Placement");
             ReportMessage reportMessage1 = new ReportMessage("Rooms Not Enclosed");
@@ -444,11 +462,11 @@ namespace BIM_Leaders_Core
             Options options = new Options
             {
                 ComputeReferences = false,
-                View = doc.ActiveView,
+                View = _doc.ActiveView,
                 IncludeNonVisibleObjects = true
             };
 
-            IEnumerable<Room> rooms = new FilteredElementCollector(doc)
+            IEnumerable<Room> rooms = new FilteredElementCollector(_doc)
                 .OfClass(typeof(SpatialElement))
                 .WherePasses(new RoomFilter())
                 .ToElements()
@@ -491,7 +509,7 @@ namespace BIM_Leaders_Core
         /// Check for unplaced and unbounded areas.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckAreas(Document doc)
+        private static IEnumerable<ReportMessage> CheckAreas()
         {
             ReportMessage reportMessage0 = new ReportMessage("Areas Placement");
             ReportMessage reportMessage1 = new ReportMessage("Areas Not Enclosed");
@@ -499,7 +517,7 @@ namespace BIM_Leaders_Core
             int countAreasPlacement = 0;
             int countAreasUnbounded = 0;
 
-            IEnumerable<Area> areas = new FilteredElementCollector(doc)
+            IEnumerable<Area> areas = new FilteredElementCollector(_doc)
                 .OfClass(typeof(SpatialElement))
                 .WherePasses(new AreaFilter())
                 .ToElements()
@@ -525,7 +543,7 @@ namespace BIM_Leaders_Core
         /// Check for unplaced and unbounded spaces.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckSpaces(Document doc)
+        private static IEnumerable<ReportMessage> CheckSpaces()
         {
             ReportMessage reportMessage0 = new ReportMessage("Spaces Placement");
             ReportMessage reportMessage1 = new ReportMessage("Spaces Not Enclosed");
@@ -533,7 +551,7 @@ namespace BIM_Leaders_Core
             int countSpacesPlacement = 0;
             int countSpacesUnbounded = 0;
 
-            IEnumerable<Space> spaces = new FilteredElementCollector(doc)
+            IEnumerable<Space> spaces = new FilteredElementCollector(_doc)
                 .OfClass(typeof(SpatialElement))
                 .WherePasses(new SpaceFilter())
                 .ToElements()
@@ -559,11 +577,11 @@ namespace BIM_Leaders_Core
         /// Checks if warnings are in the document.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckWarnings(Document doc)
+        private static IEnumerable<ReportMessage> CheckWarnings()
         {
             ReportMessage reportMessage = new ReportMessage("Warnings");
 
-            int countWarnings = doc.GetWarnings().Count;
+            int countWarnings = _doc.GetWarnings().Count;
             if (countWarnings != 0)
                 reportMessage.MessageText = $"{countWarnings} warnings in the project.";
 
@@ -574,14 +592,14 @@ namespace BIM_Leaders_Core
         /// Checks if all actually exterior walls are set as Exterior in the properties.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckWallsExterior(Document doc)
+        private static IEnumerable<ReportMessage> CheckWallsExterior()
         {
             ReportMessage reportMessage = new ReportMessage("Exterior Walls");
 
             int countWallsInterior = 0;
 
             // Get 3D view with founded first view type, becuase some operations must have 3D in input...
-            FilteredElementCollector collectorViewFamilyTypes = new FilteredElementCollector(doc);
+            FilteredElementCollector collectorViewFamilyTypes = new FilteredElementCollector(_doc);
             IEnumerable<ViewFamilyType> viewFamilyTypes = collectorViewFamilyTypes.OfClass(typeof(ViewFamilyType)).ToElements().Cast<ViewFamilyType>();
             ElementId viewFamilyTypeId = viewFamilyTypes.First().Id;
             foreach (ViewFamilyType viewFamilyType in viewFamilyTypes)
@@ -592,7 +610,7 @@ namespace BIM_Leaders_Core
                     break;
                 }
             }
-            View3D viewNew = View3D.CreateIsometric(doc, viewFamilyTypeId);
+            View3D viewNew = View3D.CreateIsometric(_doc, viewFamilyTypeId);
 
             BoundingBoxXYZ box = viewNew.GetSectionBox(); // CHECK !!!
 
@@ -609,7 +627,7 @@ namespace BIM_Leaders_Core
             curve.Append(Line.CreateBound(point4, point1));
 
             // Get the lowest level
-            FilteredElementCollector collectorLevels = new FilteredElementCollector(doc);
+            FilteredElementCollector collectorLevels = new FilteredElementCollector(_doc);
             IEnumerable<Level> levels = collectorLevels.OfClass(typeof(Level)).ToElements().Cast<Level>();
             Level level = levels.First();
             double elevation = levels.First().Elevation;
@@ -625,7 +643,7 @@ namespace BIM_Leaders_Core
             List<Wall> wallsToDelete = new List<Wall>();
             foreach (Line line in curve)
             {
-                Wall wall = Wall.Create(doc, line, levelId, false);
+                Wall wall = Wall.Create(_doc, line, levelId, false);
                 Parameter parameter = wall.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM);
                 parameter.Set(1000);
                 wallsToDelete.Add(wall); // For deleting
@@ -633,7 +651,7 @@ namespace BIM_Leaders_Core
 
             // Create room
             UV point = new UV(box.Min.X + 10, box.Min.Y + 10);
-            Room room = doc.Create.NewRoom(level, point);
+            Room room = _doc.Create.NewRoom(level, point);
 
             // Get outer walls
             List<Element> walls = new List<Element>();
@@ -642,7 +660,7 @@ namespace BIM_Leaders_Core
             foreach (IList<BoundarySegment> segmentsList in segmentsListList)
                 foreach (BoundarySegment segment in segmentsList)
                 {
-                    Element element = doc.GetElement(segment.ElementId);
+                    Element element = _doc.GetElement(segment.ElementId);
                     try
                     {
                         if (element.Category.Name == "Walls")
@@ -661,9 +679,9 @@ namespace BIM_Leaders_Core
                 countWallsInterior -= 4;
 
             // Deleting
-            doc.Delete(room.Id);
+            _doc.Delete(room.Id);
             foreach (Wall wall in wallsToDelete)
-                doc.Delete(wall.Id);
+                _doc.Delete(wall.Id);
 
             if (countWallsInterior != 0)
                 reportMessage.MessageText = $"{countWallsInterior} exterior walls have interior type.";
@@ -675,13 +693,13 @@ namespace BIM_Leaders_Core
         /// Checks all stairs if their parameters (step length / step height) good in formula.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckStairsFormula(Document doc)
+        private static IEnumerable<ReportMessage> CheckStairsFormula()
         {
             ReportMessage reportMessage = new ReportMessage("Stairs Formula");
 
             int countStairsFormula = 0;
 
-            FilteredElementCollector collectorStairs = new FilteredElementCollector(doc);
+            FilteredElementCollector collectorStairs = new FilteredElementCollector(_doc);
             IEnumerable<Stairs> stairs = collectorStairs.OfClass(typeof(Stairs)).ToElements().Cast<Stairs>();
 
             // Check if stairs steps are right height and depth
@@ -710,7 +728,7 @@ namespace BIM_Leaders_Core
         /// Check all stairs elements in document if they good in the given head height.
         /// </summary>
         /// <returns>Checking report messages.</returns>
-        private static IEnumerable<ReportMessage> CheckStairsHeadHeight(Document doc, double inputHeadHeight)
+        private static IEnumerable<ReportMessage> CheckStairsHeadHeight()
         {
             ReportMessage reportMessage = new ReportMessage("Stairs Head Height");
 
@@ -720,23 +738,23 @@ namespace BIM_Leaders_Core
             Options options = new Options
             {
                 ComputeReferences = false,
-                View = doc.ActiveView,
+                View = _doc.ActiveView,
                 IncludeNonVisibleObjects = true
             };
 
 #if VERSION2020
             double heightOffset = UnitUtils.ConvertToInternalUnits(10, DisplayUnitType.DUT_CENTIMETERS);
-            double height = UnitUtils.ConvertToInternalUnits(inputHeadHeight, DisplayUnitType.DUT_CENTIMETERS) - heightOffset;
+            double height = UnitUtils.ConvertToInternalUnits(_inputData.ResultHeight, DisplayUnitType.DUT_CENTIMETERS) - heightOffset;
             double planOffset = UnitUtils.ConvertToInternalUnits(1, DisplayUnitType.DUT_CENTIMETERS); // Offset for not touching walls near stairs
 #else
             double heightOffset = UnitUtils.ConvertToInternalUnits(10, UnitTypeId.Centimeters);
-            double height = UnitUtils.ConvertToInternalUnits(inputHeadHeight, UnitTypeId.Centimeters) - heightOffset;
+            double height = UnitUtils.ConvertToInternalUnits(_inputData.ResultHeight, UnitTypeId.Centimeters) - heightOffset;
             double planOffset = UnitUtils.ConvertToInternalUnits(1, UnitTypeId.Centimeters);
 #endif
             // Get extrusion vector, only direction is needed but for sure the point is on 0 point of solid bottom but Z is on solid top
             XYZ extrusionDir = new XYZ(0, 0, 1);
 
-            IEnumerable<Stairs> stairs = new FilteredElementCollector(doc)
+            IEnumerable<Stairs> stairs = new FilteredElementCollector(_doc)
                 .OfClass(typeof(Stairs))
                 .ToElements()
                 .Cast<Stairs>();
@@ -748,7 +766,7 @@ namespace BIM_Leaders_Core
                 List<StairsLanding> landings = new List<StairsLanding>();
                 ICollection<ElementId> landingIds = stair.GetStairsLandings();
                 foreach (ElementId landingId in landingIds)
-                    landings.Add(doc.GetElement(landingId) as StairsLanding);
+                    landings.Add(_doc.GetElement(landingId) as StairsLanding);
 
                 // Check landings geometry
                 foreach (StairsLanding landing in landings)
@@ -766,7 +784,7 @@ namespace BIM_Leaders_Core
                     Solid landingSolidTransformed = SolidUtils.CreateTransformed(landingSolid, transform);
 
                     // Create filter to get intersecting elements
-                    IList<Element> elementsIntersects = new FilteredElementCollector(doc)
+                    IList<Element> elementsIntersects = new FilteredElementCollector(_doc)
                         .WherePasses(new ElementIntersectsSolidFilter(landingSolidTransformed))
                         .ToElements();
 
@@ -777,7 +795,7 @@ namespace BIM_Leaders_Core
                 List<StairsRun> runs = new List<StairsRun>();
                 ICollection<ElementId> runIds = stair.GetStairsRuns();
                 foreach (ElementId runId in runIds)
-                    runs.Add(doc.GetElement(runId) as StairsRun);
+                    runs.Add(_doc.GetElement(runId) as StairsRun);
 
                 // Check runs geometry
                 foreach (StairsRun run in runs)
@@ -835,7 +853,7 @@ namespace BIM_Leaders_Core
                         Solid solidRunTransformed = SolidUtils.CreateTransformed(solidRun, transform);
 
                         // Create filter to get intersecting elements
-                        IList<Element> er = new FilteredElementCollector(doc)
+                        IList<Element> er = new FilteredElementCollector(_doc)
                             .WherePasses(new ElementIntersectsSolidFilter(solidRunTransformed))
                             .ToElements();
                         

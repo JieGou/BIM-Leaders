@@ -6,50 +6,58 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.ApplicationServices;
+using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DimensionsPlanLine : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc;
+        private static double _toleranceAngle;
+        private static int _countDimensions;
+
+        private const string TRANSACTION_NAME = "Dimension Plan Walls";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
+            _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
 
             try
             {
                 // Get the line from user selection
-                Reference referenceLine = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
-                DetailLine detailLine = doc.GetElement(referenceLine) as DetailLine;
+                Reference referenceLine = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
+                DetailLine detailLine = _doc.GetElement(referenceLine) as DetailLine;
                 if (detailLine == null)
                 {
-                    TaskDialog.Show("Dimensions Plan Walls", "Wrong selection.");
+                    TaskDialog.Show(TRANSACTION_NAME, "Wrong selection.");
                     return Result.Failed;
                 }
 
                 Line line = detailLine.GeometryCurve as Line;
-                ReferenceArray references = GetReferences(doc, line);
+                ReferenceArray references = GetReferences(line);
 
                 if (references.Size < 2)
                 {
-                    TaskDialog.Show("Dimensions Plan Walls", "Not enough numbrer references for dimension.");
+                    TaskDialog.Show(TRANSACTION_NAME, "Not enough numbrer references for dimension.");
                     return Result.Failed;
                 }
 
-                using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    Dimension dimension = doc.Create.NewDimension(doc.ActiveView, line, references);
+                    Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, line, references);
                     DimensionUtils.AdjustText(dimension);
 #if !VERSION2020
                     dimension.HasLeader = false;
 #endif
                     trans.Commit();
                 }
-                ShowResult(references.Size - 1);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -66,25 +74,25 @@ namespace BIM_Leaders_Core
         /// <param name="doc">Current document.</param>
         /// <param name="line">Line to find the intersections.</param>
         /// <returns>ReferenceArray that can be used for dimension creating.</returns>
-        private static ReferenceArray GetReferences(Document doc, Line line)
+        private static ReferenceArray GetReferences(Line line)
         {
             ReferenceArray references = new ReferenceArray();
 
-            double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
+            IEnumerable<Wall> walls = GetWallsStraight();
+            IEnumerable<Wall> wallsPer = FilterWallsPer(line, walls);
+            IEnumerable<Reference> referencesWalls = FindIntersections(line, wallsPer);
 
-            IEnumerable<Wall> walls = GetWallsStraight(doc);
-            IEnumerable<Wall> wallsPer = FilterWallsPer(toleranceAngle, line, walls);
-            IEnumerable<Reference> referencesWalls = FindIntersections(doc, line, wallsPer);
-
-            IEnumerable<FamilyInstance> columns = GetColumns(doc);
-            IEnumerable<FamilyInstance> columnsPer = FilterColumnsPer(toleranceAngle, line, columns);
-            IEnumerable<Reference> referencesColumns = FindIntersections(doc, line, columnsPer);
+            IEnumerable<FamilyInstance> columns = GetColumns();
+            IEnumerable<FamilyInstance> columnsPer = FilterColumnsPer(line, columns);
+            IEnumerable<Reference> referencesColumns = FindIntersections(line, columnsPer);
 
             // Convert lists to ReferenceArray
             foreach (Reference i in referencesWalls)
                 references.Append(i);
             foreach (Reference i in referencesColumns)
                 references.Append(i);
+
+            _countDimensions = references.Size - 1;
 
             return references;
         }
@@ -93,9 +101,9 @@ namespace BIM_Leaders_Core
         /// Get list of straight walls visible on active view.
         /// </summary>
         /// <returns>List of straight walls visible on active view.</returns>
-        private static List<Wall> GetWallsStraight(Document doc)
+        private static List<Wall> GetWallsStraight()
         {
-            IEnumerable<Wall> wallsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<Wall> wallsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                     .OfClass(typeof(Wall))
                     .WhereElementIsNotElementType()
                     .ToElements()
@@ -116,7 +124,7 @@ namespace BIM_Leaders_Core
         /// Filter list of walls to get walls only perpendicular to the given line with the given angle tolerance.
         /// </summary>
         /// <returns>List of walls perpendicular to the line.</returns>
-        private static List<Wall> FilterWallsPer(double toleranceAngle, Line line, IEnumerable<Wall> walls)
+        private static List<Wall> FilterWallsPer(Line line, IEnumerable<Wall> walls)
         {
             List<Wall> wallsPer = new List<Wall>();
 
@@ -129,7 +137,7 @@ namespace BIM_Leaders_Core
                 double wallX = Math.Abs(wall.Orientation.X);
                 double wallY = Math.Abs(wall.Orientation.Y);
 
-                if ((Math.Abs(wallX) - Math.Abs(lineX) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineY) <= toleranceAngle))
+                if ((Math.Abs(wallX) - Math.Abs(lineX) <= _toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineY) <= _toleranceAngle))
                     wallsPer.Add(wall);
             }
             return wallsPer;
@@ -139,18 +147,18 @@ namespace BIM_Leaders_Core
         /// Get columns visible on active view.
         /// </summary>
         /// <returns>List of columns visible on active view.</returns>
-        private static List<FamilyInstance> GetColumns(Document doc)
+        private static List<FamilyInstance> GetColumns()
         {
             List<FamilyInstance> columns = new List<FamilyInstance>();
 
             // Get all structural columns on the view
-            List<FamilyInstance> columns_str = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            List<FamilyInstance> columns_str = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfCategory(BuiltInCategory.OST_StructuralColumns)
                 .ToElements()
                 .Cast<FamilyInstance>()
                 .ToList();
             // Get all columns on the view
-            List<FamilyInstance> columns_arc = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            List<FamilyInstance> columns_arc = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfCategory(BuiltInCategory.OST_Columns)
                 .ToElements()
                 .Cast<FamilyInstance>()
@@ -166,7 +174,7 @@ namespace BIM_Leaders_Core
         /// Filter list of columns to get columns only parallel or perpendicular to the given line with the given angle tolerance.
         /// </summary>
         /// <returns>List of columns parallel or perpendicular to the line.</returns>
-        private static List<FamilyInstance> FilterColumnsPer(double toleranceAngle, Line line, IEnumerable<FamilyInstance> columns)
+        private static List<FamilyInstance> FilterColumnsPer(Line line, IEnumerable<FamilyInstance> columns)
         {
             List<FamilyInstance> columns_per = new List<FamilyInstance>();
 
@@ -181,18 +189,18 @@ namespace BIM_Leaders_Core
                 double col_angle = col_xy.AngleTo(line.Direction);
 
                 // Checking if parallel
-                if (Math.Abs(col_angle) <= toleranceAngle)
+                if (Math.Abs(col_angle) <= _toleranceAngle)
                     columns_per.Add(i);
-                else if (Math.Abs(col_angle - Math.PI) <= toleranceAngle)
+                else if (Math.Abs(col_angle - Math.PI) <= _toleranceAngle)
                     columns_per.Add(i);
                 // Checking if parallel
-                else if (Math.Abs(col_angle - Math.PI / 2) <= toleranceAngle)
+                else if (Math.Abs(col_angle - Math.PI / 2) <= _toleranceAngle)
                     columns_per.Add(i);
             }
             return columns_per;
         }
 
-        private static List<Reference> FindIntersections(Document doc, Line curve, IEnumerable<Element> elements)
+        private static List<Reference> FindIntersections(Line curve, IEnumerable<Element> elements)
         {
             List<Reference> intersections = new List<Reference>();
 
@@ -257,14 +265,14 @@ namespace BIM_Leaders_Core
             return result;
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countDimensions == 0)
                 ? "Dimension creating error."
-                : $"Dimension with {count} segments was created.";
+                : $"Dimension with {_countDimensions} segments was created.";
 
-            TaskDialog.Show("Dimension Plan Walls", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

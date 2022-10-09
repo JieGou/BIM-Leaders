@@ -2,47 +2,48 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
-using Autodesk.Revit.DB.Architecture;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class ListsCreate : IExternalCommand
     {
+        private static Document _doc;
+        private static bool _createAluminium = true;
+        private static bool _createMetal = true;
+        private static bool _createCarpentry = true;
+        private static bool _sortElements = true;
+
+        private static string _typeCommentsAluminium = "A";
+        private static string _typeCommentsMetal = "M";
+        private static string _typeCommentsCarpentry = "C";
+
+        private static string _typeNamePrefixAluminiumWalls = "Aluminium Walls";
+
+        private static string _viewTypeName = "Lists";
+        private static string _viewTemplateName = "Lists";
+        private static string _viewNamePrefix = "LIST_";
+
+        private static string _tagGenFamilyName = "Lists tag GF A4";
+        private static string _tagGenTypeNameAluminium = "Aluminium";
+        private static string _tagGenTypeNameMetal = "Metal";
+        private static string _tagGenTypeNameCarpentry = "Wood";
+
+        private static string _tagRailingFamilyName = "Lists tag GF A4 Railing";
+        private static string _tagRailingTypeName = "Aluminium";
+
+        private static double _tagPlacementOffsetX = 177.5; // In mm.
+        private static double _tagPlacementOffsetY = 208.7;
+
+        private const string TRANSACTION_NAME = "Create Lists";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
-
-            bool createAluminium = true;
-            bool createMetal = true;
-            bool createCarpentry = true;
-            bool sortElements = true;
-
-            string typeCommentsAluminium = "A";
-            string typeCommentsMetal = "M";
-            string typeCommentsCarpentry = "C";
-
-            string typeNamePrefixAluminiumWalls = "Aluminium Walls";
-
-            string viewTypeName = "Lists";
-            string viewTemplateName = "Lists";
-            string viewNamePrefix = "LIST_";
-
-            string tagGenFamilyName = "Lists tag GF A4";
-            string tagGenTypeNameAluminium = "Aluminium";
-            string tagGenTypeNameMetal = "Metal";
-            string tagGenTypeNameCarpentry = "Wood";
-
-            string tagRailingFamilyName = "Lists tag GF A4 Railing";
-            string tagRailingTypeName = "Aluminium";
-
-            double tagPlacementOffsetX = 177.5; // In mm.
-            double tagPlacementOffsetY = 208.7;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             try
             {
@@ -57,44 +58,44 @@ namespace BIM_Leaders_Core
                 ListsCreateData data = form.DataContext as ListsCreateData;
                 */
 
-                List<Element> elementsAll = GetElements(doc);
+                List<Element> elementsAll = GetElements();
 
-                List<Element> elementsAluminium = (createAluminium)
-                    ? FilterElements(elementsAll, typeCommentsAluminium)
+                List<Element> elementsAluminium = (_createAluminium)
+                    ? FilterElements(elementsAll, _typeCommentsAluminium)
                     : null;
-                List<Element> elementsMetal = (createMetal)
-                    ? FilterElements(elementsAll, typeCommentsMetal)
+                List<Element> elementsMetal = (_createMetal)
+                    ? FilterElements(elementsAll, _typeCommentsMetal)
                     : null;
-                List<Element> elementsCarpentry = (createCarpentry)
-                    ? FilterElements(elementsAll, typeCommentsCarpentry)
+                List<Element> elementsCarpentry = (_createCarpentry)
+                    ? FilterElements(elementsAll, _typeCommentsCarpentry)
                     : null;
                 
-                if (sortElements)
+                if (_sortElements)
                 {
                     elementsAluminium = SortElements(elementsAluminium);
                     elementsMetal = SortElements(elementsMetal);
                     elementsCarpentry = SortElements(elementsCarpentry);
                 }
 
-                ElementId viewType = GetViewType(doc, viewTypeName);
-                ElementId viewTemplate = GetViewTemplate(doc, viewTemplateName);
+                ElementId viewType = GetViewType(_viewTypeName);
+                ElementId viewTemplate = GetViewTemplate(_viewTemplateName);
 
-                ElementId tagTypeAluminium = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagGenFamilyName, tagGenTypeNameAluminium);
-                ElementId tagTypeMetal = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagGenFamilyName, tagGenTypeNameMetal);
-                ElementId tagTypeCarpentry = GetTagType(doc, BuiltInCategory.OST_MultiCategoryTags, tagGenFamilyName, tagGenTypeNameCarpentry);
-                ElementId tagTypeRailing = GetTagType(doc, BuiltInCategory.OST_StairsRailingTags, tagRailingFamilyName, tagRailingTypeName);
+                ElementId tagTypeAluminium = GetTagType(BuiltInCategory.OST_MultiCategoryTags, _tagGenFamilyName, _tagGenTypeNameAluminium);
+                ElementId tagTypeMetal = GetTagType(BuiltInCategory.OST_MultiCategoryTags, _tagGenFamilyName, _tagGenTypeNameMetal);
+                ElementId tagTypeCarpentry = GetTagType(BuiltInCategory.OST_MultiCategoryTags, _tagGenFamilyName, _tagGenTypeNameCarpentry);
+                ElementId tagTypeRailing = GetTagType(BuiltInCategory.OST_StairsRailingTags, _tagRailingFamilyName, _tagRailingTypeName);
 
-                using (Transaction trans = new Transaction(doc, "Create Lists"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    MarkElements(elementsAluminium, typeNamePrefixAluminiumWalls);
-                    MarkElements(elementsMetal, typeNamePrefixAluminiumWalls);
-                    MarkElements(elementsCarpentry, typeNamePrefixAluminiumWalls);
+                    MarkElements(elementsAluminium, _typeNamePrefixAluminiumWalls);
+                    MarkElements(elementsMetal, _typeNamePrefixAluminiumWalls);
+                    MarkElements(elementsCarpentry, _typeNamePrefixAluminiumWalls);
 
-                    List<View> viewsAluminium = CreateListViews(doc, elementsAluminium, viewType, viewTemplate, viewNamePrefix, tagTypeAluminium, tagPlacementOffsetX, tagPlacementOffsetY);
-                    List<View> viewsMetal = CreateListViews(doc, elementsMetal, viewType, viewTemplate, viewNamePrefix, tagTypeMetal, tagPlacementOffsetX, tagPlacementOffsetY);
-                    List<View> viewsCarpentry = CreateListViews(doc, elementsCarpentry, viewType, viewTemplate, viewNamePrefix, tagTypeCarpentry, tagPlacementOffsetX, tagPlacementOffsetY);
+                    List<View> viewsAluminium = CreateListViews(elementsAluminium, viewType, viewTemplate, _viewNamePrefix, tagTypeAluminium, _tagPlacementOffsetX, _tagPlacementOffsetY);
+                    List<View> viewsMetal = CreateListViews(elementsMetal, viewType, viewTemplate, _viewNamePrefix, tagTypeMetal, _tagPlacementOffsetX, _tagPlacementOffsetY);
+                    List<View> viewsCarpentry = CreateListViews(elementsCarpentry, viewType, viewTemplate, _viewNamePrefix, tagTypeCarpentry, _tagPlacementOffsetX, _tagPlacementOffsetY);
 
                     // !!! Create sheets
                     // !!! Place views
@@ -117,7 +118,7 @@ namespace BIM_Leaders_Core
         /// Get elements that for lists creating.
         /// </summary>
         /// <returns>List<Element> of unique elements of each type.</returns>
-        private static List<Element> GetElements(Document doc)
+        private static List<Element> GetElements()
         {
             List<Element> elements = new List<Element>();
 
@@ -131,7 +132,7 @@ namespace BIM_Leaders_Core
             ElementMulticlassFilter filter = new ElementMulticlassFilter(classes);
 
             // Get elements.
-            IEnumerable<Element> elementsAll = new FilteredElementCollector(doc)
+            IEnumerable<Element> elementsAll = new FilteredElementCollector(_doc)
                 .WherePasses(filter)
                 .WhereElementIsNotElementType()
                 .ToElements();
@@ -167,7 +168,7 @@ namespace BIM_Leaders_Core
             // Filter elements for given list.
             foreach (Element element in elements)
             {
-                string typeComments = GetTypeComments(doc, element);
+                string typeComments = GetTypeComments(element);
 
                 if (typeComments == valueTypeComments)
                     elementsFiltered.Add(element);
@@ -213,11 +214,11 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="viewTypeName">Name of the view type.</param>
         /// <returns>View Type.</returns>
-        private static ElementId GetViewType(Document doc, string viewTypeName)
+        private static ElementId GetViewType(string viewTypeName)
         {
             ElementId viewType = null;
 
-            List<Element> views = new FilteredElementCollector(doc)
+            List<Element> views = new FilteredElementCollector(_doc)
                 .OfClass(typeof(ViewSection))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -230,7 +231,7 @@ namespace BIM_Leaders_Core
                 if (viewTypeI == ElementId.InvalidElementId)
                     continue;
 
-                string viewTypeNameI = doc.GetElement(viewTypeI).Name;
+                string viewTypeNameI = _doc.GetElement(viewTypeI).Name;
                 if (viewTypeNameI == viewTypeName)
                 {
                     viewType = viewTypeI;
@@ -240,7 +241,7 @@ namespace BIM_Leaders_Core
 
             if (viewType == null)
             {
-                TaskDialog.Show("Create Lists", "View type with given name was not found.");
+                TaskDialog.Show(TRANSACTION_NAME, $"View type with given name \"{_viewTypeName}\" was not found.");
                 return null;
             }
 
@@ -252,11 +253,11 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="viewTemplateName">Name of the view template.</param>
         /// <returns>View Template.</returns>
-        private static ElementId GetViewTemplate(Document doc, string viewTemplateName)
+        private static ElementId GetViewTemplate(string viewTemplateName)
         {
             ElementId viewTemplate = null;
 
-            List<View> views = new FilteredElementCollector(doc)
+            List<View> views = new FilteredElementCollector(_doc)
                 .OfClass(typeof(View))
                 .ToElements()
                 .Cast<View>()
@@ -272,7 +273,7 @@ namespace BIM_Leaders_Core
             }
 
             if (viewTemplate == null)
-                TaskDialog.Show("Create Lists", "View template with given name was not found.");
+                TaskDialog.Show(TRANSACTION_NAME, $"View template with given name \"{_viewTemplateName}\" was not found.");
 
             return viewTemplate;
         }
@@ -282,21 +283,21 @@ namespace BIM_Leaders_Core
         /// </summary>
         /// <param name="tagTypeName">Name of the tag type.</param>
         /// <returns>Tag type.</returns>
-        private static ElementId GetTagType(Document doc, BuiltInCategory category, string tagFamilyName, string tagTypeName)
+        private static ElementId GetTagType(BuiltInCategory category, string tagFamilyName, string tagTypeName)
         {
-            IEnumerable<Element> tags = new FilteredElementCollector(doc)
+            IEnumerable<Element> tags = new FilteredElementCollector(_doc)
                 .OfClass(typeof(IndependentTag))
                 .OfCategory(category)
                 .ToElements();
 
             foreach (Element tag in tags)
             {
-                FamilySymbol tagTypeI = doc.GetElement(tag.GetTypeId()) as FamilySymbol;
+                FamilySymbol tagTypeI = _doc.GetElement(tag.GetTypeId()) as FamilySymbol;
                 if (tagTypeI.Name == tagTypeName && tagTypeI.FamilyName == tagFamilyName)
                     return tagTypeI.Id;
             }
 
-            TaskDialog.Show("Create Lists", $"Tag type with given name {tagFamilyName} / {tagTypeName} was not found.");
+            TaskDialog.Show(TRANSACTION_NAME, $"Tag type with given name {tagFamilyName} / {tagTypeName} was not found.");
             return null;
         }
 
@@ -304,7 +305,7 @@ namespace BIM_Leaders_Core
         /// Get the Type Mark value from given element.
         /// </summary>
         /// <returns>Type Mark value.</returns>
-        private static string GetTypeMark(Document doc, Element element)
+        private static string GetTypeMark(Element element)
         {
             string typeMark = "";
 
@@ -313,7 +314,7 @@ namespace BIM_Leaders_Core
             if (elementTypeId == ElementId.InvalidElementId)
                 return typeMark;
 
-            Element elementType = doc.GetElement(elementTypeId);
+            Element elementType = _doc.GetElement(elementTypeId);
 
 #if VERSION2020 || VERSION2021
             Parameter parameter = elementType.get_Parameter(BuiltInParameter.WINDOW_TYPE_ID);
@@ -330,7 +331,7 @@ namespace BIM_Leaders_Core
         /// Get the Type Comments value from given element.
         /// </summary>
         /// <returns>Type Comments value.</returns>
-        private static string GetTypeComments(Document doc, Element element)
+        private static string GetTypeComments(Element element)
         {
             string typeComments = "";
 
@@ -339,7 +340,7 @@ namespace BIM_Leaders_Core
             if (elementTypeId == ElementId.InvalidElementId)
                 return typeComments;
 
-            Element elementType = doc.GetElement(elementTypeId);
+            Element elementType = _doc.GetElement(elementTypeId);
 
 #if VERSION2020 || VERSION2021
             Parameter parameter = elementType.get_Parameter(BuiltInParameter.ALL_MODEL_TYPE_COMMENTS);
@@ -424,23 +425,23 @@ namespace BIM_Leaders_Core
         /// Create views for given list elements.
         /// </summary>
         /// <returns>List of created views.</returns>
-        private static List<View> CreateListViews(Document doc, List<Element> elements, ElementId viewType, ElementId viewTemplate, string viewNamePrefix, ElementId tagType, double tagPlacementOffsetX, double tagPlacementOffsetY)
+        private static List<View> CreateListViews(List<Element> elements, ElementId viewType, ElementId viewTemplate, string viewNamePrefix, ElementId tagType, double tagPlacementOffsetX, double tagPlacementOffsetY)
         {
             if (elements == null || elements.Count == 0)
                 return null;
 
             List<View> viewsCreated = new List<View>(); 
 
-            View view = doc.GetElement(viewTemplate) as View;
+            View view = _doc.GetElement(viewTemplate) as View;
             double scale = view.Scale;
 
             foreach (Element element in elements)
             {
                 BoundingBoxXYZ sectionBox = GetSectionBox(element);
 
-                ViewSection section = ViewSection.CreateSection(doc, viewType, sectionBox);
+                ViewSection section = ViewSection.CreateSection(_doc, viewType, sectionBox);
 
-                string typeMark = GetTypeMark(doc, element);
+                string typeMark = GetTypeMark(element);
                 if (typeMark == "")
                 {
                     TaskDialog.Show("Create Lists", $"Error creating views. Element {element.Id.ToString()} has empty Type Mark.");
@@ -477,7 +478,7 @@ namespace BIM_Leaders_Core
 
                 XYZ tagLocationMoved = tagLocation.Add(moveTag);
 
-                IndependentTag.Create(doc, tagType, section.Id, reference, false, TagOrientation.Horizontal, tagLocationMoved);
+                IndependentTag.Create(_doc, tagType, section.Id, reference, false, TagOrientation.Horizontal, tagLocationMoved);
 
                 viewsCreated.Add(section);
             }
@@ -675,7 +676,7 @@ namespace BIM_Leaders_Core
                 }
             }
 
-            TaskDialog.Show("Create Lists", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

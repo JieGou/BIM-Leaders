@@ -9,25 +9,26 @@ using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DwgNameDelete : IExternalCommand
     {
+        private static Document _doc;
+        private static DwgNameDeleteData _inputData;
+        private static string _dwgName = _doc?.GetElement(_inputData.DwgListSelected).Category.Name;
+        private static int _countDwgDeleted;
+
+        private const string TRANSACTION_NAME = "Delete DWG by Name";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
-            try
-            {
-                List<string> dwgList = GetDwgList();
-                DwgNameDeleteForm form = new DwgNameDeleteForm(doc);
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
                 // Get user provided information from window
-                DwgNameDeleteVM data = form.DataContext as DwgNameDeleteVM;
+                DwgNameDeleteData data = form.DataContext as DwgNameDeleteData;
 
                 string name = doc.GetElement(data.DwgListSelected).Category.Name;
 
@@ -44,11 +45,11 @@ namespace BIM_Leaders_Core
                 {
                     trans.Start();
 
-                    doc.Delete(dwgDelete);  
+                    DeleteDwg();  
 
                     trans.Commit();
                 }
-                ShowResult(dwgDelete.Count, name);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -59,43 +60,42 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static SortedDictionary<string, int> GetDwgList()
+        private static DwgNameDeleteData GetUserInput()
         {
-            // Get DWGs
-            FilteredElementCollector collector = new FilteredElementCollector(_doc);
-            IEnumerable<ImportInstance> dwgTypesAll = collector.OfClass(typeof(ImportInstance)).OrderBy(a => a.Name)
-                .Cast<ImportInstance>(); //LINQ function;
+            DwgNameDeleteForm form = new DwgNameDeleteForm(_doc);
+            form.ShowDialog();
 
-            // Get unique imports names list
-            List<ImportInstance> dwgTypes = new List<ImportInstance>();
-            List<string> dwgTypesNames = new List<string>();
-            foreach (ImportInstance i in dwgTypesAll)
-            {
-                string dwgTypeName = i.Category.Name;
-                if (!dwgTypesNames.Contains(dwgTypeName))
-                {
-                    dwgTypes.Add(i);
-                    dwgTypesNames.Add(dwgTypeName);
-                }
-            }
+            if (form.DialogResult == false)
+                return null;
 
-            SortedDictionary<string, ElementId> dwgTypesList = new SortedDictionary<string, ElementId>();
-            foreach (ImportInstance i in dwgTypes)
-            {
-                dwgTypesList.Add(i.Category.Name, i.Id);
-            }
+            // Get user provided information from window
+            return form.DataContext as DwgNameDeleteData;
+        }
 
-            return dwgTypesList;
+        private static void DeleteDwg()
+        {
+            // Get all Imports with name same as input from a form
+            ICollection<ElementId> dwgDelete = new FilteredElementCollector(_doc)
+                .OfClass(typeof(ImportInstance))
+                .WhereElementIsNotElementType()
+                .Where(x => x.Category.Name == _dwgName)
+                .ToList()
+                .ConvertAll(x => x.Id)
+                .ToList();
+
+            _doc.Delete(dwgDelete);
+
+            _countDwgDeleted = dwgDelete.Count;
         }
 
         private static void ShowResult(int count, string name)
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countDwgDeleted == 0)
                 ? "No DWG deleted"
-                : $"{count} DWG named {name} deleted";
+                : $"{_countDwgDeleted} DWG named {_dwgName} deleted";
             
-            TaskDialog.Show("DWG Deleted", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

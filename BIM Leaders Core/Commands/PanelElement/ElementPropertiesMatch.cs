@@ -7,38 +7,41 @@ using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class ElementPropertiesMatch : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc;
+        private static int _countPropertiesMatched;
+
+        private const string TRANSACTION_NAME = "Match instance properties";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
-
-            int countProperties = 0;
+            _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             try
             {
                 // Pick first element
-                Reference reference0 = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
-                Element elementFrom = doc.GetElement(reference0.ElementId);
+                Reference reference0 = _uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
+                Element elementFrom = _doc.GetElement(reference0.ElementId);
 
                 // Pick second element
                 SelectionFilterByCategory category = new SelectionFilterByCategory(elementFrom.Category.Name);
 
-                Reference reference1 = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, category);
-                Element elementTo = doc.GetElement(reference1.ElementId);
+                Reference reference1 = _uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, category);
+                Element elementTo = _doc.GetElement(reference1.ElementId);
 
-                using (Transaction trans = new Transaction(doc, "Match instance properties"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    MatchProperties(elementFrom, elementTo, ref countProperties);
+                    MatchProperties(elementFrom, elementTo);
 
                     trans.Commit();
                 }
-                ShowResult(countProperties);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -52,7 +55,7 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Copy all instance properties values from one element to other.
         /// </summary>
-        private static void MatchProperties(Element elementFrom, Element elementTo, ref int count)
+        private static void MatchProperties(Element elementFrom, Element elementTo)
         {
             List<Parameter> parametersFrom = ConvertParameterSet(elementFrom.Parameters);
             List<Parameter> parametersTo = ConvertParameterSet(elementTo.Parameters);
@@ -82,22 +85,22 @@ namespace BIM_Leaders_Core
                         case StorageType.Double:
                             double valueD = parameter.AsDouble();
                             parameterTo.Set(valueD);
-                            count++;
+                            _countPropertiesMatched++;
                             break;
                         case StorageType.ElementId:
                             ElementId valueE = parameter.AsElementId();
                             parameterTo.Set(valueE);
-                            count++;
+                            _countPropertiesMatched++;
                             break;
                         case StorageType.Integer:
                             int valueI = parameter.AsInteger();
                             parameterTo.Set(valueI);
-                            count++;
+                            _countPropertiesMatched++;
                             break;
                         case StorageType.String:
                             string valueS = parameter.AsString();
                             parameterTo.Set(valueS);
-                            count++;
+                            _countPropertiesMatched++;
                             break;
                         default:
                             break;
@@ -123,14 +126,14 @@ namespace BIM_Leaders_Core
             return parametersList;
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countPropertiesMatched == 0)
                 ? "No properties set."
-                : $"{count} properties have been matched.";
+                : $"{_countPropertiesMatched} properties have been matched.";
             
-            TaskDialog.Show("Match instance properties", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

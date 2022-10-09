@@ -8,41 +8,40 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DimensionsPlanCheck : IExternalCommand
     {
+        private static Document _doc;
+        private static DimensionsPlanCheckData _inputData;
+        private static int _countWallsUndimensioned;
+
+        private const string TRANSACTION_NAME = "Create Filter for non-dimensioned Walls";
+        private const string FILTER_NAME = "Check - Dimensions";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
-            string filterName = "Check - Dimensions";
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
             try
             {
-                DimensionsPlanCheckForm form = new DimensionsPlanCheckForm();
-                form.ShowDialog();
 
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
+                List<ElementId> wallIds = GetWallIds();
 
-                // Get user provided information from window
-                DimensionsPlanCheckVM data = form.DataContext as DimensionsPlanCheckVM;
-                Color filterColor = new Color(data.ResultColor.R, data.ResultColor.G, data.ResultColor.B);
-
-                List<ElementId> wallIds = GetWallIds(doc);
-
-                using (Transaction trans = new Transaction(doc, "Create Filter for non-dimensioned Walls"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    ElementId filter1Id = CreateFilter(doc, filterName, wallIds);
-                    doc.Regenerate();
-                    SetupFilter(doc, filter1Id, filterColor);
+                    ElementId filter1Id = CreateFilter(wallIds);
+                    _doc.Regenerate();
+                    SetupFilter(filter1Id);
 
                     trans.Commit();
                 }
-                ShowResult(wallIds.Count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -53,23 +52,35 @@ namespace BIM_Leaders_Core
             }
         }
 
+        private static DimensionsPlanCheckData GetUserInput()
+        {
+            DimensionsPlanCheckForm form = new DimensionsPlanCheckForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as DimensionsPlanCheckData;
+        }
+
         /// <summary>
         /// Get walls that have no dimension references on active view.
         /// </summary>
         /// <returns>List<ElementId> of walls.</returns>
-        private static List<ElementId> GetWallIds(Document doc)
+        private static List<ElementId> GetWallIds()
         {
             List<ElementId> wallIds = new List<ElementId>();
 
             // Get Walls.
-            IEnumerable<Wall> wallsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<Wall> wallsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfClass(typeof(Wall))
                 .WhereElementIsNotElementType()
                 .ToElements()
                 .Cast<Wall>();
 
             // Get Dimensions.
-            IEnumerable<Dimension> dimensionsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<Dimension> dimensionsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfClass(typeof(Dimension))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -114,6 +125,8 @@ namespace BIM_Leaders_Core
                 if (countIntersections.Count == 0)
                     wallIds.Add(wall.Id);
             }
+            _countWallsUndimensioned = wallIds.Count;
+
             return wallIds;
         }
 
@@ -121,19 +134,19 @@ namespace BIM_Leaders_Core
         /// Create a selection filter with given set of elements. Applies created filter to the active view.
         /// </summary>
         /// <returns>Created filter element Id.</returns>
-        private static ElementId CreateFilter(Document doc, string filterName, List<ElementId> elementIds)
+        private static ElementId CreateFilter(List<ElementId> elementIds)
         {
-            View view = doc.ActiveView;
+            View view = _doc.ActiveView;
 
             // Checking if filter already exists
-            IEnumerable<Element> filters = new FilteredElementCollector(doc)
+            IEnumerable<Element> filters = new FilteredElementCollector(_doc)
                 .OfClass(typeof(SelectionFilterElement))
                 .ToElements();
             foreach (Element element in filters)
-                if (element.Name == filterName)
-                    doc.Delete(element.Id);
+                if (element.Name == FILTER_NAME)
+                    _doc.Delete(element.Id);
 
-            SelectionFilterElement filter = SelectionFilterElement.Create(doc, filterName);
+            SelectionFilterElement filter = SelectionFilterElement.Create(_doc, FILTER_NAME);
             filter.SetElementIds(elementIds);
 
             // Add the filter to the view
@@ -146,17 +159,19 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Change filter settings. Must be applied after regeneration when filter is new.
         /// </summary>
-        private static void SetupFilter(Document doc, ElementId filterId, Color filterColor)
+        private static void SetupFilter(ElementId filterId)
         {
-            View view = doc.ActiveView;
+            View view = _doc.ActiveView;
 
             // Get solid pattern.
-            ElementId patternId = new FilteredElementCollector(doc)
+            ElementId patternId = new FilteredElementCollector(_doc)
                 .OfClass(typeof(FillPatternElement))
                 .ToElements()
                 .Cast<FillPatternElement>()
                 .Where(x => x.GetFillPattern().IsSolidFill)
                 .First().Id;
+
+            Color filterColor = new Color(_inputData.ResultColor.R, _inputData.ResultColor.G, _inputData.ResultColor.B);
 
             // Use the existing graphics settings, and change the color.
             OverrideGraphicSettings overrideSettings = view.GetFilterOverrides(filterId);
@@ -165,14 +180,14 @@ namespace BIM_Leaders_Core
             view.SetFilterOverrides(filterId, overrideSettings);
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countWallsUndimensioned == 0)
                 ? "All walls are dimensioned"
-                : $"{count} walls added to filter \"Check - Dimensions\".";
+                : $"{_countWallsUndimensioned} walls added to filter \"Check - Dimensions\".";
 
-            TaskDialog.Show("Dimension Plan Check", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

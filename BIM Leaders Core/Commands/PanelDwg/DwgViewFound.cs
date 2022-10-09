@@ -9,18 +9,19 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.ReadOnly)]
+    [Transaction(TransactionMode.ReadOnly)]
     public class DwgViewFound : IExternalCommand
     {
+        private static Document _doc;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             try
             {
                 // Get Imports
-                IEnumerable<ImportInstance> imports = new FilteredElementCollector(doc)
+                IEnumerable<ImportInstance> imports = new FilteredElementCollector(_doc)
                     .OfClass(typeof(ImportInstance))
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>(); //LINQ function;
@@ -29,7 +30,7 @@ namespace BIM_Leaders_Core
                     TaskDialog.Show("Imports", "No imports in the file.");
                 else
                 {
-                    DataSet dwgDataSet = CreateDwgDataSet(doc, imports);
+                    DataSet dwgDataSet = CreateDwgDataSet(imports);
                     ShowResult(dwgDataSet);
                     // Export to Excel
                     // ...
@@ -47,7 +48,7 @@ namespace BIM_Leaders_Core
         /// Create DataSet table for report window.
         /// </summary>
         /// <returns>DataSet object contains all data.</returns>
-        private static DataSet CreateDwgDataSet(Document doc, IEnumerable<ImportInstance> imports)
+        private static DataSet CreateDwgDataSet(IEnumerable<ImportInstance> imports)
         {
             // Create a DataSet
             DataSet dwgDataSet = new DataSet("reportDataSet");
@@ -78,7 +79,7 @@ namespace BIM_Leaders_Core
 
                 // Checking if 2D or 3D
                 string iView = (i.ViewSpecific)
-                    ? doc.GetElement(i.OwnerViewId).Name
+                    ? _doc.GetElement(i.OwnerViewId).Name
                     : "Not a view specific import";
 
                 // Id

@@ -5,17 +5,16 @@ using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class HelpStandards : IExternalCommand
     {
+        private const string URL = @"https://bimleaders.sharepoint.com/sites/Standards/SitePages/Israel%20Standards.aspx";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // URL
-            string urlToOpen = @"https://bimleaders.sharepoint.com/sites/Standards/SitePages/Israel%20Standards.aspx";
-
             try
             {
-                System.Diagnostics.Process.Start(urlToOpen);
+                System.Diagnostics.Process.Start(URL);
 
                 return Result.Succeeded;
             }

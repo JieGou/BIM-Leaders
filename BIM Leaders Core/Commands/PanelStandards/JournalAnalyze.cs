@@ -10,23 +10,26 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class JournalAnalyze : IExternalCommand
     {
+        private static Document _doc;
+
+        private const string TRANSACTION_NAME = "Analyze Journal";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             // Journal Path
-            string path = doc.Application.RecordingJournalFilename;
+            string path = _doc.Application.RecordingJournalFilename;
             string pathNew = path.Substring(0, path.Length - 4) + "TEMP.txt";
 
             string[] content = new string[] { };
 
             try
             {
-                using (Transaction trans = new Transaction(doc, "Analyze Journal"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
@@ -43,10 +46,9 @@ namespace BIM_Leaders_Core
                 }
 
                 List<string> commands = FindCommands(content);
-
                 Dictionary<string, int> commandsSorted = commands.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
-
                 DataSet commandsDataSet = CreateDataSet(commandsSorted);
+                
                 ShowResult(commandsDataSet);
 
                 return Result.Succeeded;

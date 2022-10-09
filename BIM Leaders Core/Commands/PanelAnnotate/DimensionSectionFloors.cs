@@ -9,28 +9,33 @@ using Autodesk.Revit.UI.Selection;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DimensionSectionFloors : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc;
+        private static DimensionSectionFloorsData _inputData;
+        private static int _countSpots;
+        private static int _countSegments;
+
+        private const string TRANSACTION_NAME = "Annotate Section";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
-
-            int count = 0;
+            _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             try
             {
-                if (CheckIfSectionIsSplit(doc))
-                    TaskDialog.Show("Annotate Section", "Current view is a split section. Line may not lay in view plane.");
+                if (CheckIfSectionIsSplit())
+                    TaskDialog.Show(TRANSACTION_NAME, "Current view is a split section. Line may not lay in view plane.");
 
                 // Get the line from user selection
-                Reference referenceLine = uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
-                DetailLine detailLine = doc.GetElement(referenceLine) as DetailLine;
+                Reference referenceLine = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
+                DetailLine detailLine = _doc.GetElement(referenceLine) as DetailLine;
                 if (detailLine == null)
                 {
-                    TaskDialog.Show("Annotate Section", "Wrong selection.");
+                    TaskDialog.Show(TRANSACTION_NAME, "Wrong selection.");
                     return Result.Failed;
                 }
                 Line line = detailLine.GeometryCurve as Line;
@@ -39,45 +44,33 @@ namespace BIM_Leaders_Core
                 if (!ValidateLine(line))
                     return Result.Failed;
 
-                // Collector for data provided in window
-                DimensionSectionFloorsForm form = new DimensionSectionFloorsForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
+                _inputData = GetUserInput();
+                if (_inputData == null)
                     return Result.Cancelled;
 
-                // Get user provided information from window
-                DimensionSectionFloorsVM data = form.DataContext as DimensionSectionFloorsVM;
-
-                bool inputSpots = data.ResultSpots;
-                bool inputPlacementThinTop = data.ResultPlacementThinTop;
-                bool inputPlacementThickTop = data.ResultPlacementThickTop;
-                bool inputPlacementThickBot = data.ResultPlacementThickBot;
-                int inputThicknessCm = data.ResultThickness;
-
-                GetDividedFloors(doc, inputThicknessCm, out List <Floor> floorsThin, out List<Floor> floorsThick);
-                List<Face> intersectionFacesAll = GetIntersectionFaces(doc, line, floorsThin, floorsThick, inputPlacementThinTop, inputPlacementThickTop, inputPlacementThickBot);
+                GetDividedFloors(out List <Floor> floorsThin, out List<Floor> floorsThick);
+                List<Face> intersectionFacesAll = GetIntersectionFaces(line, floorsThin, floorsThick);
 
                 // Check if no intersections
                 if (intersectionFacesAll.Count == 0)
                 {
-                    TaskDialog.Show("Annotate Section", "No intersections were found");
+                    TaskDialog.Show(TRANSACTION_NAME, "No intersections were found");
                     return Result.Failed;
                 }
 
                 // Create annotations
-                using (Transaction trans = new Transaction(doc, "Annotate Section"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
                     
-                    if (inputSpots)
-                        CreateSpots(doc, line, intersectionFacesAll, ref count);
+                    if (_inputData.ResultSpots)
+                        CreateSpots(line, intersectionFacesAll);
                     else
-                        CreateDimensions(doc, line, intersectionFacesAll, ref count);
+                        CreateDimensions(line, intersectionFacesAll);
                     
                     trans.Commit();
                 }
-                ShowResult(count, inputSpots);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -88,11 +81,11 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static bool CheckIfSectionIsSplit(Document doc)
+        private static bool CheckIfSectionIsSplit()
         {
             bool result = false;
 #if !VERSION2020
-            ViewSection view = doc.ActiveView as ViewSection;
+            ViewSection view = _doc.ActiveView as ViewSection;
             if (view.IsSplitSection())
                 return true;
 #endif
@@ -115,28 +108,41 @@ namespace BIM_Leaders_Core
             return true;
         }
 
+        private static DimensionSectionFloorsData GetUserInput()
+        {
+            // Collector for data provided in window
+            DimensionSectionFloorsForm form = new DimensionSectionFloorsForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as DimensionSectionFloorsData;
+        }
+
         /// <summary>
         /// Get floors in the current document, divided by the given thickness.
         /// </summary>
         /// <param name="thickness">Thickness value to divide floors into 2 lists.</param>
         /// <param name="floorsThin">Floors with thickness less than the given value.</param>
         /// <param name="floorsThick">Floors with thickness greater than the given value.</param>
-        private static void GetDividedFloors(Document doc, double thickness, out List<Floor> floorsThin, out List<Floor> floorsThick)
+        private static void GetDividedFloors(out List<Floor> floorsThin, out List<Floor> floorsThick)
         {
             floorsThin = new List<Floor>();
             floorsThick = new List<Floor>();
 
             // Get length units
 #if VERSION2020
-            DisplayUnitType units = doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
+            DisplayUnitType units = _doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
 #else
-            ForgeTypeId units = doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
+            ForgeTypeId units = _doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
 #endif
 
-            double inputThickness = UnitUtils.ConvertToInternalUnits(thickness, units);
+            double inputThickness = UnitUtils.ConvertToInternalUnits(_inputData.ResultThickness, units);
 
             // Get Floors
-            IEnumerable<Element> floorsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<Element> floorsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfClass(typeof(Floor))
                 .WhereElementIsNotElementType()
                 .ToElements();
@@ -165,25 +171,25 @@ namespace BIM_Leaders_Core
         /// <param name="inputPlacementThickTop">True if need to find intersections on top of the second floors list.</param>
         /// <param name="inputPlacementThickBot">True if need to find intersections on bottom of the second floors list.</param>
         /// <returns></returns>
-        private static List<Face> GetIntersectionFaces(Document doc, Line line, List<Floor> floorsThin, List<Floor> floorsThick, bool inputPlacementThinTop, bool inputPlacementThickTop, bool inputPlacementThickBot)
+        private static List<Face> GetIntersectionFaces(Line line, List<Floor> floorsThin, List<Floor> floorsThick)
         {
             List<Face> intersectionFacesAll = new List<Face>();
 
-            if (inputPlacementThinTop)
+            if (_inputData.ResultPlacementThinTop)
             {
-                List<Face> intersectionFacesThinTop = GetIntersections(doc, line, floorsThin)[0];
+                List<Face> intersectionFacesThinTop = GetIntersections(line, floorsThin)[0];
                 intersectionFacesAll.AddRange(intersectionFacesThinTop);
             }
-            if (inputPlacementThickTop || inputPlacementThickBot)
+            if (_inputData.ResultPlacementThickTop || _inputData.ResultPlacementThickBot)
             {
-                List<List<Face>> intersectionFacesThick = GetIntersections(doc, line, floorsThick);
+                List<List<Face>> intersectionFacesThick = GetIntersections(line, floorsThick);
 
-                if (inputPlacementThickTop)
+                if (_inputData.ResultPlacementThickTop)
                 {
                     List<Face> intersectionFacesThickTop = intersectionFacesThick[0];
                     intersectionFacesAll.AddRange(intersectionFacesThickTop);
                 }
-                if (inputPlacementThickBot)
+                if (_inputData.ResultPlacementThickBot)
                 {
                     List<Face> intersectionFacesThickBot = intersectionFacesThick[1];
                     intersectionFacesAll.AddRange(intersectionFacesThickBot);
@@ -197,13 +203,13 @@ namespace BIM_Leaders_Core
         /// Get intersections from line and list of floors.
         /// </summary>
         /// <returns>List of floor faces that intersect with the given line.</returns>
-        private static List<List<Face>> GetIntersections(Document doc, Line line, List<Floor> floors)
+        private static List<List<Face>> GetIntersections(Line line, List<Floor> floors)
         {
             Options options = new Options
             {
                 ComputeReferences = true,
                 IncludeNonVisibleObjects = false,
-                View = doc.ActiveView
+                View = _doc.ActiveView
             };
 
             IntersectionResultArray ira = new IntersectionResultArray();
@@ -257,9 +263,9 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create spot elevations on a faces through a given line.
         /// </summary>
-        private static void CreateSpots(Document doc, Line line, List<Face> intersectionFaces, ref int count)
+        private static void CreateSpots(Line line, List<Face> intersectionFaces)
         {
-            View view = doc.ActiveView; 
+            View view = _doc.ActiveView; 
             XYZ zero = new XYZ(0, 0, 0);
 
             for (int i = 0; i < intersectionFaces.Count; i++)
@@ -271,8 +277,8 @@ namespace BIM_Leaders_Core
 
                 try
                 {
-                    SpotDimension sd = doc.Create.NewSpotElevation(view, intersectionFaces[i].Reference, origin, zero, zero, origin, false);
-                    count++;
+                    SpotDimension sd = _doc.Create.NewSpotElevation(view, intersectionFaces[i].Reference, origin, zero, zero, origin, false);
+                    _countSpots++;
                 }
                 catch { }
             }
@@ -281,33 +287,35 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create dimension on a faces through a given line.
         /// </summary>
-        private static void CreateDimensions(Document doc, Line line, List<Face> intersectionFaces, ref int count)
+        private static void CreateDimensions(Line line, List<Face> intersectionFaces)
         {
             // Convert List<Face> to ReferenceArray
             ReferenceArray references = new ReferenceArray();
             foreach (Face face in intersectionFaces)
                 references.Append(face.Reference);
 
-            Dimension dimension = doc.Create.NewDimension(doc.ActiveView, line, references);
+            Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, line, references);
             DimensionUtils.AdjustText(dimension);
 
 #if !VERSION2020
             dimension.HasLeader = false;
 #endif
+
+            _countSegments += references.Size - 1;
         }
 
-        private static void ShowResult(int count, bool inputSpots)
+        private static void ShowResult()
         {
             // Result window
             string text = "";
-            if (count == 0)
+            if (_countSpots == 0 && _countSegments == 0)
                 text = "No annotations created.";
             else
-                text = (inputSpots)
-                    ? $"{count} spot elevations created."
-                    : $"Dimension with {count} segments created.";
+                text = (_inputData.ResultSpots)
+                    ? $"{_countSpots} spot elevations created."
+                    : $"Dimension with {_countSegments} segments created.";
 
-            TaskDialog.Show("Annotate Section", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

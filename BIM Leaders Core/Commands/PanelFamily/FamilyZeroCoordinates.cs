@@ -6,41 +6,44 @@ using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class FamilyZeroCoordinates : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc;
+        private static double _linesLength = 1;
+
+        private const string TRANSACTION_NAME = "Family Zero Coordinates"; 
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
-
-            double length = 1;
+            _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             try
             {
                 XYZ zero = new XYZ(0, 0, 0);
 
                 List<XYZ> points = new List<XYZ>();
-                points.Add(new XYZ(length, 0, 0));
-                points.Add(new XYZ(0, length, 0));
-                points.Add(new XYZ(0 - length, 0, 0));
-                points.Add(new XYZ(0, 0 - length, 0));
+                points.Add(new XYZ(_linesLength, 0, 0));
+                points.Add(new XYZ(0, _linesLength, 0));
+                points.Add(new XYZ(0 - _linesLength, 0, 0));
+                points.Add(new XYZ(0, 0 - _linesLength, 0));
 
                 List<Line> lines = points
                     .ConvertAll(x => Line.CreateBound(zero, x));
 
-                using (Transaction trans = new Transaction(doc, "Family Zero Coordinates"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
                     List<DetailCurve> curves = lines
-                        .ConvertAll(x => doc.FamilyCreate.NewDetailCurve(doc.ActiveView, x));
+                        .ConvertAll(x => _doc.FamilyCreate.NewDetailCurve(_doc.ActiveView, x));
 
                     List<ElementId> curveIds = curves
                         .ConvertAll(x => x.Id);
                     
-                    uidoc.Selection.SetElementIds(curveIds);
+                    _uidoc.Selection.SetElementIds(curveIds);
 
                     trans.Commit();
                 }

@@ -122,6 +122,7 @@
     <Compile Include="Commands\PanelAnnotate\DimensionsPlanCheck.cs" />
     <Compile Include="Commands\PanelElement\ElementPropertiesMatch.cs" />
     <Compile Include="Commands\PanelElement\ElementsJoin.cs" />
+    <Compile Include="Commands\PanelElement\ListsCreate.cs" />
     <Compile Include="Commands\PanelFamily\FamilyParameterChange.cs" />
     <Compile Include="Commands\PanelFamily\FamilyParameterSet.cs" />
     <Compile Include="Commands\PanelStandards\JournalAnalyze.cs" />
@@ -129,7 +130,6 @@
     <Compile Include="Commands\PanelStandards\WallsArranged.cs" />
     <Compile Include="Commands\PanelStandards\HelpStandards.cs" />
     <Compile Include="Commands\Helpers\SelectionFilterByCategory.cs" />
-    <Compile Include="Commands\PanelElement\ListsCreate.cs" />
     <Compile Include="CoreAssembly.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionSectionFloors.cs" />
     <Compile Include="Commands\PanelDwg\DwgNameDelete.cs" />

@@ -5,70 +5,42 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
-	[TransactionAttribute(TransactionMode.Manual)]
+	[Transaction(TransactionMode.Manual)]
     public class DimensionsPlan : IExternalCommand
-    {
+	{
+        private static Document _doc;
+		private static double _toleranceAngle;
+        private static DimensionsPlanData _inputData;
+        private static int _countDimensions;
+        private static int _countSegments;
+
+        private const string TRANSACTION_NAME = "Dimension Plan Walls";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
+            _doc = commandData.Application.ActiveUIDocument.Document;
+            _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
 
-			double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
-
-			int countDim = 0;
-			int countRef = 0;
-
-			try
+            try
             {
-				// Inform user that plan regions are on the view and may cause errors.
-				TaskDialogResult agree = TaskDialogResult.None;
-				if (CheckOnPlanRegions(doc))
-                {
-					TaskDialog dialog = new TaskDialog("Dimension Plan")
-					{
-						MainContent = "Plan regions are on the current view. This can cause error \"One or more dimension references are or have become invalid.\" Continue?",
-						CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No,
-						AllowCancellation = false
-					};
+				if (ShowDialogAboutPlanRegions() == TaskDialogResult.No)
+                    return Result.Cancelled;
 
-					agree = dialog.Show();
-					if (agree == TaskDialogResult.No)
-						return Result.Cancelled;
-				}
-
-				// Get user provided information from window
-				DimensionsPlanForm form = new DimensionsPlanForm();
-				form.ShowDialog();
-
-				if (form.DialogResult == false)
-					return Result.Cancelled;
-
-				// Collector for data provided in window
-				DimensionsPlanVM data = form.DataContext as DimensionsPlanVM;
-
-				// Getting input from user
-				int searchStepCm = data.ResultSearchStep;
-				int searchDistanceCm = data.ResultSearchDistance;
-				int minUniqueReferences = data.ResultMinReferences;
-
-#if VERSION2020
-				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
-				double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, DisplayUnitType.DUT_CENTIMETERS);
-#else
-				double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, UnitTypeId.Centimeters);
-				double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, UnitTypeId.Centimeters);
-#endif
+                _inputData = GetUserInput();
+                if (_inputData == null)
+                    return Result.Cancelled;
 
 				// Collecting model elements to dimension
-				List<Wall> wallsAll = GetWalls(doc);
-				List<FamilyInstance> columnsAll = GetColumns(doc);
+				List<Wall> wallsAll = GetWalls();
+				List<FamilyInstance> columnsAll = GetColumns();
 
 				// Get lists of walls and columns that are horizontal and vertical
-				(List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(doc, wallsAll, toleranceAngle);
-				List<FamilyInstance> columnsPer = FilterColumns(doc, columnsAll, toleranceAngle);
+				(List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(wallsAll);
+				List<FamilyInstance> columnsPer = FilterColumns(columnsAll);
 				
 				// Sum columns and walls
 				IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
@@ -76,41 +48,41 @@ namespace BIM_Leaders_Core
 				
 				// Get all faces that need a dimension
 				// !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
-				List<PlanarFace> facesHorAll = GetFacesHorizontal(doc, toleranceAngle, elementsHor);
-				List<PlanarFace> facesVerAll = GetFacesVertical(doc, toleranceAngle, elementsVer);
+				List<PlanarFace> facesHorAll = GetFacesHorizontal(elementsHor);
+				List<PlanarFace> facesVerAll = GetFacesVertical(elementsVer);
 				
 				// Storing data needed to create all dimensions
-				Dictionary<Line, ReferenceArray> dimensionsDataHor = GetDimensionsData(doc, facesHorAll, searchDistance, searchStep, true, minUniqueReferences);
-				Dictionary<Line, ReferenceArray> dimensionsDataVer = GetDimensionsData(doc, facesVerAll, searchDistance, searchStep, false, minUniqueReferences);
+				Dictionary<Line, ReferenceArray> dimensionsDataHor = GetDimensionsData(facesHorAll, true);
+				Dictionary<Line, ReferenceArray> dimensionsDataVer = GetDimensionsData(facesVerAll, false);
 
-				using (Transaction trans = new Transaction(doc, "Dimension Plan Walls"))
+				using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
 					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataHor)
                     {
-                        Dimension dimension = doc.Create.NewDimension(doc.ActiveView, dimensionData.Key, dimensionData.Value);
+                        Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
 						DimensionUtils.AdjustText(dimension);
 #if !VERSION2020
 						dimension.HasLeader = false;
 #endif
-						countDim++;
-						countRef += dimensionData.Value.Size - 1;
+                        _countDimensions++;
+						_countSegments += dimensionData.Value.Size - 1;
 					}
 					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
 					{
-						Dimension dimension = doc.Create.NewDimension(doc.ActiveView, dimensionData.Key, dimensionData.Value);
+						Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
 						DimensionUtils.AdjustText(dimension);
 #if !VERSION2020
 						dimension.HasLeader = false;
 #endif
-						countDim++;
-						countRef += dimensionData.Value.Size - 1;
+                        _countDimensions++;
+                        _countSegments += dimensionData.Value.Size - 1;
 					}
 
 					trans.Commit();
                 }
-				ShowResult(countDim, countRef);
+				ShowResult();
 
 				return Result.Succeeded;
             }
@@ -121,16 +93,38 @@ namespace BIM_Leaders_Core
             }
         }
 
+        /// <summary>
+        /// Inform user that plan regions are on the view and may cause errors.
+        /// </summary>
+        /// <returns>TaskDialogResult.No if user cancelled the command.</returns>
+        private static TaskDialogResult ShowDialogAboutPlanRegions()
+		{
+            TaskDialogResult taskDialogResult = TaskDialogResult.None;
+
+            if (CheckViewHasPlanRegions())
+            {
+                TaskDialog dialog = new TaskDialog(TRANSACTION_NAME)
+                {
+                    MainContent = "Plan regions are on the current view. This can cause error \"One or more dimension references are or have become invalid.\" Continue?",
+                    CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No,
+                    AllowCancellation = false
+                };
+
+                taskDialogResult = dialog.Show();
+            }
+			return taskDialogResult;
+        }
+
 		/// <summary>
 		/// Check if the current view contains plan regions.
 		/// </summary>
 		/// <param name="doc"></param>
 		/// <returns>True if view contains plan regions, othervise false.</returns>
-		private bool CheckOnPlanRegions(Document doc)
+		private static bool CheckViewHasPlanRegions()
         {
 			bool planContainsRegions = false;
 
-			IList<Element> planRegions = new FilteredElementCollector(doc, doc.ActiveView.Id)
+			IList<Element> planRegions = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
 				.OfCategory(BuiltInCategory.OST_PlanRegion)
 				.ToElements();
 
@@ -140,15 +134,37 @@ namespace BIM_Leaders_Core
 			return planContainsRegions;
 		}
 
-		/// <summary>
-		/// Get list of straight walls visible on active view.
-		/// </summary>
-		/// <returns>List of straight walls visible on active view.</returns>
-		private static List<Wall> GetWalls(Document doc)
+		private static DimensionsPlanData GetUserInput()
+		{
+            // Get user provided information from window
+            DimensionsPlanForm form = new DimensionsPlanForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Collector for data provided in window
+            DimensionsPlanData data = form.DataContext as DimensionsPlanData;
+
+#if VERSION2020
+			double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
+			double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, DisplayUnitType.DUT_CENTIMETERS);
+#else
+            data.ResultSearchStep = UnitUtils.ConvertToInternalUnits(data.ResultSearchStep, UnitTypeId.Centimeters);
+            data.ResultSearchDistance = UnitUtils.ConvertToInternalUnits(data.ResultSearchDistance, UnitTypeId.Centimeters);
+#endif
+			return data;
+        }
+
+        /// <summary>
+        /// Get list of straight walls visible on active view.
+        /// </summary>
+        /// <returns>List of straight walls visible on active view.</returns>
+        private static List<Wall> GetWalls()
 		{
 			List<Wall> walls = new List<Wall>();
 
-			IEnumerable<Wall> wallsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+			IEnumerable<Wall> wallsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
 				.OfClass(typeof(Wall))
 				.WhereElementIsNotElementType()
 				.ToElements()
@@ -169,18 +185,18 @@ namespace BIM_Leaders_Core
 		/// Get columns visible on active view.
 		/// </summary>
 		/// <returns>List of columns visible on active view.</returns>
-		private static List<FamilyInstance> GetColumns(Document doc)
+		private static List<FamilyInstance> GetColumns()
 		{
 			List<FamilyInstance> columns = new List<FamilyInstance>();
 
 			// Get all structural columns on the view
-			List<FamilyInstance> columns_str = new FilteredElementCollector(doc, doc.ActiveView.Id)
+			List<FamilyInstance> columns_str = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
 				.OfCategory(BuiltInCategory.OST_StructuralColumns)
 				.ToElements()
 				.Cast<FamilyInstance>()
 				.ToList();
 			// Get all columns on the view
-			List<FamilyInstance> columns_arc = new FilteredElementCollector(doc, doc.ActiveView.Id)
+			List<FamilyInstance> columns_arc = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
 				.OfCategory(BuiltInCategory.OST_Columns)
 				.ToElements()
 				.Cast<FamilyInstance>()
@@ -196,12 +212,12 @@ namespace BIM_Leaders_Core
 		/// Filter list of walls to get walls only parallel or perpendicular to the given vector with the given angle tolerance.
 		/// </summary>
 		/// <returns>List of walls parallel or perpendicular to the vector.</returns>
-		private static (List<Wall>, List<Wall>) FilterWalls(Document doc, IEnumerable<Wall> walls, double toleranceAngle)
+		private static (List<Wall>, List<Wall>) FilterWalls(IEnumerable<Wall> walls)
 		{
 			List<Wall> wallsPer = new List<Wall>();
 			List<Wall> wallsPar = new List<Wall>();
 
-			XYZ viewDirection = doc.ActiveView.UpDirection;
+			XYZ viewDirection = _doc.ActiveView.UpDirection;
 			double lineX = Math.Abs(viewDirection.X);
 			double lineY = Math.Abs(viewDirection.Y);
 
@@ -210,19 +226,19 @@ namespace BIM_Leaders_Core
 				double wallX = Math.Abs(wall.Orientation.X);
 				double wallY = Math.Abs(wall.Orientation.Y);
 
-				if ((Math.Abs(wallX) - Math.Abs(lineX) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineY) <= toleranceAngle))
+				if ((Math.Abs(wallX) - Math.Abs(lineX) <= _toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineY) <= _toleranceAngle))
 					wallsPer.Add(wall);
-				else if ((Math.Abs(wallX) - Math.Abs(lineY) <= toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineX) <= toleranceAngle))
+				else if ((Math.Abs(wallX) - Math.Abs(lineY) <= _toleranceAngle) && (Math.Abs(wallY) - Math.Abs(lineX) <= _toleranceAngle))
 					wallsPar.Add(wall);
 			}
 			return (wallsPer, wallsPar);
 		}
 
-		private static List<FamilyInstance> FilterColumns(Document doc, IEnumerable<FamilyInstance> columns, double toleranceAngle)
+		private static List<FamilyInstance> FilterColumns(IEnumerable<FamilyInstance> columns)
         {
 			List<FamilyInstance> columnsPer = new List<FamilyInstance>();
 
-			XYZ viewDirection = doc.ActiveView.UpDirection;
+			XYZ viewDirection = _doc.ActiveView.UpDirection;
 
 			foreach (FamilyInstance column in columns)
             {
@@ -236,12 +252,12 @@ namespace BIM_Leaders_Core
 				double columnAngle = columnXY.AngleTo(viewDirection);
 
 				// Checking if parallel
-				if (Math.Abs(columnAngle) <= toleranceAngle)
+				if (Math.Abs(columnAngle) <= _toleranceAngle)
 					columnsPer.Add(column);
-				else if (Math.Abs(columnAngle - Math.PI) <= toleranceAngle)
+				else if (Math.Abs(columnAngle - Math.PI) <= _toleranceAngle)
 					columnsPer.Add(column);
 				// Checking if parallel
-				else if (Math.Abs(columnAngle - Math.PI / 2) <= toleranceAngle)
+				else if (Math.Abs(columnAngle - Math.PI / 2) <= _toleranceAngle)
 					columnsPer.Add(column);
 			}
 			return columnsPer;
@@ -251,11 +267,11 @@ namespace BIM_Leaders_Core
 		/// Get horizontal faces for dimensions.
 		/// </summary>
 		/// <returns>List of faces.</returns>
-		private static List<PlanarFace> GetFacesHorizontal(Document doc, double toleranceAngle, IEnumerable<Element> elements)
+		private static List<PlanarFace> GetFacesHorizontal(IEnumerable<Element> elements)
         {
 			List<PlanarFace> facesAll = new List<PlanarFace>();
 
-			View view = doc.ActiveView;
+			View view = _doc.ActiveView;
 
 			Options opts = new Options()
 			{
@@ -275,7 +291,7 @@ namespace BIM_Leaders_Core
 						{
 							// Check if face is vertical in 3D and horisontal on plan
 							double angleFaceToView = facePlanar.FaceNormal.AngleTo(view.UpDirection);
-							if (angleFaceToView <= toleranceAngle || Math.Abs(angleFaceToView - Math.PI) <= toleranceAngle)
+							if (angleFaceToView <= _toleranceAngle || Math.Abs(angleFaceToView - Math.PI) <= _toleranceAngle)
 								facesAll.Add(facePlanar);
 						}
 					}
@@ -288,11 +304,11 @@ namespace BIM_Leaders_Core
 		/// Get vertical faces for dimensions.
 		/// </summary>
 		/// <returns>List of faces.</returns>
-		private static List<PlanarFace> GetFacesVertical(Document doc, double toleranceAngle, IEnumerable<Element> elements)
+		private static List<PlanarFace> GetFacesVertical(IEnumerable<Element> elements)
 		{
 			List<PlanarFace> facesAll = new List<PlanarFace>();
 
-			View view = doc.ActiveView;
+			View view = _doc.ActiveView;
 
 			Options opts = new Options()
 			{
@@ -312,7 +328,7 @@ namespace BIM_Leaders_Core
 						{
 							// Check if face is vertical in 3D and horisontal on plan
 							double angleFaceToView = facePlanar.FaceNormal.AngleTo(view.UpDirection);
-							if (Math.Abs(angleFaceToView - Math.PI / 2) <= toleranceAngle && (!(Math.Abs(facePlanar.FaceNormal.Z) == 1)))
+							if (Math.Abs(angleFaceToView - Math.PI / 2) <= _toleranceAngle && (!(Math.Abs(facePlanar.FaceNormal.Z) == 1)))
 								facesAll.Add(facePlanar);
 						}
 					}
@@ -326,7 +342,7 @@ namespace BIM_Leaders_Core
 		/// </summary>
 		/// <param name="doc"></param>
 		/// <param name="isHorizontal">Are input faces horizontal.</param>
-		private static Dictionary<Line, ReferenceArray> GetDimensionsData(Document doc, List<PlanarFace> faces, double searchDistance, double searchStep, bool isHorizontal, int minUniqueReferences)
+		private static Dictionary<Line, ReferenceArray> GetDimensionsData(List<PlanarFace> faces, bool isHorizontal)
         {
 			Dictionary<Line, ReferenceArray> dimensionsData = new Dictionary<Line, ReferenceArray>();
 
@@ -351,7 +367,7 @@ namespace BIM_Leaders_Core
                 else
 					faceCurrent = FindFaceLeft(facesNotDimensioned);
 
-				(Line maxIntersectionLine, List<PlanarFace> maxIntersectionFaces) = FindMaxIntersections(doc, faceCurrent, faces, searchDistance, searchStep);
+				(Line maxIntersectionLine, List<PlanarFace> maxIntersectionFaces) = FindMaxIntersections(faceCurrent, faces);
 
 				// Remove current face from buffer
 				facesNotDimensioned.Remove(faceCurrent);
@@ -365,7 +381,7 @@ namespace BIM_Leaders_Core
 					dimensionsDataCollector.Add(maxIntersectionLine, maxIntersectionFaces);
 				else
 				{
-					List<PlanarFace> maxIntersectionFacesPurged = PurgeFacesList(dimensionsDataCollector, maxIntersectionFaces, minUniqueReferences);
+					List<PlanarFace> maxIntersectionFacesPurged = PurgeFacesList(dimensionsDataCollector, maxIntersectionFaces);
 
 					// If after purging we still have new dimension
 					if (maxIntersectionFacesPurged != null)
@@ -433,7 +449,7 @@ namespace BIM_Leaders_Core
 		/// </summary>
 		/// <param name="face">Input face.</param>
 		/// <returns></returns>
-		private static (Line, List<PlanarFace>) FindMaxIntersections(Document doc, PlanarFace face, List<PlanarFace> faces, double searchDistance, double searchStep)
+		private static (Line, List<PlanarFace>) FindMaxIntersections(PlanarFace face, List<PlanarFace> faces)
         {
 			Line maxIntersectionLine = null;
 			List<PlanarFace> maxIntersectionFaces = new List<PlanarFace>();
@@ -442,12 +458,11 @@ namespace BIM_Leaders_Core
 			(XYZ faceCurrentPointA, XYZ faceCurrentPointB) = FindFacePoints(face);
 
 			// Check if face is horizontal
-			View view = doc.ActiveView;
+			View view = _doc.ActiveView;
 			ViewPlan viewPlan = view as ViewPlan;
 			double viewHeight = viewPlan.GenLevel.ProjectElevation + viewPlan.GetViewRange().GetOffset(PlanViewPlane.CutPlane);
 			double angleFaceToView = face.FaceNormal.AngleTo(view.UpDirection);
-			double toleranceAngle = doc.Application.AngleTolerance / 100; // 0.001 grad
-			bool faceIsHosizontal = angleFaceToView <= toleranceAngle || Math.Abs(angleFaceToView - Math.PI) <= toleranceAngle;
+			bool faceIsHosizontal = angleFaceToView <= _toleranceAngle || Math.Abs(angleFaceToView - Math.PI) <= _toleranceAngle;
 
 			// Iterate through space between two points
 			int maxIntersectionCount = 0;
@@ -463,13 +478,13 @@ namespace BIM_Leaders_Core
 				XYZ point2;
 				if (faceIsHosizontal)
 				{
-					point1 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y + (searchDistance * view.UpDirection.Y), viewHeight);
-					point2 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y - (searchDistance * view.UpDirection.Y), viewHeight);
+					point1 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y + (_inputData.ResultSearchDistance * view.UpDirection.Y), viewHeight);
+					point2 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y - (_inputData.ResultSearchDistance * view.UpDirection.Y), viewHeight);
 				}
 				else
 				{
-					point1 = new XYZ(faceCurrentPointA.X - (searchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
-					point2 = new XYZ(faceCurrentPointA.X + (searchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
+					point1 = new XYZ(faceCurrentPointA.X - (_inputData.ResultSearchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
+					point2 = new XYZ(faceCurrentPointA.X + (_inputData.ResultSearchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
 				}
 
 				Line currentIntersectionLine = Line.CreateBound(point1, point2);
@@ -478,7 +493,7 @@ namespace BIM_Leaders_Core
 				List<PlanarFace> currentIntersectionFaces = FindIntersections(currentIntersectionLine, faces);
 				//(List<Face> currentIntersectionFaces, ReferenceArray currentIntersectionRefs) = FindIntersections(currentIntersectionLine, facesNotDimensioned);
 
-				lengthPast += searchStep;
+				lengthPast += _inputData.ResultSearchStep;
 
 				if (currentIntersectionFaces.Count == 0)
 					continue;
@@ -547,7 +562,7 @@ namespace BIM_Leaders_Core
 		/// <param name="minUniqueReferences">If reference array will contain less unique references, it will be deleted with transfering references to existing array in the data.</param>
 		/// <returns>Purged list of faces or null if new dimension not needed (its completely inside of collected one or almost inside - then add new items to the collected list).
 		/// Can be improved later, to clear duplicates smartly.</returns>
-		private static List<PlanarFace> PurgeFacesList(Dictionary<Line, List<PlanarFace>> dimensionsDataCollector, List<PlanarFace> facesNew, int minUniqueReferences)
+		private static List<PlanarFace> PurgeFacesList(Dictionary<Line, List<PlanarFace>> dimensionsDataCollector, List<PlanarFace> facesNew)
         {
 			List<PlanarFace> facesNewPurged = new List<PlanarFace>();
 
@@ -601,7 +616,7 @@ namespace BIM_Leaders_Core
 			}
 
 			// If minimal new faces count is less than threshold then add new dimension to this one with minimal.
-			if (facesDividedData[minimalNewKey].Item3.Count < minUniqueReferences)
+			if (facesDividedData[minimalNewKey].Item3.Count < _inputData.ResultMinReferences)
             {
 				dimensionsDataCollector[minimalNewKey].AddRange(facesDividedData[minimalNewKey].Item3);
 				return null;
@@ -616,14 +631,14 @@ namespace BIM_Leaders_Core
 			return facesNewPurged;
 		}
 
-		private static void ShowResult(int countDim, int countRef)
+		private static void ShowResult()
         {
 			// Show result
-			string text = (countDim == 0)
+			string text = (_countDimensions == 0)
 				? "Dimensions creating error."
-				: $"{countDim} dimensions with {countRef} segments were created.";
+				: $"{_countDimensions} dimensions with {_countSegments} segments were created.";
 
-			TaskDialog.Show("Dimension Plan", text);
+			TaskDialog.Show(TRANSACTION_NAME, text);
 		}
 
 		public static string GetPath()

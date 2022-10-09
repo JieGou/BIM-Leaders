@@ -9,45 +9,45 @@ using Autodesk.Revit.DB.Architecture;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class TagsPlanCheck : IExternalCommand
     {
+        private static UIDocument _uidoc;
+        private static Document _doc;
+        private static TagsPlanCheckData _inputData;
+        private static int _countUntaggedElements;
+        private static int _countUntaggedRailings;
+
+        private const string TRANSACTION_NAME = "Tags Plan Check";
+        private const string FILTER_NAME = "Check - Tags";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
-            Document doc = uidoc.Document;
+            _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
-            string filterName = "Check - Tags";
+            _inputData = GetUserInput();
+            if (_inputData == null)
+                return Result.Cancelled;
 
             try
             {
-                TagsPlanCheckForm form = new TagsPlanCheckForm();
-                form.ShowDialog();
+                List<ElementId> elementIds = GetUntaggedElementIds();
+                List<ElementId> railingIds = GetUntaggedRailingIds();
 
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                TagsPlanCheckVM data = form.DataContext as TagsPlanCheckVM;
-                Color filterColor = new Color(data.ResultColor.R, data.ResultColor.G, data.ResultColor.B);
-
-                List<ElementId> elementIds = GetUntaggedElementIds(doc);
-                List<ElementId> railingIds = GetUntaggedRailingIds(doc);
-
-                using (Transaction trans = new Transaction(doc, "Create Filter for non-dimensioned Walls"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    ElementId filter1Id = CreateFilter(doc, filterName, elementIds);
-                    doc.Regenerate();
-                    SetupFilter(doc, filter1Id, filterColor);
+                    ElementId filter1Id = CreateFilter(elementIds);
+                    _doc.Regenerate();
+                    SetupFilter(filter1Id);
 
                     trans.Commit();
                 }
-                uidoc.Selection.SetElementIds(railingIds);
+                _uidoc.Selection.SetElementIds(railingIds);
 
-                ShowResult(elementIds.Count, railingIds.Count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -58,11 +58,23 @@ namespace BIM_Leaders_Core
             }
         }
 
+        private static TagsPlanCheckData GetUserInput()
+        {
+            TagsPlanCheckForm form = new TagsPlanCheckForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            // Get user provided information from window
+            return form.DataContext as TagsPlanCheckData;
+        }
+
         /// <summary>
         /// Get elements that have no tags on active view.
         /// </summary>
         /// <returns>List<ElementId> of untagged elements.</returns>
-        private static List<ElementId> GetUntaggedElementIds(Document doc)
+        private static List<ElementId> GetUntaggedElementIds()
         {
             List<ElementId> elementIds = new List<ElementId>();
 
@@ -75,13 +87,13 @@ namespace BIM_Leaders_Core
             ElementMulticategoryFilter filter = new ElementMulticategoryFilter(categories);
 
             // Get elements.
-            IEnumerable<ElementId> elementsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<ElementId> elementsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .WherePasses(filter)
                 .WhereElementIsNotElementType()
                 .ToElementIds();
 
             // Get Tags.
-            IEnumerable<IndependentTag> tagsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<IndependentTag> tagsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfClass(typeof(IndependentTag))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -93,13 +105,23 @@ namespace BIM_Leaders_Core
             {
                 foreach (ElementId elementId in elementsAll)
                 {
+#if VERSION2020 || VERSION2021 || VERSION2022
                     if (tag.TaggedLocalElementId == elementId)
                     {
                         elementIds.Remove(elementId);
                         continue;
                     }
+#else
+                    if (tag.GetTaggedLocalElementIds().Contains(elementId))
+                    {
+                        elementIds.Remove(elementId);
+                        continue;
+                    }
+#endif
                 }
             }
+
+            _countUntaggedElements = elementIds.Count;
 
             return elementIds;
         }
@@ -108,18 +130,18 @@ namespace BIM_Leaders_Core
         /// Get railings that have no tags on active view.
         /// </summary>
         /// <returns>List<ElementId> of untagged railings.</returns>
-        private static List<ElementId> GetUntaggedRailingIds(Document doc)
+        private static List<ElementId> GetUntaggedRailingIds()
         {
             List<ElementId> elementIds = new List<ElementId>();
 
             // Get elements.
-            IEnumerable<ElementId> elementsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<ElementId> elementsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfClass(typeof(Railing))
                 .WhereElementIsNotElementType()
                 .ToElementIds();
 
             // Get Tags.
-            IEnumerable<IndependentTag> tagsAll = new FilteredElementCollector(doc, doc.ActiveView.Id)
+            IEnumerable<IndependentTag> tagsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
                 .OfClass(typeof(IndependentTag))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -131,13 +153,23 @@ namespace BIM_Leaders_Core
             {
                 foreach (ElementId elementId in elementsAll)
                 {
+#if VERSION2020 || VERSION2021 || VERSION2022
                     if (tag.TaggedLocalElementId == elementId)
                     {
                         elementIds.Remove(elementId);
                         continue;
                     }
+#else
+                    if (tag.GetTaggedLocalElementIds().Contains(elementId))
+                    {
+                        elementIds.Remove(elementId);
+                        continue;
+                    }
+#endif
                 }
             }
+
+            _countUntaggedRailings = elementIds.Count;
 
             return elementIds;
         }
@@ -146,19 +178,19 @@ namespace BIM_Leaders_Core
         /// Create a selection filter with given set of elements. Applies created filter to the active view.
         /// </summary>
         /// <returns>Created filter element Id.</returns>
-        private static ElementId CreateFilter(Document doc, string filterName, List<ElementId> elementIds)
+        private static ElementId CreateFilter(List<ElementId> elementIds)
         {
-            View view = doc.ActiveView;
+            View view = _doc.ActiveView;
 
             // Checking if filter already exists
-            IEnumerable<Element> filters = new FilteredElementCollector(doc)
+            IEnumerable<Element> filters = new FilteredElementCollector(_doc)
                 .OfClass(typeof(SelectionFilterElement))
                 .ToElements();
             foreach (Element element in filters)
-                if (element.Name == filterName)
-                    doc.Delete(element.Id);
+                if (element.Name == FILTER_NAME)
+                    _doc.Delete(element.Id);
 
-            SelectionFilterElement filter = SelectionFilterElement.Create(doc, filterName);
+            SelectionFilterElement filter = SelectionFilterElement.Create(_doc, FILTER_NAME);
             filter.SetElementIds(elementIds);
 
             // Add the filter to the view
@@ -171,17 +203,19 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Change filter settings. Must be applied after regeneration when filter is new.
         /// </summary>
-        private static void SetupFilter(Document doc, ElementId filterId, Color filterColor)
+        private static void SetupFilter(ElementId filterId)
         {
-            View view = doc.ActiveView;
+            View view = _doc.ActiveView;
 
             // Get solid pattern.
-            ElementId patternId = new FilteredElementCollector(doc)
+            ElementId patternId = new FilteredElementCollector(_doc)
                 .OfClass(typeof(FillPatternElement))
                 .ToElements()
                 .Cast<FillPatternElement>()
                 .Where(x => x.GetFillPattern().IsSolidFill)
                 .First().Id;
+
+            Color filterColor = new Color(_inputData.ResultColor.R, _inputData.ResultColor.G, _inputData.ResultColor.B);
 
             // Use the existing graphics settings, and change the color.
             OverrideGraphicSettings overrideSettings = view.GetFilterOverrides(filterId);
@@ -194,25 +228,25 @@ namespace BIM_Leaders_Core
             view.SetFilterOverrides(filterId, overrideSettings);
         }
 
-        private static void ShowResult(int elementIds, int railingIds)
+        private static void ShowResult()
         {
             // Show result
             string text = "";
-            if (elementIds + railingIds == 0)
+            if (_countUntaggedElements + _countUntaggedRailings == 0)
                 text = "All elements are tagged";
             else
             {
-                if (elementIds > 0)
-                    text += $"{elementIds} elements added to filter \"Check - Tags\".";
-                if (railingIds > 0)
+                if (_countUntaggedElements > 0)
+                    text += $"{_countUntaggedElements} elements added to filter \"Check - Tags\".";
+                if (_countUntaggedRailings > 0)
                 {
                     if (text.Length > 0)
                         text += " ";
-                    text += $"Railings filters not usable, so {railingIds} untagged railings were selected.";
+                    text += $"Railings filters not usable, so {_countUntaggedRailings} untagged railings were selected.";
                 }
             }
 
-            TaskDialog.Show("Tags Plan Check", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

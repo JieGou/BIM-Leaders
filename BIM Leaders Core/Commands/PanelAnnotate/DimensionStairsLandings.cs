@@ -9,61 +9,44 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DimensionStairsLandings : IExternalCommand
     {
+        private static Document _doc;
+        private static DimensionStairsLandingsData _inputData;
+        private static int _countSpots;
+        private static int _countDimensions;
+
+        private const string TRANSACTION_NAME = "Annotate Landings";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            int countSpots = 0;
-            int countDimensions = 0;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             try
             {
-                CheckViewDepth(doc);
+                CheckViewDepth();
 
-                DimensionStairsLandingsForm form = new DimensionStairsLandingsForm();
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
+                _inputData = GetUserInput();
+                if (_inputData == null)
                     return Result.Cancelled;
 
-                // Get user provided information from window
-                DimensionStairsLandingsVM data = form.DataContext as DimensionStairsLandingsVM;
-                bool inputPlacementDimensionTop = data.ResultPlacementDimensionTop;
-                bool inputPlacementDimensionMid = data.ResultPlacementDimensionMid;
-                bool inputPlacementDimensionBot = data.ResultPlacementDimensionBot;
-                bool inputPlacementElevationTop = data.ResultPlacementElevationTop;
-                bool inputPlacementElevationMid = data.ResultPlacementElevationMid;
-                bool inputPlacementElevationBot = data.ResultPlacementElevationBot;
-                int thresholdCm = data.ResultDistance; // Threshold for sorting landings into lists. Each list contains landings located over each other.
-
-#if VERSION2020
-                double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, DisplayUnitType.DUT_CENTIMETERS);
-#else
-                double threshold = UnitUtils.ConvertToInternalUnits(thresholdCm, UnitTypeId.Centimeters);
-#endif
-
-                List<List<StairsLanding>> landings = GetLandings(doc, threshold);
-                List<Line> lines = CalculateLines(doc, landings);
-                List<List<Face>> intersectionFaces = GetIntersections(doc, landings, inputPlacementDimensionTop || inputPlacementElevationTop, inputPlacementDimensionMid || inputPlacementElevationMid, inputPlacementDimensionBot || inputPlacementElevationBot);
+                List<List<StairsLanding>> landings = GetLandings();
+                List<Line> lines = CalculateLines(landings);
+                List<List<Face>> intersectionFaces = GetIntersections(landings);
                 
                 // Create annotations
-                using (Transaction trans = new Transaction(doc, "Annotate Landings"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    if (inputPlacementDimensionTop || inputPlacementDimensionMid || inputPlacementDimensionBot)
-                        CreateDimensions(doc, lines, intersectionFaces, ref countDimensions);
-                    if (inputPlacementElevationTop || inputPlacementElevationMid || inputPlacementElevationBot)
-                        CreateSpots(doc, lines, intersectionFaces, ref countSpots);
+                    CreateDimensions(lines, intersectionFaces);
+                    CreateSpots(lines, intersectionFaces);
 
                     trans.Commit();
                 }
 
-                ShowResult(countSpots, countDimensions);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -74,29 +57,47 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static void CheckViewDepth(Document doc)
+        private static void CheckViewDepth()
         {
             double allowableViewDepth = 1;
 
-            View view = doc.ActiveView;
+            View view = _doc.ActiveView;
             double viewDepth = view.get_Parameter(BuiltInParameter.VIEWER_BOUND_OFFSET_FAR).AsDouble();
 
             if (viewDepth > allowableViewDepth)
                 TaskDialog.Show("Dimension Stairs", "View depth is too high. This may cause errors. Set far clip offset at most 30 cm.", TaskDialogCommonButtons.Ok);
         }
 
+        private static DimensionStairsLandingsData GetUserInput()
+        {
+            DimensionStairsLandingsForm form = new DimensionStairsLandingsForm();
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return null;
+
+            DimensionStairsLandingsData data = form.DataContext as DimensionStairsLandingsData;
+
+#if VERSION2020
+            data.ResultDistance = UnitUtils.ConvertToInternalUnits(data.ResultDistance, DisplayUnitType.DUT_CENTIMETERS);
+#else
+            data.ResultDistance = UnitUtils.ConvertToInternalUnits(data.ResultDistance, UnitTypeId.Centimeters);
+#endif
+            return data;
+        }
+
         /// <summary>
         /// Get sorted landings in groups by coordinates, each group have landings with same locations but different heights.
         /// </summary>
         /// <returns>List of lists of landings.</returns>
-        private static List<List<StairsLanding>> GetLandings(Document doc, double threshold)
+        private static List<List<StairsLanding>> GetLandings()
         {
             List<List<StairsLanding>> landingsSorted = new List<List<StairsLanding>>();
 
-            View view = doc.ActiveView;
+            View view = _doc.ActiveView;
 
             // Selecting all landings in the view
-            List<StairsLanding> landingsUnsorted = new FilteredElementCollector(doc, view.Id)
+            List<StairsLanding> landingsUnsorted = new FilteredElementCollector(_doc, view.Id)
                 .OfClass(typeof(StairsLanding))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -123,7 +124,7 @@ namespace BIM_Leaders_Core
                     double distanceX = unsortedX - sortedX;
                     double distanceY = unsortedY - sortedY;
                     double distance = Math.Abs(Math.Sqrt(distanceX * distanceX + distanceY * distanceY));
-                    if (distance < threshold)
+                    if (distance < _inputData.ResultDistance)
                     {
                         landingsSorted[j].Add(landingUnsorted);
                         i++;
@@ -145,11 +146,11 @@ namespace BIM_Leaders_Core
         /// Create lines for dimensions.
         /// </summary>
         /// <returns>Lines list.</returns>
-        private static List<Line> CalculateLines(Document doc, List<List<StairsLanding>> landingsSorted)
+        private static List<Line> CalculateLines(List<List<StairsLanding>> landingsSorted)
         {
             List<Line> lines = new List<Line>();
 
-            View view = doc.ActiveView;
+            View view = _doc.ActiveView;
 
             for (int i = 0; i < landingsSorted.Count; i++)
             {
@@ -168,12 +169,12 @@ namespace BIM_Leaders_Core
         /// List for all intersection points.
         /// </summary>
         /// <returns>List for all intersection points.</returns>
-        private static List<List<Face>> GetIntersections(Document doc, List<List<StairsLanding>> landingsSorted, bool getTopFaces, bool getMidFaces, bool getBotFaces)
+        private static List<List<Face>> GetIntersections(List<List<StairsLanding>> landingsSorted)
         {
             List<List<Face>> intersectionFaces = new List<List<Face>>();
 
             // Get View
-            View view = doc.ActiveView;
+            View view = _doc.ActiveView;
 
             Options options = new Options
             {
@@ -196,7 +197,7 @@ namespace BIM_Leaders_Core
                         .OrderBy(x => x.GetBoundingBox().Max.Z)
                         .ToList();
 
-                    if (getTopFaces)
+                    if (_inputData.ResultPlacementDimensionTop || _inputData.ResultPlacementElevationTop)
                     {
                         foreach (Face face in solids.First().Faces)
                         {
@@ -213,7 +214,7 @@ namespace BIM_Leaders_Core
                         }
                     }
 
-                    if (getMidFaces)
+                    if (_inputData.ResultPlacementDimensionMid || _inputData.ResultPlacementElevationMid)
                     {
                         List<Solid> solidsMid = solids.GetRange(1, solids.Count - 1);
 
@@ -235,7 +236,7 @@ namespace BIM_Leaders_Core
                         }
                     }
 
-                    if (getBotFaces)
+                    if (_inputData.ResultPlacementDimensionBot || _inputData.ResultPlacementElevationBot)
                     {
                         foreach (Face face in solids.Last().Faces)
                         {
@@ -261,9 +262,14 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create spot elevations on a faces through a given lines.
         /// </summary>
-        private static void CreateSpots(Document doc, List<Line> lines, List<List<Face>> intersectionFaces, ref int count)
+        private static void CreateSpots(List<Line> lines, List<List<Face>> intersectionFaces)
         {
-            View view = doc.ActiveView;
+            if (!_inputData.ResultPlacementElevationTop &&
+                !_inputData.ResultPlacementElevationMid &&
+                !_inputData.ResultPlacementElevationBot)
+                return;
+
+            View view = _doc.ActiveView;
             XYZ zero = new XYZ(0, 0, 0);
 
             // Iterate dimension lines
@@ -294,8 +300,8 @@ namespace BIM_Leaders_Core
 
                     try
                     {
-                        SpotDimension sd = doc.Create.NewSpotElevation(view, intersectionFaces[i][j].Reference, origin, zero, zero, origin, false);
-                        count++;
+                        SpotDimension sd = _doc.Create.NewSpotElevation(view, intersectionFaces[i][j].Reference, origin, zero, zero, origin, false);
+                        _countSpots++;
                     }
                     catch { }
                 }
@@ -305,9 +311,14 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Create dimension on a faces through a given lines.
         /// </summary>
-        private static void CreateDimensions(Document doc, List<Line> lines, List<List<Face>> intersectionFaces, ref int count)
+        private static void CreateDimensions(List<Line> lines, List<List<Face>> intersectionFaces)
         {
-            View view = doc.ActiveView;
+            if (!_inputData.ResultPlacementDimensionTop &&
+                !_inputData.ResultPlacementDimensionMid &&
+                !_inputData.ResultPlacementDimensionBot)
+                return;
+
+            View view = _doc.ActiveView;
 
             for (int i = 0; i < lines.Count; i++)
             {
@@ -320,7 +331,7 @@ namespace BIM_Leaders_Core
                         references.Append(face.Reference);
                 }
 
-                Dimension dimension = doc.Create.NewDimension(view, lines[i], references);
+                Dimension dimension = _doc.Create.NewDimension(view, lines[i], references);
 
                 DimensionUtils.AdjustText(dimension);
                 
@@ -328,18 +339,18 @@ namespace BIM_Leaders_Core
                 dimension.HasLeader = false;
 #endif
                 
-                count++;
+                _countDimensions++;
             }
         }
 
-        private static void ShowResult(int countSpots, int countDimensions)
+        private static void ShowResult()
         {
             // Show result
-            string text = (countSpots == 0 && countDimensions == 0)
+            string text = (_countSpots == 0 && _countDimensions == 0)
                 ? "No annotations created."
-                : $"{countSpots} spot elevations were created. {countDimensions} dimension lines were created.";
+                : $"{_countSpots} spot elevations were created. {_countDimensions} dimension lines were created.";
             
-            TaskDialog.Show("Dimension Stairs", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

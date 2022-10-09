@@ -8,27 +8,29 @@ using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class FamilyParameterChange : IExternalCommand
     {
+        private static Document _doc;
+        private static int _countParametersChanged = 0;
+
+        private const string TRANSACTION_NAME = "Change Parameter";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            // Get Document
-            Document doc = commandData.Application.ActiveUIDocument.Document;
-
-            int count = 0;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             try
             {
-                using (Transaction trans = new Transaction(doc, "Change Parameter"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    SwitchParameter(doc, ref count);
+                    SwitchParameter();
 
                     trans.Commit();
                 }
-                ShowResult(count);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -42,9 +44,9 @@ namespace BIM_Leaders_Core
         /// <summary>
         /// Chaange the given parameter from shared to family parameter.
         /// </summary>
-        private static void SwitchParameter(Document doc, ref int count)
+        private static void SwitchParameter()
         {
-            IEnumerable<FamilyParameter> parameters = doc.FamilyManager.GetParameters().Where(x => x.IsShared);
+            IEnumerable<FamilyParameter> parameters = _doc.FamilyManager.GetParameters().Where(x => x.IsShared);
             foreach (FamilyParameter parameter in parameters)
             {
                 string parameterName = parameter.Definition.Name;
@@ -52,21 +54,22 @@ namespace BIM_Leaders_Core
                 BuiltInParameterGroup parameterGroup = parameter.Definition.ParameterGroup;
                 bool parameterIsInstance = parameter.IsInstance;
 
-                FamilyParameter parameterNew = doc.FamilyManager.ReplaceParameter(parameter, parameterNameTemp, parameterGroup, parameterIsInstance);
-                doc.FamilyManager.RenameParameter(parameterNew, parameterName);
-                count++;
+                FamilyParameter parameterNew = _doc.FamilyManager.ReplaceParameter(parameter, parameterNameTemp, parameterGroup, parameterIsInstance);
+                _doc.FamilyManager.RenameParameter(parameterNew, parameterName);
+                
+                _countParametersChanged++;
             }
-            count = parameters.Count();
+            _countParametersChanged = parameters.Count();
         }
 
-        private static void ShowResult(int count)
+        private static void ShowResult()
         {
             // Show result
-            string text = (count == 0)
+            string text = (_countParametersChanged == 0)
                 ? "No parameters changed."
-                : $"{count} parameters changed.";
+                : $"{_countParametersChanged} parameters changed.";
             
-            TaskDialog.Show("Parameter Change", text);
+            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()
