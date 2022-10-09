@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Windows
 {
@@ -10,50 +8,20 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class FamilyParameterSetVM : INotifyPropertyChanged, IDataErrorInfo
     {
-        Document doc = null;
-
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="FamilyParameterSetVM"/> class.
         /// </summary>
-        public FamilyParameterSetVM(Document doc)
+        public FamilyParameterSetVM(List<string> parametersList)
         {
-            this.doc = doc;
+            ParametersList = parametersList;
         }
 
-        /// <summary>
-        /// Populates the DWG list.
-        /// </summary>
-        public List<string> CreateParametersList()
-        {
-            // Get unique parameters
-            IList<FamilyParameter> parametersNamesAll = doc.FamilyManager.GetParameters();
-            List<FamilyParameter> parameters = new List<FamilyParameter>();
-            List<string> parametersNames = new List<string>();
-            foreach (FamilyParameter i in parametersNamesAll)
-            {
-                string parameterName = i.Definition.Name;
-                if (!parametersNames.Contains(parameterName))
-                {
-                    parameters.Add(i);
-                    parametersNames.Add(parameterName);
-                }
-            }
-            /*
-            SortedDictionary<string, ElementId> parameters_list = new SortedDictionary<string, ElementId>();
-            foreach (FamilyParameter i in parameters)
-            {
-                parameters_list.Add(i.Definition.Name, i.Id);
-            }
-            */
-
-            return parametersNames;
-        }
-
-
+        private List<string> _parametersList;
         public List<string> ParametersList
         {
-            get { return CreateParametersList(); }
+            get { return _parametersList; }
+            set { _parametersList = value; }
         }
 
         private string _parametersListSelected;

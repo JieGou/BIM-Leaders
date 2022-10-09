@@ -12,7 +12,7 @@ namespace BIM_Leaders_Core
     public class DimensionsPlanCheck : IExternalCommand
     {
         private static Document _doc;
-        private static DimensionsPlanCheckData _inputData;
+        private static DimensionsPlanCheckVM _inputData;
         private static int _countWallsUndimensioned;
 
         private const string TRANSACTION_NAME = "Create Filter for non-dimensioned Walls";
@@ -52,7 +52,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static DimensionsPlanCheckData GetUserInput()
+        private static DimensionsPlanCheckVM GetUserInput()
         {
             DimensionsPlanCheckForm form = new DimensionsPlanCheckForm();
             form.ShowDialog();
@@ -61,7 +61,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Get user provided information from window
-            return form.DataContext as DimensionsPlanCheckData;
+            return form.DataContext as DimensionsPlanCheckVM;
         }
 
         /// <summary>

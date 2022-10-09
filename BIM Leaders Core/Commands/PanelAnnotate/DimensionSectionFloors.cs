@@ -14,7 +14,7 @@ namespace BIM_Leaders_Core
     {
         private static UIDocument _uidoc;
         private static Document _doc;
-        private static DimensionSectionFloorsData _inputData;
+        private static DimensionSectionFloorsVM _inputData;
         private static int _countSpots;
         private static int _countSegments;
 
@@ -108,7 +108,7 @@ namespace BIM_Leaders_Core
             return true;
         }
 
-        private static DimensionSectionFloorsData GetUserInput()
+        private static DimensionSectionFloorsVM GetUserInput()
         {
             // Collector for data provided in window
             DimensionSectionFloorsForm form = new DimensionSectionFloorsForm();
@@ -118,7 +118,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Get user provided information from window
-            return form.DataContext as DimensionSectionFloorsData;
+            return form.DataContext as DimensionSectionFloorsVM;
         }
 
         /// <summary>

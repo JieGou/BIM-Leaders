@@ -10,7 +10,7 @@ namespace BIM_Leaders_Core
     public class LevelsAlign : IExternalCommand
     {
         private static Document _doc;
-        private static LevelsAlignData _inputData;
+        private static LevelsAlignVM _inputData;
         private static int _countLevelsAligned;
 
         private const string TRANSACTION_NAME = "Align Levels";
@@ -44,7 +44,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static LevelsAlignData GetUserInput()
+        private static LevelsAlignVM GetUserInput()
         {
             // Get user provided information from window
             LevelsAlignForm form = new LevelsAlignForm();
@@ -54,7 +54,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Collector for data provided in window
-            return form.DataContext as LevelsAlignData;
+            return form.DataContext as LevelsAlignVM;
         }
 
         private static void ShowResult()

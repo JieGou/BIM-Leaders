@@ -20,12 +20,12 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="WallsCompareForm"/>
         /// </summary>
-        public WallsCompareForm(UIDocument uidoc)
+        public WallsCompareForm(SortedDictionary<string, int> listMaterials, SortedDictionary<string, int> listFillTypes)
         {
             InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new WallsCompareVM(uidoc);
+            DataContext = new WallsCompareVM(listMaterials, listFillTypes);
         }
 
         private void InitializeMaterialDesign()

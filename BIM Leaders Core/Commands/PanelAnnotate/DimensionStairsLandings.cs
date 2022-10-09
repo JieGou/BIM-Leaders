@@ -13,7 +13,7 @@ namespace BIM_Leaders_Core
     public class DimensionStairsLandings : IExternalCommand
     {
         private static Document _doc;
-        private static DimensionStairsLandingsData _inputData;
+        private static DimensionStairsLandingsVM _inputData;
         private static int _countSpots;
         private static int _countDimensions;
 
@@ -68,7 +68,7 @@ namespace BIM_Leaders_Core
                 TaskDialog.Show("Dimension Stairs", "View depth is too high. This may cause errors. Set far clip offset at most 30 cm.", TaskDialogCommonButtons.Ok);
         }
 
-        private static DimensionStairsLandingsData GetUserInput()
+        private static DimensionStairsLandingsVM GetUserInput()
         {
             DimensionStairsLandingsForm form = new DimensionStairsLandingsForm();
             form.ShowDialog();
@@ -76,7 +76,7 @@ namespace BIM_Leaders_Core
             if (form.DialogResult == false)
                 return null;
 
-            DimensionStairsLandingsData data = form.DataContext as DimensionStairsLandingsData;
+            DimensionStairsLandingsVM data = form.DataContext as DimensionStairsLandingsVM;
 
 #if VERSION2020
             data.ResultDistance = UnitUtils.ConvertToInternalUnits(data.ResultDistance, DisplayUnitType.DUT_CENTIMETERS);

@@ -16,7 +16,7 @@ namespace BIM_Leaders_Core
         private static int _countWarningsJoin;
         private static int _countWarningsWallsAttached;
         private static int _countWarningsRoomNotEnclosed;
-        private static WarningsSolveData _inputData;
+        private static WarningsSolveVM _inputData;
 
         private const string TRANSACTION_NAME = "Solve Warnings";
 
@@ -49,7 +49,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static WarningsSolveData GetUserInput()
+        private static WarningsSolveVM GetUserInput()
         {
             WarningsSolveForm form = new WarningsSolveForm();
             form.ShowDialog();
@@ -58,7 +58,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Get user provided information from window
-            return form.DataContext as WarningsSolveData;
+            return form.DataContext as WarningsSolveVM;
         }
 
         private static void SolveAll()

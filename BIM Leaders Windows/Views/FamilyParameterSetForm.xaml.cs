@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Autodesk.Revit.DB;
@@ -18,12 +19,12 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="FamilyParameterSetForm"/>
         /// </summary>
-        public FamilyParameterSetForm(Document doc)
+        public FamilyParameterSetForm(List<string> parametersList)
         {
             InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new FamilyParameterSetVM(doc);
+            DataContext = new FamilyParameterSetVM(parametersList);
         }
 
         private void InitializeMaterialDesign()

@@ -10,7 +10,7 @@ namespace BIM_Leaders_Core
     public class GridsAlign : IExternalCommand
     {
         private static Document _doc;
-        private static GridsAlignData _inputData;
+        private static GridsAlignVM _inputData;
         private static int _countGridsAligned;
 
         private const string TRANSACTION_NAME = "Align Grids";
@@ -44,7 +44,7 @@ namespace BIM_Leaders_Core
             }
         }
         
-        private static GridsAlignData GetUserInput()
+        private static GridsAlignVM GetUserInput()
         {
             // Get user provided information from window
             GridsAlignForm form = new GridsAlignForm();
@@ -54,7 +54,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Collector for data provided in window
-            return form.DataContext as GridsAlignData;
+            return form.DataContext as GridsAlignVM;
         }
 
         private static void ShowResult()

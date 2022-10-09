@@ -13,7 +13,7 @@ namespace BIM_Leaders_Core
     public class Purge : IExternalCommand
     {
         private static Document _doc;
-        private static PurgeData _inputData;
+        private static PurgeVM _inputData;
         private static int _countRoomsNotPlaced;
         private static int _countTagsEmpty;
         private static int _countFiltersUnused;
@@ -53,7 +53,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static PurgeData GetUserInput()
+        private static PurgeVM GetUserInput()
         {
             PurgeForm form = new PurgeForm();
             form.ShowDialog();
@@ -62,7 +62,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Get user provided information from window
-            return form.DataContext as PurgeData;
+            return form.DataContext as PurgeVM;
         }
 
         private static void RunPurges()

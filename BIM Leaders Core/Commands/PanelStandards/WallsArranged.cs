@@ -17,7 +17,7 @@ namespace BIM_Leaders_Core
         private static double _toleranceAngle;
         private static int _countWallsFilteredDistance;
         private static int _countWallsFilteredAngle;
-        private static WallsArrangedData _inputData;
+        private static WallsArrangedVM _inputData;
 
         private const string TRANSACTION_NAME = "Walls Arranged Check";
         private const string FILTER_NAME_DISTANCE = "Check - Walls arranging. Distances";
@@ -69,7 +69,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static WallsArrangedData GetUserInput()
+        private static WallsArrangedVM GetUserInput()
         {
             WallsArrangedForm form = new WallsArrangedForm();
             form.ShowDialog();
@@ -78,7 +78,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Get user provided information from window.
-            return form.DataContext as WallsArrangedData;
+            return form.DataContext as WallsArrangedVM;
         }
 
         private static (ReferencePlane, ReferencePlane) GetReferencePlanes()

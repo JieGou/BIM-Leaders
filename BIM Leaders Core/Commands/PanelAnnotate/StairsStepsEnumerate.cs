@@ -13,7 +13,7 @@ namespace BIM_Leaders_Core
     public class StairsStepsEnumerate : IExternalCommand
     {
         private static Document _doc;
-        private static StairsStepsEnumerateData _inputData;
+        private static StairsStepsEnumerateVM _inputData;
         private static int _countStairsGrouped;
         private static int _countStairsUnpinned;
         private static int _countRisersNumbers;
@@ -52,7 +52,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static StairsStepsEnumerateData GetUserInput()
+        private static StairsStepsEnumerateVM GetUserInput()
         {
             // Get user provided information from window
             StairsStepsEnumerateForm form = new StairsStepsEnumerateForm();
@@ -62,7 +62,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Collector for data provided in window
-            return form.DataContext as StairsStepsEnumerateData;
+            return form.DataContext as StairsStepsEnumerateVM;
         }
 
         /// <summary>

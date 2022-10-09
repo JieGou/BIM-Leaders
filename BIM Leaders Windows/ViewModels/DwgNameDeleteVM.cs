@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using Autodesk.Revit.DB;
 
 namespace BIM_Leaders_Windows
 {
@@ -10,57 +8,24 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class DwgNameDeleteVM : INotifyPropertyChanged
     {
-        private Document doc = null;
-
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="DwgNameDeleteVM"/> class.
         /// </summary>
-        public DwgNameDeleteVM(Document doc)
+        public DwgNameDeleteVM(SortedDictionary<string, int> dwgList)
         {
-            this.doc = doc;
+            DwgList = dwgList;
         }
 
-        /// <summary>
-        /// Populates the DWG list.
-        /// </summary>
-        public SortedDictionary<string, ElementId> createDwgList()
+        private SortedDictionary<string, int> _dwgList = new SortedDictionary<string, int>();
+        public SortedDictionary<string, int> DwgList
         {
-            // Get DWGs
-            FilteredElementCollector collector = new FilteredElementCollector(doc);
-            IEnumerable<ImportInstance> dwgTypesAll = collector.OfClass(typeof(ImportInstance)).OrderBy(a => a.Name)
-                .Cast<ImportInstance>(); //LINQ function;
-
-            // Get unique imports names list
-            List<ImportInstance> dwgTypes = new List<ImportInstance>();
-            List<string> dwgTypesNames = new List<string>();
-            foreach (ImportInstance i in dwgTypesAll)
-            {
-                string dwgTypeName = i.Category.Name;
-                if (!dwgTypesNames.Contains(dwgTypeName))
-                {
-                    dwgTypes.Add(i);
-                    dwgTypesNames.Add(dwgTypeName);
-                }
-            }
-
-            SortedDictionary<string, ElementId> dwgTypesList = new SortedDictionary<string, ElementId>();
-            foreach (ImportInstance i in dwgTypes)
-            {
-                dwgTypesList.Add(i.Category.Name, i.Id);
-            }
-
-            return dwgTypesList;
+            get { return _dwgList; }
+            set { _dwgList = value; }
         }
 
-
-        public SortedDictionary<string, ElementId> DwgList
-        {
-            get { return createDwgList(); }
-        }
-
-        private ElementId _dwgListSelected;
-        public ElementId DwgListSelected 
+        private int _dwgListSelected;
+        public int DwgListSelected 
         {
             get { return _dwgListSelected; }
             set

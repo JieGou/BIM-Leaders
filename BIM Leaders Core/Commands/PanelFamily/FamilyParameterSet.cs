@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
@@ -12,7 +13,7 @@ namespace BIM_Leaders_Core
     {
         private static Document _doc;
         private static int _countParametersSet = 0;
-        private static FamilyParameterSetData _inputData;
+        private static FamilyParameterSetVM _inputData;
 
         private const string TRANSACTION_NAME = "Set Parameter";
 
@@ -20,12 +21,14 @@ namespace BIM_Leaders_Core
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
-            _inputData = GetUserInput();
-            if (_inputData == null)
-                return Result.Cancelled;
-
             try
             {
+                List<string> parametersList = GetParametersList();
+
+                _inputData = GetUserInput(parametersList);
+                if (_inputData == null)
+                    return Result.Cancelled;
+
                 using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
@@ -45,16 +48,34 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static FamilyParameterSetData GetUserInput()
+        private static List<string> GetParametersList()
         {
-            FamilyParameterSetForm form = new FamilyParameterSetForm(_doc);
+            // Get unique parameters
+            IList<FamilyParameter> parametersNamesAll = _doc.FamilyManager.GetParameters();
+            List<FamilyParameter> parameters = new List<FamilyParameter>();
+            List<string> parametersNames = new List<string>();
+            foreach (FamilyParameter i in parametersNamesAll)
+            {
+                string parameterName = i.Definition.Name;
+                if (!parametersNames.Contains(parameterName))
+                {
+                    parameters.Add(i);
+                    parametersNames.Add(parameterName);
+                }
+            }
+            return parametersNames;
+        }
+
+        private static FamilyParameterSetVM GetUserInput(List<string> parametersList)
+        {
+            FamilyParameterSetForm form = new FamilyParameterSetForm(parametersList);
             form.ShowDialog();
 
             if (form.DialogResult == false)
                 return null;
 
             // Get user provided information from window
-            return form.DataContext as FamilyParameterSetData;
+            return form.DataContext as FamilyParameterSetVM;
         }
 
         /// <summary>

@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Windows
 {
@@ -11,17 +8,17 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class WallsCompareVM : INotifyPropertyChanged
     {
-        UIDocument Uidoc = null;
         public string Error { get { return null; } }
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="WallsCompareVM"/> class.
         /// </summary>
-
-        public WallsCompareVM(UIDocument uidoc)
+        public WallsCompareVM(SortedDictionary<string, int> listMaterials, SortedDictionary<string, int> listFillTypes)
         {
-            Uidoc = uidoc;
             ResultLinks = true;
+            ListMaterials = listMaterials;
+            ListFillTypes = listFillTypes;
         }
 
         /// <summary>
@@ -41,86 +38,22 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        /// <summary>
-        /// Populates the materials list.
-        /// </summary>
-        public SortedDictionary<string, ElementId> CreateListMaterials()
+        private SortedDictionary<string, int> _listMaterials;
+        public SortedDictionary<string, int> ListMaterials
         {
-            var doc = Uidoc.Document;
-
-            // Get Fills
-            FilteredElementCollector collector = new FilteredElementCollector(doc);
-            IEnumerable<Material> materialsAll = collector.OfClass(typeof(Material)).OrderBy(a => a.Name)
-                .Cast<Material>(); //LINQ function;
-
-            // Get unique fills names list
-            List<Material> materials = new List<Material>();
-            List<string> materialsNames = new List<string>();
-            foreach (Material i in materialsAll)
-            {
-                string materialName = i.Name;
-                if (!materialsNames.Contains(materialName))
-                {
-                    materials.Add(i);
-                    materialsNames.Add(materialName);
-                }
-            }
-
-            SortedDictionary<string, ElementId> materialsList = new SortedDictionary<string, ElementId>();
-            foreach (Material i in materials)
-            {
-                materialsList.Add(i.Name, i.Id);
-            }
-
-            return materialsList;
+            get { return _listMaterials; }
+            set { _listMaterials = value; }
         }
 
-        /// <summary>
-        /// Populates the fill types list.
-        /// </summary>
-        public SortedDictionary<string, ElementId> CreateListFillTypes()
+        private SortedDictionary<string, int> _listFillTypes;
+        public SortedDictionary<string, int> ListFillTypes
         {
-            var doc = Uidoc.Document;
-
-            // Get Fills
-            FilteredElementCollector collector = new FilteredElementCollector(doc);
-            IEnumerable<FilledRegionType> fillTypesAll = collector.OfClass(typeof(FilledRegionType)).OrderBy(a => a.Name)
-                .Cast<FilledRegionType>(); //LINQ function;
-
-            // Get unique fills names list
-            List<FilledRegionType> fillTypes = new List<FilledRegionType>();
-            List<string> fillTypesNames = new List<string>();
-            foreach (FilledRegionType i in fillTypesAll)
-            {
-                string fillTypeName = i.Name;
-                if (!fillTypesNames.Contains(fillTypeName))
-                {
-                    fillTypes.Add(i);
-                    fillTypesNames.Add(fillTypeName);
-                }
-            }
-
-            //List<KeyValuePair<string, ElementId>> list = new List<KeyValuePair<string, ElementId>>();
-            SortedDictionary<string, ElementId> fillTypesList = new SortedDictionary<string, ElementId>();
-            foreach (FilledRegionType i in fillTypes)
-            {
-                fillTypesList.Add(i.Name, i.Id);
-            }
-
-            return fillTypesList;
+            get { return _listFillTypes; }
+            set { _listFillTypes = value; }
         }
 
-        public SortedDictionary<string, ElementId> ListMaterials
-        {
-            get { return CreateListMaterials(); }
-        }
-        public SortedDictionary<string, ElementId> ListFillTypes
-        {
-            get { return CreateListFillTypes(); }
-        }
-
-        private ElementId _listMaterialsSelected;
-        public ElementId ListMaterialsSelected 
+        private int _listMaterialsSelected;
+        public int ListMaterialsSelected 
         {
             get { return _listMaterialsSelected; }
             set
@@ -130,8 +63,8 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        private ElementId _listFillTypesSelected;
-        public ElementId ListFillTypesSelected
+        private int _listFillTypesSelected;
+        public int ListFillTypesSelected
         {
             get { return _listFillTypesSelected; }
             set

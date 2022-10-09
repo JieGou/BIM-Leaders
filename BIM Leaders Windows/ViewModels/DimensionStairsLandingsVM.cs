@@ -1,22 +1,20 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
     /// Information and data model for command DimensionStairsLandings
     /// </summary>
-    public class DimensionStairsLandingsData : INotifyPropertyChanged, IDataErrorInfo
+    public class DimensionStairsLandingsVM : INotifyPropertyChanged, IDataErrorInfo
     {
         private const double _resultDistanceMinValue = 100;
         private const double _resultDistanceMaxValue = 200;
 
         /// <summary>
         /// Default constructor
-        /// Initializing a new instance of the <see cref="DimensionStairsLandingsData"/> class.
+        /// Initializing a new instance of the <see cref="DimensionStairsLandingsVM"/> class.
         /// </summary>
-        public DimensionStairsLandingsData()
+        public DimensionStairsLandingsVM()
         {
             _resultPlacementDimensionTop = true;
             _resultPlacementDimensionMid = true;

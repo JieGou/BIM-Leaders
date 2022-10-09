@@ -13,8 +13,8 @@ namespace BIM_Leaders_Core
     public class DwgNameDelete : IExternalCommand
     {
         private static Document _doc;
-        private static DwgNameDeleteData _inputData;
-        private static string _dwgName = _doc?.GetElement(_inputData.DwgListSelected).Category.Name;
+        private static DwgNameDeleteVM _inputData;
+        private static string _dwgName;
         private static int _countDwgDeleted;
 
         private const string TRANSACTION_NAME = "Delete DWG by Name";
@@ -23,29 +23,19 @@ namespace BIM_Leaders_Core
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
-            _inputData = GetUserInput();
-            if (_inputData == null)
-                return Result.Cancelled;
+            try
+            {
+                SortedDictionary<string, int> dwgList = GetDwgList();
 
-                // Get user provided information from window
-                DwgNameDeleteData data = form.DataContext as DwgNameDeleteData;
+                _inputData = GetUserInput(dwgList);
+                if (_inputData == null)
+                    return Result.Cancelled;
 
-                string name = doc.GetElement(data.DwgListSelected).Category.Name;
-
-                // Get all Imports with name same as input from a form
-                ICollection<ElementId> dwgDelete = new FilteredElementCollector(doc)
-                    .OfClass(typeof(ImportInstance))
-                    .WhereElementIsNotElementType()
-                    .Where(x => x.Category.Name == name) //LINQ function
-                    .ToList()                            //LINQ function
-                    .ConvertAll(x => x.Id)               //LINQ function
-                    .ToList();                           //LINQ function
-
-                using (Transaction trans = new Transaction(doc, "Delete DWG by Name"))
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    DeleteDwg();  
+                    DeleteDwg();
 
                     trans.Commit();
                 }
@@ -60,20 +50,55 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static DwgNameDeleteData GetUserInput()
+        private static SortedDictionary<string, int> GetDwgList()
         {
-            DwgNameDeleteForm form = new DwgNameDeleteForm(_doc);
+            // Get DWGs
+            FilteredElementCollector collector = new FilteredElementCollector(_doc);
+            IEnumerable<ImportInstance> dwgTypesAll = collector.OfClass(typeof(ImportInstance)).OrderBy(a => a.Name)
+                .Cast<ImportInstance>(); //LINQ function;
+
+            // Get unique imports names list
+            List<ImportInstance> dwgTypes = new List<ImportInstance>();
+            List<string> dwgTypesNames = new List<string>();
+            foreach (ImportInstance i in dwgTypesAll)
+            {
+                string dwgTypeName = i.Category.Name;
+                if (!dwgTypesNames.Contains(dwgTypeName))
+                {
+                    dwgTypes.Add(i);
+                    dwgTypesNames.Add(dwgTypeName);
+                }
+            }
+
+            SortedDictionary<string, int> dwgTypesList = new SortedDictionary<string, int>();
+            foreach (ImportInstance i in dwgTypes)
+            {
+                dwgTypesList.Add(i.Category.Name, i.Id.IntegerValue);
+            }
+
+            return dwgTypesList;
+        }
+
+        private static DwgNameDeleteVM GetUserInput(SortedDictionary<string, int> dwgList)
+        {
+            DwgNameDeleteForm form = new DwgNameDeleteForm(dwgList);
             form.ShowDialog();
 
             if (form.DialogResult == false)
                 return null;
 
+            ElementId dwgId = new ElementId(_inputData.DwgListSelected);
+            _dwgName = _doc?.GetElement(dwgId).Category.Name;
+
             // Get user provided information from window
-            return form.DataContext as DwgNameDeleteData;
+            return form.DataContext as DwgNameDeleteVM;
         }
 
         private static void DeleteDwg()
         {
+            ElementId dwgId = new ElementId(_inputData.DwgListSelected);
+            string _dwgName = _doc?.GetElement(dwgId).Category.Name;
+
             // Get all Imports with name same as input from a form
             ICollection<ElementId> dwgDelete = new FilteredElementCollector(_doc)
                 .OfClass(typeof(ImportInstance))
@@ -88,7 +113,7 @@ namespace BIM_Leaders_Core
             _countDwgDeleted = dwgDelete.Count;
         }
 
-        private static void ShowResult(int count, string name)
+        private static void ShowResult()
         {
             // Show result
             string text = (_countDwgDeleted == 0)

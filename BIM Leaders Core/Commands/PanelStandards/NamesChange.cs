@@ -12,7 +12,7 @@ namespace BIM_Leaders_Core
     {
         private static Document _doc;
         private static int _countNamesChanged;
-        private static NamesChangeData _inputData;
+        private static NamesChangeVM _inputData;
 
         private const string TRANSACTION_NAME = "Change Names";
 
@@ -45,7 +45,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static NamesChangeData GetUserInput()
+        private static NamesChangeVM GetUserInput()
         {
             NamesChangeForm form = new NamesChangeForm();
             form.ShowDialog();
@@ -54,7 +54,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Get user provided information from window
-            return form.DataContext as NamesChangeData;
+            return form.DataContext as NamesChangeVM;
         }
 
         /// <summary>

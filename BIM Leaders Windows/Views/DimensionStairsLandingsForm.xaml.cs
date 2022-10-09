@@ -21,7 +21,7 @@ namespace BIM_Leaders_Windows
             InitializeMaterialDesign();
             InitializeComponent();
 
-            DataContext = new DimensionStairsLandingsData();
+            DataContext = new DimensionStairsLandingsVM();
         }
 
         private void InitializeMaterialDesign()

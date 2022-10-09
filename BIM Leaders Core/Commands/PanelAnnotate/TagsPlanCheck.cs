@@ -14,7 +14,7 @@ namespace BIM_Leaders_Core
     {
         private static UIDocument _uidoc;
         private static Document _doc;
-        private static TagsPlanCheckData _inputData;
+        private static TagsPlanCheckVM _inputData;
         private static int _countUntaggedElements;
         private static int _countUntaggedRailings;
 
@@ -58,7 +58,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static TagsPlanCheckData GetUserInput()
+        private static TagsPlanCheckVM GetUserInput()
         {
             TagsPlanCheckForm form = new TagsPlanCheckForm();
             form.ShowDialog();
@@ -67,7 +67,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Get user provided information from window
-            return form.DataContext as TagsPlanCheckData;
+            return form.DataContext as TagsPlanCheckVM;
         }
 
         /// <summary>

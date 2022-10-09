@@ -8,6 +8,9 @@ using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using System.Windows.Forms;
+using System.Windows.Markup;
+using View = Autodesk.Revit.DB.View;
 
 namespace BIM_Leaders_Core
 {
@@ -15,7 +18,7 @@ namespace BIM_Leaders_Core
     public class Checker : IExternalCommand
     {
         private static Document _doc;
-        private static CheckerData _inputData;
+        private static CheckerVM _inputData;
         private static List<ReportMessage> _reportMessageList;
 
         private const string TRANSACTION_NAME = "Check";
@@ -24,19 +27,11 @@ namespace BIM_Leaders_Core
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
-            _inputData = GetUserInput();
-            if (_inputData == null)
-                return Result.Cancelled;
-
-                // Get user provided information from window
-                data = form.DataContext as CheckerData;
-
-                // Getting input data from user
-                string inputPrefix = data.ResultPrefix;
-                List<bool> inputCategories = data.ResultCategories;
-                List<bool> inputModel = data.ResultModel;
-                List<bool> inputCodes = data.ResultCodes;
-                int inputHeadHeight = data.ResultHeight;
+            try
+            {
+                _inputData = GetUserInput();
+                if (_inputData == null)
+                    return Result.Cancelled;
 
                 List<ReportMessage> reportMessageList = new List<ReportMessage>();
 
@@ -45,7 +40,7 @@ namespace BIM_Leaders_Core
                     trans.Start();
 
                     _reportMessageList = CheckAll();
-                    
+
                     trans.Commit();
                 }
 
@@ -64,7 +59,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static CheckerData GetUserInput()
+        private static CheckerVM GetUserInput()
         {
             CheckerForm form = new CheckerForm();
             form.ShowDialog();
@@ -73,7 +68,7 @@ namespace BIM_Leaders_Core
                 return null;
 
             // Get user provided information from window
-            return form.DataContext as CheckerData;
+            return form.DataContext as CheckerVM;
         }
 
         private static List<ReportMessage> CheckAll()

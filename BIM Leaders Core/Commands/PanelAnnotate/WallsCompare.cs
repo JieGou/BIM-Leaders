@@ -14,7 +14,7 @@ namespace BIM_Leaders_Core
     {
         private static UIDocument _uidoc;
         private static Document _doc;
-        private static WallsCompareData _inputData;
+        private static WallsCompareVM _inputData;
         private static int _countFilledRegions;
 
         private const string TRANSACTION_NAME = "Compare Walls";
@@ -26,10 +26,11 @@ namespace BIM_Leaders_Core
 
             try
             {
-
+                SortedDictionary<string, int> listMaterials = GetListMaterials();
+                SortedDictionary<string, int> listFillTypes = GetListFillTypes();
 
                 // Show the dialog.
-                WallsCompareForm form = new WallsCompareForm(_uidoc);
+                WallsCompareForm form = new WallsCompareForm(listMaterials, listFillTypes);
                 form.ShowDialog();
 
                 if (form.DialogResult == false)
@@ -117,6 +118,65 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        private static SortedDictionary<string, int> GetListMaterials()
+        {
+            // Get Fills
+            FilteredElementCollector collector = new FilteredElementCollector(_doc);
+            IEnumerable<Material> materialsAll = collector.OfClass(typeof(Material)).OrderBy(a => a.Name)
+                .Cast<Material>(); //LINQ function;
+
+            // Get unique fills names list
+            List<Material> materials = new List<Material>();
+            List<string> materialsNames = new List<string>();
+            foreach (Material i in materialsAll)
+            {
+                string materialName = i.Name;
+                if (!materialsNames.Contains(materialName))
+                {
+                    materials.Add(i);
+                    materialsNames.Add(materialName);
+                }
+            }
+
+            SortedDictionary<string, int> materialsList = new SortedDictionary<string, int>();
+            foreach (Material i in materials)
+            {
+                materialsList.Add(i.Name, i.Id.IntegerValue);
+            }
+
+            return materialsList;
+        }
+
+        private static SortedDictionary<string, int> GetListFillTypes()
+        {
+            // Get Fills
+            FilteredElementCollector collector = new FilteredElementCollector(_doc);
+            IEnumerable<FilledRegionType> fillTypesAll = collector.OfClass(typeof(FilledRegionType)).OrderBy(a => a.Name)
+                .Cast<FilledRegionType>(); //LINQ function;
+
+            // Get unique fills names list
+            List<FilledRegionType> fillTypes = new List<FilledRegionType>();
+            List<string> fillTypesNames = new List<string>();
+            foreach (FilledRegionType i in fillTypesAll)
+            {
+                string fillTypeName = i.Name;
+                if (!fillTypesNames.Contains(fillTypeName))
+                {
+                    fillTypes.Add(i);
+                    fillTypesNames.Add(fillTypeName);
+                }
+            }
+
+            //List<KeyValuePair<string, ElementId>> list = new List<KeyValuePair<string, ElementId>>();
+            SortedDictionary<string, int> fillTypesList = new SortedDictionary<string, int>();
+            foreach (FilledRegionType i in fillTypes)
+            {
+                fillTypesList.Add(i.Name, i.Id.IntegerValue);
+            }
+
+            return fillTypesList;
         }
 
         /// <summary>
