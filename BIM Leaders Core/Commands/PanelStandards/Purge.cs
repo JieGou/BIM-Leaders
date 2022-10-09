@@ -34,7 +34,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                PurgeData data = form.DataContext as PurgeData;
+                PurgeVM data = form.DataContext as PurgeVM;
 
                 // Getting input data from user
                 bool inputRooms = data.ResultRooms;

@@ -26,7 +26,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                NamesChangeData data = form.DataContext as NamesChangeData;
+                NamesChangeVM data = form.DataContext as NamesChangeVM;
 
                 // Getting input data from user
                 string inputSubstringOld = data.ResultSubstringOld;

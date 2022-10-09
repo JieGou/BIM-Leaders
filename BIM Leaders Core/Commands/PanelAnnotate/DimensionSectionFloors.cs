@@ -47,7 +47,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                DimensionSectionFloorsData data = form.DataContext as DimensionSectionFloorsData;
+                DimensionSectionFloorsVM data = form.DataContext as DimensionSectionFloorsVM;
 
                 bool inputSpots = data.ResultSpots;
                 bool inputPlacementThinTop = data.ResultPlacementThinTop;

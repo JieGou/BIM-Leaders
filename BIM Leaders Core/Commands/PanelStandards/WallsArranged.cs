@@ -32,7 +32,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window.
-                WallsArrangedData data = form.DataContext as WallsArrangedData;
+                WallsArrangedVM data = form.DataContext as WallsArrangedVM;
                 double toleranceDistance = data.ResultDistanceTolerance;
                 double distanceStep = data.ResultDistanceStep;
                 Color filterColor0 = new Color(data.ResultColor0.R, data.ResultColor0.G, data.ResultColor0.B);

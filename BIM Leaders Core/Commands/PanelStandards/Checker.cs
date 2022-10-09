@@ -22,7 +22,7 @@ namespace BIM_Leaders_Core
             try
             {
                 // Collector for data provided in window
-                CheckerData data = new CheckerData();
+                CheckerVM data = new CheckerVM();
 
                 CheckerForm form = new CheckerForm();
                 form.ShowDialog();
@@ -31,7 +31,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                data = form.DataContext as CheckerData;
+                data = form.DataContext as CheckerVM;
 
                 // Getting input data from user
                 string inputPrefix = data.ResultPrefix;

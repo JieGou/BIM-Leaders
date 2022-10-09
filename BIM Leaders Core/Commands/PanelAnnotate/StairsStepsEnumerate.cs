@@ -32,7 +32,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window.
-                StairsStepsEnumerateData data = form.DataContext as StairsStepsEnumerateData;
+                StairsStepsEnumerateVM data = form.DataContext as StairsStepsEnumerateVM;
 
                 // Getting input from user.
                 bool inputRightSide = data.ResultSideRight;

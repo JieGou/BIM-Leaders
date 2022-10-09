@@ -26,7 +26,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Collector for data provided in window
-                GridsAlignData data = form.DataContext as GridsAlignData;
+                GridsAlignVM data = form.DataContext as GridsAlignVM;
 
                 // Getting input from user
                 bool inputSide1 = data.ResultSide1;

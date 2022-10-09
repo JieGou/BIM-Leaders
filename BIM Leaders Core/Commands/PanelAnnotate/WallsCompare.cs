@@ -30,7 +30,7 @@ namespace BIM_Leaders_Core
                 if (form.DialogResult == false)
                     return Result.Cancelled;
 
-                WallsCompareData data = form.DataContext as WallsCompareData;
+                WallsCompareVM data = form.DataContext as WallsCompareVM;
                 
                 bool inputLinks = data.ResultLinks;
                 string materialName = doc.GetElement(data.ListMaterialsSelected).Name;

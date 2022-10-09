@@ -146,9 +146,16 @@
         </member>
         <member name="F:MaterialDesignThemes.Wpf.ComboBoxAssist.ShowSelectedItemProperty">
             <summary>
-            By default the selected item is hidden from the drop down list, as per Material Design specifications. 
-            To revert to a more classic Windows desktop behaviour, and show the currently selected item again in the drop
-            down, set this attached propety to true.
+            By default the selected item is displayed in the drop down list, as per Material Design specifications.
+            To change this to a behavior of hiding the selected item from the drop down list, set this attached property to false.
+            </summary>
+        </member>
+        <member name="F:MaterialDesignThemes.Wpf.ComboBoxAssist.MaxLengthProperty">
+            <summary>
+            Gets or sets the maximum number of characters that can be manually entered into the text box. <br />
+            <remarks>
+            <see cref="P:System.Windows.Controls.TextBox.MaxLength"/> cannot be set for an editable ComboBox. That's why this attached property exists.
+            </remarks>
             </summary>
         </member>
         <member name="T:MaterialDesignThemes.Wpf.Converters.CalendarDateCoalesceConverter">
@@ -167,6 +174,11 @@
             With one arc at 100 % the start point is identical the end point, so nothing is drawn.
             Midpoint at half of current percentage is the endpoint of the first arc
             and the start point of the second arc.
+            </summary>
+        </member>
+        <member name="T:MaterialDesignThemes.Wpf.Converters.CursorConverter">
+            <summary>
+            Value converter that uses the Cursor from the bound property if set, otherwise it returns the <see cref="P:MaterialDesignThemes.Wpf.Converters.CursorConverter.FallbackCursor"/>.
             </summary>
         </member>
         <member name="T:MaterialDesignThemes.Wpf.Converters.HintProxyFabricConverter">
@@ -222,14 +234,24 @@
         </member>
         <member name="M:MaterialDesignThemes.Wpf.DataGridAssist.AllowDirectEditWithoutFocus(System.Object,System.Windows.Input.MouseButtonEventArgs)">
             <summary>
-            Allows editing of components inside of a datagrid cell with a single left click.
+            Allows editing of components inside of a data grid cell with a single left click.
             </summary>
         </member>
         <member name="P:MaterialDesignThemes.Wpf.DataGridTextColumn.MaxLength">
             <summary>
             Set the maximum length for the text field.
             </summary>
-            <remarks>Not a dprop, as is only applied once.</remarks>
+            <remarks>Not a dependency property, as is only applied once.</remarks>
+        </member>
+        <member name="P:MaterialDesignThemes.Wpf.DialogClosedEventArgs.Parameter">
+            <summary>
+            Gets the parameter originally provided to <see cref="F:MaterialDesignThemes.Wpf.DialogHost.CloseDialogCommand"/>/
+            </summary>
+        </member>
+        <member name="P:MaterialDesignThemes.Wpf.DialogClosedEventArgs.Session">
+            <summary>
+            Allows interaction with the current dialog session.
+            </summary>
         </member>
         <member name="M:MaterialDesignThemes.Wpf.DialogClosingEventArgs.Cancel">
             <summary>
@@ -315,12 +337,22 @@
             <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
             <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="F:MaterialDesignThemes.Wpf.DialogHost.CloseDialogCommand"/> command.</returns>
         </member>
+        <member name="M:MaterialDesignThemes.Wpf.DialogHost.Show(System.Object,MaterialDesignThemes.Wpf.DialogOpenedEventHandler,MaterialDesignThemes.Wpf.DialogClosingEventHandler,MaterialDesignThemes.Wpf.DialogClosedEventHandler)">
+            <summary>
+            Shows a modal dialog. To use, a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+            </summary>
+            <param name="content">Content to show (can be a control or view model).</param>        
+            <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
+            <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+            <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
+            <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="F:MaterialDesignThemes.Wpf.DialogHost.CloseDialogCommand"/> command.</returns>
+        </member>
         <member name="M:MaterialDesignThemes.Wpf.DialogHost.Show(System.Object,System.Object)">
             <summary>
             Shows a modal dialog. To use, a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
             </summary>
             <param name="content">Content to show (can be a control or view model).</param>
-            <param name="dialogIdentifier"><see cref="P:MaterialDesignThemes.Wpf.DialogHost.Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifer set in XAML. <c>null</c> is allowed.</param>
+            <param name="dialogIdentifier"><see cref="P:MaterialDesignThemes.Wpf.DialogHost.Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
             <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="F:MaterialDesignThemes.Wpf.DialogHost.CloseDialogCommand"/> command.</returns>
         </member>
         <member name="M:MaterialDesignThemes.Wpf.DialogHost.Show(System.Object,System.Object,MaterialDesignThemes.Wpf.DialogOpenedEventHandler)">
@@ -328,7 +360,7 @@
             Shows a modal dialog. To use, a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
             </summary>
             <param name="content">Content to show (can be a control or view model).</param>
-            <param name="dialogIdentifier"><see cref="P:MaterialDesignThemes.Wpf.DialogHost.Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifer set in XAML. <c>null</c> is allowed.</param>
+            <param name="dialogIdentifier"><see cref="P:MaterialDesignThemes.Wpf.DialogHost.Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
             <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
             <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="F:MaterialDesignThemes.Wpf.DialogHost.CloseDialogCommand"/> command.</returns>
         </member>
@@ -337,7 +369,7 @@
             Shows a modal dialog. To use, a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
             </summary>
             <param name="content">Content to show (can be a control or view model).</param>
-            <param name="dialogIdentifier"><see cref="P:MaterialDesignThemes.Wpf.DialogHost.Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifer set in XAML. <c>null</c> is allowed.</param>        
+            <param name="dialogIdentifier"><see cref="P:MaterialDesignThemes.Wpf.DialogHost.Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>        
             <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
             <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="F:MaterialDesignThemes.Wpf.DialogHost.CloseDialogCommand"/> command.</returns>
         </member>
@@ -346,22 +378,33 @@
             Shows a modal dialog. To use, a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
             </summary>
             <param name="content">Content to show (can be a control or view model).</param>
-            <param name="dialogIdentifier"><see cref="P:MaterialDesignThemes.Wpf.DialogHost.Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifer set in XAML. <c>null</c> is allowed.</param>
+            <param name="dialogIdentifier"><see cref="P:MaterialDesignThemes.Wpf.DialogHost.Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
             <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
             <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+            <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="F:MaterialDesignThemes.Wpf.DialogHost.CloseDialogCommand"/> command.</returns>
+        </member>
+        <member name="M:MaterialDesignThemes.Wpf.DialogHost.Show(System.Object,System.Object,MaterialDesignThemes.Wpf.DialogOpenedEventHandler,MaterialDesignThemes.Wpf.DialogClosingEventHandler,MaterialDesignThemes.Wpf.DialogClosedEventHandler)">
+            <summary>
+            Shows a modal dialog. To use, a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> instance must be in a visual tree (typically this may be specified towards the root of a Window's XAML).
+            </summary>
+            <param name="content">Content to show (can be a control or view model).</param>
+            <param name="dialogIdentifier"><see cref="P:MaterialDesignThemes.Wpf.DialogHost.Identifier"/> of the instance where the dialog should be shown. Typically this will match an identifier set in XAML. <c>null</c> is allowed.</param>
+            <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
+            <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+            <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
             <returns>Task result is the parameter used to close the dialog, typically what is passed to the <see cref="F:MaterialDesignThemes.Wpf.DialogHost.CloseDialogCommand"/> command.</returns>
         </member>
         <member name="M:MaterialDesignThemes.Wpf.DialogHost.Close(System.Object)">
             <summary>
              Close a modal dialog.
             </summary>
-            <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifer set in XAML. </param>
+            <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifier set in XAML. </param>
         </member>
         <member name="M:MaterialDesignThemes.Wpf.DialogHost.Close(System.Object,System.Object)">
             <summary>
              Close a modal dialog.
             </summary>
-            <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifer set in XAML. </param>
+            <param name="dialogIdentifier"> of the instance where the dialog should be closed. Typically this will match an identifier set in XAML. </param>
             <param name="parameter"> to provide to close handler</param>
         </member>
         <member name="M:MaterialDesignThemes.Wpf.DialogHost.GetDialogSession(System.Object)">
@@ -375,7 +418,7 @@
             <summary>
             dialog instance exists
             </summary>
-            <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifer set in XAML.</param>
+            <param name="dialogIdentifier">of the instance where the dialog should be closed. Typically this will match an identifier set in XAML.</param>
             <returns></returns>
         </member>
         <member name="P:MaterialDesignThemes.Wpf.DialogHost.Identifier">
@@ -419,6 +462,11 @@
             Represents the overlay brush that is used to dim the background behind the dialog
             </summary>
         </member>
+        <member name="P:MaterialDesignThemes.Wpf.DialogHost.DialogBackground">
+            <summary>
+            Represents the brush for the Dialog's background
+            </summary>
+        </member>
         <member name="E:MaterialDesignThemes.Wpf.DialogHost.DialogOpened">
             <summary>
             Raised when a dialog is opened.
@@ -449,6 +497,21 @@
             Callback fired when the <see cref="E:MaterialDesignThemes.Wpf.DialogHost.DialogClosing"/> event is fired, allowing the event to be processed from a binding/view model.
             </summary>
         </member>
+        <member name="E:MaterialDesignThemes.Wpf.DialogHost.DialogClosed">
+            <summary>
+            Raised when a dialog is closed.
+            </summary>
+        </member>
+        <member name="F:MaterialDesignThemes.Wpf.DialogHost.DialogClosedAttachedProperty">
+            <summary>
+            Attached property which can be used on the <see cref="T:System.Windows.Controls.Button"/> which instigated the <see cref="F:MaterialDesignThemes.Wpf.DialogHost.OpenDialogCommand"/> to process the closed event.
+            </summary>
+        </member>
+        <member name="P:MaterialDesignThemes.Wpf.DialogHost.DialogClosedCallback">
+            <summary>
+            Callback fired when the <see cref="E:MaterialDesignThemes.Wpf.DialogHost.DialogClosed"/> event is fired, allowing the event to be processed from a binding/view model.
+            </summary>
+        </member>
         <member name="M:MaterialDesignThemes.Wpf.DialogHost.FocusPopup">
             <summary>
             Attempts to focus the content of a popup.
@@ -470,7 +533,7 @@
             Thrown is a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> is not found when conducting a depth first traversal of visual tree.  
             </exception>
             <remarks>
-            As a depth first traversal of the window's visual tree is performed, it is not safe to use this method in a situtation where a screen has multiple <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>s.
+            As a depth first traversal of the window's visual tree is performed, it is not safe to use this method in a situation where a screen has multiple <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>s.
             </remarks>
             <returns></returns>
         </member>
@@ -485,7 +548,7 @@
             Thrown is a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> is not found when conducting a depth first traversal of visual tree.  
             </exception>
             <remarks>
-            As a depth first traversal of the window's visual tree is performed, it is not safe to use this method in a situtation where a screen has multiple <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>s.
+            As a depth first traversal of the window's visual tree is performed, it is not safe to use this method in a situation where a screen has multiple <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>s.
             </remarks>
             <returns></returns>
         </member>
@@ -500,7 +563,7 @@
             Thrown is a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> is not found when conducting a depth first traversal of visual tree.  
             </exception>
             <remarks>
-            As a depth first traversal of the window's visual tree is performed, it is not safe to use this method in a situtation where a screen has multiple <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>s.
+            As a depth first traversal of the window's visual tree is performed, it is not safe to use this method in a situation where a screen has multiple <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>s.
             </remarks>
             <returns></returns>
         </member>
@@ -516,7 +579,24 @@
             Thrown is a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> is not found when conducting a depth first traversal of visual tree.  
             </exception>
             <remarks>
-            As a depth first traversal of the window's visual tree is performed, it is not safe to use this method in a situtation where a screen has multiple <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>s.
+            As a depth first traversal of the window's visual tree is performed, it is not safe to use this method in a situation where a screen has multiple <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>s.
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:MaterialDesignThemes.Wpf.DialogHostEx.ShowDialog(System.Windows.Window,System.Object,MaterialDesignThemes.Wpf.DialogOpenedEventHandler,MaterialDesignThemes.Wpf.DialogClosingEventHandler,MaterialDesignThemes.Wpf.DialogClosedEventHandler)">
+            <summary>
+            Shows a dialog using the first found <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> in a given <see cref="T:System.Windows.Window"/>.
+            </summary>
+            <param name="window">Window on which the modal dialog should be displayed. Must contain a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>.</param>
+            <param name="content">Content to show (can be a control or view model).</param>
+            <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
+            <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+            <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown is a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> is not found when conducting a depth first traversal of visual tree.  
+            </exception>
+            <remarks>
+            As a depth first traversal of the window's visual tree is performed, it is not safe to use this method in a situation where a screen has multiple <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>s.
             </remarks>
             <returns></returns>
         </member>
@@ -568,9 +648,23 @@
             </exception>
             <returns></returns>
         </member>
+        <member name="M:MaterialDesignThemes.Wpf.DialogHostEx.ShowDialog(System.Windows.DependencyObject,System.Object,MaterialDesignThemes.Wpf.DialogOpenedEventHandler,MaterialDesignThemes.Wpf.DialogClosingEventHandler,MaterialDesignThemes.Wpf.DialogClosedEventHandler)">
+            <summary>
+            Shows a dialog using the parent/ancestor <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> of the a given <see cref="T:System.Windows.DependencyObject"/>.
+            </summary>
+            <param name="childDependencyObject">Dependency object which should be a visual child of a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/>, where the dialog will be shown.</param>
+            <param name="content">Content to show (can be a control or view model).</param>
+            <param name="openedEventHandler">Allows access to opened event which would otherwise have been subscribed to on a instance.</param>
+            <param name="closingEventHandler">Allows access to closing event which would otherwise have been subscribed to on a instance.</param>
+            <param name="closedEventHandler">Allows access to closed event which would otherwise have been subscribed to on a instance.</param>
+            <exception cref="T:System.InvalidOperationException">
+            Thrown is a <see cref="T:MaterialDesignThemes.Wpf.DialogHost"/> is not found when conducting a depth first traversal of visual tree.  
+            </exception>
+            <returns></returns>
+        </member>
         <member name="P:MaterialDesignThemes.Wpf.DialogOpenedEventArgs.Session">
             <summary>
-            Allows interation with the current dialog session.
+            Allows interaction with the current dialog session.
             </summary>
         </member>
         <member name="T:MaterialDesignThemes.Wpf.DialogSession">
@@ -627,7 +721,7 @@
         </member>
         <member name="P:MaterialDesignThemes.Wpf.DrawerClosingEventArgs.Dock">
             <summary>
-            Allows interation with the current dialog session.
+            Allows interaction with the current dialog session.
             </summary>
         </member>
         <member name="E:MaterialDesignThemes.Wpf.DrawerHost.DrawerOpened">
@@ -642,7 +736,7 @@
         </member>
         <member name="P:MaterialDesignThemes.Wpf.DrawerOpenedEventArgs.Dock">
             <summary>
-            Allows interation with the current dialog session.
+            Allows interaction with the current dialog session.
             </summary>
         </member>
         <member name="M:MaterialDesignThemes.Wpf.Extensions.GetVisualAncestry(System.Windows.DependencyObject)">
@@ -653,6 +747,16 @@
             </summary>
             <param name="leaf"></param>
             <returns></returns>
+        </member>
+        <member name="F:MaterialDesignThemes.Wpf.FlipperAssist.UniformCornerRadiusProperty">
+            <summary>
+            Controls the (uniform) corner radius of the contained card
+            </summary>
+        </member>
+        <member name="F:MaterialDesignThemes.Wpf.FlipperAssist.CardStyleProperty">
+            <summary>
+            Controls the style of the contained card
+            </summary>
         </member>
         <member name="T:MaterialDesignThemes.Wpf.IHintProxy">
             <summary>
@@ -748,9 +852,29 @@
             <param name="neverConsiderToBeDuplicate">The message will never be considered a duplicate.</param>
             <param name="durationOverride">Message show duration override.</param>
         </member>
+        <member name="F:MaterialDesignThemes.Wpf.ListBoxItemAssist.CornerRadiusProperty">
+            <summary>
+            Controls the corner radius of the selection box.
+            </summary>
+        </member>
         <member name="T:MaterialDesignThemes.Wpf.MessageQueueExtension">
             <summary>
             Provides shorthand to initialise a new <see cref="T:MaterialDesignThemes.Wpf.SnackbarMessageQueue"/> for a <see cref="T:MaterialDesignThemes.Wpf.Snackbar"/>.
+            </summary>
+        </member>
+        <member name="F:MaterialDesignThemes.Wpf.NavigationBarAssist.CornerRadiusProperty">
+            <summary>
+            Controls the corner radius of the selection box.
+            </summary>
+        </member>
+        <member name="F:MaterialDesignThemes.Wpf.NavigationDrawerAssist.CornerRadiusProperty">
+            <summary>
+            Controls the corner radius of the selection box.
+            </summary>
+        </member>
+        <member name="F:MaterialDesignThemes.Wpf.NavigationRailAssist.CornerRadiusProperty">
+            <summary>
+            Controls the corner radius of the selection box.
             </summary>
         </member>
         <member name="F:MaterialDesignThemes.Wpf.NavigationRailAssist.FloatingContentProperty">
@@ -801,7 +925,7 @@
         <member name="T:MaterialDesignThemes.Wpf.Plane3D.LayoutInvalidationCatcher">
             <summary>
             Wrap this around a class that we want to catch the measure and arrange 
-            processes occuring on, and propagate to the parent Planerator, if any.
+            processes occurring on, and propagate to the parent Planerator, if any.
             Do this because layout invalidations don't flow up out of a 
             Viewport2DVisual3D object.
             </summary>
@@ -991,6 +1115,16 @@
             Get or sets the popup vertical offset in relation to the button.
             </summary>
         </member>
+        <member name="F:MaterialDesignThemes.Wpf.PopupBox.PopupUniformCornerRadiusProperty">
+            <summary>
+            Get or sets the corner radius of the popup card.
+            </summary>
+        </member>
+        <member name="P:MaterialDesignThemes.Wpf.PopupBox.PopupUniformCornerRadius">
+            <summary>
+            Get or sets the corner radius of the popup card.
+            </summary>
+        </member>
         <member name="P:MaterialDesignThemes.Wpf.PopupBox.PopupPlacementMethod">
             <summary>
             Framework use. Provides the method used to position the popup.
@@ -1078,6 +1212,11 @@
             <summary>
             A custom control implementing a rating bar.
             The icon aka content may be set as a DataTemplate via the ButtonContentTemplate property.
+            </summary>
+        </member>
+        <member name="P:MaterialDesignThemes.Wpf.RatingBar.ValueIncrements">
+            <summary>
+            Gets or sets the value increments. Set to a value between 0.0 and 1.0 (both exclusive) to enable fractional values. Default value is 1.0 (i.e. fractional values disabled)
             </summary>
         </member>
         <member name="F:MaterialDesignThemes.Wpf.Ripple.RecognizesAccessKeyProperty">
@@ -1259,7 +1398,7 @@
             Defines the content of a message within a <see cref="T:MaterialDesignThemes.Wpf.Snackbar"/>.  Primary content should be set via the 
             standard <see cref="!:SnackbarMessage.Content"/> property.  Where an action is allowed, content
             can be provided in <see cref="P:MaterialDesignThemes.Wpf.SnackbarMessage.ActionContent"/>.  Standard button properties are 
-            provided for actions, includiing <see cref="P:MaterialDesignThemes.Wpf.SnackbarMessage.ActionCommand"/>.
+            provided for actions, including <see cref="P:MaterialDesignThemes.Wpf.SnackbarMessage.ActionCommand"/>.
             </summary>
         </member>
         <member name="F:MaterialDesignThemes.Wpf.SnackbarMessage.ActionClickEvent">
@@ -1410,7 +1549,7 @@
         </member>
         <member name="F:MaterialDesignThemes.Wpf.TextFieldAssist.HasFilledTextFieldProperty">
             <summary>
-            Controls the visbility of the text field box.
+            Controls the visibility of the text field box.
             </summary>
         </member>
         <member name="F:MaterialDesignThemes.Wpf.TextFieldAssist.HasOutlinedTextFieldProperty">
@@ -1455,7 +1594,7 @@
         </member>
         <member name="F:MaterialDesignThemes.Wpf.TextFieldAssist.HasClearButtonProperty">
             <summary>
-            Controls the visbility of the clear button.
+            Controls the visibility of the clear button.
             </summary>
         </member>
         <member name="F:MaterialDesignThemes.Wpf.TextFieldAssist.HasLeadingIconProperty">
@@ -1623,12 +1762,12 @@
         </member>
         <member name="F:MaterialDesignThemes.Wpf.Transitions.Transitioner.MoveNextCommand">
             <summary>
-            Causes the the next slide to be displayed (affectively increments <see cref="P:System.Windows.Controls.Primitives.Selector.SelectedIndex"/>).
+            Causes the the next slide to be displayed (effectively increments <see cref="P:System.Windows.Controls.Primitives.Selector.SelectedIndex"/>).
             </summary>
         </member>
         <member name="F:MaterialDesignThemes.Wpf.Transitions.Transitioner.MovePreviousCommand">
             <summary>
-            Causes the the previous slide to be displayed (affectively decrements <see cref="P:System.Windows.Controls.Primitives.Selector.SelectedIndex"/>).
+            Causes the the previous slide to be displayed (effectively decrements <see cref="P:System.Windows.Controls.Primitives.Selector.SelectedIndex"/>).
             </summary>
         </member>
         <member name="F:MaterialDesignThemes.Wpf.Transitions.Transitioner.MoveFirstCommand">
@@ -1671,9 +1810,20 @@
             Allows multiple transition effects to be combined and run upon the content loading or being made visible.
             </summary>
         </member>
+        <member name="M:MaterialDesignThemes.Wpf.TreeHelper.FindChild``1(System.Windows.DependencyObject,System.String)">
+            <summary>
+            Finds a Child of a given item in the visual tree. 
+            </summary>
+            <param name="parent">A direct parent of the queried item.</param>
+            <typeparam name="T">The type of the queried item.</typeparam>
+            <param name="childName">x:Name or Name of child. </param>
+            <returns>The first parent item that matches the submitted type parameter. 
+            If not matching item can be found, 
+            a null parent is being returned.</returns>
+        </member>
         <member name="F:MaterialDesignThemes.Wpf.TreeViewAssist.AdditionalTemplateProperty">
             <summary>
-            Allows additional rendering for each tree node, outside of the rippled part of the node which responsds to user selection.                        
+            Allows additional rendering for each tree node, outside of the rippled part of the node which responds to user selection.
             </summary>
             <remarks>
             The content to be rendered is the same of the <see cref="T:System.Windows.Controls.TreeViewItem"/>; i.e the Header property, or
@@ -1698,7 +1848,7 @@
         </member>
         <member name="F:MaterialDesignThemes.Wpf.TreeViewAssist.AdditionalTemplateSelectorProperty">
             <summary>
-            Allows additional rendering for each tree node, outside of the rippled part of the node which responsds to user selection.                        
+            Allows additional rendering for each tree node, outside of the rippled part of the node which responds to user selection.
             </summary>
             <remarks>
             The content to be rendered is the same of the <see cref="T:System.Windows.Controls.TreeViewItem"/>; i.e the Header property, or
@@ -1725,6 +1875,11 @@
             <summary>
             To be used at <see cref="T:System.Windows.Controls.TreeViewItem"/> level, or to be returned by <see cref="!:AdditionalTemplateSelector"/>
             implementors when the additional template associated with a tree should not be used.
+            </summary>
+        </member>
+        <member name="F:MaterialDesignThemes.Wpf.TreeViewAssist.HasNoItemsExpanderVisibilityProperty">
+            <summary>
+            Allows controlling the visibility of the expander arrow on TreeViewItems that do not have any children.
             </summary>
         </member>
         <member name="T:MaterialDesignThemes.Wpf.UIElementExtensions">

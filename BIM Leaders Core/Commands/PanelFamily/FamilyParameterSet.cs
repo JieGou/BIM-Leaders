@@ -29,7 +29,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                FamilyParameterSetData data = form.DataContext as FamilyParameterSetData;
+                FamilyParameterSetVM data = form.DataContext as FamilyParameterSetVM;
                 string parameterName = data.ParametersListSelected;
                 string parameterValue = data.ParameterValue;
 

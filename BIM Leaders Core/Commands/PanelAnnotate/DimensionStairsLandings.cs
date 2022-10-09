@@ -31,7 +31,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                DimensionStairsLandingsData data = form.DataContext as DimensionStairsLandingsData;
+                DimensionStairsLandingsVM data = form.DataContext as DimensionStairsLandingsVM;
                 bool inputPlacementDimensionTop = data.ResultPlacementDimensionTop;
                 bool inputPlacementDimensionMid = data.ResultPlacementDimensionMid;
                 bool inputPlacementDimensionBot = data.ResultPlacementDimensionBot;

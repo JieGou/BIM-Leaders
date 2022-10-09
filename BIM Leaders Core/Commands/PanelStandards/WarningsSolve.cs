@@ -31,7 +31,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                WarningsSolveData data = form.DataContext as WarningsSolveData;
+                WarningsSolveVM data = form.DataContext as WarningsSolveVM;
 
                 // Getting input data from user
                 bool fixWarningsJoin = data.ResultFixWarningsJoin;

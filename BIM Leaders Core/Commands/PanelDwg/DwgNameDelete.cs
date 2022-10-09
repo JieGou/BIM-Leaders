@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
@@ -18,6 +19,7 @@ namespace BIM_Leaders_Core
 
             try
             {
+                List<string> dwgList = GetDwgList();
                 DwgNameDeleteForm form = new DwgNameDeleteForm(doc);
                 form.ShowDialog();
 
@@ -25,7 +27,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                DwgNameDeleteData data = form.DataContext as DwgNameDeleteData;
+                DwgNameDeleteVM data = form.DataContext as DwgNameDeleteVM;
 
                 string name = doc.GetElement(data.DwgListSelected).Category.Name;
 
@@ -55,6 +57,35 @@ namespace BIM_Leaders_Core
                 message = e.Message;
                 return Result.Failed;
             }
+        }
+
+        private static SortedDictionary<string, int> GetDwgList()
+        {
+            // Get DWGs
+            FilteredElementCollector collector = new FilteredElementCollector(_doc);
+            IEnumerable<ImportInstance> dwgTypesAll = collector.OfClass(typeof(ImportInstance)).OrderBy(a => a.Name)
+                .Cast<ImportInstance>(); //LINQ function;
+
+            // Get unique imports names list
+            List<ImportInstance> dwgTypes = new List<ImportInstance>();
+            List<string> dwgTypesNames = new List<string>();
+            foreach (ImportInstance i in dwgTypesAll)
+            {
+                string dwgTypeName = i.Category.Name;
+                if (!dwgTypesNames.Contains(dwgTypeName))
+                {
+                    dwgTypes.Add(i);
+                    dwgTypesNames.Add(dwgTypeName);
+                }
+            }
+
+            SortedDictionary<string, ElementId> dwgTypesList = new SortedDictionary<string, ElementId>();
+            foreach (ImportInstance i in dwgTypes)
+            {
+                dwgTypesList.Add(i.Category.Name, i.Id);
+            }
+
+            return dwgTypesList;
         }
 
         private static void ShowResult(int count, string name)

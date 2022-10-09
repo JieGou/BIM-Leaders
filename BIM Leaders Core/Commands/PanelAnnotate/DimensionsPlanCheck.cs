@@ -27,7 +27,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                DimensionsPlanCheckData data = form.DataContext as DimensionsPlanCheckData;
+                DimensionsPlanCheckVM data = form.DataContext as DimensionsPlanCheckVM;
                 Color filterColor = new Color(data.ResultColor.R, data.ResultColor.G, data.ResultColor.B);
 
                 List<ElementId> wallIds = GetWallIds(doc);

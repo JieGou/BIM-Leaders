@@ -1,0 +1,104 @@
+﻿<Window x:Class="BIM_Leaders_Windows.DimensionStairsLandingsForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BIM_Leaders_Windows"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        
+        Style="{DynamicResource SWindow}"
+        Title="BIM Leaders - Dimension Stairs Landings"
+        WindowStartupLocation="CenterScreen"
+        
+        d:DataContext="{d:DesignInstance Type=local:DimensionStairsLandingsVM}"
+        MouseLeftButtonDown="FormMouseMove">
+
+    <Window.Resources>
+        <ResourceDictionary Source="../Resources.xaml" />
+    </Window.Resources>
+
+    <Grid Background="{x:Null}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <TextBlock Text="Dimension Stairs"
+                       Style="{StaticResource STextBlock}" />
+            <Button x:Name="buttonCancel" IsCancel="True"
+                    Style="{StaticResource SRoundButton}" />
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <StackPanel Height="260" Margin="20,0">
+                <Label Content="Annotation placement"
+                       Style="{StaticResource SLabelBold}" />
+                <CheckBox x:Name="checkboxPlacementDimensionTop" IsChecked="{Binding Path=ResultPlacementDimensionTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Dimensions - Top" ToolTip="Make dimensions to the top side of landings."
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxPlacementDimensionMid" IsChecked="{Binding Path=ResultPlacementDimensionMid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Dimensions - Middle" ToolTip="Make dimensions to the middle layers of landings."
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxPlacementDimensionBot" IsChecked="{Binding Path=ResultPlacementDimensionBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Dimensions - Bottom" ToolTip="Make dimensions to the bottom side of landings."
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxPlacementElevationTop" IsChecked="{Binding Path=ResultPlacementElevationTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Elevation Spots - Top" ToolTip="Make spot elevations on the top side of landings."
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxPlacementElevationMid" IsChecked="{Binding Path=ResultPlacementElevationMid, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Elevation Spots - Top" ToolTip="Make spot elevations on the middle layers of landings."
+                          Style="{StaticResource SCheckBox}" />
+                <CheckBox x:Name="checkboxPlacementElevationBot" IsChecked="{Binding Path=ResultPlacementElevationBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                          Content="Elevation Spots - Bottom" ToolTip="Make spot elevations on the bottom side of landings."
+                          Style="{StaticResource SCheckBox}" />
+
+                <Label Content="Landings stack max distance (cm)"
+                       Margin="-5,5,0,0"
+                       ToolTip="If projection of distance between landings centers are less that given value, they will be marked as stacked (situated one-over-other)"
+                       Style="{StaticResource SLabelBold}" />
+                <TextBox x:Name="textboxDistance" ToolTip="Landings with distance on plan smaller than given value will be dimensioned in stack."
+                         Text="{Binding InputDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Style="{StaticResource STextBox}" />
+                <Label Content="{Binding ElementName=textboxDistance, Path=(Validation.Errors)[0].ErrorContent}"
+                       Style="{StaticResource SLabelError}" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2" VerticalAlignment="Top">
+            <StackPanel>
+                <Button x:Name="buttonOk" Click="ButtonOkClick"
+                    Content="Magic" ToolTip="Run"
+                    Style="{StaticResource SRectangleButton}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                            <Binding ElementName="checkboxPlacementDimensionTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementDimensionMid" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementDimensionBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementElevationTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementElevationMid" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementElevationBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="textboxDistance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+
+                <Label Margin="0,0,20,0"
+                       Style="{StaticResource SLabelError}">
+                    <Label.Content>
+                        <MultiBinding Converter="{StaticResource MultivalueError}" Mode="TwoWay">
+                            <Binding ElementName="checkboxPlacementDimensionTop" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementDimensionMid" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementDimensionBot" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementElevationTop" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementElevationMid" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlacementElevationBot" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                        </MultiBinding>
+                    </Label.Content>
+                </Label>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

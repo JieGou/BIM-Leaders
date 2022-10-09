@@ -47,7 +47,7 @@ namespace BIM_Leaders_Core
 					return Result.Cancelled;
 
 				// Collector for data provided in window
-				DimensionsPlanData data = form.DataContext as DimensionsPlanData;
+				DimensionsPlanVM data = form.DataContext as DimensionsPlanVM;
 
 				// Getting input from user
 				int searchStepCm = data.ResultSearchStep;

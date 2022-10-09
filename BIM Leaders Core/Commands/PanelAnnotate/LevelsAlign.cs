@@ -26,7 +26,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Collector for data provided in window
-                LevelsAlignData data = form.DataContext as LevelsAlignData;
+                LevelsAlignVM data = form.DataContext as LevelsAlignVM;
 
                 // Getting input from user
                 bool inputSide1 = data.ResultSide1;

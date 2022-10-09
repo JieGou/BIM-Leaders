@@ -29,7 +29,7 @@ namespace BIM_Leaders_Core
                     return Result.Cancelled;
 
                 // Get user provided information from window
-                TagsPlanCheckData data = form.DataContext as TagsPlanCheckData;
+                TagsPlanCheckVM data = form.DataContext as TagsPlanCheckVM;
                 Color filterColor = new Color(data.ResultColor.R, data.ResultColor.G, data.ResultColor.B);
 
                 List<ElementId> elementIds = GetUntaggedElementIds(doc);
