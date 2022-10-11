@@ -48,6 +48,8 @@ namespace BIM_Leaders_Core
         {
             // Get user provided information from window
             LevelsAlignForm form = new LevelsAlignForm();
+            LevelsAlignVM formVM = new LevelsAlignVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

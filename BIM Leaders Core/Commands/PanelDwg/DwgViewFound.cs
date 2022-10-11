@@ -104,8 +104,10 @@ namespace BIM_Leaders_Core
         private static void ShowResult(DataSet dwgDataSet)
         {
             // Show result
-            DwgViewFoundForm form = new DwgViewFoundForm(dwgDataSet);
-            
+            DwgViewFoundForm form = new DwgViewFoundForm();
+            DwgViewFoundVM formVM = new DwgViewFoundVM(dwgDataSet);
+            form.DataContext = formVM;
+
             form.ShowDialog();
         }
 

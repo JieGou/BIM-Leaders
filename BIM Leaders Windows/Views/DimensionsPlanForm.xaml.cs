@@ -20,8 +20,6 @@ namespace BIM_Leaders_Windows
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            DataContext = new DimensionsPlanVM();
         }
 
         private void InitializeMaterialDesign()

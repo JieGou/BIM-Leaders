@@ -3,7 +3,6 @@ using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Windows
 {
@@ -21,8 +20,6 @@ namespace BIM_Leaders_Windows
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            DataContext = new DimensionsPlanCheckVM();
         }
 
         private void InitializeMaterialDesign()

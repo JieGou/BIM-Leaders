@@ -30,7 +30,9 @@ namespace BIM_Leaders_Core
                 SortedDictionary<string, int> listFillTypes = GetListFillTypes();
 
                 // Show the dialog.
-                WallsCompareForm form = new WallsCompareForm(listMaterials, listFillTypes);
+                WallsCompareForm form = new WallsCompareForm();
+                WallsCompareVM formVM = new WallsCompareVM(listMaterials, listFillTypes);
+                form.DataContext = formVM;
                 form.ShowDialog();
 
                 if (form.DialogResult == false)
@@ -39,8 +41,8 @@ namespace BIM_Leaders_Core
                 WallsCompareVM data = form.DataContext as WallsCompareVM;
                 
                 bool inputLinks = data.ResultLinks;
-                string materialName = _doc.GetElement(data.ListMaterialsSelected).Name;
-                FilledRegionType fill = _doc.GetElement(data.ListFillTypesSelected) as FilledRegionType;
+                string materialName = _doc.GetElement(new ElementId(data.ListMaterialsSelected)).Name;
+                FilledRegionType fill = _doc.GetElement(new ElementId(data.ListFillTypesSelected)) as FilledRegionType;
                 
                 double elevation = _doc.ActiveView.GenLevel.Elevation;
                 

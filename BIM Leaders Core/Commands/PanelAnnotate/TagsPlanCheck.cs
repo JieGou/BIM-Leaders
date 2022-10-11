@@ -61,6 +61,8 @@ namespace BIM_Leaders_Core
         private static TagsPlanCheckVM GetUserInput()
         {
             TagsPlanCheckForm form = new TagsPlanCheckForm();
+            TagsPlanCheckVM formVM = new TagsPlanCheckVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

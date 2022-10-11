@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 
@@ -20,12 +16,10 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="WallsCompareForm"/>
         /// </summary>
-        public WallsCompareForm(SortedDictionary<string, int> listMaterials, SortedDictionary<string, int> listFillTypes)
+        public WallsCompareForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            DataContext = new WallsCompareVM(listMaterials, listFillTypes);
         }
 
         private void InitializeMaterialDesign()

@@ -72,6 +72,8 @@ namespace BIM_Leaders_Core
         private static WallsArrangedVM GetUserInput()
         {
             WallsArrangedForm form = new WallsArrangedForm();
+            WallsArrangedVM formVM = new WallsArrangedVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

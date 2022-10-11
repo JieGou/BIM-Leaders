@@ -48,6 +48,8 @@ namespace BIM_Leaders_Core
         private static NamesChangeVM GetUserInput()
         {
             NamesChangeForm form = new NamesChangeForm();
+            NamesChangeVM formVM = new NamesChangeVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

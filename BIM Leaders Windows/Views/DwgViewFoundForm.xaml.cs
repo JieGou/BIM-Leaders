@@ -17,12 +17,10 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="DwgViewFoundForm"/>
         /// </summary>
-        public DwgViewFoundForm(DataSet dwgDataSet)
+        public DwgViewFoundForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            DataContext = new DwgViewFoundVM(dwgDataSet);
         }
 
         private void InitializeMaterialDesign()

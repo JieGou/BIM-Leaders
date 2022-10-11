@@ -22,8 +22,6 @@ namespace BIM_Leaders_Windows
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            DataContext = new NamesChangeVM();
         }
 
         private void InitializeMaterialDesign()

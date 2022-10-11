@@ -55,6 +55,8 @@ namespace BIM_Leaders_Core
         private static DimensionsPlanCheckVM GetUserInput()
         {
             DimensionsPlanCheckForm form = new DimensionsPlanCheckForm();
+            DimensionsPlanCheckVM formVM = new DimensionsPlanCheckVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

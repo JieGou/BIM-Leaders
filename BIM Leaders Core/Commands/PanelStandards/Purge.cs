@@ -56,6 +56,8 @@ namespace BIM_Leaders_Core
         private static PurgeVM GetUserInput()
         {
             PurgeForm form = new PurgeForm();
+            PurgeVM formVM = new PurgeVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

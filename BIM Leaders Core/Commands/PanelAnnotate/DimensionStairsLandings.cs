@@ -71,6 +71,8 @@ namespace BIM_Leaders_Core
         private static DimensionStairsLandingsVM GetUserInput()
         {
             DimensionStairsLandingsForm form = new DimensionStairsLandingsForm();
+            DimensionStairsLandingsVM formVM = new DimensionStairsLandingsVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

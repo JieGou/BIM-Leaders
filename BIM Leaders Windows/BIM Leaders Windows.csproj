@@ -60,14 +60,6 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.6.1.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.6.1\lib\net462\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2021\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -84,7 +76,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MultivalueTextBoxesConverter.cs" />
+    <Compile Include="Converters\MultivalueTextBoxesConverter.cs" />
     <Compile Include="ViewModels\CheckerReportVM.cs" />
     <Compile Include="Views\TagsPlanCheckForm.xaml.cs">
       <DependentUpon>TagsPlanCheckForm.xaml</DependentUpon>
@@ -103,7 +95,7 @@
     <Compile Include="Views\JournalAnalyzeForm.xaml.cs">
       <DependentUpon>JournalAnalyzeForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MultivalueBoolConverter.cs" />
+    <Compile Include="Converters\MultivalueBoolConverter.cs" />
     <Compile Include="ViewModels\WarningsSolveVM.cs" />
     <Compile Include="Views\WarningsSolveForm.xaml.cs">
       <DependentUpon>WarningsSolveForm.xaml</DependentUpon>
@@ -162,7 +154,7 @@
     <Compile Include="Views\GridsAlignForm.xaml.cs">
       <DependentUpon>GridsAlignForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MultivalueBoolInvertConverter.cs" />
+    <Compile Include="Converters\MultivalueBoolInvertConverter.cs" />
     <Page Include="Fonts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

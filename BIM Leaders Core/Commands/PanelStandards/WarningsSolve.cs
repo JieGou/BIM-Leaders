@@ -52,6 +52,8 @@ namespace BIM_Leaders_Core
         private static WarningsSolveVM GetUserInput()
         {
             WarningsSolveForm form = new WarningsSolveForm();
+            WarningsSolveVM formVM = new WarningsSolveVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

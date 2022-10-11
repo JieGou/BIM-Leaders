@@ -56,6 +56,8 @@ namespace BIM_Leaders_Core
         {
             // Get user provided information from window
             StairsStepsEnumerateForm form = new StairsStepsEnumerateForm();
+            StairsStepsEnumerateVM formVM = new StairsStepsEnumerateVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

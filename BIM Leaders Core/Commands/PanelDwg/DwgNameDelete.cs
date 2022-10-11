@@ -81,7 +81,9 @@ namespace BIM_Leaders_Core
 
         private static DwgNameDeleteVM GetUserInput(SortedDictionary<string, int> dwgList)
         {
-            DwgNameDeleteForm form = new DwgNameDeleteForm(dwgList);
+            DwgNameDeleteForm form = new DwgNameDeleteForm();
+            DwgNameDeleteVM formVM = new DwgNameDeleteVM(dwgList);
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

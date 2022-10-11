@@ -112,6 +112,8 @@ namespace BIM_Leaders_Core
         {
             // Collector for data provided in window
             DimensionSectionFloorsForm form = new DimensionSectionFloorsForm();
+            DimensionSectionFloorsVM formVM = new DimensionSectionFloorsVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

@@ -134,17 +134,19 @@ namespace BIM_Leaders_Core
 			return planContainsRegions;
 		}
 
-		private static DimensionsPlanData GetUserInput()
+		private static DimensionsPlanVM GetUserInput()
 		{
             // Get user provided information from window
             DimensionsPlanForm form = new DimensionsPlanForm();
+			DimensionsPlanVM formVM = new DimensionsPlanVM();
+			form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)
                 return null;
 
             // Collector for data provided in window
-            DimensionsPlanData data = form.DataContext as DimensionsPlanData;
+            DimensionsPlanVM data = form.DataContext as DimensionsPlanVM;
 
 #if VERSION2020
 			double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);

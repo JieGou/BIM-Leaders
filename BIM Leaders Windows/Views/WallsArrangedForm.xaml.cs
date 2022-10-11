@@ -1,9 +1,8 @@
-﻿using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Autodesk.Revit.UI;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 
 namespace BIM_Leaders_Windows
 {
@@ -21,8 +20,6 @@ namespace BIM_Leaders_Windows
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            DataContext = new WallsArrangedVM();
         }
 
         private void InitializeMaterialDesign()

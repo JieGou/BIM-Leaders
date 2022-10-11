@@ -68,7 +68,9 @@ namespace BIM_Leaders_Core
 
         private static FamilyParameterSetVM GetUserInput(List<string> parametersList)
         {
-            FamilyParameterSetForm form = new FamilyParameterSetForm(parametersList);
+            FamilyParameterSetForm form = new FamilyParameterSetForm();
+            FamilyParameterSetVM formVM = new FamilyParameterSetVM(parametersList);
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

@@ -18,12 +18,10 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="JournalAnalyzeForm"/>
         /// </summary>
-        public JournalAnalyzeForm(DataSet commandsDataSet)
+        public JournalAnalyzeForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            DataContext = new JournalAnalyzeVM(commandsDataSet);
         }
 
         private void InitializeMaterialDesign()

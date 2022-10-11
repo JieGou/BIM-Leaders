@@ -62,6 +62,8 @@ namespace BIM_Leaders_Core
         private static CheckerVM GetUserInput()
         {
             CheckerForm form = new CheckerForm();
+            CheckerVM formVM = new CheckerVM();
+            form.DataContext = formVM;
             form.ShowDialog();
 
             if (form.DialogResult == false)

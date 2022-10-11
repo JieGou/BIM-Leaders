@@ -21,8 +21,6 @@ namespace BIM_Leaders_Windows
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            DataContext = new CheckerReportVM(reportDataSet);
         }
 
         private void InitializeMaterialDesign()
