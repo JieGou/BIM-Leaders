@@ -12,6 +12,10 @@
     <SolidColorBrush x:Key="SColorButtonBackgroundDisabled" Color="#4E4E53" />
     <SolidColorBrush x:Key="SColorButtonBorder" Color="#007AFF" />
 
+    <SolidColorBrush x:Key="SColorSelectButtonBackground" Color="#CFCFCF" />
+    <SolidColorBrush x:Key="SColorSelectButtonBackgroundDisabled" Color="#4E4E53" />
+    <SolidColorBrush x:Key="SColorSelectButtonBorder" Color="#FFBFBFBF" />
+
     <SolidColorBrush x:Key="SColorControlsGray" Color="#787880" />
     <SolidColorBrush x:Key="SColorControlsOver" Color="#FFBFBFBF" />
     <SolidColorBrush x:Key="SColorControls" Color="#007AFF" />

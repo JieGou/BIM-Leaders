@@ -63,6 +63,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RevitAPIUI">
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2021\RevitAPIUI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -79,9 +82,8 @@
     <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2020'">
       <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
     </Reference>
-    <Reference Include="RevitAPIUI" Condition=" '$(Configuration)' == '2020'">
+    <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2020'">
       <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2021'">
       <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2021\RevitAPI.dll</HintPath>
@@ -149,6 +151,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BIM Leaders Logic\BIM Leaders Logic.csproj">
+      <Project>{654795bd-31cc-451a-b3fe-0fb14c765e48}</Project>
+      <Name>BIM Leaders Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BIM Leaders Windows\BIM Leaders Windows.csproj">
       <Project>{799942ac-6d9b-44e4-ab3f-1191b32f8cd4}</Project>
       <Name>BIM Leaders Windows</Name>

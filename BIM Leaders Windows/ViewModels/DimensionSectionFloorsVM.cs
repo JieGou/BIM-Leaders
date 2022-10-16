@@ -1,95 +1,179 @@
 ﻿using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "Dimension_Section_Floors"
+    /// View model for command "DimensionSectionFloors"
     /// </summary>
     public class DimensionSectionFloorsVM : INotifyPropertyChanged, IDataErrorInfo
     {
-        private const int _resultThicknessMinValue = 1;
-        private const int _resultThicknessMaxValue = 100;
+        private const int _minThickThicknessMinValue = 1;
+        private const int _minThickThicknessMaxValue = 100;
+
+        #region PROPERTIES
+
+        private DimensionSectionFloorsM _model;
+        public DimensionSectionFloorsM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private SelectLineM _selectLineModel;
+        public SelectLineM SelectLineModel
+        {
+            get { return _selectLineModel; }
+            set { _selectLineModel = value; }
+        }
+
+        private bool _isVisible;
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set
+            {
+                _isVisible = value;
+                OnPropertyChanged(nameof(IsVisible));
+            }
+        }
+
+        private bool _placeSpots;
+        public bool PlaceSpots
+        {
+            get { return _placeSpots; }
+            set
+            {
+                _placeSpots = value;
+                OnPropertyChanged(nameof(PlaceSpots));
+            }
+        }
+
+        private bool _placeOnThinTop;
+        public bool PlaceOnThinTop
+        {
+            get { return _placeOnThinTop; }
+            set
+            {
+                _placeOnThinTop = value;
+                OnPropertyChanged(nameof(PlaceOnThinTop));
+                OnPropertyChanged(nameof(PlaceOnThickTop));
+                OnPropertyChanged(nameof(PlaceOnThickBot));
+            }
+        }
+        private bool _placeOnThickTop;
+        public bool PlaceOnThickTop
+        {
+            get { return _placeOnThickTop; }
+            set
+            {
+                _placeOnThickTop = value;
+                OnPropertyChanged(nameof(PlaceOnThinTop));
+                OnPropertyChanged(nameof(PlaceOnThickTop));
+                OnPropertyChanged(nameof(PlaceOnThickBot));
+            }
+        }
+        private bool _placeOnThickBot;
+        public bool PlaceOnThickBot
+        {
+            get { return _placeOnThickBot; }
+            set
+            {
+                _placeOnThickBot = value;
+                OnPropertyChanged(nameof(PlaceOnThinTop));
+                OnPropertyChanged(nameof(PlaceOnThickTop));
+                OnPropertyChanged(nameof(PlaceOnThickBot));
+            }
+        }
+
+        private string _minThickThicknessString;
+        public string MinThickThicknessString
+        {
+            get { return _minThickThicknessString; }
+            set
+            {
+                _minThickThicknessString = value;
+                OnPropertyChanged(nameof(_minThickThicknessString));
+            }
+        }
+
+        private int _minThickThickness;
+        public int MinThickThickness
+        {
+            get { return _minThickThickness; }
+            set { _minThickThickness = value; }
+        }
+
+        private int _selectElements;
+        public int SelectElements
+        {
+            get { return _selectElements; }
+            set
+            {
+                _selectElements = value;
+                OnPropertyChanged(nameof(SelectElements));
+            }
+        }
+
+        private string _selectElementsError;
+        public string SelectElementsError
+        {
+            get { return _selectElementsError; }
+            set
+            {
+                _selectElementsError = value;
+                OnPropertyChanged(nameof(SelectElementsError));
+            }
+        }
+
+        private string _runResult;
+        public string RunResult
+        {
+            get { return _runResult; }
+            set
+            {
+                _runResult = value;
+                OnPropertyChanged(nameof(RunResult));
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Default constructor
-        /// Initializing a new instance of the <see cref="DimensionSectionFloorsVM"/> class.
+        /// Initializing a new instance of the <see cref=DimensionSectionFloorsVM"/> class.
         /// </summary>
-        public DimensionSectionFloorsVM()
+        public DimensionSectionFloorsVM(DimensionSectionFloorsM model, SelectLineM selectLineModel)
         {
-            _resultSpots = true;
-            _resultPlacementThinTop = true;
-            _resultPlacementThickTop = true;
-            _resultPlacementThickBot = true;
-            _resultThickness = 15;
-            _inputThickness = _resultThickness.ToString();
+            Model = model;
+            SelectLineModel = selectLineModel;
+
+            IsVisible = true;
+
+            PlaceSpots = true;
+            PlaceOnThinTop = true;
+            PlaceOnThickTop = true;
+            PlaceOnThickBot = true;
+            MinThickThickness = 15;
+            MinThickThicknessString = MinThickThickness.ToString();
+
+            RunCommand = new RunCommand(RunAction);
+            SelectLineCommand = new RunCommand(SelectLineAction);
         }
 
-        private bool _resultSpots;
-        public bool ResultSpots
+        #region INOTIFYPROPERTYCHANGED
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            get { return _resultSpots; }
-            set
-            {
-                _resultSpots = value;
-                OnPropertyChanged(nameof(ResultSpots));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private bool _resultPlacementThinTop;
-        public bool ResultPlacementThinTop
-        {
-            get { return _resultPlacementThinTop; }
-            set
-            {
-                _resultPlacementThinTop = value;
-                OnPropertyChanged(nameof(ResultPlacementThinTop));
-                OnPropertyChanged(nameof(ResultPlacementThickTop));
-                OnPropertyChanged(nameof(ResultPlacementThickBot));
-            }
-        }
-        private bool _resultPlacementThickTop;
-        public bool ResultPlacementThickTop
-        {
-            get { return _resultPlacementThickTop; }
-            set
-            {
-                _resultPlacementThickTop = value;
-                OnPropertyChanged(nameof(ResultPlacementThinTop));
-                OnPropertyChanged(nameof(ResultPlacementThickTop));
-                OnPropertyChanged(nameof(ResultPlacementThickBot));
-            }
-        }
-        private bool _resultPlacementThickBot;
-        public bool ResultPlacementThickBot
-        {
-            get { return _resultPlacementThickBot; }
-            set
-            {
-                _resultPlacementThickBot = value;
-                OnPropertyChanged(nameof(ResultPlacementThinTop));
-                OnPropertyChanged(nameof(ResultPlacementThickTop));
-                OnPropertyChanged(nameof(ResultPlacementThickBot));
-            }
-        }
+        #endregion
 
-        private string _inputThickness;
-        public string InputThickness
-        {
-            get { return _inputThickness; }
-            set
-            {
-                _inputThickness = value;
-                OnPropertyChanged(nameof(InputThickness));
-            }
-        }
-        private int _resultThickness;
-        public int ResultThickness
-        {
-            get { return _resultThickness; }
-            set { _resultThickness = value; }
-        }
-
-
-        #region Validation
+        #region VALIDATION
 
         public string Error { get { return null; } }
         public string this[string propertyName]
@@ -103,39 +187,39 @@ namespace BIM_Leaders_Windows
         string GetValidationError(string propertyName)
         {
             string error = null;
-            
+
             switch (propertyName)
             {
-                case "ResultPlacementThinTop":
-                    error = ValidateResultPlacement();
+                case "PlaceOnThinTop":
+                    error = ValidatePlacement();
                     break;
-                case "ResultPlacementThickTop":
-                    error = ValidateResultPlacement();
+                case "PlaceOnThickTop":
+                    error = ValidatePlacement();
                     break;
-                case "ResultPlacementThickBot":
-                    error = ValidateResultPlacement();
+                case "PlaceOnThickBot":
+                    error = ValidatePlacement();
                     break;
-                case "InputThickness":
-                    error = ValidateInputIsWholeNumber(out int thickness, _inputThickness);
+                case "MinThickThicknessString":
+                    error = ValidateIsWholeNumber(out int thickness, MinThickThicknessString);
                     if (string.IsNullOrEmpty(error))
                     {
-                        ResultThickness = thickness;
-                        error = ValidateResultThickness();
-                    }   
+                        MinThickThickness = thickness;
+                        error = ValidateMinThickThickness();
+                    }
                     break;
             }
             return error;
         }
 
-        private string ValidateResultPlacement()
+        private string ValidatePlacement()
         {
-            if (ResultPlacementThinTop == false && ResultPlacementThickTop == false
-                && ResultPlacementThickBot == false)
+            if (PlaceOnThinTop == false && PlaceOnThickTop == false
+                && PlaceOnThickBot == false)
                 return "Check at least one placement";
             return null;
         }
 
-        private string ValidateInputIsWholeNumber(out int numberParsed, string number)
+        private string ValidateIsWholeNumber(out int numberParsed, string number)
         {
             numberParsed = 0;
 
@@ -147,20 +231,54 @@ namespace BIM_Leaders_Windows
             return null;
         }
 
-        private string ValidateResultThickness()
+        private string ValidateMinThickThickness()
         {
-            if (ResultThickness < _resultThicknessMinValue || ResultThickness > _resultThicknessMaxValue)
-                return $"From {_resultThicknessMinValue} to {_resultThicknessMaxValue} cm";
+            if (MinThickThickness < _minThickThicknessMinValue || MinThickThickness > _minThickThicknessMaxValue)
+                return $"From {_minThickThicknessMinValue} to {_minThickThicknessMaxValue} cm";
             return null;
         }
 
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region COMMANDS
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Model.PlaceSpots = PlaceSpots;
+
+            Model.PlacementThinTop = PlaceOnThinTop;
+            Model.PlacementThickTop = PlaceOnThickTop;
+            Model.PlacementThickBot = PlaceOnThickBot;
+            Model.MinThickThickness = MinThickThickness;
+
+            //_externalEvent.Raise();
+
+            Model.Run();
+
+            RunResult = Model.RunResult;
         }
+
+        public ICommand SelectLineCommand { get; set; }
+
+        private void SelectLineAction()
+        {
+            IsVisible = false;
+
+            SelectLineModel.Run();
+
+            if (SelectLineModel.Error.Length > 0)
+                SelectElementsError = SelectLineModel.Error;
+            else
+            {
+                SelectElements = SelectLineModel.SelectedElement;
+                Model.SelectElements = SelectLineModel.SelectedElement;
+            }
+
+            IsVisible = true;
+        }
+
+        #endregion
     }
 }

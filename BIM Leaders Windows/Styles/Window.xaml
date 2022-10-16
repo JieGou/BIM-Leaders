@@ -3,7 +3,6 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-                    xmlns:local="clr-namespace:BIM_Leaders_Windows"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
@@ -29,7 +28,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Window">
                     <Grid Background="{x:Null}">
-                        <materialDesign:Card Margin="10" UniformCornerRadius="30" Background="{x:Null}">
+                        <d:Card Margin="10" UniformCornerRadius="30" Background="{x:Null}">
                             <StackPanel>
                                 <StackPanel.Background>
                                     <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
@@ -43,7 +42,7 @@
                                 </AdornerDecorator>
 
                             </StackPanel>
-                        </materialDesign:Card>
+                        </d:Card>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

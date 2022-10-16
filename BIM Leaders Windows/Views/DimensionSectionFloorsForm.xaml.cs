@@ -1,7 +1,9 @@
 ﻿using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 
 namespace BIM_Leaders_Windows
@@ -32,33 +34,16 @@ namespace BIM_Leaders_Windows
             var hue = new Hue("Dummy", Colors.Black, Colors.White);
         }
 
-        /// <summary>
-        /// Handles the Click event of the Button_exit control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void ButtonExitClick(object sender, System.EventArgs e)
-        {
-            DialogResult = false;
-            Close();
-        }
-
-        /// <summary>
-        /// Handles the Click event of the Button_ok control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void ButtonOkClick(object sender, System.EventArgs e)
-        {
-            DialogResult = true;
-            Close();
-        }
-
         // Move the window
         private void FormMouseMove(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
+        }
+
+        private void buttonCancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

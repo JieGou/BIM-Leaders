@@ -340,7 +340,9 @@ namespace BIM_Leaders_Core
 
         private static void ShowResult(DataSet commandsDataSet)
         {
-            JournalAnalyzeForm form = new JournalAnalyzeForm(commandsDataSet);
+            JournalAnalyzeForm form = new JournalAnalyzeForm();
+            JournalAnalyzeVM formVM = new JournalAnalyzeVM(commandsDataSet);
+            form.DataContext = formVM;
             form.ShowDialog();
         }
 

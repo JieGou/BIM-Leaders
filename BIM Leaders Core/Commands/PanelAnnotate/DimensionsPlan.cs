@@ -14,7 +14,7 @@ namespace BIM_Leaders_Core
 	{
         private static Document _doc;
 		private static double _toleranceAngle;
-        private static DimensionsPlanData _inputData;
+        private static DimensionsPlanVM _inputData;
         private static int _countDimensions;
         private static int _countSegments;
 

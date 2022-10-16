@@ -4,12 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Dimension Section Floors"
         WindowStartupLocation="CenterScreen"
+        Height="500"
         
         d:DataContext="{d:DesignInstance Type=local:DimensionSectionFloorsVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -18,6 +18,10 @@
         <ResourceDictionary Source="../Resources.xaml" />
     </Window.Resources>
 
+    <Window.Visibility>
+        <Binding Path="IsVisible" Mode="TwoWay" Converter="{StaticResource BooleanToVisibilityConverter}" />
+    </Window.Visibility>
+    
     <Grid Background="{x:Null}">
         <Grid.RowDefinitions>
             <RowDefinition Height="89" />
@@ -28,59 +32,76 @@
         <Grid Grid.Row="0">
             <TextBlock Text="Dimension Section Floors"
                        Style="{StaticResource STextBlock}" />
-            <Button x:Name="buttonCancel" IsCancel="True"
-                    Style="{StaticResource SRoundButton}" />
+            <Button x:Name="buttonCancel"
+                    Style="{StaticResource SRoundButton}" Click="buttonCancel_Click" />
         </Grid>
 
         <Grid Grid.Row="1">
-            <StackPanel Height="231" Margin="20,0">
+            <StackPanel Height="331" Margin="20,0" VerticalAlignment="Top">
                 <Label Content="Annotation type"
                        Style="{StaticResource SLabelBold}" />
-                <RadioButton x:Name="radiobutton1" GroupName="rbGroup" IsChecked="{Binding Path=ResultSpots, Mode=TwoWay}"
+                <RadioButton x:Name="radiobuttonPlaceSpots" GroupName="radiobuttonGroup" IsChecked="{Binding Path=PlaceSpots, Mode=TwoWay}"
                              Content="Spot Elevations"
                              Style="{StaticResource SRadioButton}" />
-                <RadioButton x:Name="radiobutton2" GroupName="rbGroup"
+                <RadioButton x:Name="radiobuttonPlaceSpotsNo" GroupName="radiobuttonGroup"
                              Content="Dimensions"
                              Style="{StaticResource SRadioButton}" />
 
                 <Label Content="Annotation placement"
                        Style="{StaticResource SLabelBold}" />
-                <CheckBox x:Name="checkboxPlacementThinTop" IsChecked="{Binding Path=ResultPlacementThinTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <CheckBox x:Name="checkboxPlaceOnThinTop" IsChecked="{Binding Path=PlaceOnThinTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                           Content="Thin Floor - Top" ToolTip="Annotate the top side of thin floors."
                           Style="{StaticResource SCheckBox}" />
-                <CheckBox x:Name="checkboxPlacementThickTop" IsChecked="{Binding Path=ResultPlacementThickTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <CheckBox x:Name="checkboxPlaceOnThickTop" IsChecked="{Binding Path=PlaceOnThickTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                           Content="Thick Floor - Top" ToolTip="Annotate the top side of thick floors."
                           Style="{StaticResource SCheckBox}" />
-                <CheckBox x:Name="checkboxPlacementThickBot" IsChecked="{Binding Path=ResultPlacementThickBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <CheckBox x:Name="checkboxPlaceOnThickBot" IsChecked="{Binding Path=PlaceOnThickBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                           Content="Thick Floor - Bottom" ToolTip="Annotate the bottom side of thick floors."
                           Style="{StaticResource SCheckBox}" />
-
+                <Label Content="{Binding ElementName=checkboxPlaceOnThinTop, Path=(Validation.Errors)[0].ErrorContent}"
+                       Style="{StaticResource SLabelError}" />
+                
                 <Label Content="Thin Floor - Max thickness (cm)"
                        Margin="-5,5,0,0"
                        Style="{StaticResource SLabelBold}" />
-                <TextBox x:Name="textboxThickness" ToolTip="All floors thicker than given value will be recognized as thick."
-                         Text="{Binding InputThickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                <TextBox x:Name="textboxMinThickThicknessString" ToolTip="All floors thicker than given value will be recognized as thick."
+                         Text="{Binding MinThickThicknessString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}" />
-                <Label Content="{Binding ElementName=textboxThickness, Path=(Validation.Errors)[0].ErrorContent}"
+                <Label Content="{Binding ElementName=textboxMinThickThicknessString, Path=(Validation.Errors)[0].ErrorContent}"
                        Style="{StaticResource SLabelError}" />
+
+                <Button x:Name="buttonSelectElements" Command="{Binding SelectLineCommand}"
+                        Content="Select Line" ToolTip="Select vertical line to locate annotations"
+                        Margin="0,15,0,15"
+                        Style="{StaticResource SSelectButton}">
+                </Button>
+                <Label Content="{Binding SelectElementsError, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                       Style="{StaticResource SLabelError}" />
+
+                <Label Content="Selected Line ID:"
+                       Margin="-5,5,0,0"
+                       Style="{StaticResource SLabel}" />
+                <Label Content="{Binding SelectElements, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                       Margin="90,-24,0,0"
+                       Style="{StaticResource SLabel}" />
             </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Top">
             <StackPanel>
-                <Button x:Name="buttonOk" Click="ButtonOkClick"
+                <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                     Content="Magic" ToolTip="Run"
                     Style="{StaticResource SRectangleButton}">
                     <Button.IsEnabled>
                         <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                            <Binding ElementName="checkboxPlacementThinTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                            <Binding ElementName="checkboxPlacementThickTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                            <Binding ElementName="checkboxPlacementThickBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                            <Binding ElementName="textboxThickness" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlaceOnThinTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlaceOnThickTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="checkboxPlaceOnThickBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="textboxMinThickThicknessString" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>
-                <Label Content="{Binding ElementName=checkboxPlacementThinTop, Path=(Validation.Errors)[0].ErrorContent}"
+                <Label Content="{Binding RunResult, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                        Margin="0,0,20,0"
                        Style="{StaticResource SLabelError}" />
             </StackPanel>
