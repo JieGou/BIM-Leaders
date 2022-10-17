@@ -87,6 +87,13 @@ namespace BIM_Leaders_Windows
             }
         }
 
+        private int _minThickThickness;
+        public int MinThickThickness
+        {
+            get { return _minThickThickness; }
+            set { _minThickThickness = value; }
+        }
+
         private string _minThickThicknessString;
         public string MinThickThicknessString
         {
@@ -96,13 +103,6 @@ namespace BIM_Leaders_Windows
                 _minThickThicknessString = value;
                 OnPropertyChanged(nameof(_minThickThicknessString));
             }
-        }
-
-        private int _minThickThickness;
-        public int MinThickThickness
-        {
-            get { return _minThickThickness; }
-            set { _minThickThickness = value; }
         }
 
         private int _selectElements;
@@ -115,7 +115,18 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(SelectElements));
             }
         }
-        
+
+        private string _selectElementsString;
+        public string SelectElementsString
+        {
+            get { return _selectElementsString; }
+            set
+            {
+                _selectElementsString = value;
+                OnPropertyChanged(nameof(SelectElementsString));
+            }
+        }
+
         private string _selectElementsError;
         public string SelectElementsError
         {
@@ -157,6 +168,7 @@ namespace BIM_Leaders_Windows
             PlaceOnThickBot = true;
             MinThickThickness = 15;
             MinThickThicknessString = MinThickThickness.ToString();
+            SelectElementsString = "No selection";
 
             RunCommand = new RunCommand(RunAction);
             SelectLineCommand = new RunCommand(SelectLineAction);
@@ -207,7 +219,7 @@ namespace BIM_Leaders_Windows
                         error = ValidateMinThickThickness();
                     }
                     break;
-                case "SelectElements":
+                case "SelectElementsString":
                     error = SelectElementsError;
                     break;
             }
@@ -274,11 +286,13 @@ namespace BIM_Leaders_Windows
             if (SelectLineModel.Error.Length > 0)
             {
                 SelectElements = 0;
+                SelectElementsString = "No selection";
                 Model.SelectElements = 0;
             }  
             else
             {
                 SelectElements = SelectLineModel.SelectedElement;
+                SelectElementsString = SelectElements.ToString();
                 Model.SelectElements = SelectLineModel.SelectedElement;
             }
             

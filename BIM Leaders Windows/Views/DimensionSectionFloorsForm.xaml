@@ -81,7 +81,7 @@
                 <Label Content="Selected Line ID:"
                        Margin="-5,15,0,0"
                        Style="{StaticResource SLabel}" />
-                <Label x:Name="labelSelectElements" Content="{Binding SelectElements, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                <Label x:Name="labelSelectElements" Content="{Binding SelectElementsString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                        Margin="90,-24,0,0"
                        Style="{StaticResource SLabel}" />
             </StackPanel>
