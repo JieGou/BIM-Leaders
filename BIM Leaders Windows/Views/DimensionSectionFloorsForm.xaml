@@ -19,7 +19,7 @@
     </Window.Resources>
 
     <Window.Visibility>
-        <Binding Path="IsVisible" Mode="TwoWay" Converter="{StaticResource BooleanToVisibilityConverter}" />
+        <Binding Path="IsVisible" Mode="Twoway" Converter="{StaticResource BooleanToVisibilityConverter}" />
     </Window.Visibility>
     
     <Grid Background="{x:Null}">
@@ -62,7 +62,7 @@
                        Style="{StaticResource SLabelError}" />
                 
                 <Label Content="Thin Floor - Max thickness (cm)"
-                       Margin="-5,5,0,0"
+                       Margin="-5,10,0,0"
                        Style="{StaticResource SLabelBold}" />
                 <TextBox x:Name="textboxMinThickThicknessString" ToolTip="All floors thicker than given value will be recognized as thick."
                          Text="{Binding MinThickThicknessString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
@@ -72,16 +72,16 @@
 
                 <Button x:Name="buttonSelectElements" Command="{Binding SelectLineCommand}"
                         Content="Select Line" ToolTip="Select vertical line to locate annotations"
-                        Margin="0,15,0,15"
+                        Margin="0,20,0,0"
                         Style="{StaticResource SSelectButton}">
                 </Button>
-                <Label Content="{Binding SelectElementsError, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                <Label Content="{Binding SelectElementsError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                        Style="{StaticResource SLabelError}" />
 
                 <Label Content="Selected Line ID:"
-                       Margin="-5,5,0,0"
+                       Margin="-5,15,0,0"
                        Style="{StaticResource SLabel}" />
-                <Label Content="{Binding SelectElements, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                <Label x:Name="labelSelectElements" Content="{Binding SelectElements, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                        Margin="90,-24,0,0"
                        Style="{StaticResource SLabel}" />
             </StackPanel>
@@ -98,6 +98,7 @@
                             <Binding ElementName="checkboxPlaceOnThickTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="checkboxPlaceOnThickBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="textboxMinThickThicknessString" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="labelSelectElements" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>

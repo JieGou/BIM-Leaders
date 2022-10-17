@@ -28,7 +28,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Window">
                     <Grid Background="{x:Null}">
-                        <d:Card Margin="10" UniformCornerRadius="30" Background="{x:Null}">
+                        <materialDesign:Card Margin="10" UniformCornerRadius="30" Background="{x:Null}">
                             <StackPanel>
                                 <StackPanel.Background>
                                     <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
@@ -42,7 +42,7 @@
                                 </AdornerDecorator>
 
                             </StackPanel>
-                        </d:Card>
+                        </materialDesign:Card>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

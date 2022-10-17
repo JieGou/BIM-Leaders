@@ -115,7 +115,7 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(SelectElements));
             }
         }
-
+        
         private string _selectElementsError;
         public string SelectElementsError
         {
@@ -126,7 +126,7 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(SelectElementsError));
             }
         }
-
+        
         private string _runResult;
         public string RunResult
         {
@@ -207,6 +207,9 @@ namespace BIM_Leaders_Windows
                         error = ValidateMinThickThickness();
                     }
                     break;
+                case "SelectElements":
+                    error = SelectElementsError;
+                    break;
             }
             return error;
         }
@@ -253,8 +256,6 @@ namespace BIM_Leaders_Windows
             Model.PlacementThickBot = PlaceOnThickBot;
             Model.MinThickThickness = MinThickThickness;
 
-            //_externalEvent.Raise();
-
             Model.Run();
 
             RunResult = Model.RunResult;
@@ -267,15 +268,20 @@ namespace BIM_Leaders_Windows
             IsVisible = false;
 
             SelectLineModel.Run();
+            
+            SelectElementsError = SelectLineModel.Error;
 
             if (SelectLineModel.Error.Length > 0)
-                SelectElementsError = SelectLineModel.Error;
+            {
+                SelectElements = 0;
+                Model.SelectElements = 0;
+            }  
             else
             {
                 SelectElements = SelectLineModel.SelectedElement;
                 Model.SelectElements = SelectLineModel.SelectedElement;
             }
-
+            
             IsVisible = true;
         }
 
