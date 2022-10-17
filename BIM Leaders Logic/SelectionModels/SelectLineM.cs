@@ -52,14 +52,14 @@ namespace BIM_Leaders_Logic
             Reference referenceLine = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
             DetailLine detailLine = _doc.GetElement(referenceLine) as DetailLine;
             if (detailLine == null)
-                Error = "Wrong selection.";
+                Error = "Wrong selection";
 
             Line line = detailLine.GeometryCurve as Line;
 
             // Check if wrong selection
             double direction = line.Direction.Z;
             if (direction != 1 && direction != -1)
-                Error = "Selected line is not vertical.";
+                Error = "Selected line is not vertical";
 
             SelectedElement = detailLine.Id.IntegerValue;
         }
