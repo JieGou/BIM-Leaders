@@ -1,85 +1,124 @@
 ﻿using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "DimensionsPlan"
+    /// View model for command "DimensionsPlan"
     /// </summary>
     public class DimensionsPlanVM : INotifyPropertyChanged, IDataErrorInfo
     {
-        double _resultSearchStepMinValue = 1;
-        double _resultSearchStepMaxValue = 100;
-        double _resultSearchDistanceMinValue = 100;
-        double _resultSearchDistanceMaxValue = 10000;
-        double _resultMinReferencesMinValue = 0;
-        double _resultMinReferencesMaxValue = 10;
+        private const int _searchStepMinValue = 1;
+        private const int _searchStepMaxValue = 100;
+        private const int _searchDistanceMinValue = 100;
+        private const int _searchDistanceMaxValue = 10000;
+        private const int _minReferencesMinValue = 0;
+        private const int _minReferencesMaxValue = 10;
+
+        #region PROPERTIES
+
+        private DimensionsPlanM _model;
+        public DimensionsPlanM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private string _searchStepString;
+        public string SearchStepString
+        {
+            get { return _searchStepString; }
+            set
+            {
+                _searchStepString = value;
+                OnPropertyChanged(nameof(SearchStepString));
+            }
+        }
+        private double _searchStep;
+        public double SearchStep
+        {
+            get { return _searchStep; }
+            set { _searchStep = value; }
+        }
+
+        private string _searchDistanceString;
+        public string SearchDistanceString
+        {
+            get { return _searchDistanceString; }
+            set
+            {
+                _searchDistanceString = value;
+                OnPropertyChanged(nameof(SearchDistanceString));
+            }
+        }
+        private double _searchDistance;
+        public double SearchDistance
+        {
+            get { return _searchDistance; }
+            set { _searchDistance = value; }
+        }
+
+        private string _minReferencesString;
+        public string MinReferencesString
+        {
+            get { return _minReferencesString; }
+            set
+            {
+                _minReferencesString = value;
+                OnPropertyChanged(nameof(MinReferencesString));
+            }
+        }
+        private double _minReferences;
+        public double MinReferences
+        {
+            get { return _minReferences; }
+            set { _minReferences = value; }
+        }
+
+        private string _runResult;
+        public string RunResult
+        {
+            get { return _runResult; }
+            set
+            {
+                _runResult = value;
+                OnPropertyChanged(nameof(RunResult));
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="DimensionsPlanVM"/> class.
         /// </summary>
-        public DimensionsPlanVM()
+        public DimensionsPlanVM(DimensionsPlanM model)
         {
-            _resultSearchStep = 15;
-            _inputSearchStep = _resultSearchStep.ToString();
-            _resultSearchDistance = 1500;
-            _inputSearchDistance = _resultSearchDistance.ToString();
-            _resultMinReferences = 5;
-            _inputMinReferences = _resultMinReferences.ToString();
+            Model = model;
+
+            SearchStep = 15;
+            SearchStepString = SearchStep.ToString();
+            SearchDistance = 1500;
+            SearchDistanceString = SearchDistance.ToString();
+            MinReferences = 5;
+            MinReferencesString = MinReferences.ToString();
+
+            RunCommand = new RunCommand(RunAction);
         }
 
-        private string _inputSearchStep;
-        public string InputSearchStep
+        #region INOTIFYPROPERTYCHANGED
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            get { return _inputSearchStep; }
-            set
-            {
-                _inputSearchStep = value;
-                OnPropertyChanged(nameof(InputSearchStep));
-            }
-        }
-        private double _resultSearchStep;
-        public double ResultSearchStep
-        {
-            get { return _resultSearchStep; }
-            set { _resultSearchStep = value; }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string _inputSearchDistance;
-        public string InputSearchDistance
-        {
-            get { return _inputSearchDistance; }
-            set
-            {
-                _inputSearchDistance = value;
-                OnPropertyChanged(nameof(InputSearchDistance));
-            }
-        }
-        private double _resultSearchDistance;
-        public double ResultSearchDistance
-        {
-            get { return _resultSearchDistance; }
-            set { _resultSearchDistance = value; }
-        }
+        #endregion
 
-        private string _inputMinReferences;
-        public string InputMinReferences
-        {
-            get { return _inputMinReferences; }
-            set
-            {
-                _inputMinReferences = value;
-                OnPropertyChanged(nameof(InputMinReferences));
-            }
-        }
-        private double _resultMinReferences;
-        public double ResultMinReferences
-        {
-            get { return _resultMinReferences; }
-            set { _resultMinReferences = value; }
-        }
-
-        #region Validation
+        #region VALIDATION
 
         public string Error { get { return null; } }
         public string this[string propertyName]
@@ -96,27 +135,27 @@ namespace BIM_Leaders_Windows
 
             switch (propertyName)
             {
-                case "InputSearchStep":
-                    error = ValidateInputIsWholeNumber(out int searchStep, _inputSearchStep);
+                case "SearchStepString":
+                    error = ValidateInputIsWholeNumber(out int searchStep, _searchStepString);
                     if (string.IsNullOrEmpty(error))
                     {
-                        ResultSearchStep = searchStep;
+                        SearchStep = searchStep;
                         error = ValidateResultSearchStep();
                     }
                     break;
-                case "InputSearchDistance":
-                    error = ValidateInputIsWholeNumber(out int searchDistance, _inputSearchDistance);
+                case "SearchDistanceString":
+                    error = ValidateInputIsWholeNumber(out int searchDistance, _searchDistanceString);
                     if (string.IsNullOrEmpty(error))
                     {
-                        ResultSearchDistance = searchDistance;
+                        SearchDistance = searchDistance;
                         error = ValidateResultSearchDistance();
                     }
                     break;
-                case "InputMinReferences":
-                    error = ValidateInputIsWholeNumber(out int minreferences, _inputMinReferences);
+                case "MinReferencesString":
+                    error = ValidateInputIsWholeNumber(out int minreferences, _minReferencesString);
                     if (string.IsNullOrEmpty(error))
                     {
-                        ResultMinReferences = minreferences;
+                        MinReferences = minreferences;
                         error = ValidateResultMinReferences();
                     }
                     break;
@@ -138,32 +177,42 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResultSearchStep()
         {
-            if (ResultSearchStep < _resultSearchStepMinValue || ResultSearchStep > _resultSearchStepMaxValue)
-                return $"From {_resultSearchStepMinValue} to {_resultSearchStepMaxValue} cm";
+            if (SearchStep < _searchStepMinValue || SearchStep > _searchStepMaxValue)
+                return $"From {_searchStepMinValue} to {_searchStepMaxValue} cm";
             return null;
         }
 
         private string ValidateResultSearchDistance()
         {
-            if (ResultSearchDistance < _resultSearchDistanceMinValue || ResultSearchDistance > _resultSearchDistanceMaxValue)
-                return $"From {_resultSearchDistanceMinValue} to {_resultSearchDistanceMaxValue} cm";
+            if (SearchDistance < _searchDistanceMinValue || SearchDistance > _searchDistanceMaxValue)
+                return $"From {_searchDistanceMinValue} to {_searchDistanceMaxValue} cm";
             return null;
         }
 
         private string ValidateResultMinReferences()
         {
-            if (ResultMinReferences < _resultMinReferencesMinValue || ResultMinReferences > _resultMinReferencesMaxValue)
-                return $"From {_resultMinReferencesMinValue} to {_resultMinReferencesMaxValue}";
+            if (MinReferences < _minReferencesMinValue || MinReferences > _minReferencesMaxValue)
+                return $"From {_minReferencesMinValue} to {_minReferencesMaxValue}";
             return null;
         }
 
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region COMMANDS
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Model.SearchDistanceCm = SearchDistance;
+            Model.SearchStepCm = SearchStep;
+            Model.MinReferences = MinReferences;
+
+            Model.Run();
+
+            RunResult = Model.RunResult;
         }
+
+        #endregion
     }
 }

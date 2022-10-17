@@ -4,8 +4,8 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
-using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
@@ -22,75 +22,23 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _doc = commandData.Application.ActiveUIDocument.Document;
-            _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
+            if (ShowDialogAboutPlanRegions() == TaskDialogResult.No)
+                return Result.Cancelled;
 
-            try
-            {
-				if (ShowDialogAboutPlanRegions() == TaskDialogResult.No)
-                    return Result.Cancelled;
+            DimensionsPlanM formM = new DimensionsPlanM(commandData);
+            ExternalEvent externalEvent = ExternalEvent.Create(formM);
 
-                _inputData = GetUserInput();
-                if (_inputData == null)
-                    return Result.Cancelled;
+            formM.ExternalEvent = externalEvent;
 
-				// Collecting model elements to dimension
-				List<Wall> wallsAll = GetWalls();
-				List<FamilyInstance> columnsAll = GetColumns();
+            DimensionsPlanVM formVM = new DimensionsPlanVM(formM);
+            DimensionsPlanForm form = new DimensionsPlanForm() { DataContext = formVM };
 
-				// Get lists of walls and columns that are horizontal and vertical
-				(List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(wallsAll);
-				List<FamilyInstance> columnsPer = FilterColumns(columnsAll);
-				
-				// Sum columns and walls
-				IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
-				IEnumerable<Element> elementsVer = wallsVer.Cast<Element>().Concat(columnsPer.Cast<Element>());
-				
-				// Get all faces that need a dimension
-				// !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
-				List<PlanarFace> facesHorAll = GetFacesHorizontal(elementsHor);
-				List<PlanarFace> facesVerAll = GetFacesVertical(elementsVer);
-				
-				// Storing data needed to create all dimensions
-				Dictionary<Line, ReferenceArray> dimensionsDataHor = GetDimensionsData(facesHorAll, true);
-				Dictionary<Line, ReferenceArray> dimensionsDataVer = GetDimensionsData(facesVerAll, false);
+            form.ShowDialog();
 
-				using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
-                {
-                    trans.Start();
+            if (form.DialogResult == false)
+                return Result.Cancelled;
 
-					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataHor)
-                    {
-                        Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
-						DimensionUtils.AdjustText(dimension);
-#if !VERSION2020
-						dimension.HasLeader = false;
-#endif
-                        _countDimensions++;
-						_countSegments += dimensionData.Value.Size - 1;
-					}
-					foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
-					{
-						Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
-						DimensionUtils.AdjustText(dimension);
-#if !VERSION2020
-						dimension.HasLeader = false;
-#endif
-                        _countDimensions++;
-                        _countSegments += dimensionData.Value.Size - 1;
-					}
-
-					trans.Commit();
-                }
-				ShowResult();
-
-				return Result.Succeeded;
-            }
-            catch (Exception e)
-            {
-                message = e.Message;
-                return Result.Failed;
-            }
+            return Result.Succeeded;
         }
 
         /// <summary>
@@ -134,6 +82,11 @@ namespace BIM_Leaders_Core
 			return planContainsRegions;
 		}
 
+
+
+
+
+
 		private static DimensionsPlanVM GetUserInput()
 		{
             // Get user provided information from window
@@ -152,8 +105,8 @@ namespace BIM_Leaders_Core
 			double searchStep = UnitUtils.ConvertToInternalUnits(searchStepCm, DisplayUnitType.DUT_CENTIMETERS);
 			double searchDistance = UnitUtils.ConvertToInternalUnits(searchDistanceCm, DisplayUnitType.DUT_CENTIMETERS);
 #else
-            data.ResultSearchStep = UnitUtils.ConvertToInternalUnits(data.ResultSearchStep, UnitTypeId.Centimeters);
-            data.ResultSearchDistance = UnitUtils.ConvertToInternalUnits(data.ResultSearchDistance, UnitTypeId.Centimeters);
+            data.SearchStep = UnitUtils.ConvertToInternalUnits(data.SearchStep, UnitTypeId.Centimeters);
+            data.SearchDistance = UnitUtils.ConvertToInternalUnits(data.SearchDistance, UnitTypeId.Centimeters);
 #endif
 			return data;
         }
@@ -480,13 +433,13 @@ namespace BIM_Leaders_Core
 				XYZ point2;
 				if (faceIsHosizontal)
 				{
-					point1 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y + (_inputData.ResultSearchDistance * view.UpDirection.Y), viewHeight);
-					point2 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y - (_inputData.ResultSearchDistance * view.UpDirection.Y), viewHeight);
+					point1 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y + (_inputData.SearchDistance * view.UpDirection.Y), viewHeight);
+					point2 = new XYZ(faceCurrentPointA.X + lengthPast, faceCurrentPointA.Y - (_inputData.SearchDistance * view.UpDirection.Y), viewHeight);
 				}
 				else
 				{
-					point1 = new XYZ(faceCurrentPointA.X - (_inputData.ResultSearchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
-					point2 = new XYZ(faceCurrentPointA.X + (_inputData.ResultSearchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
+					point1 = new XYZ(faceCurrentPointA.X - (_inputData.SearchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
+					point2 = new XYZ(faceCurrentPointA.X + (_inputData.SearchDistance * view.UpDirection.Y), faceCurrentPointA.Y + lengthPast, viewHeight);
 				}
 
 				Line currentIntersectionLine = Line.CreateBound(point1, point2);
@@ -495,7 +448,7 @@ namespace BIM_Leaders_Core
 				List<PlanarFace> currentIntersectionFaces = FindIntersections(currentIntersectionLine, faces);
 				//(List<Face> currentIntersectionFaces, ReferenceArray currentIntersectionRefs) = FindIntersections(currentIntersectionLine, facesNotDimensioned);
 
-				lengthPast += _inputData.ResultSearchStep;
+				lengthPast += _inputData.SearchStep;
 
 				if (currentIntersectionFaces.Count == 0)
 					continue;
@@ -618,7 +571,7 @@ namespace BIM_Leaders_Core
 			}
 
 			// If minimal new faces count is less than threshold then add new dimension to this one with minimal.
-			if (facesDividedData[minimalNewKey].Item3.Count < _inputData.ResultMinReferences)
+			if (facesDividedData[minimalNewKey].Item3.Count < _inputData.MinReferences)
             {
 				dimensionsDataCollector[minimalNewKey].AddRange(facesDividedData[minimalNewKey].Item3);
 				return null;

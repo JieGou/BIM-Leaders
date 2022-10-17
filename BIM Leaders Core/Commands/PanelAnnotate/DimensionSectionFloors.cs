@@ -1,9 +1,8 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
 using BIM_Leaders_Logic;
-using System.Windows;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {

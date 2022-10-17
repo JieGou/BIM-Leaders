@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         
         Style="{DynamicResource SWindow}"
@@ -37,7 +36,7 @@
                 <Label Content="Search Step (cm)"
                        Style="{StaticResource SLabelBold}" />
                 <TextBox x:Name="textboxSearchStep" ToolTip="Step along element faces to create searching lines."
-                         Text="{Binding InputSearchStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding SearchStepString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}" />
                 <Label Content="{Binding ElementName=textboxSearchStep, Path=(Validation.Errors).CurrentItem.ErrorContent}"
                        Style="{StaticResource SLabelError}" />
@@ -46,7 +45,7 @@
                        Margin="-5,5,0,0"
                        Style="{StaticResource SLabelBold}" />
                 <TextBox x:Name="textboxSearchDistance" ToolTip="Distance from element face to search other elements."
-                         Text="{Binding InputSearchDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding SearchDistanceString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}" />
                 <Label Content="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors).CurrentItem.ErrorContent}"
                        Style="{StaticResource SLabelError}" />
@@ -55,7 +54,7 @@
                        Margin="-5,10,0,0"
                        Style="{StaticResource SLabelBold}" />
                 <TextBox x:Name="textboxReferences" ToolTip="If count of references in the next dimension line will be lower, dimension will be joined with existing one."
-                         Text="{Binding InputMinReferences, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                         Text="{Binding MinReferencesString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                          Style="{StaticResource STextBox}" />
                 <Label Content="{Binding ElementName=textboxReferences, Path=(Validation.Errors)/ErrorContent}"
                        Style="{StaticResource SLabelError}" />
@@ -64,7 +63,7 @@
 
         <Grid Grid.Row="2" VerticalAlignment="Top">
             <StackPanel>
-                <Button x:Name="buttonOk" Click="ButtonOkClick"
+                <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                     Content="Magic" ToolTip="Run"
                     Style="{StaticResource SRectangleButton}">
                     <Button.IsEnabled>
