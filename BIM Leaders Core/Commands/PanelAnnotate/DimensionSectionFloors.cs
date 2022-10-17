@@ -9,10 +9,16 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class DimensionSectionFloors : IExternalCommand
     {
+        private static Document _doc;
+
+        private const string TRANSACTION_NAME = "Annotate Section";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            if (CheckIfSectionIsSplit(commandData.Application.ActiveUIDocument.Document))
-                TaskDialog.Show("Annotate Section", "Current view is a split section. This may cause issues when finding geometry intersections.");
+            _doc = commandData.Application.ActiveUIDocument.Document;
+
+            if (CheckIfSectionIsSplit())
+                TaskDialog.Show(TRANSACTION_NAME, "Current view is a split section. This may cause issues when finding geometry intersections.");
 
             DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
@@ -31,11 +37,11 @@ namespace BIM_Leaders_Core
             return Result.Succeeded;
         }
 
-        private static bool CheckIfSectionIsSplit(Document document)
+        private static bool CheckIfSectionIsSplit()
         {
             bool result = false;
 #if !VERSION2020
-            ViewSection view = document.ActiveView as ViewSection;
+            ViewSection view = _doc.ActiveView as ViewSection;
             if (view.IsSplitSection())
                 return true;
 #endif
