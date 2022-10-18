@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using BIM_Leaders_Logic;
-using System.Linq;
 
-namespace BIM_Leaders_Core
+namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
     public class DimensionsPlanM : INotifyPropertyChanged, IExternalEventHandler

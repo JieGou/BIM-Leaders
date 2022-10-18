@@ -38,13 +38,13 @@
                        Margin="-5,10,0,0"
                        Style="{StaticResource SLabelBold}" />
                 <materialDesign:ColorPicker  x:Name="colorPicker"
-                                             Color="{Binding ResultColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                             Color="{Binding FilterColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Top">
             <StackPanel>
-                <Button x:Name="buttonOk" Click="ButtonOkClick"
+                <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                         Content="Magic" ToolTip="Run"
                         Style="{StaticResource SRectangleButton}" />
             </StackPanel>
