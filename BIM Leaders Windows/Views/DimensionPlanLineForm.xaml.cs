@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using MaterialDesignColors;
@@ -10,7 +11,7 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class DimensionPlanLineForm : Window
+    public partial class DimensionPlanLineForm : Window, IDisposable
     {
         /// <summary>
         /// Default constructor.
@@ -37,6 +38,11 @@ namespace BIM_Leaders_Windows
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
+        }
+
+        public void Dispose()
+        {
+            Close();
         }
 
         private void buttonCancel_Click(object sender, RoutedEventArgs e)

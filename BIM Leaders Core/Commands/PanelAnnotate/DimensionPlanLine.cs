@@ -9,28 +9,28 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class DimensionPlanLine : IExternalCommand
     {
-        private static Document _doc;
-
-        private const string TRANSACTION_NAME = "Dimension Plan Walls";
-
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _doc = commandData.Application.ActiveUIDocument.Document;
-
+            // Models
             DimensionPlanLineM formM = new DimensionPlanLineM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
-
             formM.ExternalEvent = externalEvent;
-
             SelectLineM formSelectionM = new SelectLineM(commandData);
+
+            // ViewModel
             DimensionPlanLineVM formVM = new DimensionPlanLineVM(formM, formSelectionM);
-            DimensionPlanLineForm form = new DimensionPlanLineForm() { DataContext = formVM };
 
-            form.ShowDialog();
+            // View
+            using (DimensionPlanLineForm form = new DimensionPlanLineForm() { DataContext = formVM})
+            {
+                var helper = new System.Windows.Interop.WindowInteropHelper(form);
+                helper.Owner = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
 
-            if (form.DialogResult == false)
-                return Result.Cancelled;
+                form.DataContext = formVM;
 
+                if (form.ShowDialog() == false)
+                    return Result.Cancelled;
+            }
             return Result.Succeeded;
         }
 
