@@ -255,7 +255,7 @@ namespace BIM_Leaders_Windows
             Model.PlacementThinTop = PlaceOnThinTop;
             Model.PlacementThickTop = PlaceOnThickTop;
             Model.PlacementThickBot = PlaceOnThickBot;
-            Model.MinThickThickness = MinThickThickness;
+            Model.MinThickThicknessCm = MinThickThickness;
 
             Model.Run();
         }

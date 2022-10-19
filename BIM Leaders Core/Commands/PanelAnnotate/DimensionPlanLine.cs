@@ -17,7 +17,7 @@ namespace BIM_Leaders_Core
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
-            DimensionsPlanLineM formM = new DimensionsPlanLineM(commandData);
+            DimensionPlanLineM formM = new DimensionPlanLineM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
 
             formM.ExternalEvent = externalEvent;

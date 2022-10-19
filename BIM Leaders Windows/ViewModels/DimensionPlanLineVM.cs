@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
-using BIM_Leaders_Core;
 using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows

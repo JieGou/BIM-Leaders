@@ -84,7 +84,8 @@
   <ItemGroup>
     <Compile Include="Models\DimensionSectionFloorsM.cs" />
     <Compile Include="Models\DimensionsPlanCheckM.cs" />
-    <Compile Include="Models\DimensionsPlanLineM.cs" />
+    <Compile Include="Models\DimensionPlanLineM.cs" />
+    <Compile Include="Models\DimensionStairsLandingsM.cs" />
     <Compile Include="Models\_TEMPLATE.cs" />
     <Compile Include="Models\DimensionsPlanM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

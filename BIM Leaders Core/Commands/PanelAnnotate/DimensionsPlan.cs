@@ -16,6 +16,8 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _doc = commandData.Application.ActiveUIDocument.Document;
+
             if (ShowDialogAboutPlanRegions() == TaskDialogResult.No)
                 return Result.Cancelled;
 

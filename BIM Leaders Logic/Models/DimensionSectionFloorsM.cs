@@ -26,6 +26,17 @@ namespace BIM_Leaders_Logic
         /// </summary>
         public ExternalEvent ExternalEvent { get; set; }
 
+        private double _minThickThicknessCm;
+        public double MinThickThicknessCm
+        {
+            get { return _minThickThicknessCm; }
+            set
+            {
+                _minThickThicknessCm = value;
+                OnPropertyChanged(nameof(MinThickThicknessCm));
+            }
+        }
+
         private double _minThickThickness;
         public double MinThickThickness
         {
@@ -129,6 +140,8 @@ namespace BIM_Leaders_Logic
 
             try
             {
+                ConvertUserInput();
+
                 GetDividedFloors(out List<Floor> floorsThin, out List<Floor> floorsThick);
                 DetailLine detailLine = _doc.GetElement(new ElementId(SelectElements)) as DetailLine;
                 Line line = detailLine.GeometryCurve as Line;
@@ -163,6 +176,15 @@ namespace BIM_Leaders_Logic
 
         #region METHODS
 
+        private void ConvertUserInput()
+        {
+#if VERSION2020
+            MinThickThickness = UnitUtils.ConvertToInternalUnits(MinThickThicknessCm, DisplayUnitType.DUT_CENTIMETERS);
+#else
+            MinThickThickness = UnitUtils.ConvertToInternalUnits(MinThickThicknessCm, UnitTypeId.Centimeters);
+#endif
+        }
+
         /// <summary>
         /// Get floors in the current document, divided by the given thickness.
         /// </summary>
@@ -173,15 +195,6 @@ namespace BIM_Leaders_Logic
         {
             floorsThin = new List<Floor>();
             floorsThick = new List<Floor>();
-
-            // Get length units
-#if VERSION2020
-            DisplayUnitType units = _doc.GetUnits().GetFormatOptions(UnitType.UT_Length).DisplayUnits;
-#else
-            ForgeTypeId units = _doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
-#endif
-
-            double inputThickness = UnitUtils.ConvertToInternalUnits(MinThickThickness, units);
 
             // Get Floors
             IEnumerable<Element> floorsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
@@ -196,7 +209,7 @@ namespace BIM_Leaders_Logic
 
                 double floorThickness = floorType.get_Parameter(BuiltInParameter.FLOOR_ATTR_DEFAULT_THICKNESS_PARAM).AsDouble();
 
-                if (floorThickness > inputThickness)
+                if (floorThickness > MinThickThickness)
                     floorsThick.Add(floor);
                 else
                     floorsThin.Add(floor);

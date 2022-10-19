@@ -4,14 +4,13 @@ using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using BIM_Leaders_Logic;
 using System.Linq;
 using Autodesk.Revit.UI.Selection;
 
-namespace BIM_Leaders_Core
+namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class DimensionsPlanLineM : INotifyPropertyChanged, IExternalEventHandler
+    public class DimensionPlanLineM : INotifyPropertyChanged, IExternalEventHandler
     {
         private UIDocument _uidoc;
         private Document _doc;
@@ -52,7 +51,7 @@ namespace BIM_Leaders_Core
 
         #endregion
 
-        public DimensionsPlanLineM(ExternalCommandData commandData)
+        public DimensionPlanLineM(ExternalCommandData commandData)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;

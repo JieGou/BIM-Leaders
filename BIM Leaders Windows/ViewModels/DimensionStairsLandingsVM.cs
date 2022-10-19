@@ -1,146 +1,173 @@
-﻿using System.ComponentModel;
+﻿using BIM_Leaders_Logic;
+using System.ComponentModel;
+using System.Windows.Input;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command DimensionStairsLandings
+    /// View model for command "DimensionStairsLandings"
     /// </summary>
     public class DimensionStairsLandingsVM : INotifyPropertyChanged, IDataErrorInfo
     {
-        private const double _resultDistanceMinValue = 100;
-        private const double _resultDistanceMaxValue = 200;
+        private const double _distanceMinValue = 100;
+        private const double _distanceMaxValue = 200;
+
+        #region PROPERTIES
+
+        private DimensionStairsLandingsM _model;
+        public DimensionStairsLandingsM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private bool _placeDimensionsTop;
+        public bool PlaceDimensionsTop
+        {
+            get { return _placeDimensionsTop; }
+            set
+            {
+                _placeDimensionsTop = value;
+                OnPropertyChanged(nameof(PlaceDimensionsTop));
+                OnPropertyChanged(nameof(PlaceDimensionsMid));
+                OnPropertyChanged(nameof(PlaceDimensionsBot));
+                OnPropertyChanged(nameof(PlaceElevationsTop));
+                OnPropertyChanged(nameof(PlaceElevationsMid));
+                OnPropertyChanged(nameof(PlaceElevationsBot));
+            }
+        }
+
+        private bool _placeDimensionsMid;
+        public bool PlaceDimensionsMid
+        {
+            get { return _placeDimensionsMid; }
+            set
+            {
+                _placeDimensionsMid = value;
+                OnPropertyChanged(nameof(PlaceDimensionsTop));
+                OnPropertyChanged(nameof(PlaceDimensionsMid));
+                OnPropertyChanged(nameof(PlaceDimensionsBot));
+                OnPropertyChanged(nameof(PlaceElevationsTop));
+                OnPropertyChanged(nameof(PlaceElevationsMid));
+                OnPropertyChanged(nameof(PlaceElevationsBot));
+            }
+        }
+
+        private bool _placeDimensionsBot;
+        public bool PlaceDimensionsBot
+        {
+            get { return _placeDimensionsBot; }
+            set
+            {
+                _placeDimensionsBot = value;
+                OnPropertyChanged(nameof(PlaceDimensionsTop));
+                OnPropertyChanged(nameof(PlaceDimensionsMid));
+                OnPropertyChanged(nameof(PlaceDimensionsBot));
+                OnPropertyChanged(nameof(PlaceElevationsTop));
+                OnPropertyChanged(nameof(PlaceElevationsMid));
+                OnPropertyChanged(nameof(PlaceElevationsBot));
+            }
+        }
+
+        private bool _placeElevationsTop;
+        public bool PlaceElevationsTop
+        {
+            get { return _placeElevationsTop; }
+            set
+            {
+                _placeElevationsTop = value;
+                OnPropertyChanged(nameof(PlaceDimensionsTop));
+                OnPropertyChanged(nameof(PlaceDimensionsMid));
+                OnPropertyChanged(nameof(PlaceDimensionsBot));
+                OnPropertyChanged(nameof(PlaceElevationsTop));
+                OnPropertyChanged(nameof(PlaceElevationsMid));
+                OnPropertyChanged(nameof(PlaceElevationsBot));
+            }
+        }
+
+        private bool _placeElevationsMid;
+        public bool PlaceElevationsMid
+        {
+            get { return _placeElevationsMid; }
+            set
+            {
+                _placeElevationsMid = value;
+                OnPropertyChanged(nameof(PlaceDimensionsTop));
+                OnPropertyChanged(nameof(PlaceDimensionsMid));
+                OnPropertyChanged(nameof(PlaceDimensionsBot));
+                OnPropertyChanged(nameof(PlaceElevationsTop));
+                OnPropertyChanged(nameof(PlaceElevationsMid));
+                OnPropertyChanged(nameof(PlaceElevationsBot));
+            }
+        }
+
+        private bool _placeElevationsBot;
+        public bool PlaceElevationsBot
+        {
+            get { return _placeElevationsBot; }
+            set
+            {
+                _placeElevationsBot = value;
+                OnPropertyChanged(nameof(PlaceDimensionsTop));
+                OnPropertyChanged(nameof(PlaceDimensionsMid));
+                OnPropertyChanged(nameof(PlaceDimensionsBot));
+                OnPropertyChanged(nameof(PlaceElevationsTop));
+                OnPropertyChanged(nameof(PlaceElevationsMid));
+                OnPropertyChanged(nameof(PlaceElevationsBot));
+            }
+        }
+
+        private string _distanceString;
+        public string DistanceString
+        {
+            get { return _distanceString; }
+            set
+            {
+                _distanceString = value;
+                OnPropertyChanged(nameof(DistanceString));
+            }
+        }
+        private double _distance;
+        public double Distance
+        {
+            get { return _distance; }
+            set { _distance = value; }
+        }
+
+        #endregion
 
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="DimensionStairsLandingsVM"/> class.
         /// </summary>
-        public DimensionStairsLandingsVM()
+        public DimensionStairsLandingsVM(DimensionStairsLandingsM model)
         {
-            _resultPlacementDimensionTop = true;
-            _resultPlacementDimensionMid = true;
-            _resultPlacementDimensionBot = true;
-            _resultPlacementElevationTop = true;
-            _resultPlacementElevationMid = true;
-            _resultPlacementElevationBot = true;
-            _resultDistance = 150;
-            _inputDistance = _resultDistance.ToString();
+            Model = model;
+
+            PlaceDimensionsTop = true;
+            PlaceDimensionsMid = true;
+            PlaceDimensionsBot = true;
+            PlaceElevationsTop = true;
+            PlaceElevationsMid = true;
+            PlaceElevationsBot = true;
+            Distance = 150;
+            DistanceString = Distance.ToString();
+
+            RunCommand = new RunCommand(RunAction);
         }
 
-        private bool _resultPlacementDimensionTop;
-        public bool ResultPlacementDimensionTop
+        #region INOTIFYPROPERTYCHANGED
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            get { return _resultPlacementDimensionTop; }
-            set
-            {
-                _resultPlacementDimensionTop = value;
-                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
-                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
-                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
-                OnPropertyChanged(nameof(ResultPlacementElevationTop));
-                OnPropertyChanged(nameof(ResultPlacementElevationMid));
-                OnPropertyChanged(nameof(ResultPlacementElevationBot));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private bool _resultPlacementDimensionMid;
-        public bool ResultPlacementDimensionMid
-        {
-            get { return _resultPlacementDimensionMid; }
-            set
-            {
-                _resultPlacementDimensionMid = value;
-                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
-                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
-                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
-                OnPropertyChanged(nameof(ResultPlacementElevationTop));
-                OnPropertyChanged(nameof(ResultPlacementElevationMid));
-                OnPropertyChanged(nameof(ResultPlacementElevationBot));
-            }
-        }
+        #endregion
 
-        private bool _resultPlacementDimensionBot;
-        public bool ResultPlacementDimensionBot
-        {
-            get { return _resultPlacementDimensionBot; }
-            set
-            {
-                _resultPlacementDimensionBot = value;
-                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
-                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
-                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
-                OnPropertyChanged(nameof(ResultPlacementElevationTop));
-                OnPropertyChanged(nameof(ResultPlacementElevationMid));
-                OnPropertyChanged(nameof(ResultPlacementElevationBot));
-            }
-        }
-
-        private bool _resultPlacementElevationTop;
-        public bool ResultPlacementElevationTop
-        {
-            get { return _resultPlacementElevationTop; }
-            set
-            {
-                _resultPlacementElevationTop = value;
-                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
-                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
-                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
-                OnPropertyChanged(nameof(ResultPlacementElevationTop));
-                OnPropertyChanged(nameof(ResultPlacementElevationMid));
-                OnPropertyChanged(nameof(ResultPlacementElevationBot));
-            }
-        }
-
-        private bool _resultPlacementElevationMid;
-        public bool ResultPlacementElevationMid
-        {
-            get { return _resultPlacementElevationMid; }
-            set
-            {
-                _resultPlacementElevationMid = value;
-                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
-                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
-                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
-                OnPropertyChanged(nameof(ResultPlacementElevationTop));
-                OnPropertyChanged(nameof(ResultPlacementElevationMid));
-                OnPropertyChanged(nameof(ResultPlacementElevationBot));
-            }
-        }
-
-        private bool _resultPlacementElevationBot;
-        public bool ResultPlacementElevationBot
-        {
-            get { return _resultPlacementElevationBot; }
-            set
-            {
-                _resultPlacementElevationBot = value;
-                OnPropertyChanged(nameof(ResultPlacementDimensionTop));
-                OnPropertyChanged(nameof(ResultPlacementDimensionMid));
-                OnPropertyChanged(nameof(ResultPlacementDimensionBot));
-                OnPropertyChanged(nameof(ResultPlacementElevationTop));
-                OnPropertyChanged(nameof(ResultPlacementElevationMid));
-                OnPropertyChanged(nameof(ResultPlacementElevationBot));
-            }
-        }
-
-        private string _inputDistance;
-        public string InputDistance
-        {
-            get { return _inputDistance; }
-            set
-            {
-                _inputDistance = value;
-                OnPropertyChanged(nameof(InputDistance));
-            }
-        }
-        private double _resultDistance;
-        public double ResultDistance
-        {
-            get { return _resultDistance; }
-            set { _resultDistance = value; }
-        }
-
-
-        #region Validation
+        #region VALIDATION
 
         public string Error { get { return null; } }
         public string this[string propertyName]
@@ -157,29 +184,29 @@ namespace BIM_Leaders_Windows
             
             switch (propertyName)
             {
-                case "ResultPlacementDimensionTop":
+                case "PlaceDimensionsTop":
                     error = ValidateResultPlacement();
                     break;
-                case "ResultPlacementDimensionMid":
+                case "PlaceDimensionsMid":
                     error = ValidateResultPlacement();
                     break;
-                case "ResultPlacementDimensionBot":
+                case "PlaceDimensionsBot":
                     error = ValidateResultPlacement();
                     break;
-                case "ResultPlacementElevationTop":
+                case "PlaceElevationsTop":
                     error = ValidateResultPlacement();
                     break;
-                case "ResultPlacementElevationMid":
+                case "PlaceElevationsMid":
                     error = ValidateResultPlacement();
                     break;
-                case "ResultPlacementElevationBot":
+                case "PlaceElevationsBot":
                     error = ValidateResultPlacement();
                     break;
-                case "InputDistance":
-                    error = ValidateInputIsWholeNumber(out int distance, _inputDistance);
+                case "DistanceString":
+                    error = ValidateInputIsWholeNumber(out int distance, DistanceString);
                     if (string.IsNullOrEmpty(error))
                     {
-                        ResultDistance = distance;
+                        Distance = distance;
                         error = ValidateResultDistance();
                     }
                     break;
@@ -189,9 +216,9 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResultPlacement()
         {
-            if (ResultPlacementDimensionTop == false && ResultPlacementDimensionMid == false
-                && ResultPlacementDimensionBot == false && ResultPlacementElevationTop == false
-                && ResultPlacementElevationMid == false && ResultPlacementElevationBot == false)
+            if (PlaceDimensionsTop == false && PlaceDimensionsMid == false &&
+                PlaceDimensionsBot == false && PlaceElevationsTop == false &&
+                PlaceElevationsMid == false && PlaceElevationsBot == false)
                 return "Check at least one placement";
             return null;
         }
@@ -210,18 +237,30 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResultDistance()
         {
-            if (ResultDistance < _resultDistanceMinValue || ResultDistance > _resultDistanceMaxValue)
-                return $"From {_resultDistanceMinValue} to {_resultDistanceMaxValue} cm";
+            if (Distance < _distanceMinValue || Distance > _distanceMaxValue)
+                return $"From {_distanceMinValue} to {_distanceMaxValue} cm";
             return null;
         }
 
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region COMMANDS
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Model.PlaceDimensionsTop = PlaceDimensionsTop;
+            Model.PlaceDimensionsMid = PlaceDimensionsMid;
+            Model.PlaceDimensionsBot = PlaceDimensionsBot;
+            Model.PlaceElevationsTop = PlaceElevationsTop;
+            Model.PlaceElevationsMid = PlaceElevationsMid;
+            Model.PlaceElevationsBot = PlaceElevationsBot;
+            Model.DistanceCm = Distance;
+
+            Model.Run();
         }
+
+        #endregion
     }
 }
