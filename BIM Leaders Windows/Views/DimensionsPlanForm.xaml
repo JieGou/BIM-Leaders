@@ -73,9 +73,6 @@
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>
-                <Label Content="{Binding ElementName=checkboxPlacement0, Path=(Validation.Errors).CurrentItem.ErrorContent}"
-                       Margin="0,0,20,0"
-                       Style="{StaticResource SLabelError}" />
             </StackPanel>
         </Grid>
     </Grid>

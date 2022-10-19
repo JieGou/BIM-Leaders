@@ -5,8 +5,6 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.Attributes;
-using Autodesk.Revit.ApplicationServices;
-using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
@@ -42,7 +40,7 @@ namespace BIM_Leaders_Core
 
                 if (references.Size < 2)
                 {
-                    TaskDialog.Show(TRANSACTION_NAME, "Not enough numbrer references for dimension.");
+                    TaskDialog.Show(TRANSACTION_NAME, "Not enough number references for dimension.");
                     return Result.Failed;
                 }
 

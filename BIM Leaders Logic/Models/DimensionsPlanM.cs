@@ -170,14 +170,13 @@ namespace BIM_Leaders_Logic
 
                     trans.Commit();
                 }
-                RunResult = (_countDimensions == 0)
-					? "Dimensions creating error."
-					: $"{_countDimensions} dimensions with {_countSegments} segments were created.";
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
+
+            ShowResult();
         }
 
         #endregion
@@ -668,6 +667,15 @@ namespace BIM_Leaders_Logic
             }
 
             return facesNewPurged;
+        }
+
+        private void ShowResult()
+        {
+            RunResult = (_countDimensions == 0)
+                    ? "Dimensions creating error."
+                    : $"{_countDimensions} dimensions with {_countSegments} segments were created.";
+
+            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

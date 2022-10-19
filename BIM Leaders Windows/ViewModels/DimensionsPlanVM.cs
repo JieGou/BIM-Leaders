@@ -76,17 +76,6 @@ namespace BIM_Leaders_Windows
             set { _minReferences = value; }
         }
 
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
         #endregion
 
         /// <summary>
@@ -209,8 +198,6 @@ namespace BIM_Leaders_Windows
             Model.MinReferences = MinReferences;
 
             Model.Run();
-
-            RunResult = Model.RunResult;
         }
 
         #endregion

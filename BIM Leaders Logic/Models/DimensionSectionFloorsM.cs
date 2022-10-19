@@ -150,17 +150,13 @@ namespace BIM_Leaders_Logic
                     
                     trans.Commit();
                 }
-                if (_countSpots == 0 && _countSegments == 0)
-                    RunResult = "No annotations created.";
-                else
-                    RunResult = (PlaceSpots)
-                        ? $"{_countSpots} spot elevations created."
-                        : $"Dimension with {_countSegments} segments created.";
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
+
+            ShowResult();
         }
 
         #endregion
@@ -348,6 +344,18 @@ namespace BIM_Leaders_Logic
 #endif
 
             _countSegments += references.Size - 1;
+        }
+
+        private void ShowResult()
+        {
+            if (_countSpots == 0 && _countSegments == 0)
+                RunResult = "No annotations created.";
+            else
+                RunResult = (PlaceSpots)
+                    ? $"{_countSpots} spot elevations created."
+                    : $"Dimension with {_countSegments} segments created.";
+
+            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

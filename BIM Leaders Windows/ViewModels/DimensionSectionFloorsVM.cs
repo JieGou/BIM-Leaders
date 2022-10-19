@@ -137,17 +137,6 @@ namespace BIM_Leaders_Windows
                 OnPropertyChanged(nameof(SelectElementsError));
             }
         }
-        
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
 
         #endregion
 
@@ -269,8 +258,6 @@ namespace BIM_Leaders_Windows
             Model.MinThickThickness = MinThickThickness;
 
             Model.Run();
-
-            RunResult = Model.RunResult;
         }
 
         public ICommand SelectLineCommand { get; set; }
