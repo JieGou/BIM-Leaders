@@ -353,7 +353,7 @@ namespace BIM_Leaders
                 Panel = panel,
                 ToolTip = "Dimension all walls and columns with given line as a reference.",
                 LongDescription = "Creates a dimension line on a current view.",
-                CommandNamespacePath = DimensionsPlanLine.GetPath(),
+                CommandNamespacePath = DimensionPlanLine.GetPath(),
                 IconImageName = "BIM_Leaders_Dimensions_Plan_Line.png",
                 AvailabilityClassName = "BIM_Leaders_Core.ViewIsPlan"
             };

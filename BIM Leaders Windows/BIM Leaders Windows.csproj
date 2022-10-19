@@ -82,6 +82,10 @@
     <Compile Include="Commands\RunCommand.cs" />
     <Compile Include="Converters\MultivalueTextBoxesConverter.cs" />
     <Compile Include="ViewModels\CheckerReportVM.cs" />
+    <Compile Include="ViewModels\DimensionPlanLineVM.cs" />
+    <Compile Include="Views\DimensionPlanLineForm.xaml.cs">
+      <DependentUpon>DimensionPlanLineForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TagsPlanCheckForm.xaml.cs">
       <DependentUpon>TagsPlanCheckForm.xaml</DependentUpon>
     </Compile>
@@ -216,6 +220,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\CheckerReportForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DimensionPlanLineForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

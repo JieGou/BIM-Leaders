@@ -13,6 +13,13 @@ namespace BIM_Leaders_Logic
 
         #region PROPERTIES
 
+        private bool _allowOnlyVertical;
+        public bool AllowOnlyVertical
+        {
+            get { return _allowOnlyVertical; }
+            set { _allowOnlyVertical = value; }
+        }
+
         private int _selectedElement;
         public int SelectedElement
         {
@@ -56,13 +63,17 @@ namespace BIM_Leaders_Logic
 
             Line line = detailLine.GeometryCurve as Line;
 
-            // Check if wrong selection
-            double direction = line.Direction.Z;
-            if (direction != 1 && direction != -1)
-                Error = "Selected line is not vertical";
+            if (AllowOnlyVertical)
+            {
+                double direction = line.Direction.Z;
+                if (direction != 1 && direction != -1)
+                    Error = "Selected line is not vertical";
+            }
 
             SelectedElement = detailLine.Id.IntegerValue;
         }
+
+        #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler CanExecuteChanged;
@@ -71,5 +82,7 @@ namespace BIM_Leaders_Logic
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
     }
 }

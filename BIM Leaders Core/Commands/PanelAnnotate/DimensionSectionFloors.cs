@@ -25,7 +25,7 @@ namespace BIM_Leaders_Core
 
             formM.ExternalEvent = externalEvent;
 
-            SelectLineM formSelectionM = new SelectLineM(commandData);
+            SelectLineM formSelectionM = new SelectLineM(commandData) { AllowOnlyVertical = true };
             DimensionSectionFloorsVM formVM = new DimensionSectionFloorsVM(formM, formSelectionM);
             DimensionSectionFloorsForm form = new DimensionSectionFloorsForm() { DataContext = formVM };
 
