@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using System.Linq;
-using Autodesk.Revit.UI.Selection;
 
 namespace BIM_Leaders_Logic
 {
@@ -311,12 +310,14 @@ namespace BIM_Leaders_Logic
 
         private void ShowResult()
         {
-            // Show result
-            string text = (_countSegments == 0)
+            if (RunResult.Length == 0)
+            {
+                RunResult = (_countSegments == 0)
                 ? "Dimension creating error."
                 : $"Dimension with {_countSegments} segments was created.";
+            }
 
-            TaskDialog.Show(TRANSACTION_NAME, text);
+            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

@@ -361,12 +361,15 @@ namespace BIM_Leaders_Logic
 
         private void ShowResult()
         {
-            if (_countSpots == 0 && _countSegments == 0)
-                RunResult = "No annotations created.";
-            else
-                RunResult = (PlaceSpots)
-                    ? $"{_countSpots} spot elevations created."
-                    : $"Dimension with {_countSegments} segments created.";
+            if (RunResult.Length == 0)
+            {
+                if (_countSpots == 0 && _countSegments == 0)
+                    RunResult = "No annotations created.";
+                else
+                    RunResult = (PlaceSpots)
+                        ? $"{_countSpots} spot elevations created."
+                        : $"Dimension with {_countSegments} segments created.";
+            }
 
             TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }

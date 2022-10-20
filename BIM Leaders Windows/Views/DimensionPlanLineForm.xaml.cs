@@ -11,7 +11,7 @@ namespace BIM_Leaders_Windows
     /// Dimension floors aquisition form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
-    public partial class DimensionPlanLineForm : Window, IDisposable
+    public partial class DimensionPlanLineForm : Window
     {
         /// <summary>
         /// Default constructor.
@@ -38,11 +38,6 @@ namespace BIM_Leaders_Windows
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
-        }
-
-        public void Dispose()
-        {
-            Close();
         }
 
         private void buttonCancel_Click(object sender, RoutedEventArgs e)

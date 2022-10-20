@@ -55,17 +55,15 @@
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Top">
-            <StackPanel>
-                <Button x:Name="buttonOk" Command="{Binding RunCommand}"
+            <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                     Content="Magic" ToolTip="Run"
                     Style="{StaticResource SRectangleButton}">
-                    <Button.IsEnabled>
-                        <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                            <Binding ElementName="labelSelectElements" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                        </MultiBinding>
-                    </Button.IsEnabled>
-                </Button>
-            </StackPanel>
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                        <Binding ElementName="labelSelectElements" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
         </Grid>
     </Grid>
 </Window>

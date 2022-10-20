@@ -449,12 +449,14 @@ namespace BIM_Leaders_Logic
 
         private void ShowResult()
         {
-            // Show result
-            string text = (_countSpots == 0 && _countDimensions == 0)
-                ? "No annotations created."
-                : $"{_countSpots} spot elevations were created. {_countDimensions} dimension lines were created.";
+            if (RunResult.Length == 0)
+            {
+                RunResult = (_countSpots == 0 && _countDimensions == 0)
+                    ? "No annotations created."
+                    : $"{_countSpots} spot elevations were created. {_countDimensions} dimension lines were created.";
+            }
 
-            TaskDialog.Show(TRANSACTION_NAME, text);
+            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

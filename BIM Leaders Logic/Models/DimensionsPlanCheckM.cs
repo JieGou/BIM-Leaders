@@ -96,6 +96,7 @@ namespace BIM_Leaders_Logic
                     ElementId filter1Id = CreateFilter(wallIds);
                     _doc.Regenerate();
                     SetupFilter(filter1Id);
+
                     trans.Commit();
                 }
             }
@@ -235,9 +236,12 @@ namespace BIM_Leaders_Logic
 
         private void ShowResult()
         {
-            RunResult = (_countWallsUndimensioned == 0)
+            if (RunResult.Length == 0)
+            {
+                RunResult = (_countWallsUndimensioned == 0)
                     ? "All walls are dimensioned"
                     : $"{_countWallsUndimensioned} walls added to filter \"Check - Dimensions\".";
+            }
 
             TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }

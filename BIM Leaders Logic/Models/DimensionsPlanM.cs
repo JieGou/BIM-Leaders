@@ -671,9 +671,12 @@ namespace BIM_Leaders_Logic
 
         private void ShowResult()
         {
-            RunResult = (_countDimensions == 0)
+            if (RunResult.Length == 0)
+            {
+                RunResult = (_countDimensions == 0)
                     ? "Dimensions creating error."
                     : $"{_countDimensions} dimensions with {_countSegments} segments were created.";
+            }
 
             TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }

@@ -19,18 +19,14 @@ namespace BIM_Leaders_Core
 
             // ViewModel
             DimensionPlanLineVM formVM = new DimensionPlanLineVM(formM, formSelectionM);
-
+            
             // View
-            using (DimensionPlanLineForm form = new DimensionPlanLineForm() { DataContext = formVM})
-            {
-                var helper = new System.Windows.Interop.WindowInteropHelper(form);
-                helper.Owner = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+            DimensionPlanLineForm form = new DimensionPlanLineForm() { DataContext = formVM };
+            form.ShowDialog();
 
-                form.DataContext = formVM;
+            if (form.DialogResult == false)
+                return Result.Cancelled;
 
-                if (form.ShowDialog() == false)
-                    return Result.Cancelled;
-            }
             return Result.Succeeded;
         }
 

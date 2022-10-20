@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         
         Style="{DynamicResource SWindow}"
@@ -36,19 +35,19 @@
             <StackPanel Height="260" Margin="20,0">
                 <Label Content="Bubbles side"
                        Style="{StaticResource SLabelBold}" />
-                <CheckBox x:Name="checkboxSide1" IsChecked="{Binding Path=ResultSide1, Mode=TwoWay}"
+                <CheckBox x:Name="checkboxSide1" IsChecked="{Binding Path=Side1, Mode=TwoWay}"
                           Content="Side 1"
                           Style="{StaticResource SCheckBox}" />
-                <CheckBox x:Name="checkboxSide2" IsChecked="{Binding Path=ResultSide2, Mode=TwoWay}"
+                <CheckBox x:Name="checkboxSide2" IsChecked="{Binding Path=Side2, Mode=TwoWay}"
                           Content="Side 2"
                           Style="{StaticResource SCheckBox}" />
 
                 <Label Content="Switch ends"
                        Style="{StaticResource SLabelBold}" />
-                <RadioButton x:Name="rbSwitch2D" GroupName="rbGroup" IsChecked="{Binding Path=ResultSwitch2D, Mode=TwoWay}"
+                <RadioButton x:Name="rbSwitch2D" GroupName="rbGroup" IsChecked="{Binding Path=Switch2D, Mode=TwoWay}"
                              Content="Switch to 2D"
                              Style="{StaticResource SRadioButton}" />
-                <RadioButton x:Name="rbSwitch3D" GroupName="rbGroup" IsChecked="{Binding Path=ResultSwitch3D, Mode=TwoWay}"
+                <RadioButton x:Name="rbSwitch3D" GroupName="rbGroup" IsChecked="{Binding Path=Switch3D, Mode=TwoWay}"
                              Content="Switch to 3D"
                              Style="{StaticResource SRadioButton}" />
                 <RadioButton x:Name="rbSwitchNone" GroupName="rbGroup"
@@ -58,9 +57,9 @@
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Top">
-            <Button x:Name="buttonOk" Click="ButtonOkClick"
-                                Content="Magic" ToolTip="Run"
-                                Style="{StaticResource SRectangleButton}" />
+            <Button x:Name="buttonOk" Command="{Binding RunCommand}"
+                    Content="Magic" ToolTip="Run"
+                    Style="{StaticResource SRectangleButton}" />
         </Grid>
     </Grid>
 </Window>
