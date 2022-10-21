@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         mc:Ignorable="d"
         
-        Style="{DynamicResource SWindow}"
+        Style="{StaticResource SWindow}"
         Title="BIM Leaders - Grids Align"
         WindowStartupLocation="CenterScreen"
         

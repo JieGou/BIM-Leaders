@@ -11,10 +11,10 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="SRectangleButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
+        <Setter Property="Margin" Value="20,5,20,0" />
         <Setter Property="Background" Value="{StaticResource SColorButtonBackground}" />
         <Setter Property="Foreground" Value="{StaticResource SColorText}" />
         <Setter Property="BorderBrush" Value="{StaticResource SColorButtonBorder}" />
-        <Setter Property="Margin" Value="20,0" />
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
         <Setter Property="FontWeight" Value="Bold"/>
         <Style.Triggers>

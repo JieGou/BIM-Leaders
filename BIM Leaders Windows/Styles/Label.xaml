@@ -16,6 +16,7 @@
         <Setter Property="Foreground" Value="{StaticResource SColorText}" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Validation.ErrorTemplate" Value="{x:Null}" />
     </Style>
     
     <Style x:Key="SLabelBold" TargetType="{x:Type Label}">

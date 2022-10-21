@@ -92,14 +92,14 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private int _selectElements;
-        public int SelectElements
+        private int _selectedElement;
+        public int SelectedElement
         {
-            get { return _selectElements; }
+            get { return _selectedElement; }
             set
             {
-                _selectElements = value;
-                OnPropertyChanged(nameof(SelectElements));
+                _selectedElement = value;
+                OnPropertyChanged(nameof(SelectedElement));
             }
         }
 
@@ -143,7 +143,7 @@ namespace BIM_Leaders_Logic
                 ConvertUserInput();
 
                 GetDividedFloors(out List<Floor> floorsThin, out List<Floor> floorsThick);
-                DetailLine detailLine = _doc.GetElement(new ElementId(SelectElements)) as DetailLine;
+                DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
                 Line line = detailLine.GeometryCurve as Line;
                 List<Face> intersectionFacesAll = GetIntersectionFaces(line, floorsThin, floorsThick);
 

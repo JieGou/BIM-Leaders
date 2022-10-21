@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         mc:Ignorable="d"
         
-        Style="{DynamicResource SWindow}"
+        Style="{StaticResource SWindow}"
         Title="BIM Leaders - Dimension Section Floors"
         WindowStartupLocation="CenterScreen"
         Height="500"
@@ -70,18 +70,18 @@
                 <Label Content="{Binding ElementName=textboxMinThickThicknessString, Path=(Validation.Errors)[0].ErrorContent}"
                        Style="{StaticResource SLabelError}" />
 
-                <Button x:Name="buttonSelectElements" Command="{Binding SelectLineCommand}"
+                <Button x:Name="buttonSelectElement" Command="{Binding SelectLineCommand}"
                         Content="Select Line" ToolTip="Select vertical line to locate annotations"
                         Margin="0,20,0,0"
                         Style="{StaticResource SSelectButton}">
                 </Button>
-                <Label Content="{Binding SelectElementsError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                <Label Content="{Binding SelectedElementError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                        Style="{StaticResource SLabelError}" />
 
                 <Label Content="Selected Line ID:"
                        Margin="-5,15,0,0"
                        Style="{StaticResource SLabel}" />
-                <Label x:Name="labelSelectElements" Content="{Binding SelectElementsString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                <Label x:Name="labelSelectedElement" Content="{Binding SelectedElementString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                        Margin="90,-24,0,0"
                        Style="{StaticResource SLabel}" />
             </StackPanel>
@@ -98,7 +98,7 @@
                             <Binding ElementName="checkboxPlaceOnThickTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="checkboxPlaceOnThickBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                             <Binding ElementName="textboxMinThickThicknessString" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                            <Binding ElementName="labelSelectElements" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                            <Binding ElementName="labelSelectedElement" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>

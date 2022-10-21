@@ -27,13 +27,13 @@ namespace BIM_Leaders_Logic
         public ExternalEvent ExternalEvent { get; set; }
 
         private int _selectElements;
-        public int SelectElements
+        public int SelectedElement
         {
             get { return _selectElements; }
             set
             {
                 _selectElements = value;
-                OnPropertyChanged(nameof(SelectElements));
+                OnPropertyChanged(nameof(SelectedElement));
             }
         }
 
@@ -75,7 +75,7 @@ namespace BIM_Leaders_Logic
 
             try
             {
-                DetailLine detailLine = _doc.GetElement(new ElementId(SelectElements)) as DetailLine;
+                DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
                 Line line = detailLine.GeometryCurve as Line;
 
                 ReferenceArray references = GetReferences(line);

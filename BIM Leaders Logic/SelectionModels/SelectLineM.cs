@@ -42,7 +42,6 @@ namespace BIM_Leaders_Logic
             }
         }
 
-
         #endregion
 
         public SelectLineM(ExternalCommandData commandData)
@@ -57,20 +56,25 @@ namespace BIM_Leaders_Logic
 
             // Get the line from user selection
             Reference referenceLine = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
-            DetailLine detailLine = _doc.GetElement(referenceLine) as DetailLine;
-            if (detailLine == null)
+            DetailCurve detailCurve = _doc.GetElement(referenceLine) as DetailCurve;
+            if (detailCurve == null)
                 Error = "Wrong selection";
 
-            Line line = detailLine.GeometryCurve as Line;
-
-            if (AllowOnlyVertical)
+            if (detailCurve.GeometryCurve is Line line)
             {
-                double direction = line.Direction.Z;
-                if (direction != 1 && direction != -1)
-                    Error = "Selected line is not vertical";
-            }
+                if (AllowOnlyVertical)
+                {
+                    double direction = line.Direction.Z;
+                    if (direction != 1 && direction != -1)
+                        Error = "Selected line is not vertical";
+                }
+            }   
+            else
+                Error = "Selected line is not straight";
 
-            SelectedElement = detailLine.Id.IntegerValue;
+            SelectedElement = (Error.Length == 0)
+                ? detailCurve.Id.IntegerValue
+                : 0;
         }
 
         #region INOTIFYPROPERTYCHANGED

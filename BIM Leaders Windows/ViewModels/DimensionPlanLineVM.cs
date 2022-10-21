@@ -36,36 +36,36 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        private int _selectElements;
-        public int SelectElements
+        private int _selectedElement;
+        public int SelectedElement
         {
-            get { return _selectElements; }
+            get { return _selectedElement; }
             set
             {
-                _selectElements = value;
-                OnPropertyChanged(nameof(SelectElements));
+                _selectedElement = value;
+                OnPropertyChanged(nameof(SelectedElement));
             }
         }
 
-        private string _selectElementsString;
-        public string SelectElementsString
+        private string _selectedElementString;
+        public string SelectedElementString
         {
-            get { return _selectElementsString; }
+            get { return _selectedElementString; }
             set
             {
-                _selectElementsString = value;
-                OnPropertyChanged(nameof(SelectElementsString));
+                _selectedElementString = value;
+                OnPropertyChanged(nameof(SelectedElementString));
             }
         }
 
-        private string _selectElementsError;
-        public string SelectElementsError
+        private string _selectedElementError;
+        public string SelectedElementError
         {
-            get { return _selectElementsError; }
+            get { return _selectedElementError; }
             set
             {
-                _selectElementsError = value;
-                OnPropertyChanged(nameof(SelectElementsError));
+                _selectedElementError = value;
+                OnPropertyChanged(nameof(SelectedElementError));
             }
         }
 
@@ -82,7 +82,8 @@ namespace BIM_Leaders_Windows
 
             IsVisible = true;
 
-            SelectElementsString = "No selection";
+            SelectedElement = 0;
+            SelectedElementString = "No selection";
 
             RunCommand = new RunCommand(RunAction);
             SelectLineCommand = new RunCommand(SelectLineAction);
@@ -116,8 +117,11 @@ namespace BIM_Leaders_Windows
 
             switch (propertyName)
             {
-                case "SelectElementsString":
-                    error = SelectElementsError;
+                case "SelectedElementString":
+                    if (SelectLineModel.Error?.Length > 0)
+                        error = SelectLineModel.Error;
+                    if (SelectedElement == 0)
+                        error = "No selection";
                     break;
             }
             return error;
@@ -142,20 +146,11 @@ namespace BIM_Leaders_Windows
 
             SelectLineModel.Run();
             
-            SelectElementsError = SelectLineModel.Error;
-
-            if (SelectLineModel.Error.Length > 0)
-            {
-                SelectElements = 0;
-                SelectElementsString = "No selection";
-                Model.SelectElements = 0;
-            }  
-            else
-            {
-                SelectElements = SelectLineModel.SelectedElement;
-                SelectElementsString = SelectElements.ToString();
-                Model.SelectElements = SelectLineModel.SelectedElement;
-            }
+            SelectedElement = SelectLineModel.SelectedElement;
+            SelectedElementString = (SelectedElement == 0)
+                ? "No selection"
+                : SelectedElement.ToString();
+            SelectedElementError = SelectLineModel.Error;
             
             IsVisible = true;
         }
