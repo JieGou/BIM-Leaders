@@ -48,7 +48,7 @@
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <StackPanel Height="331" Margin="20,0" VerticalAlignment="Top">
+                    <StackPanel Margin="20,0" VerticalAlignment="Top">
                         <Label Content="Annotation type"
                                Style="{StaticResource SLabelBold}" />
                         <RadioButton x:Name="radiobuttonPlaceSpots" GroupName="radiobuttonGroup" IsChecked="{Binding Path=PlaceSpots, Mode=TwoWay}"

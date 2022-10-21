@@ -11,14 +11,16 @@ namespace BIM_Leaders_Core
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            // Model
             DimensionsPlanCheckM formM = new DimensionsPlanCheckM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
-
             formM.ExternalEvent = externalEvent;
 
+            // ViewModel
             DimensionsPlanCheckVM formVM = new DimensionsPlanCheckVM(formM);
-            DimensionsPlanCheckForm form = new DimensionsPlanCheckForm() { DataContext = formVM };
 
+            // View
+            DimensionsPlanCheckForm form = new DimensionsPlanCheckForm() { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

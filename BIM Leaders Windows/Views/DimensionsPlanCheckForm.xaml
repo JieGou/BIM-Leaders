@@ -3,11 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BIM_Leaders_Windows"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:BIM_Leaders_Windows"
         mc:Ignorable="d"
         
-        Style="{StaticResource SWindow}"
+        WindowStyle="None"
+        Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Dimensions Plan Check"
         WindowStartupLocation="CenterScreen"
         
@@ -19,35 +20,47 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="89" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="60" />
-        </Grid.RowDefinitions>
+        <materialDesign:Card UniformCornerRadius="30">
+            <materialDesign:Card.Background>
+                <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0" />
+                </LinearGradientBrush>
+            </materialDesign:Card.Background>
 
-        <Grid Grid.Row="0">
-            <TextBlock Text="Dimensions Plan Check"
-                       Style="{StaticResource STextBlock}" />
-            <Button x:Name="buttonCancel" IsCancel="True"
-                    Style="{StaticResource SRoundButton}" />
-        </Grid>
+            <Grid Background="{x:Null}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="89" />
+                    <RowDefinition Height="251" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1">
-            <StackPanel Height="231" Margin="20,0">
-                <Label Content="Filter color"
-                       Margin="-5,10,0,0"
-                       Style="{StaticResource SLabelBold}" />
-                <materialDesign:ColorPicker  x:Name="colorPicker"
-                                             Color="{Binding FilterColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            </StackPanel>
-        </Grid>
+                <Grid Grid.Row="0">
+                    <TextBlock Text="Dimensions Plan Check"
+                               Style="{StaticResource STextBlock}" />
+                    <Button x:Name="buttonCancel" IsCancel="True"
+                            Style="{StaticResource SRoundButton}" />
+                </Grid>
 
-        <Grid Grid.Row="2" VerticalAlignment="Top">
-            <StackPanel>
-                <Button x:Name="buttonOk" Command="{Binding RunCommand}"
-                        Content="Magic" ToolTip="Run"
-                        Style="{StaticResource SRectangleButton}" />
-            </StackPanel>
-        </Grid>
+                <Grid Grid.Row="1">
+                    <StackPanel Margin="20,0">
+                        <Label Content="Filter color"
+                               Margin="-5,10,0,0"
+                               Style="{StaticResource SLabelBold}" />
+                        <materialDesign:ColorPicker  x:Name="colorPicker"
+                                                     Color="{Binding FilterColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="2" VerticalAlignment="Top">
+                    <StackPanel>
+                        <Button x:Name="buttonOk" Command="{Binding RunCommand}"
+                                Content="Magic" ToolTip="Run"
+                                Style="{StaticResource SRectangleButton}" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </materialDesign:Card>
     </Grid>
 </Window>

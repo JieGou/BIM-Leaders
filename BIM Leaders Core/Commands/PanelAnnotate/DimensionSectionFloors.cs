@@ -20,20 +20,22 @@ namespace BIM_Leaders_Core
             if (CheckIfSectionIsSplit())
                 TaskDialog.Show(TRANSACTION_NAME, "Current view is a split section. This may cause issues when finding geometry intersections.");
 
+            // Models
             DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
-
             formM.ExternalEvent = externalEvent;
+            SelectLineM formSelectionM = new SelectLineM(commandData);
 
-            SelectLineM formSelectionM = new SelectLineM(commandData) { AllowOnlyVertical = true };
+            // ViewModel
             DimensionSectionFloorsVM formVM = new DimensionSectionFloorsVM(formM, formSelectionM);
-            DimensionSectionFloorsForm form = new DimensionSectionFloorsForm() { DataContext = formVM };
 
+            // View
+            DimensionSectionFloorsForm form = new DimensionSectionFloorsForm() { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)
                 return Result.Cancelled;
-            
+
             return Result.Succeeded;
         }
 
