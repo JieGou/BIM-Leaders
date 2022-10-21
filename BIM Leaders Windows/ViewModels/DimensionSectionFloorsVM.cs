@@ -157,6 +157,8 @@ namespace BIM_Leaders_Windows
             PlaceOnThickBot = true;
             MinThickThickness = 15;
             MinThickThicknessString = MinThickThickness.ToString();
+
+            SelectedElement = 0;
             SelectedElementString = "No selection";
 
             RunCommand = new RunCommand(RunAction);
@@ -209,7 +211,10 @@ namespace BIM_Leaders_Windows
                     }
                     break;
                 case "SelectedElementString":
-                    error = SelectedElementError;
+                    if (SelectLineModel.Error?.Length > 0)
+                        error = SelectLineModel.Error;
+                    if (SelectedElement == 0)
+                        error = "No selection";
                     break;
             }
             return error;
@@ -267,21 +272,12 @@ namespace BIM_Leaders_Windows
             IsVisible = false;
 
             SelectLineModel.Run();
-            
-            SelectedElementError = SelectLineModel.Error;
 
-            if (SelectLineModel.Error.Length > 0)
-            {
-                SelectedElement = 0;
-                SelectedElementString = "No selection";
-                Model.SelectedElement = 0;
-            }  
-            else
-            {
-                SelectedElement = SelectLineModel.SelectedElement;
-                SelectedElementString = SelectedElement.ToString();
-                Model.SelectedElement = SelectLineModel.SelectedElement;
-            }
+            SelectedElement = SelectLineModel.SelectedElement;
+            SelectedElementString = (SelectedElement == 0)
+                ? "No selection"
+                : SelectedElement.ToString();
+            SelectedElementError = SelectLineModel.Error;
             
             IsVisible = true;
         }

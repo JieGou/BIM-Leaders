@@ -7,13 +7,14 @@
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         mc:Ignorable="d"
         
+        WindowStyle="None"
         Style="{DynamicResource SWindow}"
-        Title="BIM Leaders - Dimension Plan Walls"
         WindowStartupLocation="CenterScreen"
+        Title="BIM Leaders - Dimension Plan Walls"
         
         d:DataContext="{d:DesignInstance Type=local:DimensionPlanLineVM}"
         MouseLeftButtonDown="FormMouseMove">
-
+    
     <Window.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
     </Window.Resources>
