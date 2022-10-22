@@ -19,14 +19,16 @@ namespace BIM_Leaders_Core
 
             CheckViewDepth();
 
+            // Models
             DimensionStairsLandingsM formM = new DimensionStairsLandingsM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
-
             formM.ExternalEvent = externalEvent;
 
+            // ViewModel
             DimensionStairsLandingsVM formVM = new DimensionStairsLandingsVM(formM);
-            DimensionStairsLandingsForm form = new DimensionStairsLandingsForm() { DataContext = formVM };
 
+            // View
+            DimensionStairsLandingsForm form = new DimensionStairsLandingsForm() { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)
