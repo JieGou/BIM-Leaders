@@ -21,14 +21,16 @@ namespace BIM_Leaders_Core
             if (ShowDialogAboutPlanRegions() == TaskDialogResult.No)
                 return Result.Cancelled;
 
+            // Models
             DimensionsPlanM formM = new DimensionsPlanM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
-
             formM.ExternalEvent = externalEvent;
 
+            // ViewModel
             DimensionsPlanVM formVM = new DimensionsPlanVM(formM);
-            DimensionsPlanForm form = new DimensionsPlanForm() { DataContext = formVM };
 
+            // View
+            DimensionsPlanForm form = new DimensionsPlanForm() { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

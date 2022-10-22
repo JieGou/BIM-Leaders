@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         mc:Ignorable="d"
         
-        Style="{StaticResource SWindow}"
+        WindowStyle="None"
+        Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Dimension Plan"
         WindowStartupLocation="CenterScreen"
         
@@ -18,62 +20,75 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="60" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="60" />
-        </Grid.RowDefinitions>
+        <materialDesign:Card UniformCornerRadius="30">
+            <materialDesign:Card.Background>
+                <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0" />
+                </LinearGradientBrush>
+            </materialDesign:Card.Background>
+        </materialDesign:Card>
 
-        <Grid Grid.Row="0">
-            <TextBlock Text="Dimension Plan"
-                       Style="{StaticResource STextBlock}" />
-            <Button x:Name="buttonCancel" IsCancel="True"
-                    Style="{StaticResource SRoundButton}" />
+        <Grid Background="{x:Null}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60" />
+                <RowDefinition Height="280" />
+                <RowDefinition Height="60" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <TextBlock Text="Dimension Plan"
+                           Style="{StaticResource STextBlock}" />
+                <Button x:Name="buttonCancel" IsCancel="True"
+                        Style="{StaticResource SRoundButton}" />
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <StackPanel Margin="20,0">
+                    <Label Content="Search Step (cm)"
+                           Style="{StaticResource SLabelBold}" />
+                    <TextBox x:Name="textboxSearchStep" ToolTip="Step along element faces to create searching lines."
+                             Text="{Binding SearchStepString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Style="{StaticResource STextBox}" />
+                    <Label Content="{Binding ElementName=textboxSearchStep, Path=(Validation.Errors)[0].ErrorContent}"
+                           Style="{StaticResource SLabelError}" />
+
+                    <Label Content="Search Distance (cm)"
+                           Margin="-5,5,0,0"
+                           Style="{StaticResource SLabelBold}" />
+                    <TextBox x:Name="textboxSearchDistance" ToolTip="Distance from element face to search other elements."
+                             Text="{Binding SearchDistanceString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Style="{StaticResource STextBox}" />
+                    <Label Content="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors)[0].ErrorContent}"
+                           Style="{StaticResource SLabelError}" />
+
+                    <Label Content="Min New References"
+                           Margin="-5,10,0,0"
+                           Style="{StaticResource SLabelBold}" />
+                    <TextBox x:Name="textboxReferences" ToolTip="If count of references in the next dimension line will be lower, dimension will be joined with existing one."
+                             Text="{Binding MinReferencesString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Style="{StaticResource STextBox}" />
+                    <Label Content="{Binding ElementName=textboxReferences, Path=(Validation.Errors)[0].ErrorContent}"
+                           Style="{StaticResource SLabelError}" />
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="2" VerticalAlignment="Top">
+                <StackPanel>
+                    <Button x:Name="buttonOk" Command="{Binding RunCommand}"
+                            Content="Magic" ToolTip="Run"
+                            Style="{StaticResource SRectangleButton}">
+                        <Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                                <Binding ElementName="textboxSearchStep" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                <Binding ElementName="textboxSearchDistance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                <Binding ElementName="textboxReferences" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                            </MultiBinding>
+                        </Button.IsEnabled>
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Grid>
 
-        <Grid Grid.Row="1">
-            <StackPanel Height="260" Margin="20,0">
-                <Label Content="Search Step (cm)"
-                       Style="{StaticResource SLabelBold}" />
-                <TextBox x:Name="textboxSearchStep" ToolTip="Step along element faces to create searching lines."
-                         Text="{Binding SearchStepString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                         Style="{StaticResource STextBox}" />
-                <Label Content="{Binding ElementName=textboxSearchStep, Path=(Validation.Errors).CurrentItem.ErrorContent}"
-                       Style="{StaticResource SLabelError}" />
-
-                <Label Content="Search Distance (cm)"
-                       Margin="-5,5,0,0"
-                       Style="{StaticResource SLabelBold}" />
-                <TextBox x:Name="textboxSearchDistance" ToolTip="Distance from element face to search other elements."
-                         Text="{Binding SearchDistanceString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                         Style="{StaticResource STextBox}" />
-                <Label Content="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors).CurrentItem.ErrorContent}"
-                       Style="{StaticResource SLabelError}" />
-
-                <Label Content="Min New References"
-                       Margin="-5,10,0,0"
-                       Style="{StaticResource SLabelBold}" />
-                <TextBox x:Name="textboxReferences" ToolTip="If count of references in the next dimension line will be lower, dimension will be joined with existing one."
-                         Text="{Binding MinReferencesString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                         Style="{StaticResource STextBox}" />
-                <Label Content="{Binding ElementName=textboxReferences, Path=(Validation.Errors)/ErrorContent}"
-                       Style="{StaticResource SLabelError}" />
-            </StackPanel>
-        </Grid>
-
-        <Grid Grid.Row="2" VerticalAlignment="Top">
-            <StackPanel>
-                <Button x:Name="buttonOk" Command="{Binding RunCommand}"
-                    Content="Magic" ToolTip="Run"
-                    Style="{StaticResource SRectangleButton}">
-                    <Button.IsEnabled>
-                        <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                            <Binding ElementName="textboxThickness" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                            <Binding ElementName="checkboxPlacement0" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                        </MultiBinding>
-                    </Button.IsEnabled>
-                </Button>
-            </StackPanel>
-        </Grid>
     </Grid>
 </Window>
