@@ -1,82 +1,118 @@
 ﻿using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "Levels_Align"
+    /// View model for command "LevelsAlign"
     /// </summary>
     public class LevelsAlignVM : INotifyPropertyChanged
     {
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="LevelsAlignVM"/> class.
-        /// </summary>
-        public LevelsAlignVM()
+        #region PROPERTIES
+
+        private LevelsAlignM _model;
+        public LevelsAlignM Model
         {
-            ResultSide1 = true;
-            ResultSide2 = true;
-            ResultSwitch2D = true;
+            get { return _model; }
+            set { _model = value; }
         }
 
         /// <summary>
         /// Gets or sets a value indicating if <see cref="GridsAlignVM"/> chosen Side 1.
         /// </summary>
-        /// /// <value>
-        ///     <c>true</c> if Side 1 is chosen, if not, then <c>false</c>.
+        /// <value><c>true</c> if Side 1 is chosen, if not, then <c>false</c>.
         /// </value>
-        private bool _resultSide1;
-        public bool ResultSide1
+        private bool _side1;
+        public bool Side1
         {
-            get { return _resultSide1; }
+            get { return _side1; }
             set
             {
-                _resultSide1 = value;
-                OnPropertyChanged(nameof(ResultSide1));
+                _side1 = value;
+                OnPropertyChanged(nameof(Side1));
             }
         }
 
         /// <summary>
         /// Gets or sets a value indicating if <see cref="GridsAlignVM"/> chosen Side 2.
         /// </summary>
-        /// /// <value>
-        ///     <c>true</c> if Side 2 is chosen, if not, then <c>false</c>.
+        /// <value><c>true</c> if Side 2 is chosen, if not, then <c>false</c>.
         /// </value>
-        private bool _resultSide2;
-        public bool ResultSide2
+        private bool _side2;
+        public bool Side2
         {
-            get { return _resultSide2; }
+            get { return _side2; }
             set
             {
-                _resultSide2 = value;
-                OnPropertyChanged(nameof(ResultSide2));
+                _side2 = value;
+                OnPropertyChanged(nameof(Side2));
             }
         }
 
-        private bool _resultSwitch2D;
-        public bool ResultSwitch2D
+        private bool _switch2D;
+        public bool Switch2D
         {
-            get { return _resultSwitch2D; }
+            get { return _switch2D; }
             set
             {
-                _resultSwitch2D = value;
-                OnPropertyChanged(nameof(ResultSwitch2D));
+                _switch2D = value;
+                OnPropertyChanged(nameof(Switch2D));
             }
         }
-        private bool _resultSwitch3D;
-        public bool ResultSwitch3D
+        private bool _switch3D;
+        public bool Switch3D
         {
-            get { return _resultSwitch3D; }
+            get { return _switch3D; }
             set
             {
-                _resultSwitch3D = value;
-                OnPropertyChanged(nameof(ResultSwitch3D));
+                _switch3D = value;
+                OnPropertyChanged(nameof(Switch3D));
             }
         }
+
+        #endregion
+
+        /// <summary>
+        /// Default constructor
+        /// Initializing a new instance of the <see cref="LevelsAlignVM"/> class.
+        /// </summary>
+        public LevelsAlignVM(LevelsAlignM model)
+        {
+            Model = model;
+
+            Side1 = true;
+            Side2 = true;
+            Switch2D = true;
+
+            RunCommand = new RunCommand(RunAction);
+        }
+
+        #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region COMMANDS
+
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
+        {
+            Model.Side1 = Side1;
+            Model.Side2 = Side2;
+            Model.Switch2D = Switch2D;
+            Model.Switch3D = Switch3D;
+
+            Model.Run();
+        }
+
+        #endregion
     }
 }
