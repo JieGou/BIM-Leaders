@@ -13,9 +13,17 @@ namespace BIM_Leaders_Core
     {
         private Document _doc;
 
+        private const string TRANSACTION_NAME = "Delete DWG by Name";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
+            SortedDictionary<string, int> dwgList = GetDwgList();
+            if (dwgList.Count == 0)
+            {
+                TaskDialog.Show(TRANSACTION_NAME, "Document has no DWG.");
+                return Result.Failed;
+            }
 
             // Model
             DwgNameDeleteM formM = new DwgNameDeleteM(commandData);
@@ -24,8 +32,6 @@ namespace BIM_Leaders_Core
 
             // ViewModel
             DwgNameDeleteVM formVM = new DwgNameDeleteVM(formM);
-
-            SortedDictionary<string, int> dwgList = GetDwgList();
 
             formVM.DwgList = dwgList;
             formVM.DwgListSelected = dwgList.First().Value;

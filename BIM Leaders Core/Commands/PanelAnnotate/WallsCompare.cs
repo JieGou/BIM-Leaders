@@ -13,9 +13,23 @@ namespace BIM_Leaders_Core
     {
         private Document _doc;
 
+        private const string TRANSACTION_NAME = "Compare Walls";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
+            SortedDictionary<string, int> materials = GetListMaterials();
+            SortedDictionary<string, int> fillTypes = GetListFillTypes();
+            if (materials.Count == 0)
+            {
+                TaskDialog.Show(TRANSACTION_NAME, "Document has no materials.");
+                return Result.Failed;
+            }
+            if (fillTypes.Count == 0)
+            {
+                TaskDialog.Show(TRANSACTION_NAME, "Document has no fill types.");
+                return Result.Failed;
+            }
 
             // Model
             WallsCompareM formM = new WallsCompareM(commandData);
@@ -24,9 +38,6 @@ namespace BIM_Leaders_Core
 
             // ViewModel
             WallsCompareVM formVM = new WallsCompareVM(formM);
-
-            SortedDictionary<string, int> materials = GetListMaterials();
-            SortedDictionary<string, int> fillTypes = GetListFillTypes();
 
             formVM.Materials = materials;
             formVM.FillTypes = fillTypes;
