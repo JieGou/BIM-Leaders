@@ -62,12 +62,13 @@ namespace BIM_Leaders_Logic
             try
             {
                 //CODE
-                RunResult = "";
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
+
+            //ShowResult();
         }
 
         #endregion

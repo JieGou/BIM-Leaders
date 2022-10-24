@@ -1,37 +1,56 @@
 ﻿using System.Windows.Media;
 using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "Dimension_Section_Floors"
+    /// View model for command "TagsPlanCheck"
     /// </summary>
     public class TagsPlanCheckVM : INotifyPropertyChanged
     {
+        #region PROPERTIES
+
+        private TagsPlanCheckM _model;
+        public TagsPlanCheckM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private Color _filterColor;
+        public Color FilterColor
+        {
+            get { return _filterColor; }
+            set
+            {
+                _filterColor = value;
+                OnPropertyChanged(nameof(FilterColor));
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="TagsPlanCheckVM"/> class.
         /// </summary>
-        public TagsPlanCheckVM()
+        public TagsPlanCheckVM(TagsPlanCheckM model)
         {
-            ResultColor = new Color
+            Model = model;
+
+            FilterColor = new Color
             {
                 R = 255,
                 G = 127,
                 B = 39
             };
+
+            RunCommand = new RunCommand(RunAction);
         }
 
-        private Color _resultColor;
-        public Color ResultColor
-        {
-            get { return _resultColor; }
-            set
-            {
-                _resultColor = value;
-                OnPropertyChanged(nameof(ResultColor));
-            }
-        }
+        #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -39,5 +58,21 @@ namespace BIM_Leaders_Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region COMMANDS
+
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
+        {
+            Model.FilterColorSystem = FilterColor;
+
+            Model.Run();
+        }
+
+        #endregion
+
     }
 }

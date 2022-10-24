@@ -19,7 +19,7 @@ namespace BIM_Leaders_Logic
         private int _countRisersNumbers;
         private int _countRunsNumbersPlaced;
 
-        private const string TRANSACTION_NAME = "Enumerate stairs";
+        private const string TRANSACTION_NAME = "Number Steps";
 
         #region PROPERTIES
 
