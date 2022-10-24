@@ -135,6 +135,8 @@ namespace BIM_Leaders_Windows
 
         private void RunAction()
         {
+            Model.SelectedElement = SelectedElement;
+
             Model.Run();
         }
 

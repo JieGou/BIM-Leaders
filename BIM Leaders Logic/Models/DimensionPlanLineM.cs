@@ -295,15 +295,16 @@ namespace BIM_Leaders_Logic
             List<Reference> result = new List<Reference>();
 
             FaceArray faces = solid.Faces;
-            foreach (PlanarFace face in faces)
+            foreach (Face face in faces)
             {
-                // Check if faces are vertical
-                if (Math.Round(face.FaceNormal.Z) == 0)
-                {
-                    SetComparisonResult intersection = face.Intersect(line);
-                    if (intersection == SetComparisonResult.Overlap)
-                        result.Add(face.Reference);
-                }
+                if (face is PlanarFace planarFace)
+                    // Check if faces are vertical
+                    if (Math.Round(planarFace.FaceNormal.Z) == 0)
+                    {
+                        SetComparisonResult intersection = planarFace.Intersect(line);
+                        if (intersection == SetComparisonResult.Overlap)
+                            result.Add(planarFace.Reference);
+                    }
             }
             return result;
         }
