@@ -89,6 +89,7 @@
     <Compile Include="Models\DimensionStairsLandingsM.cs" />
     <Compile Include="Models\LevelsAlignM.cs" />
     <Compile Include="Models\GridsAlignM.cs" />
+    <Compile Include="Models\StairsStepsEnumerateM.cs" />
     <Compile Include="Models\_TEMPLATE.cs" />
     <Compile Include="Models\DimensionsPlanM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

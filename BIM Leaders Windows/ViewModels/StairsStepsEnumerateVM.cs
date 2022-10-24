@@ -1,54 +1,89 @@
 ﻿using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "Stairs_Steps_Enumerate"
+    /// View model for command "StairsStepsEnumerate"
     /// </summary>
     public class StairsStepsEnumerateVM : INotifyPropertyChanged, IDataErrorInfo
     {
-        private const int _resultNumberMinValue = 0;
+        private const int _startNumberMinValue = 0;
 
-        public string Error { get { return null; } }
+        #region PROPERTIES
+
+        private StairsStepsEnumerateM _model;
+        public StairsStepsEnumerateM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private int _startNumber;
+        public int StartNumber
+        {
+            get { return _startNumber; }
+            set
+            {
+                _startNumber = value;
+                OnPropertyChanged(nameof(StartNumber));
+            }
+        }
+
+        private string _startNumberString;
+        public string StartNumberString
+        {
+            get { return _startNumberString; }
+            set
+            {
+                _startNumberString = value;
+                OnPropertyChanged(nameof(StartNumberString));
+            }
+        }
+
+        private bool _sideRight;
+        public bool SideRight
+        {
+            get { return _sideRight; }
+            set
+            {
+                _sideRight = value;
+                OnPropertyChanged(nameof(SideRight));
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="StairsStepsEnumerateVM"/> class.
         /// </summary>
-        public StairsStepsEnumerateVM()
+        public StairsStepsEnumerateVM(StairsStepsEnumerateM model)
         {
-            _resultSideRight = true;
-            _resultNumber = 1;
-            _inputNumber = _resultNumber.ToString();
+            Model = model;
+
+            SideRight = true;
+            StartNumber = 1;
+            StartNumberString = StartNumber.ToString();
+
+            RunCommand = new RunCommand(RunAction);
         }
 
-        private bool _resultSideRight;
-        public bool ResultSideRight
+        #region INOTIFYPROPERTYCHANGED
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            get { return _resultSideRight; }
-            set
-            {
-                _resultSideRight = value;
-                OnPropertyChanged(nameof(ResultSideRight));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string _inputNumber;
-        public string InputNumber
-        {
-            get { return _inputNumber; }
-            set
-            {
-                _inputNumber = value;
-                OnPropertyChanged(nameof(InputNumber));
-            }
-        }
-        private int _resultNumber;
-        public int ResultNumber
-        {
-            get { return _resultNumber; }
-            set { _resultNumber = value; }
-        }
+        #endregion
 
+        #region VALIDATION
+
+        public string Error { get { return null; } }
         public string this[string propertyName]
         {
             get
@@ -57,20 +92,17 @@ namespace BIM_Leaders_Windows
             }
         }
 
-
-        #region Validation
-
         string GetValidationError(string propertyName)
         {
             string error = null;
             
             switch (propertyName)
             {
-                case "InputNumber":
-                    error = ValidateInputIsWholeNumber(out int number, _inputNumber);
+                case "StartNumberString":
+                    error = ValidateInputIsWholeNumber(out int number, StartNumberString);
                     if (string.IsNullOrEmpty(error))
                     {
-                        ResultNumber = number;
+                        StartNumber = number;
                         error = ValidateResultNumber();
                     }
                     break;
@@ -92,18 +124,26 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResultNumber()
         {
-            if (ResultNumber < _resultNumberMinValue)
-                return $"From {_resultNumberMinValue}";
+            if (StartNumber < _startNumberMinValue)
+                return $"From {_startNumberMinValue}";
             return null;
         }
 
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region COMMANDS
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Model.StartNumber = StartNumber;
+            Model.SideRight = SideRight;
+
+            Model.Run();
         }
+
+        #endregion
+
     }
 }

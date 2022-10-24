@@ -27,53 +27,53 @@
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0" />
                 </LinearGradientBrush>
             </materialDesign:Card.Background>
+            
+            <Grid Background="{x:Null}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="280" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <TextBlock Text="Grids Align"
+                               Style="{StaticResource STextBlock}" />
+                    <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
+                            Style="{StaticResource SRoundButton}" />
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <StackPanel Margin="20,0">
+                        <Label Content="Bubbles side"
+                               Style="{StaticResource SLabelBold}" />
+                        <CheckBox x:Name="checkboxSide1" IsChecked="{Binding Path=Side1, Mode=TwoWay}"
+                                  Content="Side 1"
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxSide2" IsChecked="{Binding Path=Side2, Mode=TwoWay}"
+                                  Content="Side 2"
+                                  Style="{StaticResource SCheckBox}" />
+
+                        <Label Content="Switch ends"
+                               Style="{StaticResource SLabelBold}" />
+                        <RadioButton x:Name="rbSwitch2D" GroupName="rbGroup" IsChecked="{Binding Path=Switch2D, Mode=TwoWay}"
+                                     Content="Switch to 2D"
+                                     Style="{StaticResource SRadioButton}" />
+                        <RadioButton x:Name="rbSwitch3D" GroupName="rbGroup" IsChecked="{Binding Path=Switch3D, Mode=TwoWay}"
+                                     Content="Switch to 3D"
+                                     Style="{StaticResource SRadioButton}" />
+                        <RadioButton x:Name="rbSwitchNone" GroupName="rbGroup"
+                                     Content="Do not switch"
+                                     Style="{StaticResource SRadioButton}" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="2" VerticalAlignment="Top">
+                    <Button x:Name="buttonOk" Command="{Binding RunCommand}"
+                            Content="Magic" ToolTip="Run"
+                            Style="{StaticResource SRectangleButton}" />
+                </Grid>
+            </Grid>
+            
         </materialDesign:Card>
-
-        <Grid Background="{x:Null}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="60" />
-                <RowDefinition Height="280" />
-                <RowDefinition Height="60" />
-            </Grid.RowDefinitions>
-
-            <Grid Grid.Row="0">
-                <TextBlock Text="Grids Align"
-                           Style="{StaticResource STextBlock}" />
-                <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                        Style="{StaticResource SRoundButton}" />
-            </Grid>
-
-            <Grid Grid.Row="1">
-                <StackPanel Margin="20,0">
-                    <Label Content="Bubbles side"
-                           Style="{StaticResource SLabelBold}" />
-                    <CheckBox x:Name="checkboxSide1" IsChecked="{Binding Path=Side1, Mode=TwoWay}"
-                              Content="Side 1"
-                              Style="{StaticResource SCheckBox}" />
-                    <CheckBox x:Name="checkboxSide2" IsChecked="{Binding Path=Side2, Mode=TwoWay}"
-                              Content="Side 2"
-                              Style="{StaticResource SCheckBox}" />
-
-                    <Label Content="Switch ends"
-                           Style="{StaticResource SLabelBold}" />
-                    <RadioButton x:Name="rbSwitch2D" GroupName="rbGroup" IsChecked="{Binding Path=Switch2D, Mode=TwoWay}"
-                                 Content="Switch to 2D"
-                                 Style="{StaticResource SRadioButton}" />
-                    <RadioButton x:Name="rbSwitch3D" GroupName="rbGroup" IsChecked="{Binding Path=Switch3D, Mode=TwoWay}"
-                                 Content="Switch to 3D"
-                                 Style="{StaticResource SRadioButton}" />
-                    <RadioButton x:Name="rbSwitchNone" GroupName="rbGroup"
-                                 Content="Do not switch"
-                                 Style="{StaticResource SRadioButton}" />
-                </StackPanel>
-            </Grid>
-
-            <Grid Grid.Row="2" VerticalAlignment="Top">
-                <Button x:Name="buttonOk" Command="{Binding RunCommand}"
-                        Content="Magic" ToolTip="Run"
-                        Style="{StaticResource SRectangleButton}" />
-            </Grid>
-        </Grid>
-
     </Grid>
 </Window>
