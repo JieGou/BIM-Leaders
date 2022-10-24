@@ -43,17 +43,6 @@ namespace BIM_Leaders_Windows
             Close();
         }
 
-        /// <summary>
-        /// Handles the Click event of the Button_ok control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void ButtonOkClick(object sender, System.EventArgs e)
-        {
-            DialogResult = true;
-            Close();
-        }
-
         // Move the window
         private void FormMouseMove(object sender, MouseButtonEventArgs e)
         {

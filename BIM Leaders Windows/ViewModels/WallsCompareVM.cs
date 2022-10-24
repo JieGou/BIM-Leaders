@@ -1,79 +1,88 @@
-﻿using System.Collections.Generic;
+﻿using System.Windows.Media;
 using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
+using System.Collections.Generic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "Walls_Compare"
+    /// View model for command "WallsCompare"
     /// </summary>
     public class WallsCompareVM : INotifyPropertyChanged
     {
-        public string Error { get { return null; } }
+        #region PROPERTIES
+
+        private WallsCompareM _model;
+        public WallsCompareM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private bool _checkOneLink;
+        public bool CheckOneLink
+        {
+            get { return _checkOneLink; }
+            set
+            {
+                _checkOneLink = value;
+                OnPropertyChanged(nameof(CheckOneLink));
+            }
+        }
+
+        private SortedDictionary<string, int> _materials;
+        public SortedDictionary<string, int> Materials
+        {
+            get { return _materials; }
+            set { _materials = value; }
+        }
+
+        private SortedDictionary<string, int> _fillTypes;
+        public SortedDictionary<string, int> FillTypes
+        {
+            get { return _fillTypes; }
+            set { _fillTypes = value; }
+        }
+
+        private int _materialsSelected;
+        public int MaterialsSelected
+        {
+            get { return _materialsSelected; }
+            set
+            {
+                _materialsSelected = value;
+                OnPropertyChanged(nameof(MaterialsSelected));
+            }
+        }
+
+        private int _fillTypesSelected;
+        public int FillTypesSelected
+        {
+            get { return _fillTypesSelected; }
+            set
+            {
+                _fillTypesSelected = value;
+                OnPropertyChanged(nameof(FillTypesSelected));
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="WallsCompareVM"/> class.
         /// </summary>
-        public WallsCompareVM(SortedDictionary<string, int> listMaterials, SortedDictionary<string, int> listFillTypes)
+        public WallsCompareVM(WallsCompareM model)
         {
-            ResultLinks = true;
-            ListMaterials = listMaterials;
-            ListFillTypes = listFillTypes;
+            Model = model;
+
+            CheckOneLink = true;
+
+            RunCommand = new RunCommand(RunAction);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating picked side for <see cref="LevelsAlignVM"/> annotations.
-        /// </summary>
-        /// /// <value>
-        ///     <c>true</c> if side 1 is chosen, if side 2 is chosen, then <c>false</c>.
-        /// </value>
-        private bool _resultLinks;
-        public bool ResultLinks
-        {
-            get { return _resultLinks; }
-            set
-            {
-                _resultLinks = value;
-                OnPropertyChanged(nameof(ResultLinks));
-            }
-        }
-
-        private SortedDictionary<string, int> _listMaterials;
-        public SortedDictionary<string, int> ListMaterials
-        {
-            get { return _listMaterials; }
-            set { _listMaterials = value; }
-        }
-
-        private SortedDictionary<string, int> _listFillTypes;
-        public SortedDictionary<string, int> ListFillTypes
-        {
-            get { return _listFillTypes; }
-            set { _listFillTypes = value; }
-        }
-
-        private int _listMaterialsSelected;
-        public int ListMaterialsSelected 
-        {
-            get { return _listMaterialsSelected; }
-            set
-            {
-                _listMaterialsSelected = value;
-                OnPropertyChanged(nameof(ListMaterialsSelected));
-            }
-        }
-
-        private int _listFillTypesSelected;
-        public int ListFillTypesSelected
-        {
-            get { return _listFillTypesSelected; }
-            set
-            {
-                _listFillTypesSelected = value;
-                OnPropertyChanged(nameof(ListFillTypesSelected));
-            }
-        }
-
+        #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -81,5 +90,22 @@ namespace BIM_Leaders_Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region COMMANDS
+
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
+        {
+            Model.CheckOneLink = CheckOneLink;
+            Model.MaterialsSelected = MaterialsSelected;
+            Model.FillTypesSelected = FillTypesSelected;
+
+            Model.Run();
+        }
+
+        #endregion
     }
 }
