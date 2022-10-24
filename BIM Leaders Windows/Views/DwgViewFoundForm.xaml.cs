@@ -1,9 +1,8 @@
-﻿using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 
 namespace BIM_Leaders_Windows
 {
@@ -44,22 +43,16 @@ namespace BIM_Leaders_Windows
             Close();
         }
 
-        /// <summary>
-        /// Handles the Click event of the Button_ok control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void ButtonOkClick(object sender, System.EventArgs e)
-        {
-            DialogResult = true;
-            Close();
-        }
-
         // Move the window
         private void FormMouseMove(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
+        }
+
+        private void buttonOk_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

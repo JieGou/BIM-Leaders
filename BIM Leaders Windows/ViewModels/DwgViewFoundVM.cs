@@ -1,28 +1,56 @@
 ﻿using System.Data;
 using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "DWG_View_Find"
+    /// View model for command "DwgViewFound"
     /// </summary>
     public class DwgViewFoundVM : INotifyPropertyChanged
     {
+        #region PROPERTIES
+
+        private DwgViewFoundM _model;
+        public DwgViewFoundM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private DataSet _dwgList;
+        public DataSet DwgList
+        {
+            get { return _dwgList; }
+            set { _dwgList = value; }
+        }
+
+        private DataRow _selectedDwg;
+        public DataRow SelectedDwg
+        {
+            get { return _selectedDwg; }
+            set
+            {
+                _selectedDwg = value;
+                OnPropertyChanged(nameof(SelectedDwg));
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="DwgViewFoundVM"/> class.
         /// </summary>
-        public DwgViewFoundVM(DataSet dwgDataSet)
+        public DwgViewFoundVM(DwgViewFoundM model)
         {
-            _dwg = dwgDataSet;
+            Model = model;
+
+            RunCommand = new RunCommand(RunAction);
         }
 
-        private DataSet _dwg;
-        public DataSet Dwg
-        {
-            get { return _dwg; }
-            set { }
-        }
+        #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -30,5 +58,20 @@ namespace BIM_Leaders_Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region COMMANDS
+
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
+        {
+            Model.SelectedDwg = SelectedDwg;
+
+            Model.Run();
+        }
+
+        #endregion
     }
 }

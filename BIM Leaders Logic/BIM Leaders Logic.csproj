@@ -93,6 +93,7 @@
     <Compile Include="Models\TagsPlanCheckM.cs" />
     <Compile Include="Models\WallsCompareM.cs" />
     <Compile Include="Models\DwgNameDeleteM.cs" />
+    <Compile Include="Models\DwgViewFoundM.cs" />
     <Compile Include="Models\_TEMPLATE.cs" />
     <Compile Include="Models\DimensionsPlanM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

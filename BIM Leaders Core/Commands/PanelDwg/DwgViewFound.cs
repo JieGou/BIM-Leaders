@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
@@ -14,33 +14,59 @@ namespace BIM_Leaders_Core
     {
         private static Document _doc;
 
+        private const string TRANSACTION_NAME = "Imports";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
+            // Model
+            DwgViewFoundM formM = new DwgViewFoundM(commandData);
+            ExternalEvent externalEvent = ExternalEvent.Create(formM);
+            formM.ExternalEvent = externalEvent;
+
+            // ViewModel
+            DwgViewFoundVM formVM = new DwgViewFoundVM(formM);
+            DataSet dwgList = GetDwgList();
+            if (dwgList == null)
+                return Result.Failed;
+            formVM.DwgList = dwgList;
+
+            // View
+            DwgViewFoundForm form = new DwgViewFoundForm() { DataContext = formVM };
+            form.ShowDialog();
+
+            if (form.DialogResult == false)
+                return Result.Cancelled;
+
+            return Result.Succeeded;
+        }
+
+        private DataSet GetDwgList()
+        {
             try
             {
                 // Get Imports
                 IEnumerable<ImportInstance> imports = new FilteredElementCollector(_doc)
                     .OfClass(typeof(ImportInstance))
                     .WhereElementIsNotElementType()
-                    .Cast<ImportInstance>(); //LINQ function;
+                    .Cast<ImportInstance>();
 
                 if (imports.Count() == 0)
-                    TaskDialog.Show("Imports", "No imports in the file.");
+                {
+                    TaskDialog.Show(TRANSACTION_NAME, "No imports in the file.");
+                    return null;
+                }   
                 else
                 {
                     DataSet dwgDataSet = CreateDwgDataSet(imports);
-                    ShowResult(dwgDataSet);
-                    // Export to Excel
-                    // ...
+                    return dwgDataSet;
                 }
-                return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
-                return Result.Failed;
+                TaskDialog.Show(TRANSACTION_NAME, e.Message);
+                return null;
             }
         }
 
@@ -48,7 +74,7 @@ namespace BIM_Leaders_Core
         /// Create DataSet table for report window.
         /// </summary>
         /// <returns>DataSet object contains all data.</returns>
-        private static DataSet CreateDwgDataSet(IEnumerable<ImportInstance> imports)
+        private DataSet CreateDwgDataSet(IEnumerable<ImportInstance> imports)
         {
             // Create a DataSet
             DataSet dwgDataSet = new DataSet("reportDataSet");
@@ -101,17 +127,7 @@ namespace BIM_Leaders_Core
             return dwgDataSet;
         }
 
-        private static void ShowResult(DataSet dwgDataSet)
-        {
-            // Show result
-            DwgViewFoundForm form = new DwgViewFoundForm();
-            DwgViewFoundVM formVM = new DwgViewFoundVM(dwgDataSet);
-            form.DataContext = formVM;
-
-            form.ShowDialog();
-        }
-
-        public static string GetPath()
+        public string GetPath()
         {
             // Return constructed namespace path
             return typeof(DwgViewFound).Namespace + "." + nameof(DwgViewFound);

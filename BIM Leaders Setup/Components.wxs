@@ -11,6 +11,7 @@
 			<ComponentRef Id="File5" />
 			<ComponentRef Id="File6" />
 			<ComponentRef Id="File7" />
+			<ComponentRef Id="File8" />
 
 		</ComponentGroup>
 
@@ -38,6 +39,9 @@
 			</Component>
 			<Component Id="File7" Guid="{E94AB29E-C95D-4344-8F56-D181E34A81D0}">
 				<File Id="FileMDThemesFile" Name="MaterialDesignThemes.Wpf.dll"></File>
+			</Component>
+			<Component Id="File8" Guid="{5A2E7CAF-4B5B-4490-9400-6A01ACA67838}">
+				<File Id="FileLogicFile" Name="BIM Leaders Logic.dll"></File>
 			</Component>
 		</DirectoryRef>
 		
