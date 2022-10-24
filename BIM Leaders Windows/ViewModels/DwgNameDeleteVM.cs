@@ -1,20 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "DWG_Name_Delete"
+    /// View model for command "DwgNameDelete"
     /// </summary>
     public class DwgNameDeleteVM : INotifyPropertyChanged
     {
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="DwgNameDeleteVM"/> class.
-        /// </summary>
-        public DwgNameDeleteVM(SortedDictionary<string, int> dwgList)
+        #region PROPERTIES
+
+        private DwgNameDeleteM _model;
+        public DwgNameDeleteM Model
         {
-            DwgList = dwgList;
+            get { return _model; }
+            set { _model = value; }
         }
 
         private SortedDictionary<string, int> _dwgList = new SortedDictionary<string, int>();
@@ -25,7 +27,7 @@ namespace BIM_Leaders_Windows
         }
 
         private int _dwgListSelected;
-        public int DwgListSelected 
+        public int DwgListSelected
         {
             get { return _dwgListSelected; }
             set
@@ -35,6 +37,20 @@ namespace BIM_Leaders_Windows
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// Default constructor
+        /// Initializing a new instance of the <see cref="DwgNameDeleteVM"/> class.
+        /// </summary>
+        public DwgNameDeleteVM(DwgNameDeleteM model)
+        {
+            Model = model;
+
+            RunCommand = new RunCommand(RunAction);
+        }
+
+        #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -42,5 +58,21 @@ namespace BIM_Leaders_Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region COMMANDS
+
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
+        {
+            Model.DwgListSelected = DwgListSelected;
+
+            Model.Run();
+        }
+
+        #endregion
+
     }
 }

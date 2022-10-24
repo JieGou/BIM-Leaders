@@ -1,56 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
-using System.Windows.Controls;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class DwgNameDelete : IExternalCommand
     {
-        private static Document _doc;
-        private static DwgNameDeleteVM _inputData;
-        private static string _dwgName;
-        private static int _countDwgDeleted;
-
-        private const string TRANSACTION_NAME = "Delete DWG by Name";
+        private Document _doc;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
-            try
-            {
-                SortedDictionary<string, int> dwgList = GetDwgList();
+            // Model
+            DwgNameDeleteM formM = new DwgNameDeleteM(commandData);
+            ExternalEvent externalEvent = ExternalEvent.Create(formM);
+            formM.ExternalEvent = externalEvent;
 
-                _inputData = GetUserInput(dwgList);
-                if (_inputData == null)
-                    return Result.Cancelled;
+            // ViewModel
+            DwgNameDeleteVM formVM = new DwgNameDeleteVM(formM);
 
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
-                {
-                    trans.Start();
+            SortedDictionary<string, int> dwgList = GetDwgList();
 
-                    DeleteDwg();
+            formVM.DwgList = dwgList;
+            formVM.DwgListSelected = dwgList.First().Value;
 
-                    trans.Commit();
-                }
-                ShowResult();
+            // View
+            DwgNameDeleteForm form = new DwgNameDeleteForm() { DataContext = formVM };
+            form.ShowDialog();
 
-                return Result.Succeeded;
-            }
-            catch (Exception e)
-            {
-                message = e.Message;
-                return Result.Failed;
-            }
+            if (form.DialogResult == false)
+                return Result.Cancelled;
+
+            return Result.Succeeded;
         }
 
-        private static SortedDictionary<string, int> GetDwgList()
+        private SortedDictionary<string, int> GetDwgList()
         {
             // Get DWGs
             FilteredElementCollector collector = new FilteredElementCollector(_doc);
@@ -77,52 +67,6 @@ namespace BIM_Leaders_Core
             }
 
             return dwgTypesList;
-        }
-
-        private static DwgNameDeleteVM GetUserInput(SortedDictionary<string, int> dwgList)
-        {
-            DwgNameDeleteForm form = new DwgNameDeleteForm();
-            DwgNameDeleteVM formVM = new DwgNameDeleteVM(dwgList);
-            form.DataContext = formVM;
-            form.ShowDialog();
-
-            if (form.DialogResult == false)
-                return null;
-
-            ElementId dwgId = new ElementId(_inputData.DwgListSelected);
-            _dwgName = _doc?.GetElement(dwgId).Category.Name;
-
-            // Get user provided information from window
-            return form.DataContext as DwgNameDeleteVM;
-        }
-
-        private static void DeleteDwg()
-        {
-            ElementId dwgId = new ElementId(_inputData.DwgListSelected);
-            string _dwgName = _doc?.GetElement(dwgId).Category.Name;
-
-            // Get all Imports with name same as input from a form
-            ICollection<ElementId> dwgDelete = new FilteredElementCollector(_doc)
-                .OfClass(typeof(ImportInstance))
-                .WhereElementIsNotElementType()
-                .Where(x => x.Category.Name == _dwgName)
-                .ToList()
-                .ConvertAll(x => x.Id)
-                .ToList();
-
-            _doc.Delete(dwgDelete);
-
-            _countDwgDeleted = dwgDelete.Count;
-        }
-
-        private static void ShowResult()
-        {
-            // Show result
-            string text = (_countDwgDeleted == 0)
-                ? "No DWG deleted"
-                : $"{_countDwgDeleted} DWG named {_dwgName} deleted";
-            
-            TaskDialog.Show(TRANSACTION_NAME, text);
         }
 
         public static string GetPath()

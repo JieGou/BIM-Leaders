@@ -1,8 +1,7 @@
-﻿using System.Windows.Media;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
-using System.Collections.Generic;
 
 namespace BIM_Leaders_Windows
 {
