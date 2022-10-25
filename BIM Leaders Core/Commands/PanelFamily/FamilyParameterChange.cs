@@ -42,7 +42,7 @@ namespace BIM_Leaders_Core
         }
 
         /// <summary>
-        /// Chaange the given parameter from shared to family parameter.
+        /// Change the given parameter from shared to family parameter.
         /// </summary>
         private static void SwitchParameter()
         {

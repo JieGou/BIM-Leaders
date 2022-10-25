@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         mc:Ignorable="d"
         
-        Style="{StaticResource SWindow}"
+        WindowStyle="None"
+        Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Solve Warnings"
         WindowStartupLocation="CenterScreen"
         
@@ -18,52 +20,64 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="60" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="60" />
-        </Grid.RowDefinitions>
+        <materialDesign:Card UniformCornerRadius="30">
+            <materialDesign:Card.Background>
+                <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0" />
+                </LinearGradientBrush>
+            </materialDesign:Card.Background>
 
-        <Grid Grid.Row="0">
-            <TextBlock Text="Solve Warnings"
-                       Style="{StaticResource STextBlock}" />
-            <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                    Style="{StaticResource SRoundButton}" />
-        </Grid>
-        
-        <Grid Grid.Row="1">
-            <StackPanel Height="260" Margin="20,0">
-                <Label Content="Warning Types"
-                       Style="{StaticResource SLabelBold}" />
-                <CheckBox x:Name="checkboxFixWarningsJoin" IsChecked="{Binding Path=ResultFixWarningsJoin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                          Content="Joins" ToolTip="Highlighted elements are joined but do not intersect"
-                          Style="{StaticResource SCheckBox}" />
-                <CheckBox x:Name="checkboxFixWarningsWallsAttached" IsChecked="{Binding Path=ResultFixWarningsWallsAttached, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                          Content="Walls Attachments" ToolTip="Highlighted walls are attached to, but miss, the highlighted targets" IsEnabled="False"
-                          Style="{StaticResource SCheckBox}" />
-                <CheckBox x:Name="checkboxFixWarningsRoomNotEnclosed" IsChecked="{Binding Path=ResultFixWarningsRoomNotEnclosed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                          Content="Rooms" ToolTip="Room is not in a properly enclosed region"
-                          Style="{StaticResource SCheckBox}" />
-            </StackPanel>
-        </Grid>
+            <Grid Background="{x:Null}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="280" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
 
-        <Grid Grid.Row="2" VerticalAlignment="Top">
-            <StackPanel>
-                <Button x:Name="buttonOk" Click="ButtonOkClick"
-                    Content="Magic" ToolTip="Run"
-                    Style="{StaticResource SRectangleButton}">
-                    <Button.IsEnabled>
-                        <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                            <Binding ElementName="checkboxFixWarningsJoin" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                            <Binding ElementName="checkboxFixWarningsWallsAttached" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                            <Binding ElementName="checkboxFixWarningsRoomNotEnclosed" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                        </MultiBinding>
-                    </Button.IsEnabled>
-                </Button>
-                <Label Content="{Binding ElementName=checkboxFixWarningsJoin, Path=(Validation.Errors)[0].ErrorContent}"
-                   Margin="20,5,20,0"
-                   Style="{StaticResource SLabelError}" />
-            </StackPanel>
-        </Grid>
+                <Grid Grid.Row="0">
+                    <TextBlock Text="Solve Warnings"
+                               Style="{StaticResource STextBlock}" />
+                    <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
+                            Style="{StaticResource SRoundButton}" />
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <StackPanel Margin="20,0">
+                        <Label Content="Warning Types"
+                               Style="{StaticResource SLabelBold}" />
+                        <CheckBox x:Name="checkboxFixWarningsJoin" IsChecked="{Binding Path=ResultFixWarningsJoin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Joins" ToolTip="Highlighted elements are joined but do not intersect"
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxFixWarningsWallsAttached" IsChecked="{Binding Path=ResultFixWarningsWallsAttached, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Walls Attachments" ToolTip="Highlighted walls are attached to, but miss, the highlighted targets" IsEnabled="False"
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxFixWarningsRoomNotEnclosed" IsChecked="{Binding Path=ResultFixWarningsRoomNotEnclosed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Rooms" ToolTip="Room is not in a properly enclosed region"
+                                  Style="{StaticResource SCheckBox}" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="2" VerticalAlignment="Top">
+                    <StackPanel>
+                        <Button x:Name="buttonOk" Click="ButtonOkClick"
+                                Content="Magic" ToolTip="Run"
+                                Style="{StaticResource SRectangleButton}">
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                                    <Binding ElementName="checkboxFixWarningsJoin" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                                    <Binding ElementName="checkboxFixWarningsWallsAttached" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                                    <Binding ElementName="checkboxFixWarningsRoomNotEnclosed" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
+                        <Label Content="{Binding ElementName=checkboxFixWarningsJoin, Path=(Validation.Errors)[0].ErrorContent}"
+                               Margin="20,5,20,0"
+                               Style="{StaticResource SLabelError}" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </materialDesign:Card>
     </Grid>
 </Window>

@@ -3,63 +3,77 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:BIM_Leaders_Windows"
         mc:Ignorable="d"
         
-        Style="{StaticResource SWindow}"
+        WindowStyle="None"
+        Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Delete DWG By Name"
         WindowStartupLocation="CenterScreen"
         
         d:DataContext="{d:DesignInstance Type=local:FamilyParameterSetVM}"
         MouseLeftButtonDown="FormMouseMove">
-    
+
     <Window.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="60" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="60" />
-        </Grid.RowDefinitions>
+        <materialDesign:Card UniformCornerRadius="30">
+            <materialDesign:Card.Background>
+                <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0" />
+                </LinearGradientBrush>
+            </materialDesign:Card.Background>
+        </materialDesign:Card>
 
-        <Grid Grid.Row="0">
-            <TextBlock Text="Set Parameter"
-                       Style="{StaticResource STextBlock}" />
-            <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                    Style="{StaticResource SRoundButton}" />
+        <Grid Background="{x:Null}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60" />
+                <RowDefinition Height="280" />
+                <RowDefinition Height="60" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <TextBlock Text="Set Parameter"
+                           Style="{StaticResource STextBlock}" />
+                <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
+                        Style="{StaticResource SRoundButton}" />
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <StackPanel Margin="20,0">
+                    <Label Content="Parameter"
+                           Style="{StaticResource SLabelBold}" />
+                    <ComboBox x:Name="comboboxParameters" SelectedValue="{Binding ParametersListSelected, Mode=TwoWay}"
+                              ItemsSource="{Binding ParametersList, Mode=OneWay}"
+                              Style="{StaticResource SComboBox}" />
+                    <Label Content="Value"
+                           Margin="-5,20,0,0"
+                           Style="{StaticResource SLabelBold}" />
+                    <TextBox x:Name="textboxParameterValue"
+                             Text="{Binding ParameterValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             Style="{StaticResource STextBox}" />
+                    <Label Content="{Binding ElementName=textboxParameterValue, Path=(Validation.Errors)[0].ErrorContent}"
+                           Style="{StaticResource SLabelError}" />
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="2" VerticalAlignment="Top">
+                <Button x:Name="buttonOk" Command="{Binding RunCommand}"
+                        Content="Magic" ToolTip="Run"
+                        Style="{StaticResource SRectangleButton}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                            <Binding ElementName="comboboxParameters" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                            <Binding ElementName="textboxParameterValue" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+            </Grid>
         </Grid>
 
-        <Grid Grid.Row="1">
-            <StackPanel Height="260" Margin="20,0">
-                <Label Content="Parameter"
-                       Style="{StaticResource SLabelBold}" />
-                <ComboBox x:Name="comboboxParameters" SelectedValue="{Binding ParametersListSelected, Mode=TwoWay}"
-                          ItemsSource="{Binding ParametersList, Mode=OneWay}"
-                          Style="{StaticResource SComboBox}" />
-                <Label Content="Value"
-                       Margin="-5,20,0,0"
-                       Style="{StaticResource SLabelBold}" />
-                <TextBox x:Name="textboxParameterValue"
-                                 Text="{Binding ParameterValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                                 Style="{StaticResource STextBox}" />
-                <Label Content="{Binding ElementName=textboxParameterValue, Path=(Validation.Errors)/ErrorContent}"
-                               Style="{StaticResource SLabelError}" />
-            </StackPanel>
-        </Grid>
-
-        <Grid Grid.Row="2" VerticalAlignment="Top">
-            <Button x:Name="buttonOk" Click="ButtonOkClick"
-                    Content="Magic" ToolTip="Run"
-                    Style="{StaticResource SRectangleButton}">
-                <Button.IsEnabled>
-                    <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                        <Binding ElementName="comboboxParameters" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged" />
-                        <Binding ElementName="textboxParameterValue" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                    </MultiBinding>
-                </Button.IsEnabled>
-            </Button>
-        </Grid>
     </Grid>
 </Window>

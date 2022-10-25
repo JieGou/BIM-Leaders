@@ -18,7 +18,7 @@
     <Window.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
     </Window.Resources>
-
+    
     <Grid Background="{x:Null}">
         <materialDesign:Card UniformCornerRadius="30">
             <materialDesign:Card.Background>

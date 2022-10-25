@@ -1,20 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "DWG_Name_Delete"
+    /// View model for command "FamilyParameterSet"
     /// </summary>
     public class FamilyParameterSetVM : INotifyPropertyChanged, IDataErrorInfo
     {
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="FamilyParameterSetVM"/> class.
-        /// </summary>
-        public FamilyParameterSetVM(List<string> parametersList)
+        #region PROPERTIES
+
+        private FamilyParameterSetM _model;
+        public FamilyParameterSetM Model
         {
-            ParametersList = parametersList;
+            get { return _model; }
+            set { _model = value; }
         }
 
         private List<string> _parametersList;
@@ -25,7 +28,7 @@ namespace BIM_Leaders_Windows
         }
 
         private string _parametersListSelected;
-        public string ParametersListSelected 
+        public string ParametersListSelected
         {
             get { return _parametersListSelected; }
             set
@@ -46,6 +49,22 @@ namespace BIM_Leaders_Windows
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// Default constructor
+        /// Initializing a new instance of the <see cref="FamilyParameterSetVM"/> class.
+        /// </summary>
+        public FamilyParameterSetVM(FamilyParameterSetM model)
+        {
+            Model = model;
+
+            RunCommand = new RunCommand(RunAction);
+        }
+
+        #region VALIDATION
+
+        public string Error { get { return null; } }
 
         public string this[string propertyName]
         {
@@ -54,10 +73,6 @@ namespace BIM_Leaders_Windows
                 return GetValidationError(propertyName);
             }
         }
-
-        #region Validation
-
-        public string Error { get { return null; } }
 
         string GetValidationError(string propertyName)
         {
@@ -86,6 +101,7 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
+        #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -93,5 +109,21 @@ namespace BIM_Leaders_Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region COMMANDS
+
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
+        {
+            Model.SelectedParameterName = ParametersListSelected;
+            Model.Value = ParameterValue;
+
+            Model.Run();
+        }
+
+        #endregion
     }
 }
