@@ -5,6 +5,7 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
@@ -127,7 +128,7 @@ namespace BIM_Leaders_Core
             return dwgDataSet;
         }
 
-        public string GetPath()
+        public static string GetPath()
         {
             // Return constructed namespace path
             return typeof(DwgViewFound).Namespace + "." + nameof(DwgViewFound);

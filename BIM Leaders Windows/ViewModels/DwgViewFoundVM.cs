@@ -26,8 +26,8 @@ namespace BIM_Leaders_Windows
             set { _dwgList = value; }
         }
 
-        private DataRow _selectedDwg;
-        public DataRow SelectedDwg
+        private DataRowView _selectedDwg;
+        public DataRowView SelectedDwg
         {
             get { return _selectedDwg; }
             set
@@ -67,7 +67,7 @@ namespace BIM_Leaders_Windows
 
         private void RunAction()
         {
-            Model.SelectedDwg = SelectedDwg;
+            Model.SelectedDwg = SelectedDwg.Row[2].ToString();
 
             Model.Run();
         }

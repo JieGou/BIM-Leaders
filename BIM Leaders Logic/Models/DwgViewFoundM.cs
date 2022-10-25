@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.Attributes;
-using System.Data;
 
 namespace BIM_Leaders_Logic
 {
@@ -26,8 +25,8 @@ namespace BIM_Leaders_Logic
         /// </summary>
         public ExternalEvent ExternalEvent { get; set; }
 
-        private DataRow _selectedDwg;
-        public DataRow SelectedDwg
+        private string _selectedDwg;
+        public string SelectedDwg
         {
             get { return _selectedDwg; }
             set
@@ -80,17 +79,22 @@ namespace BIM_Leaders_Logic
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>();
 
-                string dwgIdString = SelectedDwg[2].ToString();
                 int dwgId = 0;
-                if (!Int32.TryParse(dwgIdString, out dwgId))
+                if (!Int32.TryParse(SelectedDwg, out dwgId))
                 {
                     RunResult = "Error getting a DWG from the selected item.";
                     TaskDialog.Show(TRANSACTION_NAME, RunResult);
                     return;
                 }
 
-                _doc.GetElement(new ElementId(dwgId));
+                Element dwg = _doc.GetElement(new ElementId(dwgId));
                 List<ElementId> selectionSet = new List<ElementId>() { new ElementId(dwgId) };
+
+                if (dwg.ViewSpecific)
+                {
+                    View view = _doc.GetElement(dwg.OwnerViewId) as View;
+                    _uidoc.ActiveView = view;
+                }
 
                 _uidoc.Selection.SetElementIds(selectionSet);
             }
