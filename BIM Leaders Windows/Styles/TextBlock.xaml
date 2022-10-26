@@ -12,11 +12,11 @@
 
     <Style x:Key="STextBlock" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilyBold}" />
-        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontSize" Value="18" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="Foreground" Value="{StaticResource SColorText}" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="Margin" Value="20,0,60,0" />
+        <Setter Property="Margin" Value="18,0,54,0" />
         <Setter Property="VerticalAlignment" Value="Center" />
 
         <Setter Property="LayoutTransform">

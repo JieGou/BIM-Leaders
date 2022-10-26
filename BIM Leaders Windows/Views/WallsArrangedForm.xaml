@@ -11,7 +11,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Dimension Section Floors"
         WindowStartupLocation="CenterScreen"
-        Height="500"
+        Width="306"
+        Height="486"
         
         d:DataContext="{d:DesignInstance Type=local:WallsArrangedVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -21,7 +22,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -31,55 +32,55 @@
 
             <Grid Background="{x:Null}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="89" />
-                    <RowDefinition Height="351" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <TextBlock Text="Walls Arranged Check"
-                       Style="{StaticResource STextBlock}" />
+                               Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel" IsCancel="True"
-                    Style="{StaticResource SRoundButton}" />
+                            Style="{StaticResource SButtonClose}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <StackPanel Margin="20,0">
+                    <StackPanel Margin="18,0">
                         <Label Content="Distance Step (cm)"
-                       Style="{StaticResource SLabelBold}" />
+                               Style="{StaticResource SLabelBold}" />
                         <TextBox x:Name="textboxDistanceStep" ToolTip="Distance unit to check. By default, walls need to be located at whole number of centimeters."
-                         Text="{Binding InputDistanceStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                         Style="{StaticResource STextBox}" />
+                                 Text="{Binding InputDistanceStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource STextBox}" />
                         <Label Content="{Binding ElementName=textboxDistanceStep, Path=(Validation.Errors)[0].ErrorContent}"
-                       Style="{StaticResource SLabelError}" />
+                               Style="{StaticResource SLabelError}" />
                         <Label Content="Distance Tolerance (cm)"
-                       Margin="-5,10,0,0"
-                       Style="{StaticResource SLabelBold}" />
+                               Margin="-5,9,0,0"
+                               Style="{StaticResource SLabelBold}" />
                         <TextBox x:Name="textboxDistanceTolerance" ToolTip="Check tolerance. Walls with accuracy bigger than given tolerance, will not be filtered."
-                         Text="{Binding InputDistanceTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                         Style="{StaticResource STextBox}" />
+                                 Text="{Binding InputDistanceTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource STextBox}" />
                         <Label Content="{Binding ElementName=textboxDistanceTolerance, Path=(Validation.Errors)[0].ErrorContent}"
-                       Style="{StaticResource SLabelError}" />
+                               Style="{StaticResource SLabelError}" />
 
                         <Label Content="Filter color (distances)"
-                       Margin="-5,10,0,0"
-                       Style="{StaticResource SLabelBold}" />
+                               Margin="-5,9,0,0"
+                               Style="{StaticResource SLabelBold}" />
                         <materialDesign:ColorPicker  x:Name="colorPicker0"
                                              Color="{Binding ResultColor0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <Label Content="Filter color (angles)"
-                       Margin="-5,10,0,0"
-                       Style="{StaticResource SLabelBold}" />
+                               Margin="-5,9,0,0"
+                               Style="{StaticResource SLabelBold}" />
                         <materialDesign:ColorPicker  x:Name="colorPicker1"
-                                             Color="{Binding ResultColor1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                     Color="{Binding ResultColor1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="2" VerticalAlignment="Top">
+                <Grid Grid.Row="2">
                     <StackPanel>
                         <Button x:Name="buttonOk" Click="ButtonOkClick"
-                        Content="Magic" ToolTip="Run"
-                        Style="{StaticResource SRectangleButton}">
+                                Content="Magic" ToolTip="Run"
+                                Style="{StaticResource SButtonOk}">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                                     <Binding ElementName="textboxDistanceStep" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
@@ -88,7 +89,7 @@
                             </Button.IsEnabled>
                         </Button>
                         <TextBlock Text="Select 2 reference planes after closing."
-                           Margin="20,5,20,0"
+                           Margin="0,-18,0,0"
                            Style="{StaticResource STextBlockHint}" />
                     </StackPanel>
                 </Grid>

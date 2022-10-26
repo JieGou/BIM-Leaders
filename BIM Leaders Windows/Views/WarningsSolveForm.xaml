@@ -11,6 +11,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Solve Warnings"
         WindowStartupLocation="CenterScreen"
+        Width="306"
+        Height="306"
         
         d:DataContext="{d:DesignInstance Type=local:WarningsSolveVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -20,7 +22,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -30,20 +32,20 @@
 
             <Grid Background="{x:Null}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
-                    <RowDefinition Height="280" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <TextBlock Text="Solve Warnings"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                            Style="{StaticResource SRoundButton}" />
+                            Style="{StaticResource SButtonClose}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <StackPanel Margin="20,0">
+                    <StackPanel Margin="18,0">
                         <Label Content="Warning Types"
                                Style="{StaticResource SLabelBold}" />
                         <CheckBox x:Name="checkboxFixWarningsJoin" IsChecked="{Binding Path=ResultFixWarningsJoin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
@@ -58,11 +60,11 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="2" VerticalAlignment="Top">
+                <Grid Grid.Row="2">
                     <StackPanel>
                         <Button x:Name="buttonOk" Click="ButtonOkClick"
                                 Content="Magic" ToolTip="Run"
-                                Style="{StaticResource SRectangleButton}">
+                                Style="{StaticResource SButtonOk}">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                                     <Binding ElementName="checkboxFixWarningsJoin" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
@@ -72,7 +74,7 @@
                             </Button.IsEnabled>
                         </Button>
                         <Label Content="{Binding ElementName=checkboxFixWarningsJoin, Path=(Validation.Errors)[0].ErrorContent}"
-                               Margin="20,5,20,0"
+                               Margin="0,-18,36,0"
                                Style="{StaticResource SLabelError}" />
                     </StackPanel>
                 </Grid>

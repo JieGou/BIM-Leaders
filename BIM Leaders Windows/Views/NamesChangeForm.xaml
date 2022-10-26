@@ -11,8 +11,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Change Names Prefix"
         WindowStartupLocation="CenterScreen"
-        Width="800"
-        Height="360"
+        Width="810"
+        Height="396"
         
         d:DataContext="{d:DesignInstance Type=local:NamesChangeVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -22,7 +22,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -32,27 +32,27 @@
 
             <Grid Background="{x:Null}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <TextBlock Text="Change Names"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel" IsCancel="True"
-                            Style="{StaticResource SRoundButton}" />
+                            Style="{StaticResource SButtonClose}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition Width="270"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
                         <Grid Grid.Column="0">
-                            <StackPanel Height="220" Margin="20,0">
+                            <StackPanel Margin="18,0">
                                 <Label Content="Old Substring"
                                        Style="{StaticResource SLabelBold}">
                                 </Label>
@@ -63,7 +63,7 @@
                                        Style="{StaticResource SLabelError}" />
 
                                 <Label Content="New Substring"
-                                       Margin="-5,10,0,0"
+                                       Margin="-5,9,0,0"
                                        Style="{StaticResource SLabelBold}" />
                                 <TextBox x:Name="textboxSubstringNew"
                                          Text="{Binding ResultSubstringNew, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
@@ -72,7 +72,7 @@
                                        Style="{StaticResource SLabelError}" />
 
                                 <Label Content="Substring Location"
-                                       Margin="-5,10,0,0"
+                                       Margin="-5,9,0,0"
                                        Style="{StaticResource SLabelBold}" />
                                 <RadioButton x:Name="radiobuttonPartPrefix" GroupName="rbGroup"
                                              Content="Prefix"
@@ -89,11 +89,11 @@
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="1">
-                            <StackPanel Margin="20,0">
+                            <StackPanel Margin="18,0">
                                 <Label Content="Categories"
                                        Style="{StaticResource SLabelBold}" />
                                 <Button Content="Select all" ToolTip="Select all categories" Click="SelectAll_Click"
-                                        Margin="80,-25,0,0"
+                                        Margin="70,-24,0,0"
                                         Style="{StaticResource SButtonText}" />
                                 <Label Content="{Binding ElementName=ResultCategories, Path=(Validation.Errors).CurrentItem.ErrorContent}"
                                        Margin="0,-20,0,0"
@@ -220,11 +220,11 @@
                     </Grid>
                 </Grid>
 
-                <Grid Grid.Row="2" VerticalAlignment="Top">
+                <Grid Grid.Row="2" VerticalAlignment="Center">
                     <Button x:Name="buttonOk" Click="ButtonOkClick"
                             Content="Magic" ToolTip="Run"
-                            Margin="270,0"
-                            Style="{StaticResource SRectangleButton}">
+                            Width="234"
+                            Style="{StaticResource SButtonOk}">
                         <Button.IsEnabled>
                             <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                                 <Binding ElementName="textboxSubstringOld" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True"/>

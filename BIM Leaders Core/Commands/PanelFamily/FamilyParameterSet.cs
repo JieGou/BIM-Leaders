@@ -35,7 +35,7 @@ namespace BIM_Leaders_Core
             return Result.Succeeded;
         }
 
-        private static List<string> GetParametersList()
+        private List<string> GetParametersList()
         {
             // Get unique parameters
             IList<FamilyParameter> parametersNamesAll = _doc.FamilyManager.GetParameters();

@@ -11,6 +11,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Walls Compare"
         WindowStartupLocation="CenterScreen"
+        Width="306"
+        Height="396"
         
         d:DataContext="{d:DesignInstance Type=local:WallsCompareVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -20,7 +22,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -30,20 +32,20 @@
 
             <Grid Background="{x:Null}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
-                    <RowDefinition Height="280" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <TextBlock Text="Walls Compare"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                            Style="{StaticResource SRoundButton}" />
+                            Style="{StaticResource SButtonClose}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <StackPanel Margin="20,0">
+                    <StackPanel Margin="18,0">
                         <Label Content="Links Count"
                                Style="{StaticResource SLabelBold}" />
                         <RadioButton x:Name="radiobuttonCheckOneLink" GroupName="rbGroup" IsChecked="{Binding Path=CheckOneLink, Mode=TwoWay}"
@@ -60,7 +62,7 @@
                                   Style="{StaticResource SComboBox}" />
 
                         <Label Content="Fill Type"
-                               Margin="-5,20,0,0"
+                               Margin="-5,18,0,0"
                                Style="{StaticResource SLabelBold}" />
                         <ComboBox x:Name="comboboxFillTypes" SelectedValue="{Binding FillTypesSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                                   ItemsSource="{Binding FillTypes, Mode=OneWay}"
@@ -68,10 +70,10 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="2" VerticalAlignment="Top">
+                <Grid Grid.Row="2">
                     <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                             Content="Magic" ToolTip="Run"
-                            Style="{StaticResource SRectangleButton}">
+                            Style="{StaticResource SButtonOk}">
                         <Button.IsEnabled>
                             <MultiBinding Converter="{StaticResource MultivalueTextBoxes}" Mode="TwoWay">
                                 <Binding ElementName="comboboxMaterials" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged" />

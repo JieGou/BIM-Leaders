@@ -11,8 +11,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Analyze Journal"
         WindowStartupLocation="CenterScreen"
-        Width="800"
-        Height="350"
+        Width="810"
+        Height="360"
         
         d:DataContext="{d:DesignInstance Type=local:JournalAnalyzeVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -22,7 +22,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -32,22 +32,22 @@
 
             <Grid Background="{x:Null}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
-                    <RowDefinition Height="230" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <TextBlock Text="Journal Analyze"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel" IsCancel="True"
-                            Style="{StaticResource SRoundButton}" />
+                            Style="{StaticResource SButtonClose}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
                     <DataGrid x:Name="datagridCommands"
                               ItemsSource="{Binding CommandsDataSet.Tables[0]}" IsReadOnly="True"
-                              Margin="20,0"
+                              Margin="18,0"
                               Style="{StaticResource SDataGridSimple}">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
@@ -57,11 +57,11 @@
                     </DataGrid>
                 </Grid>
 
-                <Grid Grid.Row="2" VerticalAlignment="Center">
+                <Grid Grid.Row="2">
                     <Button x:Name="buttonOk" Click="ButtonOkClick"
                             Content="OK" ToolTip="Close"
-                            Margin="270,0"
-                            Style="{StaticResource SRectangleButton}" />
+                            Width="234"
+                            Style="{StaticResource SButtonOk}" />
                 </Grid>
             </Grid>
 

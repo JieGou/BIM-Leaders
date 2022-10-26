@@ -11,8 +11,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Find DWG"
         WindowStartupLocation="CenterScreen"
-        Width="800"
-        Height="560"
+        Width="810"
+        Height="540"
         
         d:DataContext="{d:DesignInstance Type=local:CheckerReportVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -22,7 +22,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -32,23 +32,23 @@
 
             <Grid Background="{x:Null}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
-                    <RowDefinition Height="420" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <TextBlock Text="Checker Report"
-                       Style="{StaticResource STextBlock}" />
+                               Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel" IsCancel="True"
-                    Style="{StaticResource SRoundButton}" />
+                            Style="{StaticResource SButtonClose}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
                     <DataGrid x:Name="datagridReport"
-                          ItemsSource="{Binding CheckReport.Tables[0]}" IsReadOnly="True"
-                          Margin="20,0"
-                          Style="{StaticResource SDataGridSimple}">
+                              ItemsSource="{Binding CheckReport.Tables[0]}" IsReadOnly="True"
+                              Margin="18,0"
+                              Style="{StaticResource SDataGridSimple}">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
@@ -57,11 +57,11 @@
                     </DataGrid>
                 </Grid>
 
-                <Grid Grid.Row="2" VerticalAlignment="Center">
+                <Grid Grid.Row="2">
                     <Button x:Name="buttonOk" Click="ButtonOkClick"
                             Content="OK" ToolTip="Run"
-                            Margin="270,0"
-                            Style="{StaticResource SRectangleButton}" />
+                            Width="234"
+                            Style="{StaticResource SButtonOk}" />
                 </Grid>
             </Grid>
 

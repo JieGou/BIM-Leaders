@@ -10,8 +10,9 @@
         <ResourceDictionary Source="..\Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style x:Key="SRectangleButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
-        <Setter Property="Margin" Value="20,5,20,0" />
+    <Style x:Key="SButtonOk" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
+        <Setter Property="Margin" Value="18" />
+        <Setter Property="Height" Value="36" />
         <Setter Property="Background" Value="{StaticResource SColorButtonBackground}" />
         <Setter Property="Foreground" Value="{StaticResource SColorText}" />
         <Setter Property="BorderBrush" Value="{StaticResource SColorButtonBorder}" />
@@ -22,7 +23,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border CornerRadius="5"
+                            <Border CornerRadius="18"
                             BorderThickness="0,0,0,0"
                             Background="{StaticResource SColorButtonBackground}">
                                 <ContentPresenter x:Name="contentPresenter" 
@@ -40,7 +41,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border CornerRadius="5"
+                            <Border CornerRadius="18"
                             BorderThickness="0,0,0,0"
                             Background="{StaticResource SColorButtonBackgroundDisabled}">
                                 <ContentPresenter x:Name="contentPresenter" 
@@ -58,7 +59,8 @@
         
     </Style>
 
-    <Style x:Key="SSelectButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
+    <Style x:Key="SButtonSelect" TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedDarkButton}">
+        <Setter Property="Height" Value="36" />
         <Setter Property="Background" Value="{StaticResource SColorSelectButtonBackground}" />
         <Setter Property="Foreground" Value="{StaticResource SColorDataGridText}" />
         <Setter Property="BorderBrush" Value="{StaticResource SColorSelectButtonBorder}" />
@@ -68,7 +70,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border CornerRadius="5"
+                            <Border CornerRadius="18"
                             BorderThickness="0,0,0,0"
                             Background="{StaticResource SColorSelectButtonBackground}">
                                 <ContentPresenter x:Name="contentPresenter" 
@@ -86,7 +88,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <Border CornerRadius="5"
+                            <Border CornerRadius="18"
                             BorderThickness="0,0,0,0"
                             Background="{StaticResource SColorSelectButtonBackgroundDisabled}">
                                 <ContentPresenter x:Name="contentPresenter" 
@@ -104,12 +106,12 @@
 
     </Style>
 
-    <Style x:Key="SRoundButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
+    <Style x:Key="SButtonClose" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
-        <Setter Property="Margin" Value="15" />
-        <Setter Property="Width" Value="30" />
-        <Setter Property="Height" Value="30" />
+        <Setter Property="Margin" Value="18" />
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Top" />
 
@@ -120,7 +122,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <materialDesign:PackIcon Kind="CancelCircle"
-                                             Width="24" Height="24"
+                                             Width="42" Height="42"
                                              Foreground="White"
                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </ControlTemplate>
@@ -131,8 +133,8 @@
     <Style x:Key="SColorButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignFloatingActionDarkButton}">
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
-        <Setter Property="Width" Value="20" />
-        <Setter Property="Height" Value="20" />
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
 
@@ -143,7 +145,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <materialDesign:PackIcon Kind="Circle"
-                                             Width="20" Height="20"
+                                             Width="18" Height="18"
                                              Foreground="White"
                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </ControlTemplate>
@@ -155,7 +157,7 @@
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderBrush" Value="{x:Null}" />
         <Setter Property="Foreground" Value="{StaticResource SColorTextBlue}" />
-        <Setter Property="Height" Value="25" />
+        <Setter Property="Height" Value="24" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />

@@ -11,6 +11,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Grids Align"
         WindowStartupLocation="CenterScreen"
+        Width="306"
+        Height="306"
         
         d:DataContext="{d:DesignInstance Type=local:GridsAlignVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -20,7 +22,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -30,20 +32,20 @@
             
             <Grid Background="{x:Null}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
-                    <RowDefinition Height="280" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <TextBlock Text="Grids Align"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                            Style="{StaticResource SRoundButton}" />
+                            Style="{StaticResource SButtonClose}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <StackPanel Margin="20,0">
+                    <StackPanel Margin="18,0">
                         <Label Content="Bubbles side"
                                Style="{StaticResource SLabelBold}" />
                         <CheckBox x:Name="checkboxSide1" IsChecked="{Binding Path=Side1, Mode=TwoWay}"
@@ -54,6 +56,7 @@
                                   Style="{StaticResource SCheckBox}" />
 
                         <Label Content="Switch ends"
+                               Margin="-5,9,0,0"
                                Style="{StaticResource SLabelBold}" />
                         <RadioButton x:Name="rbSwitch2D" GroupName="rbGroup" IsChecked="{Binding Path=Switch2D, Mode=TwoWay}"
                                      Content="Switch to 2D"
@@ -67,10 +70,10 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="2" VerticalAlignment="Top">
+                <Grid Grid.Row="2">
                     <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                             Content="Magic" ToolTip="Run"
-                            Style="{StaticResource SRectangleButton}" />
+                            Style="{StaticResource SButtonOk}" />
                 </Grid>
             </Grid>
             

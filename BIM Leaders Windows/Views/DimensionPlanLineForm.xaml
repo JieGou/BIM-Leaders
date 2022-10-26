@@ -11,10 +11,12 @@
         Style="{DynamicResource SWindow}"
         WindowStartupLocation="CenterScreen"
         Title="BIM Leaders - Dimension Plan Walls"
+        Width="306"
+        Height="396"
         
         d:DataContext="{d:DesignInstance Type=local:DimensionPlanLineVM}"
         MouseLeftButtonDown="FormMouseMove">
-    
+
     <Window.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
     </Window.Resources>
@@ -24,7 +26,7 @@
     </Window.Visibility>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -34,30 +36,29 @@
 
             <Grid Background="{x:Null}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="89" />
-                    <RowDefinition Height="251" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <TextBlock Text="Dimension Plan Walls"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel"
-                            Style="{StaticResource SRoundButton}" Click="buttonCancel_Click" />
+                            Style="{StaticResource SButtonClose}" Click="buttonCancel_Click" />
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <StackPanel Margin="20,0" VerticalAlignment="Top">
+                    <StackPanel Margin="18,0" VerticalAlignment="Top">
                         <Button x:Name="buttonSelectElement" Command="{Binding SelectLineCommand}"
                                 Content="Select Line" ToolTip="Select single line to locate dimension"
-                                Margin="0,20,0,0"
-                                Style="{StaticResource SSelectButton}">
+                                Margin="0,18,0,0"
+                                Style="{StaticResource SButtonSelect}">
                         </Button>
                         <Label Content="{Binding SelectedElementError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                Style="{StaticResource SLabelError}" />
 
                         <Label Content="Selected Line ID:"
-                               Margin="-5,15,0,0"
                                Style="{StaticResource SLabel}" />
                         <Label x:Name="labelSelectedElement" Content="{Binding SelectedElementString, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }"
                                Margin="90,-24,0,0"
@@ -65,10 +66,10 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="2" VerticalAlignment="Top">
+                <Grid Grid.Row="2">
                     <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                             Content="Magic" ToolTip="Run"
-                            Style="{StaticResource SRectangleButton}">
+                            Style="{StaticResource SButtonOk}">
                         <Button.IsEnabled>
                             <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                                 <Binding ElementName="labelSelectedElement" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay"/>
@@ -80,5 +81,4 @@
 
         </materialDesign:Card>
     </Grid>
-    
 </Window>

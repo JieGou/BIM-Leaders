@@ -83,8 +83,6 @@ namespace BIM_Leaders_Logic
 
             try
             {
-                List<string> parametersList = GetParametersList();
-
                 using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();

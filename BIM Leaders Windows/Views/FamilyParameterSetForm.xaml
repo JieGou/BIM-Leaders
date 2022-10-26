@@ -11,6 +11,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Delete DWG By Name"
         WindowStartupLocation="CenterScreen"
+        Width="306"
+        Height="306"
         
         d:DataContext="{d:DesignInstance Type=local:FamilyParameterSetVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -20,7 +22,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -31,27 +33,27 @@
 
         <Grid Background="{x:Null}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="60" />
-                <RowDefinition Height="280" />
-                <RowDefinition Height="60" />
+                <RowDefinition Height="72" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="72" />
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
                 <TextBlock Text="Set Parameter"
                            Style="{StaticResource STextBlock}" />
                 <Button x:Name="buttonCancel" Click="ButtonExitClick" IsCancel="True"
-                        Style="{StaticResource SRoundButton}" />
+                        Style="{StaticResource SButtonClose}" />
             </Grid>
 
             <Grid Grid.Row="1">
-                <StackPanel Margin="20,0">
+                <StackPanel Margin="18,0">
                     <Label Content="Parameter"
                            Style="{StaticResource SLabelBold}" />
                     <ComboBox x:Name="comboboxParameters" SelectedValue="{Binding ParametersListSelected, Mode=TwoWay}"
                               ItemsSource="{Binding ParametersList, Mode=OneWay}"
                               Style="{StaticResource SComboBox}" />
                     <Label Content="Value"
-                           Margin="-5,20,0,0"
+                           Margin="-5,18,0,0"
                            Style="{StaticResource SLabelBold}" />
                     <TextBox x:Name="textboxParameterValue"
                              Text="{Binding ParameterValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
@@ -61,10 +63,10 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="2" VerticalAlignment="Top">
+            <Grid Grid.Row="2">
                 <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                         Content="Magic" ToolTip="Run"
-                        Style="{StaticResource SRectangleButton}">
+                        Style="{StaticResource SButtonOk}">
                     <Button.IsEnabled>
                         <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                             <Binding ElementName="comboboxParameters" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />

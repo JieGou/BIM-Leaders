@@ -11,6 +11,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Dimension Stairs Landings"
         WindowStartupLocation="CenterScreen"
+        Width="306"
+        Height="396"
         
         d:DataContext="{d:DesignInstance Type=local:DimensionStairsLandingsVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -20,7 +22,7 @@
     </Window.Resources>
 
     <Grid Background="{x:Null}">
-        <materialDesign:Card UniformCornerRadius="30">
+        <materialDesign:Card UniformCornerRadius="36">
             <materialDesign:Card.Background>
                 <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
                     <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
@@ -30,20 +32,20 @@
 
             <Grid Background="{x:Null}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
-                    <RowDefinition Height="280" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <TextBlock Text="Dimension Stairs"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel" IsCancel="True"
-                            Style="{StaticResource SRoundButton}" />
+                            Style="{StaticResource SButtonClose}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <StackPanel Margin="20,0">
+                    <StackPanel Margin="18,0">
                         <Label Content="Annotation placement"
                                Style="{StaticResource SLabelBold}" />
                         <CheckBox x:Name="checkboxPlaceDimensionsTop" IsChecked="{Binding Path=PlaceDimensionsTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
@@ -66,7 +68,7 @@
                                   Style="{StaticResource SCheckBox}" />
 
                         <Label Content="Landings stack max distance (cm)"
-                               Margin="-5,5,0,0"
+                               Margin="-5,9,0,0"
                                ToolTip="If projection of distance between landings centers are less that given value, they will be marked as stacked (situated one-over-other)"
                                Style="{StaticResource SLabelBold}" />
                         <TextBox x:Name="textboxDistanceString" ToolTip="Landings with distance on plan smaller than given value will be dimensioned in stack."
@@ -77,11 +79,11 @@
                     </StackPanel>
                 </Grid>
 
-                <Grid Grid.Row="2" VerticalAlignment="Top">
+                <Grid Grid.Row="2">
                     <StackPanel>
                         <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                                 Content="Magic" ToolTip="Run"
-                                Style="{StaticResource SRectangleButton}">
+                                Style="{StaticResource SButtonOk}">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                                     <Binding ElementName="checkboxPlaceDimensionsTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
@@ -95,7 +97,7 @@
                             </Button.IsEnabled>
                         </Button>
 
-                        <Label Margin="0,0,20,0"
+                        <Label Margin="30,0,30,0"
                                Style="{StaticResource SLabelError}">
                             <Label.Content>
                                 <MultiBinding Converter="{StaticResource MultivalueError}" Mode="TwoWay">
