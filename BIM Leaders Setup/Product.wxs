@@ -3,16 +3,16 @@
 
 	<!-- Сhange ProductCode for creating major upgrade! -->
 	<?if $(var.Configuration)=2020 ?>
-	<?define ProductCode = "{CED7361D-9A63-462A-8E24-3A97BAEFB2A3}"?>
+	<?define ProductCode = "{675AA068-3428-4557-BFED-6F76095358FC}"?>
 	<?endif?>
 	<?if $(var.Configuration)=2021 ?>
-	<?define ProductCode = "{D7EEE082-80F7-4CAF-9662-5A4622051C51}"?>
+	<?define ProductCode = "{675AA068-3428-4557-BFED-6F76095358FC}"?>
 	<?endif?>
 	<?if $(var.Configuration)=2022 ?>
-	<?define ProductCode = "{9B74F65C-6C48-4CF0-99CF-3F5BAE4E7722}"?>
+	<?define ProductCode = "{675AA068-3428-4557-BFED-6F76095358FC}"?>
 	<?endif?>
 	<?if $(var.Configuration)=2023 ?>
-	<?define ProductCode = "{C780031B-5372-4CE7-949C-C729C02E1297}"?>
+	<?define ProductCode = "{675AA068-3428-4557-BFED-6F76095358FC}"?>
 	<?endif?>
 
 	<!-- Do not change! Must be the same in all versions -->

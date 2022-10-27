@@ -208,7 +208,7 @@ namespace BIM_Leaders_Logic
             DistanceTolerance = UnitUtils.ConvertToInternalUnits(DistanceToleranceCm, DisplayUnitType.DUT_CENTIMETERS);
 #else
             DistanceStep = UnitUtils.ConvertToInternalUnits(DistanceStepCm, UnitTypeId.Centimeters);
-            DistanceTolerance = UnitUtils.ConvertToInternalUnits(DistanceToleranceCm, DisplayUnitType.DUT_CENTIMETERS);
+            DistanceTolerance = UnitUtils.ConvertToInternalUnits(DistanceToleranceCm, UnitTypeId.Centimeters);
 #endif
 
             FilterColorAngle = new Autodesk.Revit.DB.Color(
