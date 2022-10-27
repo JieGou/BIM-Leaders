@@ -73,9 +73,9 @@
                                 </MultiBinding>
                             </Button.IsEnabled>
                         </Button>
-                        <Label Content="{Binding ElementName=checkboxFixWarningsJoin, Path=(Validation.Errors)[0].ErrorContent}"
-                               Margin="0,-18,36,0"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding ElementName=checkboxFixWarningsJoin, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Margin="0,-18,36,0"
+                                   Style="{StaticResource STextBlockError}" />
                     </StackPanel>
                 </Grid>
             </Grid>

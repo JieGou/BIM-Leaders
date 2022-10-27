@@ -74,8 +74,8 @@
                         <TextBox x:Name="textboxDistanceString" ToolTip="Landings with distance on plan smaller than given value will be dimensioned in stack."
                                  Text="{Binding DistanceString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
-                        <Label Content="{Binding ElementName=textboxDistanceString, Path=(Validation.Errors)[0].ErrorContent, Mode=OneWay}"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding ElementName=textboxDistanceString, Path=(Validation.Errors)[0].ErrorContent, Mode=OneWay}"
+                                   Style="{StaticResource STextBlockError}" />
                     </StackPanel>
                 </Grid>
 
@@ -97,9 +97,9 @@
                             </Button.IsEnabled>
                         </Button>
 
-                        <Label Margin="30,0,30,0"
-                               Style="{StaticResource SLabelError}">
-                            <Label.Content>
+                        <TextBlock Margin="0,-18,36,0"
+                                   Style="{StaticResource STextBlockError}">
+                            <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource MultivalueError}" Mode="TwoWay">
                                     <Binding ElementName="checkboxPlaceDimensionsTop" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="checkboxPlaceDimensionsMid" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
@@ -108,8 +108,8 @@
                                     <Binding ElementName="checkboxPlaceElevationsMid" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="checkboxPlaceElevationsBot" Path="(Validation.Errors)[0].ErrorContent" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                 </MultiBinding>
-                            </Label.Content>
-                        </Label>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </StackPanel>
                 </Grid>
             </Grid>

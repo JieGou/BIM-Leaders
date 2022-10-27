@@ -58,8 +58,8 @@
                     <TextBox x:Name="textboxParameterValue"
                              Text="{Binding ParameterValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                              Style="{StaticResource STextBox}" />
-                    <Label Content="{Binding ElementName=textboxParameterValue, Path=(Validation.Errors)[0].ErrorContent}"
-                           Style="{StaticResource SLabelError}" />
+                    <TextBlock Text="{Binding ElementName=textboxParameterValue, Path=(Validation.Errors)[0].ErrorContent}"
+                               Style="{StaticResource STextBlockError}" />
                 </StackPanel>
             </Grid>
 

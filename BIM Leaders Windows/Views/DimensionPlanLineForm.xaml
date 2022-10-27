@@ -55,8 +55,8 @@
                                 Margin="0,18,0,0"
                                 Style="{StaticResource SButtonSelect}">
                         </Button>
-                        <Label Content="{Binding SelectedElementError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding SelectedElementError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource STextBlockError}" />
 
                         <Label Content="Selected Line ID:"
                                Style="{StaticResource SLabel}" />

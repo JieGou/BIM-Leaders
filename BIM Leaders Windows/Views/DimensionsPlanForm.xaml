@@ -51,8 +51,8 @@
                         <TextBox x:Name="textboxSearchStep" ToolTip="Step along element faces to create searching lines."
                                  Text="{Binding SearchStepString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
-                        <Label Content="{Binding ElementName=textboxSearchStep, Path=(Validation.Errors)[0].ErrorContent}"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding ElementName=textboxSearchStep, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
 
                         <Label Content="Search Distance (cm)"
                                Margin="-5,9,0,0"
@@ -60,8 +60,8 @@
                         <TextBox x:Name="textboxSearchDistance" ToolTip="Distance from element face to search other elements."
                                  Text="{Binding SearchDistanceString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
-                        <Label Content="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors)[0].ErrorContent}"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
 
                         <Label Content="Min New References"
                                Margin="-5,9,0,0"
@@ -69,8 +69,8 @@
                         <TextBox x:Name="textboxReferences" ToolTip="If count of references in the next dimension line will be lower, dimension will be joined with existing one."
                                  Text="{Binding MinReferencesString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
-                        <Label Content="{Binding ElementName=textboxReferences, Path=(Validation.Errors)[0].ErrorContent}"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding ElementName=textboxReferences, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
                     </StackPanel>
                 </Grid>
 

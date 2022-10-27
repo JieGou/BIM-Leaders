@@ -59,8 +59,8 @@
                                 <TextBox x:Name="textboxSubstringOld"
                                          Text="{Binding ResultSubstringOld, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                          Style="{StaticResource STextBox}" />
-                                <Label Content="{Binding ElementName=textboxSubstringOld, Path=(Validation.Errors)/ErrorContent}"
-                                       Style="{StaticResource SLabelError}" />
+                                <TextBlock Text="{Binding ElementName=textboxSubstringOld, Path=(Validation.Errors)/ErrorContent}"
+                                           Style="{StaticResource STextBlockError}" />
 
                                 <Label Content="New Substring"
                                        Margin="-5,9,0,0"
@@ -68,8 +68,8 @@
                                 <TextBox x:Name="textboxSubstringNew"
                                          Text="{Binding ResultSubstringNew, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                          Style="{StaticResource STextBox}" />
-                                <Label Content="{Binding ElementName=textboxSubstringNew, Path=(Validation.Errors)/ErrorContent}"
-                                       Style="{StaticResource SLabelError}" />
+                                <TextBlock Text="{Binding ElementName=textboxSubstringNew, Path=(Validation.Errors)/ErrorContent}"
+                                           Style="{StaticResource STextBlockError}" />
 
                                 <Label Content="Substring Location"
                                        Margin="-5,9,0,0"

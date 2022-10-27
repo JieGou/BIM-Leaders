@@ -70,25 +70,25 @@
                         <CheckBox x:Name="checkboxPlaceOnThickBot" IsChecked="{Binding Path=PlaceOnThickBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                   Content="Thick Floor - Bottom" ToolTip="Annotate the bottom side of thick floors."
                                   Style="{StaticResource SCheckBox}" />
-                        <Label Content="{Binding ElementName=checkboxPlaceOnThinTop, Path=(Validation.Errors)[0].ErrorContent}"
-                               Margin="0,0,0,9" HorizontalAlignment="Left" 
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding ElementName=checkboxPlaceOnThinTop, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Margin="0,0,0,9" HorizontalAlignment="Left" 
+                                   Style="{StaticResource STextBlockError}" />
                         
                         <Label Content="Thin Floor - Max thickness (cm)"
                                Style="{StaticResource SLabelBold}" />
                         <TextBox x:Name="textboxMinThickThicknessString" ToolTip="All floors thicker than given value will be recognized as thick."
                                  Text="{Binding MinThickThicknessString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
-                        <Label Content="{Binding ElementName=textboxMinThickThicknessString, Path=(Validation.Errors)[0].ErrorContent}"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding ElementName=textboxMinThickThicknessString, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
 
                         <Button x:Name="buttonSelectElement" Command="{Binding SelectLineCommand}"
                                 Content="Select Line" ToolTip="Select vertical line to locate annotations"
                                 Margin="0,20,0,0"
                                 Style="{StaticResource SButtonSelect}">
                         </Button>
-                        <Label Content="{Binding SelectedElementError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding SelectedElementError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource STextBlockError}" />
 
                         <Label Content="Selected Line ID:"
                                Style="{StaticResource SLabel}" />

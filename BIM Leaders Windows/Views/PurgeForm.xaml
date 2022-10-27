@@ -73,8 +73,8 @@
                         <TextBox x:Name="textboxLinePatternsName"
                                  Text="{Binding ResultLinePatternsName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
-                        <Label Content="{Binding ElementName=textboxLinePatternsName, Path=(Validation.Errors)/ErrorContent}"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding ElementName=textboxLinePatternsName, Path=(Validation.Errors)/ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
                     </StackPanel>
                 </Grid>
 
@@ -96,9 +96,9 @@
                                 </MultiBinding>
                             </Button.IsEnabled>
                         </Button>
-                        <Label Content="{Binding ElementName=checkboxRooms, Path=(Validation.Errors)[0].ErrorContent}"
-                               Margin="0,-18,36,0"
-                               Style="{StaticResource SLabelError}" />
+                        <TextBlock Text="{Binding ElementName=checkboxRooms, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Margin="0,-18,36,0"
+                                   Style="{StaticResource STextBlockError}" />
                     </StackPanel>
                 </Grid>
             </Grid>

@@ -27,6 +27,16 @@
 
     </Style>
 
+    <Style x:Key="STextBlockError" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource SFontFamilySemiBold}" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource SColorTextError}"/>
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,0,18,0" />
+    </Style>
+    
     <Style x:Key="STextBlockHint" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
         <Setter Property="FontSize" Value="12" />
