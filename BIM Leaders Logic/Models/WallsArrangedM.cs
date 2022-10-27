@@ -40,17 +40,6 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private double _distanceStep;
-        public double DistanceStep
-        {
-            get { return _distanceStep; }
-            set
-            {
-                _distanceStep = value;
-                OnPropertyChanged(nameof(DistanceStep));
-            }
-        }
-
         private double _distanceToleranceCm;
         public double DistanceToleranceCm
         {
@@ -59,17 +48,6 @@ namespace BIM_Leaders_Logic
             {
                 _distanceToleranceCm = value;
                 OnPropertyChanged(nameof(DistanceToleranceCm));
-            }
-        }
-
-        private double _distanceTolerance;
-        public double DistanceTolerance
-        {
-            get { return _distanceTolerance; }
-            set
-            {
-                _distanceTolerance = value;
-                OnPropertyChanged(nameof(DistanceTolerance));
             }
         }
 
@@ -203,14 +181,6 @@ namespace BIM_Leaders_Logic
 
         private void ConvertUserInput()
         {
-#if VERSION2020
-            DistanceStep = UnitUtils.ConvertToInternalUnits(DistanceStepCm, DisplayUnitType.DUT_CENTIMETERS);
-            DistanceTolerance = UnitUtils.ConvertToInternalUnits(DistanceToleranceCm, DisplayUnitType.DUT_CENTIMETERS);
-#else
-            DistanceStep = UnitUtils.ConvertToInternalUnits(DistanceStepCm, UnitTypeId.Centimeters);
-            DistanceTolerance = UnitUtils.ConvertToInternalUnits(DistanceToleranceCm, UnitTypeId.Centimeters);
-#endif
-
             FilterColorAngle = new Autodesk.Revit.DB.Color(
                 FilterColorAngleSystem.R,
                 FilterColorAngleSystem.G,
@@ -240,14 +210,21 @@ namespace BIM_Leaders_Logic
 
             foreach (Wall wall in walls)
             {
-                // Checking if in parallel list.
-                if (wallsPar.Contains(wall))
-                    wallsToFilterDistn.AddRange(FilterWallsDistance(wall, referencePlane0));
-                // Checking if in perpendicular list.
-                else if (wallsPer.Contains(wall))
-                    wallsToFilterDistn.AddRange(FilterWallsDistance(wall, referencePlane1));
-                else
+                // Wall is not parallel or perpendicular.
+                if (!wallsPar.Contains(wall) && !wallsPer.Contains(wall))
+                {
                     wallsToFilterAngle.Add(wall);
+                    continue;
+                }
+
+                // Checking distance to the according reference plane.
+                bool distanceIsGood = (wallsPar.Contains(wall))
+                    ? CheckWallDistance(wall, referencePlane0)
+                    : CheckWallDistance(wall, referencePlane1);
+
+                // Wall is not nice distanced.
+                if (!distanceIsGood)
+                    wallsToFilterDistn.Add(wall);
             }
 
             _countWallsFilteredDistance = wallsToFilterDistn.Count;
@@ -328,15 +305,11 @@ namespace BIM_Leaders_Logic
         /// <summary>
         /// Check if walls have good distance to a reference plane.
         /// </summary>
-        /// <returns>List of walls that have bad distance to the given reference plane.</returns>
-        private List<Wall> FilterWallsDistance(Wall wall, ReferencePlane reference)
+        /// <returns>True if distance is good, otherwise false.</returns>
+        private bool CheckWallDistance(Wall wall, ReferencePlane referencePlane)
         {
-            List<Wall> wallsFilter = new List<Wall>();
-
             if (!(wall.Location is LocationCurve))
-            {
-                return wallsFilter;
-            }
+                return true;
 
             LocationCurve wallLocation = wall.Location as LocationCurve;
 
@@ -360,8 +333,8 @@ namespace BIM_Leaders_Logic
                 lineOffset = wallWidth / 2 - wallWidthExterior;
             }
 
-            // Point
-            XYZ point = new XYZ(reference.BubbleEnd.X, reference.BubbleEnd.Y, wallLocation.Curve.GetEndPoint(0).Z);
+            // Point on reference plane end.
+            XYZ point = new XYZ(referencePlane.BubbleEnd.X, referencePlane.BubbleEnd.Y, wallLocation.Curve.GetEndPoint(0).Z);
 
             // Check the orientation of exterior side of the wall, if its towards the point p
             XYZ wallOrientation = wall.Orientation;
@@ -369,22 +342,21 @@ namespace BIM_Leaders_Logic
             XYZ difference = point - pointProjected;
 
             // Calculate the distance
-            double distanceInternal = 0;
-            if (difference.AngleTo(wallOrientation) < 1)
-                distanceInternal = wallLocationCurve.Project(point).Distance - lineOffset;
-            else
-                distanceInternal = wallLocationCurve.Project(point).Distance + lineOffset;
+            double distance = (difference.AngleTo(wallOrientation) < 1)
+                ? wallLocationCurve.Project(point).Distance - lineOffset
+                : wallLocationCurve.Project(point).Distance + lineOffset;
 #if VERSION2020
-            double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, DisplayUnitType.DUT_CENTIMETERS);
+            double distanceCm = UnitUtils.ConvertFromInternalUnits(distance, DisplayUnitType.DUT_CENTIMETERS);
 #else
-            double distance = UnitUtils.ConvertFromInternalUnits(distanceInternal, UnitTypeId.Centimeters);
+            double distanceCm = UnitUtils.ConvertFromInternalUnits(distance, UnitTypeId.Centimeters);
 #endif
-            // Calculate precision
-            double precision = distance % DistanceStep;
-            if (0.5 - Math.Abs(0.5 - precision) > DistanceTolerance)
-                wallsFilter.Add(wall);
 
-            return wallsFilter;
+            // Calculate precision
+            double precision = distanceCm % DistanceStepCm;
+            if (0.5 - Math.Abs(0.5 - precision) > DistanceToleranceCm)
+                return false;
+
+            return true;
         }
 
         private void ShowResult()

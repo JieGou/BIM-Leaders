@@ -128,7 +128,7 @@ namespace BIM_Leaders_Logic
                     _doc.FamilyManager.CurrentType = familyType;
 #if VERSION2020
                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
-                        _doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(_inputData.ParameterValue), DisplayUnitType.DUT_CENTIMETERS));
+                        _doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(Value), DisplayUnitType.DUT_CENTIMETERS));
 #else
                     if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
                         _doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToInt32(Value), UnitTypeId.Centimeters));
@@ -147,7 +147,7 @@ namespace BIM_Leaders_Logic
                     _doc.FamilyManager.CurrentType = familyType;
 #if VERSION2020
                     if (parameter.DisplayUnitType == DisplayUnitType.DUT_CENTIMETERS)
-                        _doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(_inputData.ParameterValue), DisplayUnitType.DUT_CENTIMETERS));
+                        _doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(Value), DisplayUnitType.DUT_CENTIMETERS));
 #else
                     if (parameter.GetUnitTypeId() == UnitTypeId.Centimeters)
                         _doc.FamilyManager.Set(parameter, UnitUtils.ConvertToInternalUnits(Convert.ToDouble(Value), UnitTypeId.Centimeters));

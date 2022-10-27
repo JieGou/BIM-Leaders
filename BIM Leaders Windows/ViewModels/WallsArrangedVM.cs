@@ -150,13 +150,13 @@ namespace BIM_Leaders_Windows
             DistanceStepString = DistanceStep.ToString();
             DistanceTolerance = 0.000000001; // cm (enough is 0.000000030 - 0.000000035 - closer walls after join will be without dividing line)
             DistanceToleranceString = DistanceTolerance.ToString("0.000000000", NumberFormatInfo.CurrentInfo);
-            FilterColorAngle = new Color
+            FilterColorDistance = new Color
             {
                 R = 255,
                 G = 127,
                 B = 39
             };
-            FilterColorDistance = new Color
+            FilterColorAngle = new Color
             {
                 R = 255,
                 G = 64,

@@ -70,13 +70,13 @@
                         <Label Content="Filter color (distance)"
                                Margin="-5,9,0,0"
                                Style="{StaticResource SLabelBold}" />
-                        <materialDesign:ColorPicker  x:Name="colorPicker0"
+                        <materialDesign:ColorPicker  x:Name="colorPickerDistance"
                                                      Color="{Binding FilterColorDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <Label Content="Filter color (angle)"
                                Margin="-5,9,0,0"
                                Style="{StaticResource SLabelBold}" />
-                        <materialDesign:ColorPicker  x:Name="colorPicker1"
+                        <materialDesign:ColorPicker  x:Name="colorPickerAngle"
                                                      Color="{Binding FilterColorAngle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <Button x:Name="buttonSelectElements" Command="{Binding SelectReferencePlanesCommand}"
