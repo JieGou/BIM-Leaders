@@ -40,7 +40,7 @@
                 <Grid Grid.Row="0">
                     <TextBlock Text="Tags Plan Check"
                                Style="{StaticResource STextBlock}" />
-                    <Button x:Name="buttonCancel" IsCancel="True"
+                    <Button x:Name="buttonCancel" IsCancel="True" Click="ButtonExitClick"
                             Style="{StaticResource SButtonClose}" />
                 </Grid>
 

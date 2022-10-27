@@ -33,16 +33,17 @@ namespace BIM_Leaders_Windows
             var hue = new Hue("Dummy", Colors.Black, Colors.White);
         }
 
+        private void ButtonExitClick(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
+        }
+
         // Move the window
         private void FormMouseMove(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
-        }
-
-        private void buttonCancel_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
     }
 }

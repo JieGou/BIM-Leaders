@@ -14,9 +14,10 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="BorderBrush" Value="{StaticResource SColorText}" />
         <Setter Property="Height" Value="36" />
-
+        
         <Setter Property="FontSize" Value="12" />
         <Setter Property="TextAlignment" Value="Right" />
+        <Setter Property="Padding" Value="50,0,50,0" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FontFamily" Value="{StaticResource SFontFamilyMain}" />
         <Setter Property="Foreground" Value="{StaticResource SColorText}" />

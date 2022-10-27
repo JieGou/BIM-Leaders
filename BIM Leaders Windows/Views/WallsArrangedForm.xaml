@@ -12,7 +12,7 @@
         Title="BIM Leaders - Dimension Section Floors"
         WindowStartupLocation="CenterScreen"
         Width="306"
-        Height="486"
+        Height="540"
         
         d:DataContext="{d:DesignInstance Type=local:WallsArrangedVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -20,6 +20,10 @@
     <Window.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
     </Window.Resources>
+
+    <Window.Visibility>
+        <Binding Path="IsVisible" Mode="Twoway" Converter="{StaticResource BooleanToVisibilityConverter}" />
+    </Window.Visibility>
 
     <Grid Background="{x:Null}">
         <materialDesign:Card UniformCornerRadius="36">
@@ -40,7 +44,7 @@
                 <Grid Grid.Row="0">
                     <TextBlock Text="Walls Arranged Check"
                                Style="{StaticResource STextBlock}" />
-                    <Button x:Name="buttonCancel" IsCancel="True"
+                    <Button x:Name="buttonCancel" IsCancel="True" Click="ButtonExitClick"
                             Style="{StaticResource SButtonClose}" />
                 </Grid>
 
@@ -49,48 +53,60 @@
                         <Label Content="Distance Step (cm)"
                                Style="{StaticResource SLabelBold}" />
                         <TextBox x:Name="textboxDistanceStep" ToolTip="Distance unit to check. By default, walls need to be located at whole number of centimeters."
-                                 Text="{Binding InputDistanceStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Text="{Binding DistanceStepString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
                         <Label Content="{Binding ElementName=textboxDistanceStep, Path=(Validation.Errors)[0].ErrorContent}"
-                               Style="{StaticResource SLabelError}" />
+                               Style="{StaticResource SLabelError}"  />
                         <Label Content="Distance Tolerance (cm)"
                                Margin="-5,9,0,0"
                                Style="{StaticResource SLabelBold}" />
                         <TextBox x:Name="textboxDistanceTolerance" ToolTip="Check tolerance. Walls with accuracy bigger than given tolerance, will not be filtered."
-                                 Text="{Binding InputDistanceTolerance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Text="{Binding DistanceToleranceString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
                         <Label Content="{Binding ElementName=textboxDistanceTolerance, Path=(Validation.Errors)[0].ErrorContent}"
                                Style="{StaticResource SLabelError}" />
 
-                        <Label Content="Filter color (distances)"
+                        <Label Content="Filter color (distance)"
                                Margin="-5,9,0,0"
                                Style="{StaticResource SLabelBold}" />
                         <materialDesign:ColorPicker  x:Name="colorPicker0"
-                                             Color="{Binding ResultColor0, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                     Color="{Binding FilterColorDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <Label Content="Filter color (angles)"
+                        <Label Content="Filter color (angle)"
                                Margin="-5,9,0,0"
                                Style="{StaticResource SLabelBold}" />
                         <materialDesign:ColorPicker  x:Name="colorPicker1"
-                                                     Color="{Binding ResultColor1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                     Color="{Binding FilterColorAngle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <Button x:Name="buttonSelectElements" Command="{Binding SelectReferencePlanesCommand}"
+                                Content="Select Reference Planes" ToolTip="Select two perpendicular reference planes to locate annotations"
+                                Margin="0,20,0,0"
+                                Style="{StaticResource SButtonSelect}">
+                        </Button>
+                        <Label Content="{Binding SelectedElementsError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               Style="{StaticResource SLabelError}" />
+
+                        <Label Content="Selected IDs:"
+                               Style="{StaticResource SLabel}" />
+                        <Label x:Name="labelSelectedElements" Content="{Binding SelectedElementsString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                               Margin="80,-24,0,0"
+                               Style="{StaticResource SLabel}" />
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Row="2">
                     <StackPanel>
-                        <Button x:Name="buttonOk" Click="ButtonOkClick"
+                        <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                                 Content="Magic" ToolTip="Run"
                                 Style="{StaticResource SButtonOk}">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                                    <Binding ElementName="textboxDistanceStep" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                                    <Binding ElementName="textboxDistanceTolerance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                                    <Binding ElementName="textboxDistanceStep" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxDistanceTolerance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="labelSelectedElements" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                 </MultiBinding>
                             </Button.IsEnabled>
                         </Button>
-                        <TextBlock Text="Select 2 reference planes after closing."
-                           Margin="0,-18,0,0"
-                           Style="{StaticResource STextBlockHint}" />
                     </StackPanel>
                 </Grid>
             </Grid>

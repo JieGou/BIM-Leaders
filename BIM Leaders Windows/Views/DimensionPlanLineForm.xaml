@@ -45,7 +45,7 @@
                     <TextBlock Text="Dimension Plan Walls"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel"
-                            Style="{StaticResource SButtonClose}" Click="buttonCancel_Click" />
+                            Style="{StaticResource SButtonClose}" Click="ButtonExitClick" />
                 </Grid>
 
                 <Grid Grid.Row="1">
