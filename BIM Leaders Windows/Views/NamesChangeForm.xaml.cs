@@ -51,7 +51,6 @@ namespace BIM_Leaders_Windows
 
         private void ButtonExitClick(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
             Close();
         }
 
