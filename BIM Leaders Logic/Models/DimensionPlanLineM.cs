@@ -279,9 +279,12 @@ namespace BIM_Leaders_Logic
                     // Cause may be that we need take non-transformed geometry for reference...
                     // But we still need transformed one for intersections finding...
                     GeometryElement geometryElementInstance = geometryInstance.GetSymbolGeometry().GetTransformed(transform);
-                    foreach (Solid solidInstance in geometryElementInstance)
-                        if (solidInstance.Volume > 0)
-                            solids.Add(solidInstance);
+                    foreach (GeometryObject geometryObject2 in geometryElement)
+                    {
+                        if (geometryObject2 is Solid solid2)
+                            if (solid2.Volume > 0)
+                                solids.Add(solid2);
+                    }
                 }
                 if (geometryObject is Solid solid)
                     if (solid.Volume > 0)

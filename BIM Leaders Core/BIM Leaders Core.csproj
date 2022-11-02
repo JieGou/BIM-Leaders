@@ -111,7 +111,6 @@
     <Compile Include="CommandsAvailability\ViewIsSection.cs" />
     <Compile Include="CommandsAvailability\ViewIsSectionOrElevation.cs" />
     <Compile Include="CommandsAvailability\ViewIsStandard.cs" />
-    <Compile Include="Commands\Helpers\Categories.cs" />
     <Compile Include="Commands\Helpers\ViewUtils.cs" />
     <Compile Include="Commands\Helpers\DatumPlaneUtils.cs" />
     <Compile Include="Commands\Helpers\DimensionUtils.cs" />

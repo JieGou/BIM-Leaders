@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
@@ -72,7 +73,7 @@ namespace BIM_Leaders_Core
         /// <param name="inputPartSuffix">If true, replace suffix part.</param>
         private static void ReplaceNames()
         {
-            List<Type> types = Categories.GetTypesList(_inputData.ResultCategories);
+            List<Type> types = BIM_Leaders_Logic.Categories.GetTypesList(_inputData.ResultCategories);
 
             ElementMulticlassFilter elementMulticlassFilter = new ElementMulticlassFilter(types);
 

@@ -96,14 +96,17 @@
     <Compile Include="Models\DwgNameDeleteM.cs" />
     <Compile Include="Models\DwgViewFoundM.cs" />
     <Compile Include="Models\FamilyParameterSetM.cs" />
+    <Compile Include="Models\CheckerM.cs" />
     <Compile Include="Models\_TEMPLATE.cs" />
     <Compile Include="Models\DimensionsPlanM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelectionModels\SelectReferencePlanesM.cs" />
     <Compile Include="SelectionModels\SelectLineM.cs" />
+    <Compile Include="Utils\Categories.cs" />
     <Compile Include="Utils\DatumPlaneUtils.cs" />
     <Compile Include="Utils\DimensionUtils.cs" />
     <Compile Include="Utils\SelectionFilterByCategory.cs" />
+    <Compile Include="Utils\ReportMessage.cs" />
     <Compile Include="Utils\ViewFilterUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

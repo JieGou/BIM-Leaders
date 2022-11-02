@@ -17,7 +17,7 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="CheckerReportForm"/>
         /// </summary>
-        public CheckerReportForm(DataSet reportDataSet)
+        public CheckerReportForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();

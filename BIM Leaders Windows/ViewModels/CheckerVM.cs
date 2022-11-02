@@ -1,93 +1,127 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
+using System.Windows;
+using System;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "Names_Prefix_Change"
+    /// View model for command "Checker"
     /// </summary>
     public class CheckerVM : INotifyPropertyChanged, IDataErrorInfo
     {
         // Minimal height that can be accepted.
-        private const int _resultHeightMinValue = 200;
+        private const int _stairsHeadHeightMinValue = 200;
 
-        public string Error { get { return null; } }
+        #region PROPERTIES
+
+        private CheckerM _model;
+        public CheckerM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private string _prefix;
+        public string Prefix
+        {
+            get { return _prefix; }
+            set
+            {
+                _prefix = value;
+                OnPropertyChanged(nameof(Prefix));
+            }
+        }
+
+        private List<bool> _checkCategories { get; set; }
+        public List<bool> CheckCategories
+        {
+            get { return _checkCategories; }
+            set
+            {
+                _checkCategories = value;
+                OnPropertyChanged(nameof(CheckCategories));
+            }
+        }
+
+        private List<bool> _checkModel { get; set; }
+        public List<bool> CheckModel
+        {
+            get { return _checkModel; }
+            set
+            {
+                _checkModel = value;
+                OnPropertyChanged(nameof(CheckModel));
+            }
+        }
+
+        private List<bool> _checkCodes { get; set; }
+        public List<bool> CheckCodes
+        {
+            get { return _checkCodes; }
+            set
+            {
+                _checkCodes = value;
+                OnPropertyChanged(nameof(CheckCodes));
+            }
+        }
+
+        private string _stairsHeadHeightString { get; set; }
+        public string StairsHeadHeightString
+        {
+            get { return _stairsHeadHeightString; }
+            set
+            {
+                _stairsHeadHeightString = value;
+                OnPropertyChanged(nameof(StairsHeadHeightString));
+            }
+        }
+
+        private int _stairsHeadHeight { get; set; }
+        public int StairsHeadHeight
+        {
+            get { return _stairsHeadHeight; }
+            set { _stairsHeadHeight = value; }
+        }
+
+        #endregion
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="CheckerVM"/> class.
         /// </summary>
-        public CheckerVM()
+        public CheckerVM(CheckerM model)
         {
-            _resultPrefix = "PRE_";
-            _resultCategories = Enumerable.Repeat(false, 24).ToList();
-            _resultCategories[6] = true;
-            _resultModel = Enumerable.Repeat(false, 14).ToList();
-            _resultCodes = Enumerable.Repeat(false, 2).ToList();
-            _resultHeight = 210;
-            _inputHeight = _resultHeight.ToString();
+            Model = model;
+
+            Prefix = "PRE_";
+            CheckCategories = Enumerable.Repeat(false, 24).ToList();
+            CheckCategories[6] = true;
+            CheckModel = Enumerable.Repeat(false, 14).ToList();
+            CheckCodes = Enumerable.Repeat(false, 2).ToList();
+            StairsHeadHeight = 210;
+            StairsHeadHeightString = StairsHeadHeight.ToString();
+
+            RunCommand = new RunCommand(RunAction);
         }
 
-        private string _resultPrefix;
-        public string ResultPrefix
+        #region INOTIFYPROPERTYCHANGED
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            get { return _resultPrefix; }
-            set
-            {
-                _resultPrefix = value;
-                OnPropertyChanged(nameof(ResultPrefix));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private List<bool> _resultCategories { get; set; }
-        public List<bool> ResultCategories
-        {
-            get { return _resultCategories; }
-            set
-            {
-                _resultCategories = value;
-                OnPropertyChanged(nameof(ResultCategories));
-            }
-        }
+        #endregion
 
-        private List<bool> _resultModel { get; set; }
-        public List<bool> ResultModel
-        {
-            get { return _resultModel; }
-            set
-            {
-                _resultModel = value;
-                OnPropertyChanged(nameof(ResultModel));
-            }
-        }
+        #region VALIDATION
 
-        private List<bool> _resultCodes { get; set; }
-        public List<bool> ResultCodes
-        {
-            get { return _resultCodes; }
-            set
-            {
-                _resultCodes = value;
-                OnPropertyChanged(nameof(ResultCodes));
-            }
-        }
-
-        private string _inputHeight { get; set; }
-        public string InputHeight
-        {
-            get { return _inputHeight; }
-            set
-            {
-                _inputHeight = value;
-                OnPropertyChanged(nameof(InputHeight));
-            }
-        }
-        private int _resultHeight { get; set; }
-        public int ResultHeight
-        {
-            get { return _resultHeight; }
-            set { _resultHeight = value; }
-        }
+        public string Error { get { return null; } }
 
         public string this[string propertyName]
         {
@@ -97,22 +131,20 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        #region Validation
-
         string GetValidationError(string propertyName)
         {
             string error = null;
             
             switch (propertyName)
             {
-                case "ResultPrefix":
+                case "Prefix":
                     error = ValidateResultPrefix();
                     break;
                 case "InputHeight":
-                    error = ValidateInputIsWholeNumber(out int height, _inputHeight);
+                    error = ValidateInputIsWholeNumber(out int height, StairsHeadHeightString);
                     if (string.IsNullOrEmpty(error))
                     {
-                        ResultHeight = height;
+                        StairsHeadHeight = height;
                         error = ValidateResultHeight();
                     }
                     break;
@@ -124,11 +156,11 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResultPrefix()
         {
-            if (string.IsNullOrEmpty(ResultPrefix))
+            if (string.IsNullOrEmpty(Prefix))
                 return "Input is empty";
             else
             {
-                if (ResultPrefix.Length < 2)
+                if (Prefix.Length < 2)
                     return "From 2 symbols";
             }
             return null;
@@ -136,7 +168,7 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResultCheckboxes()
         {
-            if (!ResultCategories.Contains(true) && !ResultModel.Contains(true) && !ResultCodes.Contains(true))
+            if (!CheckCategories.Contains(true) && !CheckModel.Contains(true) && !CheckCodes.Contains(true))
                 return "Check at least one item";
             return null;
         }
@@ -155,18 +187,32 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResultHeight()
         {
-            if (_resultHeight < _resultHeightMinValue)
-                return $"Must be over {_resultHeightMinValue} cm";
+            if (StairsHeadHeight < _stairsHeadHeightMinValue)
+                return $"Must be over {_stairsHeadHeightMinValue} cm";
             return null;
         }
 
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region COMMANDS
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Model.CheckCategories = CheckCategories;
+            Model.Prefix = Prefix;
+            Model.CheckModel = CheckModel;
+            Model.CheckCodes = CheckCodes;
+            Model.StairsHeadHeight = StairsHeadHeight;
+
+            Model.Run();
+
+            CloseAction();
         }
+
+        public Action CloseAction { get; set; }
+
+        #endregion
     }
 }
