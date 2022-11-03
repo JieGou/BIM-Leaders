@@ -12,7 +12,6 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class NamesChangeVM : INotifyPropertyChanged, IDataErrorInfo
     {
-
         #region PROPERTIES
 
         private NamesChangeM _model;

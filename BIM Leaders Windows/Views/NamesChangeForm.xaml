@@ -95,9 +95,9 @@
                                 <Button Content="Select all" ToolTip="Select all categories" Click="SelectAll_Click"
                                         Margin="70,-24,0,0"
                                         Style="{StaticResource SButtonText}" />
-                                <Label Content="{Binding ElementName=SelectedCategories, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                                <TextBlock Text="{Binding ElementName=SelectedCategories, Path=(Validation.Errors).CurrentItem.ErrorContent}"
                                        Margin="0,-20,0,0"
-                                       Style="{StaticResource SLabelError}" />
+                                       Style="{StaticResource STextBlockError}" />
 
                                 <Grid>
                                     <Grid.ColumnDefinitions>
