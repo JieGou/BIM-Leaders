@@ -104,21 +104,28 @@ namespace BIM_Leaders_Logic
 
             try
             {
-                DatumPlaneUtils.SetDatumPlanes(_doc, typeof(Grid), Switch2D, Switch3D, Side1, Side2, ref _countGridsAligned);
+                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                {
+                    trans.Start();
+
+                    DatumPlaneUtils.SetDatumPlanes(_doc, typeof(Grid), Switch2D, Switch3D, Side1, Side2, ref _countGridsAligned);
+
+                    trans.Commit();
+                }
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
 
-            ShowResult();
+            GetRunResult();
         }
 
         #endregion
 
         #region METHODS
 
-        private void ShowResult()
+        private void GetRunResult()
         {
             if (RunResult.Length == 0)
             {
@@ -131,8 +138,6 @@ namespace BIM_Leaders_Logic
 
                 RunResult += $"{Environment.NewLine}{_countGridsAligned} grids changed bubbles";
             }
-
-            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

@@ -47,7 +47,7 @@ namespace BIM_Leaders_Core
             CheckerReportVM formReportVM = new CheckerReportVM(_reportDataSet);
 
             // View
-            CheckerReportForm formReport = new CheckerReportForm() { DataContext = formReportVM };
+            CheckerReportForm formReport = new CheckerReportForm(formReportVM) { DataContext = formReportVM };
             formReport.ShowDialog();
         }
 

@@ -1,5 +1,6 @@
 ﻿using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
+using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,10 +17,13 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="LevelsAlignForm"/>
         /// </summary>
-        public LevelsAlignForm()
+        public LevelsAlignForm(LevelsAlignVM viewModel)
         {
             InitializeMaterialDesign();
             InitializeComponent();
+
+            if (viewModel.CloseAction == null)
+                viewModel.CloseAction = new Action(() => this.Close());
         }
 
         private void InitializeMaterialDesign()

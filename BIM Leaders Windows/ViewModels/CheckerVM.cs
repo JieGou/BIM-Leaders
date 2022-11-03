@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
-using System.Windows;
-using System;
 
 namespace BIM_Leaders_Windows
 {

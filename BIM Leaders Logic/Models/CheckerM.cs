@@ -791,7 +791,7 @@ namespace BIM_Leaders_Logic
 
 #if VERSION2020
             double heightOffset = UnitUtils.ConvertToInternalUnits(10, DisplayUnitType.DUT_CENTIMETERS);
-            double height = UnitUtils.ConvertToInternalUnits(_inputData.ResultHeight, DisplayUnitType.DUT_CENTIMETERS) - heightOffset;
+            double height = UnitUtils.ConvertToInternalUnits(StairsHeadHeight, DisplayUnitType.DUT_CENTIMETERS) - heightOffset;
             double planOffset = UnitUtils.ConvertToInternalUnits(1, DisplayUnitType.DUT_CENTIMETERS); // Offset for not touching walls near stairs
 #else
             double heightOffset = UnitUtils.ConvertToInternalUnits(10, UnitTypeId.Centimeters);
