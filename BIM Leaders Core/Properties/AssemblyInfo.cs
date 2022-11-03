@@ -16,6 +16,6 @@ using System.Runtime.InteropServices;
 
 // MainVersion.Version.Build.Edition
 // For updating the installation, new Build number needed.
-[assembly: AssemblyVersion("1.0.6.0")]
+[assembly: AssemblyVersion("1.0.7.0")]
 // MainVersion.Year.Month.Day
-[assembly: AssemblyFileVersion("1.22.10.27")]
+[assembly: AssemblyFileVersion("1.22.11.3")]
