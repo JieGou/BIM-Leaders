@@ -97,8 +97,10 @@
     <Compile Include="Models\DwgViewFoundM.cs" />
     <Compile Include="Models\FamilyParameterSetM.cs" />
     <Compile Include="Models\CheckerM.cs" />
+    <Compile Include="Models\NamesChangeM.cs" />
     <Compile Include="Models\_TEMPLATE.cs" />
     <Compile Include="Models\DimensionsPlanM.cs" />
+    <Compile Include="Models\PurgeM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelectionModels\SelectReferencePlanesM.cs" />
     <Compile Include="SelectionModels\SelectLineM.cs" />

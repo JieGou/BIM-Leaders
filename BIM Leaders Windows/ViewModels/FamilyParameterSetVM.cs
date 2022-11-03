@@ -122,7 +122,11 @@ namespace BIM_Leaders_Windows
             Model.Value = ParameterValue;
 
             Model.Run();
+
+            CloseAction();
         }
+
+        public Action CloseAction { get; set; }
 
         #endregion
     }

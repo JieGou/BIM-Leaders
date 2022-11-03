@@ -163,13 +163,13 @@ namespace BIM_Leaders_Logic
                     
                     trans.Commit();
                 }
+
+                GetRunResult();
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
-
-            ShowResult();
         }
 
         #endregion
@@ -359,7 +359,7 @@ namespace BIM_Leaders_Logic
             _countSegments += references.Size - 1;
         }
 
-        private void ShowResult()
+        private void GetRunResult()
         {
             if (RunResult.Length == 0)
             {
@@ -370,8 +370,6 @@ namespace BIM_Leaders_Logic
                         ? $"{_countSpots} spot elevations created."
                         : $"Dimension with {_countSegments} segments created.";
             }
-
-            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

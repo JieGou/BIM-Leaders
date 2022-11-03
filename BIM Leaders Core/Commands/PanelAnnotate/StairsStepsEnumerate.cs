@@ -20,7 +20,7 @@ namespace BIM_Leaders_Core
             StairsStepsEnumerateVM formVM = new StairsStepsEnumerateVM(formM);
 
             // View
-            StairsStepsEnumerateForm form = new StairsStepsEnumerateForm() { DataContext = formVM };
+            StairsStepsEnumerateForm form = new StairsStepsEnumerateForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

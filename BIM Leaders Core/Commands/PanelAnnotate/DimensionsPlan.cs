@@ -30,7 +30,7 @@ namespace BIM_Leaders_Core
             DimensionsPlanVM formVM = new DimensionsPlanVM(formM);
 
             // View
-            DimensionsPlanForm form = new DimensionsPlanForm() { DataContext = formVM };
+            DimensionsPlanForm form = new DimensionsPlanForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

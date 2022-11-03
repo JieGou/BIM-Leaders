@@ -28,7 +28,7 @@ namespace BIM_Leaders_Core
             DimensionStairsLandingsVM formVM = new DimensionStairsLandingsVM(formM);
 
             // View
-            DimensionStairsLandingsForm form = new DimensionStairsLandingsForm() { DataContext = formVM };
+            DimensionStairsLandingsForm form = new DimensionStairsLandingsForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

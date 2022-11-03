@@ -21,7 +21,7 @@ namespace BIM_Leaders_Core
             DimensionPlanLineVM formVM = new DimensionPlanLineVM(formM, formSelectionM);
             
             // View
-            DimensionPlanLineForm form = new DimensionPlanLineForm() { DataContext = formVM };
+            DimensionPlanLineForm form = new DimensionPlanLineForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

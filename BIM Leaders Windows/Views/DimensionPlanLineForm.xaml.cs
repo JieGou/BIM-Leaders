@@ -17,10 +17,13 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="DimensionPlanLineForm"/>
         /// </summary>
-        public DimensionPlanLineForm()
+        public DimensionPlanLineForm(DimensionPlanLineVM viewModel)
         {
             InitializeMaterialDesign();
             InitializeComponent();
+
+            if (viewModel.CloseAction == null)
+                viewModel.CloseAction = new Action(() => this.Close());
         }
 
         private void InitializeMaterialDesign()

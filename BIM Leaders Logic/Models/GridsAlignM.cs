@@ -112,13 +112,13 @@ namespace BIM_Leaders_Logic
 
                     trans.Commit();
                 }
+
+                GetRunResult();
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
-
-            GetRunResult();
         }
 
         #endregion

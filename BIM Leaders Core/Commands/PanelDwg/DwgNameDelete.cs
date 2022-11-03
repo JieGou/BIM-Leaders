@@ -37,7 +37,7 @@ namespace BIM_Leaders_Core
             formVM.DwgListSelected = dwgList.First().Value;
 
             // View
-            DwgNameDeleteForm form = new DwgNameDeleteForm() { DataContext = formVM };
+            DwgNameDeleteForm form = new DwgNameDeleteForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

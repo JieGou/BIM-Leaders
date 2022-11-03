@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
 
@@ -198,7 +199,11 @@ namespace BIM_Leaders_Windows
             Model.MinReferences = MinReferences;
 
             Model.Run();
+
+            CloseAction();
         }
+
+        public Action CloseAction { get; set; }
 
         #endregion
     }

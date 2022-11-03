@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
@@ -70,7 +71,11 @@ namespace BIM_Leaders_Windows
             Model.DwgListSelected = DwgListSelected;
 
             Model.Run();
+
+            CloseAction();
         }
+
+        public Action CloseAction { get; set; }
 
         #endregion
 

@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
@@ -9,83 +12,113 @@ namespace BIM_Leaders_Windows
     /// </summary>
     public class NamesChangeVM : INotifyPropertyChanged, IDataErrorInfo
     {
-        public string Error { get { return null; } }
+
+        #region PROPERTIES
+
+        private NamesChangeM _model;
+        public NamesChangeM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private string _substringOld;
+        public string SubstringOld
+        {
+            get { return _substringOld; }
+            set
+            {
+                _substringOld = value;
+                OnPropertyChanged(nameof(SubstringOld));
+            }
+        }
+
+        private string _substringNew;
+        public string SubstringNew
+        {
+            get { return _substringNew; }
+            set
+            {
+                _substringNew = value;
+                OnPropertyChanged(nameof(SubstringNew));
+            }
+        }
+
+        private bool _partPrefix { get; set; }
+        public bool PartPrefix
+        {
+            get { return _partPrefix; }
+            set
+            {
+                _partPrefix = value;
+                OnPropertyChanged(nameof(PartPrefix));
+            }
+        }
+        private bool _partCenter { get; set; }
+        public bool PartCenter
+        {
+            get { return _partCenter; }
+            set
+            {
+                _partCenter = value;
+                OnPropertyChanged(nameof(PartCenter));
+            }
+        }
+        private bool _partSuffix { get; set; }
+        public bool PartSuffix
+        {
+            get { return _partSuffix; }
+            set
+            {
+                _partSuffix = value;
+                OnPropertyChanged(nameof(PartSuffix));
+            }
+        }
+
+        private List<bool> _selectedCategories { get; set; }
+        public List<bool> SelectedCategories
+        {
+            get { return _selectedCategories; }
+            set
+            {
+                _selectedCategories = value;
+                OnPropertyChanged(nameof(SelectedCategories));
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="NamesChangeVM"/> class.
         /// </summary>
-        public NamesChangeVM()
+        public NamesChangeVM(NamesChangeM model)
         {
-            ResultSubstringOld = "OLD";
-            ResultSubstringNew = "NEW";
-            ResultPartPrefix = true;
-            ResultCategories = Enumerable.Repeat(false, 24).ToList();
-            ResultCategories[6] = true;
+            Model = model;
+
+            SubstringOld = "OLD";
+            SubstringNew = "NEW";
+            PartPrefix = true;
+            SelectedCategories = Enumerable.Repeat(false, 24).ToList();
+            SelectedCategories[6] = true;
+
+            RunCommand = new RunCommand(RunAction);
         }
 
-        private string _resultSubstringOld;
-        public string ResultSubstringOld
+        #region INOTIFYPROPERTYCHANGED
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            get { return _resultSubstringOld; }
-            set
-            {
-                _resultSubstringOld = value;
-                OnPropertyChanged(nameof(ResultSubstringOld));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string _resultSubstringNew;
-        public string ResultSubstringNew
-        {
-            get { return _resultSubstringNew; }
-            set
-            {
-                _resultSubstringNew = value;
-                OnPropertyChanged(nameof(ResultSubstringNew));
-            }
-        }
+        #endregion
 
-        private bool _resultPartPrefix { get; set; }
-        public bool ResultPartPrefix
-        {
-            get { return _resultPartPrefix; }
-            set
-            {
-                _resultPartPrefix = value;
-                OnPropertyChanged(nameof(ResultPartPrefix));
-            }
-        }
-        private bool _resultPartCenter { get; set; }
-        public bool ResultPartCenter
-        {
-            get { return _resultPartCenter; }
-            set
-            {
-                _resultPartCenter = value;
-                OnPropertyChanged(nameof(ResultPartCenter));
-            }
-        }
-        private bool _resultPartSuffix { get; set; }
-        public bool ResultPartSuffix
-        {
-            get { return _resultPartSuffix; }
-            set
-            {
-                _resultPartSuffix = value;
-                OnPropertyChanged(nameof(ResultPartSuffix));
-            }
-        }
+        #region VALIDATION
 
-        private List<bool> _resultCategories { get; set; }
-        public List<bool> ResultCategories
-        {
-            get { return _resultCategories; }
-            set
-            {
-                _resultCategories = value;
-                OnPropertyChanged(nameof(ResultCategories));
-            }
-        }
+        public string Error { get { return null; } }
 
         public string this[string propertyName]
         {
@@ -95,65 +128,77 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        #region Validation
-
         string GetValidationError(string propertyName)
         {
             string error = null;
             
             switch (propertyName)
             {
-                case "ResultSubstringOld":
-                    error = ValidateResultSubstringOld();
+                case "SubstringOld":
+                    error = ValidateSubstringOld();
                     break;
-                case "ResultSubstringNew":
-                    error = ValidateResultSubstringNew();
+                case "SubstringNew":
+                    error = ValidateSubstringNew();
                     break;
-                case "ResultCategories":
-                    error = ValidateResultCategories();
+                case "SelectedCategories":
+                    error = ValidateSelectedCategories();
                     break;
             }
             return error;
         }
 
-        private string ValidateResultSubstringOld()
+        private string ValidateSubstringOld()
         {
-            if (string.IsNullOrEmpty(ResultSubstringOld))
+            if (string.IsNullOrEmpty(SubstringOld))
                 return "Input is empty";
             else
             {
-                if (ResultSubstringOld.Length < 2)
+                if (SubstringOld.Length < 2)
                     return "From 2 symbols";
             }
             return null;
         }
 
-        private string ValidateResultSubstringNew()
+        private string ValidateSubstringNew()
         {
-            if (string.IsNullOrEmpty(ResultSubstringNew))
+            if (string.IsNullOrEmpty(SubstringNew))
                 return "Input is empty";
             else
             {
-                if (ResultSubstringNew.Length < 2)
+                if (SubstringNew.Length < 2)
                     return "From 2 symbols";
             }
             return null;
         }
 
-        private string ValidateResultCategories()
+        private string ValidateSelectedCategories()
         {
-            if (!ResultCategories.Contains(true))
+            if (!SelectedCategories.Contains(true))
                 return "Categories not checked";
             return null;
         }
 
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region COMMANDS
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Model.PartPrefix = PartPrefix;
+            Model.PartSuffix = PartSuffix;
+            Model.SelectedCategories = SelectedCategories;
+            Model.SubstringOld = SubstringOld;
+            Model.SubstringNew = SubstringNew;
+
+            Model.Run();
+
+            CloseAction();
         }
+
+        public Action CloseAction { get; set; }
+
+        #endregion
     }
 }

@@ -20,7 +20,7 @@ namespace BIM_Leaders_Core
             TagsPlanCheckVM formVM = new TagsPlanCheckVM(formM);
 
             // View
-            TagsPlanCheckForm form = new TagsPlanCheckForm() { DataContext = formVM };
+            TagsPlanCheckForm form = new TagsPlanCheckForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

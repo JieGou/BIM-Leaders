@@ -45,7 +45,7 @@ namespace BIM_Leaders_Core
             formVM.FillTypesSelected = fillTypes.First().Value;
 
             // View
-            WallsCompareForm form = new WallsCompareForm() { DataContext = formVM };
+            WallsCompareForm form = new WallsCompareForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

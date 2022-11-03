@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using MaterialDesignColors;
@@ -16,10 +17,13 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="WallsArrangedForm"/>
         /// </summary>
-        public WallsArrangedForm()
+        public WallsArrangedForm(WallsArrangedVM viewModel)
         {
             InitializeMaterialDesign();
             InitializeComponent();
+
+            if (viewModel.CloseAction == null)
+                viewModel.CloseAction = new Action(() => this.Close());
         }
 
         private void InitializeMaterialDesign()

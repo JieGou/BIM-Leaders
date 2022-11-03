@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
+using System;
 
 namespace BIM_Leaders_Windows
 {
@@ -66,7 +67,11 @@ namespace BIM_Leaders_Windows
             Model.FilterColorSystem = FilterColor;
 
             Model.Run();
+
+            CloseAction();
         }
+
+        public Action CloseAction { get; set; }
 
         #endregion
     }

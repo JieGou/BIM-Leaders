@@ -103,13 +103,13 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
                 _uidoc.Selection.SetElementIds(railingIds);
+
+                GetRunResult();
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
-
-            ShowResult();
         }
 
         #endregion
@@ -280,7 +280,7 @@ namespace BIM_Leaders_Logic
             view.SetFilterOverrides(filterId, overrideSettings);
         }
 
-        private void ShowResult()
+        private void GetRunResult()
         {
             if (RunResult.Length == 0)
             {
@@ -298,8 +298,6 @@ namespace BIM_Leaders_Logic
                     }
                 }
             }
-
-            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

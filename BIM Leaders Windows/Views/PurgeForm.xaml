@@ -46,53 +46,53 @@
 
                 <Grid Grid.Row="1">
                     <StackPanel Margin="18,0">
-                        <CheckBox x:Name="checkboxRooms" IsChecked="{Binding Path=ResultRooms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                        <CheckBox x:Name="checkboxRooms" IsChecked="{Binding Path=PurgeRooms, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                   Content="Rooms" ToolTip="Unplaced Rooms"
                                   Style="{StaticResource SCheckBox}" />
-                        <CheckBox x:Name="checkboxTags" IsChecked="{Binding Path=ResultTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                        <CheckBox x:Name="checkboxTags" IsChecked="{Binding Path=PurgeTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                   Content="Tags" ToolTip="Placed but Empty Tags"
                                   Style="{StaticResource SCheckBox}" />
-                        <CheckBox x:Name="checkboxFilters" IsChecked="{Binding Path=ResultFilters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                        <CheckBox x:Name="checkboxFilters" IsChecked="{Binding Path=PurgeFilters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                   Content="Filters" ToolTip="Unused View Filters"
                                   Style="{StaticResource SCheckBox}" />
-                        <CheckBox x:Name="checkboxViewTemplates" IsChecked="{Binding Path=ResultViewTemplates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                        <CheckBox x:Name="checkboxViewTemplates" IsChecked="{Binding Path=PurgeViewTemplates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                   Content="View Templates" ToolTip="Unused View Templates"
                                   Style="{StaticResource SCheckBox}" />
-                        <CheckBox x:Name="checkboxSheets" IsChecked="{Binding Path=ResultSheets, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                        <CheckBox x:Name="checkboxSheets" IsChecked="{Binding Path=PurgeSheets, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                   Content="Sheets" ToolTip="Empty Sheets with no Views Placed"
                                   Style="{StaticResource SCheckBox}" />
-                        <CheckBox x:Name="checkboxLineStyles" IsChecked="{Binding Path=ResultLineStyles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                        <CheckBox x:Name="checkboxLineStyles" IsChecked="{Binding Path=PurgeLineStyles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                   Content="Line Styles" ToolTip="Unused Line Styles"
                                   Style="{StaticResource SCheckBox}" />
-                        <CheckBox x:Name="checkboxLinePatterns" IsChecked="{Binding Path=ResultLinePatterns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                        <CheckBox x:Name="checkboxLinePatterns" IsChecked="{Binding Path=PurgeLinePatterns, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                   Content="Line Patterns" ToolTip="Line patterns that contains specified string. Line patterns from imported DWG files usually contains word &quot;IMPORT&quot;"
                                   Style="{StaticResource SCheckBox}" />
                         <Label Content="Line Patterns Names - String to Search"
                                Margin="-5,9,0,0"
                                Style="{StaticResource SLabelBold}" />
                         <TextBox x:Name="textboxLinePatternsName"
-                                 Text="{Binding ResultLinePatternsName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Text="{Binding LinePatternName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
-                        <TextBlock Text="{Binding ElementName=textboxLinePatternsName, Path=(Validation.Errors)/ErrorContent}"
+                        <TextBlock Text="{Binding ElementName=textboxLinePatternName, Path=(Validation.Errors)/ErrorContent}"
                                    Style="{StaticResource STextBlockError}" />
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Row="2">
                     <StackPanel>
-                        <Button x:Name="buttonOk" Click="ButtonOkClick"
+                        <Button x:Name="buttonOk" Command="{Binding RunCommand}"
                                 Content="Magic" ToolTip="Run"
                                 Style="{StaticResource SButtonOk}">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                                    <Binding ElementName="checkboxRooms" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                                    <Binding ElementName="checkboxTags" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                                    <Binding ElementName="checkboxFilters" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                                    <Binding ElementName="checkboxViewTemplates" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                                    <Binding ElementName="checkboxSheets" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                                    <Binding ElementName="checkboxLineStyles" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                                    <Binding ElementName="checkboxLinePatterns" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
-                                    <Binding ElementName="textboxLinePatternsName" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" />
+                                    <Binding ElementName="checkboxRooms" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxTags" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxFilters" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxViewTemplates" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxSheets" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxLineStyles" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxLinePatterns" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxLinePatternName" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                 </MultiBinding>
                             </Button.IsEnabled>
                         </Button>

@@ -34,7 +34,7 @@ namespace BIM_Leaders_Core
             formVM.DwgList = dwgList;
 
             // View
-            DwgViewFoundForm form = new DwgViewFoundForm() { DataContext = formVM };
+            DwgViewFoundForm form = new DwgViewFoundForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

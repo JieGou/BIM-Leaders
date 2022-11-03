@@ -1,5 +1,6 @@
 ﻿using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
+using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,10 +17,13 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="PurgeForm"/>
         /// </summary>
-        public PurgeForm()
+        public PurgeForm(PurgeVM viewModel)
         {
             InitializeMaterialDesign();
             InitializeComponent();
+
+            if (viewModel.CloseAction == null)
+                viewModel.CloseAction = new Action(() => this.Close());
         }
 
         private void InitializeMaterialDesign()
@@ -34,17 +38,6 @@ namespace BIM_Leaders_Windows
 
         private void ButtonExitClick(object sender, RoutedEventArgs e)
         {
-            Close();
-        }
-
-        /// <summary>
-        /// Handles the Click event of the Button_ok control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void ButtonOkClick(object sender, System.EventArgs e)
-        {
-            DialogResult = true;
             Close();
         }
 

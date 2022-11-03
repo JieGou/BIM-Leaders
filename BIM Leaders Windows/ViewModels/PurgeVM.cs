@@ -1,160 +1,191 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "Linetypes_IMPORT_Delete"
+    /// View model for command "Purge"
     /// </summary>
     public class PurgeVM : INotifyPropertyChanged, IDataErrorInfo
     {
+        #region PROPERTIES
+
+        private PurgeM _model;
+        public PurgeM Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
+        private bool _purgeRooms;
+        public bool PurgeRooms
+        {
+            get { return _purgeRooms; }
+            set
+            {
+                _purgeRooms = value;
+                OnPropertyChanged(nameof(PurgeRooms));
+                OnPropertyChanged(nameof(PurgeTags));
+                OnPropertyChanged(nameof(PurgeFilters));
+                OnPropertyChanged(nameof(PurgeViewTemplates));
+                OnPropertyChanged(nameof(PurgeSheets));
+                OnPropertyChanged(nameof(PurgeLineStyles));
+                OnPropertyChanged(nameof(PurgeLinePatterns));
+            }
+        }
+
+        private bool _purgeTags;
+        public bool PurgeTags
+        {
+            get { return _purgeTags; }
+            set
+            {
+                _purgeTags = value;
+                OnPropertyChanged(nameof(PurgeRooms));
+                OnPropertyChanged(nameof(PurgeTags));
+                OnPropertyChanged(nameof(PurgeFilters));
+                OnPropertyChanged(nameof(PurgeViewTemplates));
+                OnPropertyChanged(nameof(PurgeSheets));
+                OnPropertyChanged(nameof(PurgeLineStyles));
+                OnPropertyChanged(nameof(PurgeLinePatterns));
+            }
+        }
+
+        private bool _purgeFilters;
+        public bool PurgeFilters
+        {
+            get { return _purgeFilters; }
+            set
+            {
+                _purgeFilters = value;
+                OnPropertyChanged(nameof(PurgeRooms));
+                OnPropertyChanged(nameof(PurgeTags));
+                OnPropertyChanged(nameof(PurgeFilters));
+                OnPropertyChanged(nameof(PurgeViewTemplates));
+                OnPropertyChanged(nameof(PurgeSheets));
+                OnPropertyChanged(nameof(PurgeLineStyles));
+                OnPropertyChanged(nameof(PurgeLinePatterns));
+            }
+        }
+
+        private bool _purgeViewTemplates;
+        public bool PurgeViewTemplates
+        {
+            get { return _purgeViewTemplates; }
+            set
+            {
+                _purgeViewTemplates = value;
+                OnPropertyChanged(nameof(PurgeRooms));
+                OnPropertyChanged(nameof(PurgeTags));
+                OnPropertyChanged(nameof(PurgeFilters));
+                OnPropertyChanged(nameof(PurgeViewTemplates));
+                OnPropertyChanged(nameof(PurgeSheets));
+                OnPropertyChanged(nameof(PurgeLineStyles));
+                OnPropertyChanged(nameof(PurgeLinePatterns));
+            }
+        }
+
+        private bool _purgeSheets;
+        public bool PurgeSheets
+        {
+            get { return _purgeSheets; }
+            set
+            {
+                _purgeSheets = value;
+                OnPropertyChanged(nameof(PurgeRooms));
+                OnPropertyChanged(nameof(PurgeTags));
+                OnPropertyChanged(nameof(PurgeFilters));
+                OnPropertyChanged(nameof(PurgeViewTemplates));
+                OnPropertyChanged(nameof(PurgeSheets));
+                OnPropertyChanged(nameof(PurgeLineStyles));
+                OnPropertyChanged(nameof(PurgeLinePatterns));
+            }
+        }
+
+        private bool _purgeLineStyles;
+        public bool PurgeLineStyles
+        {
+            get { return _purgeLineStyles; }
+            set
+            {
+                _purgeLineStyles = value;
+                OnPropertyChanged(nameof(PurgeRooms));
+                OnPropertyChanged(nameof(PurgeTags));
+                OnPropertyChanged(nameof(PurgeFilters));
+                OnPropertyChanged(nameof(PurgeViewTemplates));
+                OnPropertyChanged(nameof(PurgeSheets));
+                OnPropertyChanged(nameof(PurgeLineStyles));
+                OnPropertyChanged(nameof(PurgeLinePatterns));
+            }
+        }
+
+        private bool _purgeLinePatterns;
+        public bool PurgeLinePatterns
+        {
+            get { return _purgeLinePatterns; }
+            set
+            {
+                _purgeLinePatterns = value;
+                OnPropertyChanged(nameof(PurgeRooms));
+                OnPropertyChanged(nameof(PurgeTags));
+                OnPropertyChanged(nameof(PurgeFilters));
+                OnPropertyChanged(nameof(PurgeViewTemplates));
+                OnPropertyChanged(nameof(PurgeSheets));
+                OnPropertyChanged(nameof(PurgeLineStyles));
+                OnPropertyChanged(nameof(PurgeLinePatterns));
+            }
+        }
+
+        private string _linePatternName;
+        public string LinePatternName
+        {
+            get { return _linePatternName; }
+            set
+            {
+                _linePatternName = value;
+                OnPropertyChanged(nameof(LinePatternName));
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// Default constructor
         /// Initializing a new instance of the <see cref="PurgeVM"/> class.
         /// </summary>
-        public PurgeVM()
+        public PurgeVM(PurgeM model)
         {
-            ResultRooms = true;
-            ResultTags = true;
-            ResultFilters = true;
-            ResultViewTemplates = true;
-            ResultSheets = true;
-            ResultLineStyles = true;
-            ResultLinePatterns = true;
-            ResultLinePatternsName = "IMPORT";
+            Model = model;
+
+            PurgeRooms = true;
+            PurgeTags = true;
+            PurgeFilters = true;
+            PurgeViewTemplates = true;
+            PurgeSheets = true;
+            PurgeLineStyles = true;
+            PurgeLinePatterns = true;
+            LinePatternName = "IMPORT";
+
+            RunCommand = new RunCommand(RunAction);
         }
 
-        private bool _resultRooms;
-        public bool ResultRooms
+        #region INOTIFYPROPERTYCHANGED
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            get { return _resultRooms; }
-            set
-            {
-                _resultRooms = value;
-                OnPropertyChanged(nameof(ResultRooms));
-                OnPropertyChanged(nameof(ResultTags));
-                OnPropertyChanged(nameof(ResultFilters));
-                OnPropertyChanged(nameof(ResultViewTemplates));
-                OnPropertyChanged(nameof(ResultSheets));
-                OnPropertyChanged(nameof(ResultLineStyles));
-                OnPropertyChanged(nameof(ResultLinePatterns));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private bool _resultTags;
-        public bool ResultTags
-        {
-            get { return _resultTags; }
-            set
-            {
-                _resultTags = value;
-                OnPropertyChanged(nameof(ResultRooms));
-                OnPropertyChanged(nameof(ResultTags));
-                OnPropertyChanged(nameof(ResultFilters));
-                OnPropertyChanged(nameof(ResultViewTemplates));
-                OnPropertyChanged(nameof(ResultSheets));
-                OnPropertyChanged(nameof(ResultLineStyles));
-                OnPropertyChanged(nameof(ResultLinePatterns));
-            }
-        }
+        #endregion
 
-        private bool _resultFilters;
-        public bool ResultFilters
-        {
-            get { return _resultFilters; }
-            set
-            {
-                _resultFilters = value;
-                OnPropertyChanged(nameof(ResultRooms));
-                OnPropertyChanged(nameof(ResultTags));
-                OnPropertyChanged(nameof(ResultFilters));
-                OnPropertyChanged(nameof(ResultViewTemplates));
-                OnPropertyChanged(nameof(ResultSheets));
-                OnPropertyChanged(nameof(ResultLineStyles));
-                OnPropertyChanged(nameof(ResultLinePatterns));
-            }
-        }
+        #region VALIDATION
 
-        private bool _resultViewTemplates;
-        public bool ResultViewTemplates
-        {
-            get { return _resultViewTemplates; }
-            set
-            {
-                _resultViewTemplates = value;
-                OnPropertyChanged(nameof(ResultRooms));
-                OnPropertyChanged(nameof(ResultTags));
-                OnPropertyChanged(nameof(ResultFilters));
-                OnPropertyChanged(nameof(ResultViewTemplates));
-                OnPropertyChanged(nameof(ResultSheets));
-                OnPropertyChanged(nameof(ResultLineStyles));
-                OnPropertyChanged(nameof(ResultLinePatterns));
-            }
-        }
+        public string Error { get { return null; } }
 
-        private bool _resultSheets;
-        public bool ResultSheets
-        {
-            get { return _resultSheets; }
-            set
-            {
-                _resultSheets = value;
-                OnPropertyChanged(nameof(ResultRooms));
-                OnPropertyChanged(nameof(ResultTags));
-                OnPropertyChanged(nameof(ResultFilters));
-                OnPropertyChanged(nameof(ResultViewTemplates));
-                OnPropertyChanged(nameof(ResultSheets));
-                OnPropertyChanged(nameof(ResultLineStyles));
-                OnPropertyChanged(nameof(ResultLinePatterns));
-            }
-        }
-
-        private bool _resultLineStyles;
-        public bool ResultLineStyles
-        {
-            get { return _resultLineStyles; }
-            set
-            {
-                _resultLineStyles = value;
-                OnPropertyChanged(nameof(ResultRooms));
-                OnPropertyChanged(nameof(ResultTags));
-                OnPropertyChanged(nameof(ResultFilters));
-                OnPropertyChanged(nameof(ResultViewTemplates));
-                OnPropertyChanged(nameof(ResultSheets));
-                OnPropertyChanged(nameof(ResultLineStyles));
-                OnPropertyChanged(nameof(ResultLinePatterns));
-            }
-        }
-
-        private bool _resultLinePatterns;
-        public bool ResultLinePatterns
-        {
-            get { return _resultLinePatterns; }
-            set
-            {
-                _resultLinePatterns = value;
-                OnPropertyChanged(nameof(ResultRooms));
-                OnPropertyChanged(nameof(ResultTags));
-                OnPropertyChanged(nameof(ResultFilters));
-                OnPropertyChanged(nameof(ResultViewTemplates));
-                OnPropertyChanged(nameof(ResultSheets));
-                OnPropertyChanged(nameof(ResultLineStyles));
-                OnPropertyChanged(nameof(ResultLinePatterns));
-            }
-        }
-
-        private string _resultLinePatternsName;
-        public string ResultLinePatternsName
-        {
-            get { return _resultLinePatternsName; }
-            set
-            {
-                _resultLinePatternsName = value;
-                OnPropertyChanged(nameof(ResultLinePatternsName));
-            }
-        }
-
-        // Dictionary for property (key) and error
-        //private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
         public string this[string propertyName]
         {
             get
@@ -163,56 +194,52 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        #region Validation
-
-        public string Error { get { return null; } }
-
         string GetValidationError(string propertyName)
         {
             string error = null;
             
             switch (propertyName)
             {
-                case "ResultRooms":
+                case "PurgeRooms":
                     error = ValidateResult(); break;
-                case "ResultTags":
+                case "PurgeTags":
                     error = ValidateResult(); break;
-                case "ResultFilters":
+                case "PurgeFilters":
                     error = ValidateResult(); break;
-                case "ResultViewTemplates":
+                case "PurgeViewTemplates":
                     error = ValidateResult(); break;
-                case "ResultSheets":
+                case "PurgeSheets":
                     error = ValidateResult(); break;
-                case "ResultLineStyles":
+                case "PurgeLineStyles":
                     error = ValidateResult(); break;
-                case "ResultLinePatterns":
+                case "PurgeLinePatterns":
                     error = ValidateResult(); break;
-                case "ResultLinePatternsName":
-                    error = ValidateResultName(); break;
+                case "LinePatternName":
+                    error = ValidatePatternName(); break;
             }
             return error;
         }
 
         private string ValidateResult()
         {
-            if (ResultRooms == false
-                && ResultTags == false
-                && ResultFilters == false
-                && ResultViewTemplates == false
-                && ResultSheets == false
-                && ResultLineStyles == false
-                && ResultLinePatterns == false)
+            if (PurgeRooms == false
+                && PurgeTags == false
+                && PurgeFilters == false
+                && PurgeViewTemplates == false
+                && PurgeSheets == false
+                && PurgeLineStyles == false
+                && PurgeLinePatterns == false)
                 return "Check at least one purge item";
             return null;
         }
 
-        private string ValidateResultName()
+        private string ValidatePatternName()
         {
-            if (string.IsNullOrEmpty(ResultLinePatternsName))
+            if (string.IsNullOrEmpty(LinePatternName))
                 return "Input is empty";
             else
             {
-                if (ResultLinePatternsName.Length < 3)
+                if (LinePatternName.Length < 3)
                     return "From 3 symbols";
             }
             return null;
@@ -220,11 +247,28 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region COMMANDS
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Model.PurgeRooms = PurgeRooms;
+            Model.PurgeTags = PurgeTags;
+            Model.PurgeFilters = PurgeFilters;
+            Model.PurgeViewTemplates = PurgeViewTemplates;
+            Model.PurgeSheets = PurgeSheets;
+            Model.PurgeLineStyles = PurgeLineStyles;
+            Model.PurgeLinePatterns = PurgeLinePatterns;
+            Model.LinePatternName = LinePatternName;
+
+            Model.Run();
+
+            CloseAction();
         }
+
+        public Action CloseAction { get; set; }
+
+        #endregion
     }
 }

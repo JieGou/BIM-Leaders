@@ -169,7 +169,7 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                ShowResult();
+                GetRunResult();
             }
             catch (Exception e)
             {
@@ -447,7 +447,7 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private void ShowResult()
+        private void GetRunResult()
         {
             if (RunResult.Length == 0)
             {
@@ -455,8 +455,6 @@ namespace BIM_Leaders_Logic
                     ? "No annotations created."
                     : $"{_countSpots} spot elevations were created. {_countDimensions} dimension lines were created.";
             }
-
-            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

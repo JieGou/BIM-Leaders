@@ -67,8 +67,6 @@ namespace BIM_Leaders_Logic
             {
                 RunResult = e.Message;
             }
-
-            //ShowResult();
         }
 
         #endregion

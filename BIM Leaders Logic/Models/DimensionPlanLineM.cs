@@ -98,13 +98,13 @@ namespace BIM_Leaders_Logic
 #endif
                     trans.Commit();
                 }
+
+                GetRunResult();
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
-
-            ShowResult();
         }
 
         #endregion
@@ -312,7 +312,7 @@ namespace BIM_Leaders_Logic
             return result;
         }
 
-        private void ShowResult()
+        private void GetRunResult()
         {
             if (RunResult.Length == 0)
             {
@@ -320,8 +320,6 @@ namespace BIM_Leaders_Logic
                 ? "Dimension creating error."
                 : $"Dimension with {_countSegments} segments was created.";
             }
-
-            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

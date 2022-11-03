@@ -21,7 +21,7 @@ namespace BIM_Leaders_Core
             WallsArrangedVM formVM = new WallsArrangedVM(formM, formSelectionM);
 
             // View
-            WallsArrangedForm form = new WallsArrangedForm() { DataContext = formVM };
+            WallsArrangedForm form = new WallsArrangedForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

@@ -151,7 +151,6 @@ namespace BIM_Leaders_Logic
                 if (solid1Transformed.Volume == 0 || solid2Transformed.Volume == 0)
                 {
                     RunResult = "No intersections found.";
-                    ShowResult();
                     return;
                 }
 
@@ -167,13 +166,13 @@ namespace BIM_Leaders_Logic
 
                     trans.Commit();
                 }
+
+                GetRunResult();
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
-
-            ShowResult();
         }
 
         #endregion
@@ -333,14 +332,12 @@ namespace BIM_Leaders_Logic
             return loopList;
         }
 
-        private void ShowResult()
+        private void GetRunResult()
         {
             if (RunResult.Length == 0)
             {
                 RunResult = $"{_countFilledRegions} filled regions created.";
             }
-
-            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

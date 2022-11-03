@@ -1,4 +1,5 @@
 ﻿using BIM_Leaders_Logic;
+using System;
 using System.ComponentModel;
 using System.Windows.Input;
 
@@ -259,7 +260,11 @@ namespace BIM_Leaders_Windows
             Model.DistanceCm = Distance;
 
             Model.Run();
+
+            CloseAction();
         }
+
+        public Action CloseAction { get; set; }
 
         #endregion
     }

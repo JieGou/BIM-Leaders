@@ -91,13 +91,13 @@ namespace BIM_Leaders_Logic
 
                     trans.Commit();
                 }
+
+                GetRunResult();
             }
             catch (Exception e)
             {
                 RunResult = e.Message;
             }
-
-            ShowResult();
         }
 
         #endregion
@@ -224,7 +224,7 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private void ShowResult()
+        private void GetRunResult()
         {
             if (RunResult.Length == 0)
             {
@@ -232,8 +232,6 @@ namespace BIM_Leaders_Logic
                     ? "No parameters set."
                     : $"{_countParametersSet} parameters set.";
             }
-
-            TaskDialog.Show(TRANSACTION_NAME, RunResult);
         }
 
         #endregion

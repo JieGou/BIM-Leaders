@@ -30,7 +30,7 @@ namespace BIM_Leaders_Core
             DimensionSectionFloorsVM formVM = new DimensionSectionFloorsVM(formM, formSelectionM);
 
             // View
-            DimensionSectionFloorsForm form = new DimensionSectionFloorsForm() { DataContext = formVM };
+            DimensionSectionFloorsForm form = new DimensionSectionFloorsForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

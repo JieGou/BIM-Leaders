@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Globalization;
 using BIM_Leaders_Logic;
 using System.Collections.Generic;
+using System;
 
 namespace BIM_Leaders_Windows
 {
@@ -274,6 +275,8 @@ namespace BIM_Leaders_Windows
             Model.SelectedElements = SelectedElements;
 
             Model.Run();
+
+            CloseAction();
         }
 
         public ICommand SelectReferencePlanesCommand { get; set; }
@@ -293,6 +296,8 @@ namespace BIM_Leaders_Windows
 
             IsVisible = true;
         }
+
+        public Action CloseAction { get; set; }
 
         #endregion
     }

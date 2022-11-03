@@ -26,7 +26,7 @@ namespace BIM_Leaders_Core
             formVM.ParametersList = GetParametersList();
 
             // View
-            FamilyParameterSetForm form = new FamilyParameterSetForm() { DataContext = formVM };
+            FamilyParameterSetForm form = new FamilyParameterSetForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
             if (form.DialogResult == false)

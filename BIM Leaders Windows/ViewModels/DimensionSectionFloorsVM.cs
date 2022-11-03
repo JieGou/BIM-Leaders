@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
 
@@ -264,6 +265,8 @@ namespace BIM_Leaders_Windows
             Model.SelectedElement = SelectedElement;
 
             Model.Run();
+
+            CloseAction();
         }
 
         public ICommand SelectLineCommand { get; set; }
@@ -282,6 +285,8 @@ namespace BIM_Leaders_Windows
             
             IsVisible = true;
         }
+
+        public Action CloseAction { get; set; }
 
         #endregion
     }
