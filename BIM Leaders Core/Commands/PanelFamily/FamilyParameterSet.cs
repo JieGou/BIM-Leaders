@@ -1,21 +1,31 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
-using System.Collections.Generic;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class FamilyParameterSet : IExternalCommand
     {
-        private Document _doc;
+        private List<string> _parametersList;
+
+        private const string TRANSACTION_NAME = "Set Parameter";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _doc = commandData.Application.ActiveUIDocument.Document;
+            _parametersList = GetParametersList(commandData);
 
+            Run(commandData);
+
+            return Result.Succeeded;
+        }
+
+        private async void Run(ExternalCommandData commandData)
+        {
             // Model
             FamilyParameterSetM formM = new FamilyParameterSetM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
@@ -23,22 +33,21 @@ namespace BIM_Leaders_Core
 
             // ViewModel
             FamilyParameterSetVM formVM = new FamilyParameterSetVM(formM);
-            formVM.ParametersList = GetParametersList();
+            formVM.ParametersList = _parametersList;
 
             // View
             FamilyParameterSetForm form = new FamilyParameterSetForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
-            if (form.DialogResult == false)
-                return Result.Cancelled;
+            await Task.Delay(1000);
 
-            return Result.Succeeded;
+            ShowResult(formM.RunResult);
         }
 
-        private List<string> GetParametersList()
+        private List<string> GetParametersList(ExternalCommandData commandData)
         {
             // Get unique parameters
-            IList<FamilyParameter> parametersNamesAll = _doc.FamilyManager.GetParameters();
+            IList<FamilyParameter> parametersNamesAll = commandData.Application.ActiveUIDocument.Document.FamilyManager.GetParameters();
             List<FamilyParameter> parameters = new List<FamilyParameter>();
             List<string> parametersNames = new List<string>();
             foreach (FamilyParameter i in parametersNamesAll)
@@ -51,6 +60,16 @@ namespace BIM_Leaders_Core
                 }
             }
             return parametersNames;
+        }
+
+        private void ShowResult(string resultText)
+        {
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

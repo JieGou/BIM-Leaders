@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -11,37 +12,21 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class DwgNameDelete : IExternalCommand
     {
-        private Document _doc;
+        private SortedDictionary<string, int> _dwgList;
 
         private const string TRANSACTION_NAME = "Delete DWG by Name";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _doc = commandData.Application.ActiveUIDocument.Document;
-            SortedDictionary<string, int> dwgList = GetDwgList();
-            if (dwgList.Count == 0)
+            _dwgList = GetDwgList();
+
+            if (_dwgList.Count == 0)
             {
-                TaskDialog.Show(TRANSACTION_NAME, "Document has no DWG.");
+                ShowResult("Document has no DWG.");
                 return Result.Failed;
             }
 
-            // Model
-            DwgNameDeleteM formM = new DwgNameDeleteM(commandData);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            DwgNameDeleteVM formVM = new DwgNameDeleteVM(formM);
-
-            formVM.DwgList = dwgList;
-            formVM.DwgListSelected = dwgList.First().Value;
-
-            // View
-            DwgNameDeleteForm form = new DwgNameDeleteForm(formVM) { DataContext = formVM };
-            form.ShowDialog();
-
-            if (form.DialogResult == false)
-                return Result.Cancelled;
+            Run(commandData);
 
             return Result.Succeeded;
         }
@@ -73,6 +58,39 @@ namespace BIM_Leaders_Core
             }
 
             return dwgTypesList;
+        }
+
+        private async void Run(ExternalCommandData commandData)
+        {
+            // Model
+            DwgNameDeleteM formM = new DwgNameDeleteM(commandData);
+            ExternalEvent externalEvent = ExternalEvent.Create(formM);
+            formM.ExternalEvent = externalEvent;
+
+            // ViewModel
+            DwgNameDeleteVM formVM = new DwgNameDeleteVM(formM);
+
+            formVM.DwgList = _dwgList;
+            formVM.DwgListSelected = _dwgList.First().Value;
+
+            // View
+            DwgNameDeleteForm form = new DwgNameDeleteForm(formVM) { DataContext = formVM };
+            form.ShowDialog();
+
+            await Task.Delay(1000);
+
+            if (formM.RunResult.Length > 0)
+                ShowResult(formM.RunResult);
+        }
+
+        private void ShowResult(string resultText)
+        {
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

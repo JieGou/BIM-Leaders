@@ -7,55 +7,41 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
+using System.Threading.Tasks;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.ReadOnly)]
     public class DwgViewFound : IExternalCommand
     {
-        private static Document _doc;
+        private DataSet _dwgList;
 
         private const string TRANSACTION_NAME = "Imports";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _doc = commandData.Application.ActiveUIDocument.Document;
+            _dwgList = GetDwgList(commandData);
 
-            // Model
-            DwgViewFoundM formM = new DwgViewFoundM(commandData);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            DwgViewFoundVM formVM = new DwgViewFoundVM(formM);
-            DataSet dwgList = GetDwgList();
-            if (dwgList == null)
-                return Result.Failed;
-            formVM.DwgList = dwgList;
-
-            // View
-            DwgViewFoundForm form = new DwgViewFoundForm(formVM) { DataContext = formVM };
-            form.ShowDialog();
-
-            if (form.DialogResult == false)
-                return Result.Cancelled;
+            Run(commandData);
 
             return Result.Succeeded;
         }
 
-        private DataSet GetDwgList()
+        private DataSet GetDwgList(ExternalCommandData commandData)
         {
             try
             {
+                Document doc = commandData.Application.ActiveUIDocument.Document;
+
                 // Get Imports
-                IEnumerable<ImportInstance> imports = new FilteredElementCollector(_doc)
+                IEnumerable<ImportInstance> imports = new FilteredElementCollector(doc)
                     .OfClass(typeof(ImportInstance))
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>();
 
                 if (imports.Count() == 0)
                 {
-                    TaskDialog.Show(TRANSACTION_NAME, "No imports in the file.");
+                    ShowResult("No imports in the file.");
                     return null;
                 }   
                 else
@@ -66,7 +52,7 @@ namespace BIM_Leaders_Core
             }
             catch (Exception e)
             {
-                TaskDialog.Show(TRANSACTION_NAME, e.Message);
+                ShowResult(e.Message);
                 return null;
             }
         }
@@ -126,6 +112,36 @@ namespace BIM_Leaders_Core
             }
 
             return dwgDataSet;
+        }
+
+        private async void Run(ExternalCommandData commandData)
+        {
+            // Model
+            DwgViewFoundM formM = new DwgViewFoundM(commandData);
+            ExternalEvent externalEvent = ExternalEvent.Create(formM);
+            formM.ExternalEvent = externalEvent;
+
+            // ViewModel
+            DwgViewFoundVM formVM = new DwgViewFoundVM(formM);
+            formVM.DwgList = _dwgList;
+
+            // View
+            DwgViewFoundForm form = new DwgViewFoundForm(formVM) { DataContext = formVM };
+            form.ShowDialog();
+
+            await Task.Delay(1000);
+
+            ShowResult(formM.RunResult);
+        }
+
+        private void ShowResult(string resultText)
+        {
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

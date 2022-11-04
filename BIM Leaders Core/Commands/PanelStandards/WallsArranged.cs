@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.Threading.Tasks;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
@@ -9,7 +10,16 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class WallsArranged : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Annotate Section";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            Run(commandData);
+
+            return Result.Succeeded;
+        }
+
+        private async void Run(ExternalCommandData commandData)
         {
             // Models
             WallsArrangedM formM = new WallsArrangedM(commandData);
@@ -24,10 +34,19 @@ namespace BIM_Leaders_Core
             WallsArrangedForm form = new WallsArrangedForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
-            if (form.DialogResult == false)
-                return Result.Cancelled;
+            await Task.Delay(1000);
 
-            return Result.Succeeded;
+            ShowResult(formM.RunResult);
+        }
+
+        private void ShowResult(string resultText)
+        {
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()
