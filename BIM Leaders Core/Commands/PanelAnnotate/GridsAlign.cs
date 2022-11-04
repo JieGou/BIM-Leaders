@@ -1,9 +1,9 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.Threading.Tasks;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
-using System.Threading.Tasks;
 
 namespace BIM_Leaders_Core
 {
@@ -40,7 +40,12 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
-            TaskDialog.Show(TRANSACTION_NAME, resultText);
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()
