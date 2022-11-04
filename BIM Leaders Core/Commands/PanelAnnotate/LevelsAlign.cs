@@ -40,7 +40,12 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
-            TaskDialog.Show(TRANSACTION_NAME, resultText);
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

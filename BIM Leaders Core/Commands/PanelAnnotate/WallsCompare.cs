@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -12,44 +13,18 @@ namespace BIM_Leaders_Core
     public class WallsCompare : IExternalCommand
     {
         private Document _doc;
+        private SortedDictionary<string, int> _materials;
+        private SortedDictionary<string, int> _fillTypes;
 
         private const string TRANSACTION_NAME = "Compare Walls";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
-            SortedDictionary<string, int> materials = GetListMaterials();
-            SortedDictionary<string, int> fillTypes = GetListFillTypes();
-            if (materials.Count == 0)
-            {
-                TaskDialog.Show(TRANSACTION_NAME, "Document has no materials.");
-                return Result.Failed;
-            }
-            if (fillTypes.Count == 0)
-            {
-                TaskDialog.Show(TRANSACTION_NAME, "Document has no fill types.");
-                return Result.Failed;
-            }
+            _materials = GetListMaterials();
+            _fillTypes = GetListFillTypes();
 
-            // Model
-            WallsCompareM formM = new WallsCompareM(commandData);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            WallsCompareVM formVM = new WallsCompareVM(formM);
-
-            formVM.Materials = materials;
-            formVM.FillTypes = fillTypes;
-            formVM.MaterialsSelected = materials.First().Value;
-            formVM.FillTypesSelected = fillTypes.First().Value;
-
-            // View
-            WallsCompareForm form = new WallsCompareForm(formVM) { DataContext = formVM };
-            form.ShowDialog();
-
-            if (form.DialogResult == false)
-                return Result.Cancelled;
+            Run(commandData);
 
             return Result.Succeeded;
         }
@@ -111,6 +86,40 @@ namespace BIM_Leaders_Core
             }
 
             return fillTypesList;
+        }
+
+        private async void Run(ExternalCommandData commandData)
+        {
+            // Model
+            WallsCompareM formM = new WallsCompareM(commandData);
+            ExternalEvent externalEvent = ExternalEvent.Create(formM);
+            formM.ExternalEvent = externalEvent;
+
+            // ViewModel
+            WallsCompareVM formVM = new WallsCompareVM(formM);
+
+            formVM.Materials = _materials;
+            formVM.FillTypes = _fillTypes;
+            formVM.MaterialsSelected = _materials.First().Value;
+            formVM.FillTypesSelected = _fillTypes.First().Value;
+
+            // View
+            WallsCompareForm form = new WallsCompareForm(formVM) { DataContext = formVM };
+            form.ShowDialog();
+
+            await Task.Delay(1000);
+
+            ShowResult(formM.RunResult);
+        }
+
+        private void ShowResult(string resultText)
+        {
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

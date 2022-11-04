@@ -3,22 +3,37 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
 using BIM_Leaders_Logic;
+using System.Threading.Tasks;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class DimensionStairsLandings : IExternalCommand
     {
-        private static Document _doc;
-
         private const string TRANSACTION_NAME = "Annotate Landings";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _doc = commandData.Application.ActiveUIDocument.Document;
+            CheckViewDepth(commandData);
 
-            CheckViewDepth();
+            Run(commandData);
 
+            return Result.Succeeded;
+        }
+
+        private void CheckViewDepth(ExternalCommandData commandData)
+        {
+            double allowableViewDepth = 1;
+
+            View view = commandData.Application.ActiveUIDocument.Document.ActiveView;
+            double viewDepth = view.get_Parameter(BuiltInParameter.VIEWER_BOUND_OFFSET_FAR).AsDouble();
+
+            if (viewDepth > allowableViewDepth)
+                ShowResult("View depth is too high. This may cause errors. Set far clip offset at most 30 cm.");
+        }
+
+        private async void Run(ExternalCommandData commandData)
+        {
             // Models
             DimensionStairsLandingsM formM = new DimensionStairsLandingsM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
@@ -31,21 +46,19 @@ namespace BIM_Leaders_Core
             DimensionStairsLandingsForm form = new DimensionStairsLandingsForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
-            if (form.DialogResult == false)
-                return Result.Cancelled;
+            await Task.Delay(1000);
 
-            return Result.Succeeded;
+            ShowResult(formM.RunResult);
         }
 
-        private static void CheckViewDepth()
+        private void ShowResult(string resultText)
         {
-            double allowableViewDepth = 1;
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 
-            View view = _doc.ActiveView;
-            double viewDepth = view.get_Parameter(BuiltInParameter.VIEWER_BOUND_OFFSET_FAR).AsDouble();
-
-            if (viewDepth > allowableViewDepth)
-                TaskDialog.Show("Dimension Stairs", "View depth is too high. This may cause errors. Set far clip offset at most 30 cm.", TaskDialogCommonButtons.Ok);
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

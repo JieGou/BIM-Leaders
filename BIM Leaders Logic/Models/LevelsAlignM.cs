@@ -136,7 +136,7 @@ namespace BIM_Leaders_Logic
                 else if (Switch3D)
                     RunResult = $"{_countLevelsAligned} grlevelsids switched to 3D and aligned.";
 
-                RunResult += $"{Environment.NewLine}{_countLevelsAligned} levels changed bubbles";
+                RunResult += $"{Environment.NewLine}{_countLevelsAligned} levels changed bubbles.";
             }
         }
 

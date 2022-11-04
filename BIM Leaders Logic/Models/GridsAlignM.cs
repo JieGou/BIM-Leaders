@@ -136,7 +136,7 @@ namespace BIM_Leaders_Logic
                 else if (Switch3D)
                     RunResult = $"{_countGridsAligned} grids switched to 3D and aligned.";
 
-                RunResult += $"{Environment.NewLine}{_countGridsAligned} grids changed bubbles";
+                RunResult += $"{Environment.NewLine}{_countGridsAligned} grids changed bubbles.";
             }
         }
 

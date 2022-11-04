@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.Threading.Tasks;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
@@ -9,17 +10,28 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class DimensionSectionFloors : IExternalCommand
     {
-        private static Document _doc;
-
         private const string TRANSACTION_NAME = "Annotate Section";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _doc = commandData.Application.ActiveUIDocument.Document;
+            CheckIfSectionIsSplit(commandData);
 
-            if (CheckIfSectionIsSplit())
-                TaskDialog.Show(TRANSACTION_NAME, "Current view is a split section. This may cause issues when finding geometry intersections.");
+            Run(commandData);
 
+            return Result.Succeeded;
+        }
+
+        private void CheckIfSectionIsSplit(ExternalCommandData commandData)
+        {
+#if !VERSION2020
+            ViewSection view = commandData.Application.ActiveUIDocument.Document.ActiveView as ViewSection;
+            if (view.IsSplitSection())
+                ShowResult("Current view is a split section. This may cause issues when finding geometry intersections.");
+#endif
+        }
+
+        private async void Run(ExternalCommandData commandData)
+        {
             // Models
             DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
@@ -33,21 +45,19 @@ namespace BIM_Leaders_Core
             DimensionSectionFloorsForm form = new DimensionSectionFloorsForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
-            if (form.DialogResult == false)
-                return Result.Cancelled;
+            await Task.Delay(1000);
 
-            return Result.Succeeded;
+            ShowResult(formM.RunResult);
         }
 
-        private static bool CheckIfSectionIsSplit()
+        private void ShowResult(string resultText)
         {
-            bool result = false;
-#if !VERSION2020
-            ViewSection view = _doc.ActiveView as ViewSection;
-            if (view.IsSplitSection())
-                return true;
-#endif
-            return result;
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

@@ -4,37 +4,21 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
+using System.Threading.Tasks;
 
 namespace BIM_Leaders_Core
 {
 	[Transaction(TransactionMode.Manual)]
     public class DimensionsPlan : IExternalCommand
 	{
-        private static Document _doc;
-
         private const string TRANSACTION_NAME = "Dimension Plan Walls";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _doc = commandData.Application.ActiveUIDocument.Document;
-
-            if (ShowDialogAboutPlanRegions() == TaskDialogResult.No)
+            if (ShowDialogAboutPlanRegions(commandData) == TaskDialogResult.No)
                 return Result.Cancelled;
 
-            // Models
-            DimensionsPlanM formM = new DimensionsPlanM(commandData);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            DimensionsPlanVM formVM = new DimensionsPlanVM(formM);
-
-            // View
-            DimensionsPlanForm form = new DimensionsPlanForm(formVM) { DataContext = formVM };
-            form.ShowDialog();
-
-            if (form.DialogResult == false)
-                return Result.Cancelled;
+            Run(commandData);
 
             return Result.Succeeded;
         }
@@ -43,11 +27,11 @@ namespace BIM_Leaders_Core
         /// Inform user that plan regions are on the view and may cause errors.
         /// </summary>
         /// <returns>TaskDialogResult.No if user cancelled the command.</returns>
-        private static TaskDialogResult ShowDialogAboutPlanRegions()
+        private static TaskDialogResult ShowDialogAboutPlanRegions(ExternalCommandData commandData)
 		{
             TaskDialogResult taskDialogResult = TaskDialogResult.None;
 
-            if (CheckViewHasPlanRegions())
+            if (CheckViewHasPlanRegions(commandData))
             {
                 TaskDialog dialog = new TaskDialog(TRANSACTION_NAME)
                 {
@@ -66,11 +50,12 @@ namespace BIM_Leaders_Core
 		/// </summary>
 		/// <param name="doc"></param>
 		/// <returns>True if view contains plan regions, othervise false.</returns>
-		private static bool CheckViewHasPlanRegions()
+		private static bool CheckViewHasPlanRegions(ExternalCommandData commandData)
         {
 			bool planContainsRegions = false;
 
-			IList<Element> planRegions = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
+            Document doc = commandData.Application.ActiveUIDocument.Document;
+			IList<Element> planRegions = new FilteredElementCollector(doc, doc.ActiveView.Id)
 				.OfCategory(BuiltInCategory.OST_PlanRegion)
 				.ToElements();
 
@@ -80,7 +65,36 @@ namespace BIM_Leaders_Core
 			return planContainsRegions;
 		}
 
-		public static string GetPath()
+        private async void Run(ExternalCommandData commandData)
+        {
+            // Models
+            DimensionsPlanM formM = new DimensionsPlanM(commandData);
+            ExternalEvent externalEvent = ExternalEvent.Create(formM);
+            formM.ExternalEvent = externalEvent;
+
+            // ViewModel
+            DimensionsPlanVM formVM = new DimensionsPlanVM(formM);
+
+            // View
+            DimensionsPlanForm form = new DimensionsPlanForm(formVM) { DataContext = formVM };
+            form.ShowDialog();
+
+            await Task.Delay(1000);
+
+            ShowResult(formM.RunResult);
+        }
+
+        private void ShowResult(string resultText)
+        {
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
+        }
+
+        public static string GetPath()
         {
             // Return constructed namespace path
             return typeof(DimensionsPlan).Namespace + "." + nameof(DimensionsPlan);

@@ -46,7 +46,6 @@
                 <Grid Grid.Row="1">
                     <StackPanel Margin="18,0">
                         <Label Content="{Binding ReportText}" 
-                               Margin="0,0,0,0"
                                Style="{StaticResource SLabel}" />
                     </StackPanel>
                 </Grid>
