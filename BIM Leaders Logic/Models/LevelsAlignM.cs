@@ -13,8 +13,6 @@ namespace BIM_Leaders_Logic
         private Document _doc;
         private int _countLevelsAligned;
 
-        private const string TRANSACTION_NAME = "Align Levels";
-
         #region PROPERTIES
 
         /// <summary>
@@ -22,6 +20,17 @@ namespace BIM_Leaders_Logic
         /// So we must call not the main method but raise the event.
         /// </summary>
         public ExternalEvent ExternalEvent { get; set; }
+
+        private string _transactionName;
+        public string TransactionName
+        {
+            get { return _transactionName; }
+            set
+            {
+                _transactionName = value;
+                OnPropertyChanged(nameof(TransactionName));
+            }
+        }
 
         private bool _switch2D;
         public bool Switch2D
@@ -80,10 +89,12 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public LevelsAlignM(ExternalCommandData commandData)
+        public LevelsAlignM(ExternalCommandData commandData, string transactionName)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            TransactionName = transactionName;
         }
 
         public void Run()
@@ -95,7 +106,7 @@ namespace BIM_Leaders_Logic
 
         public string GetName()
         {
-            return TRANSACTION_NAME;
+            return TransactionName;
         }
 
         public void Execute(UIApplication app)
@@ -104,7 +115,7 @@ namespace BIM_Leaders_Logic
 
             try
             {
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TransactionName))
                 {
                     trans.Start();
 

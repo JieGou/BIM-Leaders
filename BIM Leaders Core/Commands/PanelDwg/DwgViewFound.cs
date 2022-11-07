@@ -14,12 +14,14 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.ReadOnly)]
     public class DwgViewFound : IExternalCommand
     {
+        private Document _doc;
         private DataSet _dwgList;
 
         private const string TRANSACTION_NAME = "Imports";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _doc = commandData.Application.ActiveUIDocument.Document;
             _dwgList = GetDwgList(commandData);
 
             Run(commandData);
@@ -117,7 +119,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Model
-            DwgViewFoundM formM = new DwgViewFoundM(commandData);
+            DwgViewFoundM formM = new DwgViewFoundM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

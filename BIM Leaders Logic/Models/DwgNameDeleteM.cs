@@ -16,8 +16,6 @@ namespace BIM_Leaders_Logic
         private string _dwgName;
         private int _countDwgDeleted;
 
-        private const string TRANSACTION_NAME = "Delete DWG by Name";
-
         #region PROPERTIES
 
         /// <summary>
@@ -25,6 +23,17 @@ namespace BIM_Leaders_Logic
         /// So we must call not the main method but raise the event.
         /// </summary>
         public ExternalEvent ExternalEvent { get; set; }
+
+        private string _transactionName;
+        public string TransactionName
+        {
+            get { return _transactionName; }
+            set
+            {
+                _transactionName = value;
+                OnPropertyChanged(nameof(TransactionName));
+            }
+        }
 
         private int _dwgListSelected;
         public int DwgListSelected
@@ -50,10 +59,12 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DwgNameDeleteM(ExternalCommandData commandData)
+        public DwgNameDeleteM(ExternalCommandData commandData, string transactionName)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            TransactionName = transactionName;
         }
 
         public void Run()
@@ -65,7 +76,7 @@ namespace BIM_Leaders_Logic
 
         public string GetName()
         {
-            return TRANSACTION_NAME;
+            return TransactionName;
         }
 
         public void Execute(UIApplication app)
@@ -74,7 +85,10 @@ namespace BIM_Leaders_Logic
 
             try
             {
-                DeleteDwg();
+                using (Transaction trans = new Transaction(_doc, TransactionName))
+                {
+                    DeleteDwg();
+                }
 
                 GetRunResult();
             }

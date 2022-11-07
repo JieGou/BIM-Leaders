@@ -63,7 +63,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Model
-            DwgNameDeleteM formM = new DwgNameDeleteM(commandData);
+            DwgNameDeleteM formM = new DwgNameDeleteM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

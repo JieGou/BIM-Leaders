@@ -17,7 +17,6 @@ namespace BIM_Leaders_Logic
         private int _countUntaggedElements;
         private int _countUntaggedRailings;
 
-        private const string TRANSACTION_NAME = "Tags Plan Check";
         private const string FILTER_NAME = "Check - Tags";
 
         #region PROPERTIES
@@ -27,6 +26,17 @@ namespace BIM_Leaders_Logic
         /// So we must call not the main method but raise the event.
         /// </summary>
         public ExternalEvent ExternalEvent { get; set; }
+
+        private string _transactionName;
+        public string TransactionName
+        {
+            get { return _transactionName; }
+            set
+            {
+                _transactionName = value;
+                OnPropertyChanged(nameof(TransactionName));
+            }
+        }
 
         private System.Windows.Media.Color _filterColorSystem;
         public System.Windows.Media.Color FilterColorSystem
@@ -63,10 +73,12 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public TagsPlanCheckM(ExternalCommandData commandData)
+        public TagsPlanCheckM(ExternalCommandData commandData, string transactionName)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            TransactionName = transactionName;
         }
 
         public void Run()
@@ -78,7 +90,7 @@ namespace BIM_Leaders_Logic
 
         public string GetName()
         {
-            return TRANSACTION_NAME;
+            return TransactionName;
         }
 
         public void Execute(UIApplication app)
@@ -92,7 +104,7 @@ namespace BIM_Leaders_Logic
                 List<ElementId> elementIds = GetUntaggedElementIds();
                 List<ElementId> railingIds = GetUntaggedRailingIds();
 
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TransactionName))
                 {
                     trans.Start();
 

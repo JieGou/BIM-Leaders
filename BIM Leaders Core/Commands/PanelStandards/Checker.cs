@@ -13,6 +13,8 @@ namespace BIM_Leaders_Core
     {
         private static DataSet _reportDataSet;
 
+        private const string TRANSACTION_NAME = "Check";
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Run(commandData);
@@ -23,7 +25,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Model
-            CheckerM formM = new CheckerM(commandData);
+            CheckerM formM = new CheckerM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

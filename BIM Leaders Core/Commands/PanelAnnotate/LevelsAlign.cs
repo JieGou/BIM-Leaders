@@ -22,7 +22,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Model
-            LevelsAlignM formM = new LevelsAlignM(commandData);
+            LevelsAlignM formM = new LevelsAlignM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

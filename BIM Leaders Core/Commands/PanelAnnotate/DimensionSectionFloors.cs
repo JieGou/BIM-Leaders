@@ -33,7 +33,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData);
+            DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
             SelectLineM formSelectionM = new SelectLineM(commandData);

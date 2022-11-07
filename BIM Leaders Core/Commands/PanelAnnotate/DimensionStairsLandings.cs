@@ -35,7 +35,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionStairsLandingsM formM = new DimensionStairsLandingsM(commandData);
+            DimensionStairsLandingsM formM = new DimensionStairsLandingsM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

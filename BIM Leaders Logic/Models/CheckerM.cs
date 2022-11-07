@@ -17,8 +17,6 @@ namespace BIM_Leaders_Logic
         private UIDocument _uidoc;
         private Document _doc;
 
-        private const string TRANSACTION_NAME = "Check";
-
         #region PROPERTIES
 
         /// <summary>
@@ -26,6 +24,17 @@ namespace BIM_Leaders_Logic
         /// So we must call not the main method but raise the event.
         /// </summary>
         public ExternalEvent ExternalEvent { get; set; }
+
+        private string _transactionName;
+        public string TransactionName
+        {
+            get { return _transactionName; }
+            set
+            {
+                _transactionName = value;
+                OnPropertyChanged(nameof(TransactionName));
+            }
+        }
 
         private List<bool> _checkCategories;
         public List<bool> CheckCategories
@@ -106,10 +115,12 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public CheckerM(ExternalCommandData commandData)
+        public CheckerM(ExternalCommandData commandData, string transactionName)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            TransactionName = transactionName;
         }
 
         public void Run()
@@ -121,7 +132,7 @@ namespace BIM_Leaders_Logic
 
         public string GetName()
         {
-            return TRANSACTION_NAME;
+            return TransactionName;
         }
 
         public void Execute(UIApplication app)

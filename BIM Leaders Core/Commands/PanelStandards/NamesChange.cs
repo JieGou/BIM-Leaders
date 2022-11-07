@@ -24,7 +24,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Model
-            NamesChangeM formM = new NamesChangeM(commandData);
+            NamesChangeM formM = new NamesChangeM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

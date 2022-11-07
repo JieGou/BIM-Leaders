@@ -68,7 +68,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionsPlanM formM = new DimensionsPlanM(commandData);
+            DimensionsPlanM formM = new DimensionsPlanM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

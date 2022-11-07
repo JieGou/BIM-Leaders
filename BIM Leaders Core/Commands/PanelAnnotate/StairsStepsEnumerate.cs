@@ -22,7 +22,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Model
-            StairsStepsEnumerateM formM = new StairsStepsEnumerateM(commandData);
+            StairsStepsEnumerateM formM = new StairsStepsEnumerateM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

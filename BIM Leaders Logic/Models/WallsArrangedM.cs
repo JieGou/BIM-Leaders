@@ -17,7 +17,6 @@ namespace BIM_Leaders_Logic
         private int _countWallsFilteredDistance;
         private int _countWallsFilteredAngle;
 
-        private const string TRANSACTION_NAME = "Annotate Section";
         private const string FILTER_NAME_DISTANCE = "Check - Walls arranging. Distances";
         private const string FILTER_NAME_ANGLE = "Check - Walls arranging. Angles";
 
@@ -28,6 +27,17 @@ namespace BIM_Leaders_Logic
         /// So we must call not the main method but raise the event.
         /// </summary>
         public ExternalEvent ExternalEvent { get; set; }
+
+        private string _transactionName;
+        public string TransactionName
+        {
+            get { return _transactionName; }
+            set
+            {
+                _transactionName = value;
+                OnPropertyChanged(nameof(TransactionName));
+            }
+        }
 
         private double _distanceStepCm;
         public double DistanceStepCm
@@ -119,11 +129,13 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public WallsArrangedM(ExternalCommandData commandData)
+        public WallsArrangedM(ExternalCommandData commandData, string transactionName)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
             _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad.
+
+            TransactionName = transactionName;
         }
 
         public void Run()
@@ -135,7 +147,7 @@ namespace BIM_Leaders_Logic
 
         public string GetName()
         {
-            return TRANSACTION_NAME;
+            return TransactionName;
         }
 
         public void Execute(UIApplication app)
@@ -149,7 +161,7 @@ namespace BIM_Leaders_Logic
                 (ICollection<Element> wallsToFilterDistance, ICollection<Element> wallsToFilterAngle) = GetWallsToFilter();
 
                 // Create annotations
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, TransactionName))
                 {
                     trans.Start();
 

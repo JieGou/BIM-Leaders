@@ -91,7 +91,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Model
-            WallsCompareM formM = new WallsCompareM(commandData);
+            WallsCompareM formM = new WallsCompareM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

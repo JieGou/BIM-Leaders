@@ -22,7 +22,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Models
-            WallsArrangedM formM = new WallsArrangedM(commandData);
+            WallsArrangedM formM = new WallsArrangedM(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
             SelectReferencePlanesM formSelectionM = new SelectReferencePlanesM(commandData);
