@@ -5,6 +5,8 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
+using System.Windows.Media;
+using System.Windows.Forms;
 
 namespace BIM_Leaders_Core
 {
@@ -36,7 +38,7 @@ namespace BIM_Leaders_Core
             CheckerForm form = new CheckerForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            await Task.Delay(10000);
 
             _reportDataSet = formM.ReportDataSet;
 

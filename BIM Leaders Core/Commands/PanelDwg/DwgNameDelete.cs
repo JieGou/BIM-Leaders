@@ -12,12 +12,14 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class DwgNameDelete : IExternalCommand
     {
+        private Document _doc;
         private SortedDictionary<string, int> _dwgList;
 
         private const string TRANSACTION_NAME = "Delete DWG by Name";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _doc = commandData.Application.ActiveUIDocument.Document;
             _dwgList = GetDwgList();
 
             if (_dwgList.Count == 0)

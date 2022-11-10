@@ -102,6 +102,7 @@
     <Compile Include="Models\DimensionsPlanM.cs" />
     <Compile Include="Models\PurgeM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="RevitTask.cs" />
     <Compile Include="SelectionModels\SelectReferencePlanesM.cs" />
     <Compile Include="SelectionModels\SelectLineM.cs" />
     <Compile Include="Utils\Categories.cs" />
