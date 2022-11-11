@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 
 namespace BIM_Leaders_Windows
 {
@@ -41,6 +43,8 @@ namespace BIM_Leaders_Windows
         {
             CommandName = commandName;
             ReportText = reportText;
+
+            CloseCommand = new CommandWindow(CloseAction);
         }
 
         #region INOTIFYPROPERTYCHANGED
@@ -54,5 +58,16 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
+        #region COMMANDS
+
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
+
+        #endregion
     }
 }

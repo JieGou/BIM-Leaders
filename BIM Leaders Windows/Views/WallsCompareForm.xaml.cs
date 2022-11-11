@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using MaterialDesignColors;
@@ -17,13 +16,10 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="WallsCompareForm"/>
         /// </summary>
-        public WallsCompareForm(WallsCompareVM viewModel)
+        public WallsCompareForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            if (viewModel.CloseAction == null)
-                viewModel.CloseAction = new Action(() => this.Close());
         }
 
         private void InitializeMaterialDesign()
@@ -34,11 +30,6 @@ namespace BIM_Leaders_Windows
             // are searched relative to Eclipse's path, so they're not found.
             Card card = new Card();
             Hue hue = new Hue("Dummy", Colors.Black, Colors.White);
-        }
-
-        private void ButtonExitClick(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         // Move the window

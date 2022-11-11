@@ -8,7 +8,7 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class HelpStandards : IExternalCommand
     {
-        private const string URL = @"https://bimleaders.sharepoint.com/sites/Standards/SitePages/Israel%20Standards.aspx";
+        private const string URL = @"https://bimleaders.sharepoint.com/:o:/r/sites/BIMAcademy-Archtecture/Shared%20Documents/Architecture/Standards?d=w1010ae6834644745b60c696943c0e12b&csf=1&web=1&e=6or6hJ";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {

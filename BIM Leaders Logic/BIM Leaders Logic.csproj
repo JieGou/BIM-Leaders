@@ -98,6 +98,7 @@
     <Compile Include="Models\FamilyParameterSetM.cs" />
     <Compile Include="Models\CheckerM.cs" />
     <Compile Include="Models\NamesChangeM.cs" />
+    <Compile Include="Models\WarningsSolveM.cs" />
     <Compile Include="Models\_TEMPLATE.cs" />
     <Compile Include="Models\DimensionsPlanM.cs" />
     <Compile Include="Models\PurgeM.cs" />

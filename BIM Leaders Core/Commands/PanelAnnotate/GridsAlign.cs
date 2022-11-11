@@ -30,7 +30,7 @@ namespace BIM_Leaders_Core
             GridsAlignVM formVM = new GridsAlignVM(formM);
 
             // View
-            GridsAlignForm form = new GridsAlignForm(formVM) { DataContext = formVM };
+            GridsAlignForm form = new GridsAlignForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -40,6 +40,9 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
+            if (resultText == null)
+                return;
+
             // ViewModel
             ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 

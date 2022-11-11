@@ -1,11 +1,10 @@
-﻿using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
-using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 
 namespace BIM_Leaders_Windows
 {
@@ -19,13 +18,10 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="NamesChangeForm"/>
         /// </summary>
-        public NamesChangeForm(NamesChangeVM viewModel)
+        public NamesChangeForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            if (viewModel.CloseAction == null)
-                viewModel.CloseAction = new Action(() => this.Close());
         }
 
         private void InitializeMaterialDesign()
@@ -51,11 +47,6 @@ namespace BIM_Leaders_Windows
             {
                 c.IsChecked = true;
             }
-        }
-
-        private void ButtonExitClick(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         // Move the window

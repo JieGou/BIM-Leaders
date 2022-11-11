@@ -30,7 +30,7 @@ namespace BIM_Leaders_Core
             PurgeVM formVM = new PurgeVM(formM);
 
             // View
-            PurgeForm form = new PurgeForm(formVM) { DataContext = formVM };
+            PurgeForm form = new PurgeForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -40,7 +40,17 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
-            TaskDialog.Show(TRANSACTION_NAME, resultText);
+            if (resultText == null)
+                return;
+            if (resultText.Length == 0)
+                return;
+
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -34,7 +35,12 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                ShowResult();
+
+                string text = (_countFacesCleared == 0)
+                    ? "Painted faces not found."
+                    : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
+
+                ShowResult(text);
 
                 return Result.Succeeded;
             }
@@ -70,14 +76,17 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static void ShowResult()
+        private static void ShowResult(string resultText)
         {
-            // Show result
-            string text = (_countFacesCleared == 0)
-                ? "Painted faces not found."
-                : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
-            
-            TaskDialog.Show(TRANSACTION_NAME, text);
+            if (resultText == null)
+                return;
+
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

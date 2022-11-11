@@ -1,8 +1,8 @@
 ﻿using System.Data;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
-using System;
 
 namespace BIM_Leaders_Windows
 {
@@ -40,15 +40,12 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="DwgViewFoundVM"/> class.
-        /// </summary>
         public DwgViewFoundVM(DwgViewFoundM model)
         {
             Model = model;
 
-            RunCommand = new RunCommand(RunAction);
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
         }
 
         #region INOTIFYPROPERTYCHANGED
@@ -66,16 +63,22 @@ namespace BIM_Leaders_Windows
 
         public ICommand RunCommand { get; set; }
 
-        private void RunAction()
+        private void RunAction(Window window)
         {
             Model.SelectedDwg = SelectedDwg.Row[2].ToString();
 
             Model.Run();
 
-            CloseAction();
+            CloseAction(window);
         }
 
-        public Action CloseAction { get; set; }
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
 
         #endregion
     }

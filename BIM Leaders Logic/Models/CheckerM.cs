@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
@@ -17,6 +18,9 @@ namespace BIM_Leaders_Logic
         private UIDocument _uidoc;
         private Document _doc;
 
+        //private TaskCompletionSource<string> TaskCompletionSource;
+        //public event EventHandler<string> EventCompleted;
+
         #region PROPERTIES
 
         /// <summary>
@@ -24,6 +28,8 @@ namespace BIM_Leaders_Logic
         /// So we must call not the main method but raise the event.
         /// </summary>
         public ExternalEvent ExternalEvent { get; set; }
+        
+        //public Exception Exception { get; private set; }
 
         private string _transactionName;
         public string TransactionName
@@ -121,12 +127,28 @@ namespace BIM_Leaders_Logic
             _doc = _uidoc.Document;
 
             TransactionName = transactionName;
+
+            //EventCompleted += OnEventCompleted;
         }
 
         public void Run()
         {
+            //TaskCompletionSource = new TaskCompletionSource<string>();
+            //Task task = Task.Run(async () => (string)await TaskCompletionSource.Task);
+
             ExternalEvent.Raise();
+
+            //return task;
         }
+        /*
+        private void OnEventCompleted(object sender, string result)
+        {
+            if (Exception == null)
+                TaskCompletionSource.TrySetResult(result);
+            else
+                TaskCompletionSource.TrySetException(Exception);
+        }
+        */
 
         #region IEXTERNALEVENTHANDLER
 
@@ -145,8 +167,10 @@ namespace BIM_Leaders_Logic
             }
             catch (Exception e)
             {
+                //Exception = e;
                 RunResult = e.Message;
             }
+            //EventCompleted?.Invoke(this, RunResult);
         }
 
         #endregion
@@ -519,8 +543,6 @@ namespace BIM_Leaders_Logic
 
             Options options = new Options
             {
-                ComputeReferences = false,
-                View = _doc.ActiveView,
                 IncludeNonVisibleObjects = true
             };
 
@@ -537,20 +559,27 @@ namespace BIM_Leaders_Logic
                     countRoomsPlacement++;
                 else if (room.Volume == 0)
                     countRoomsUnbounded++;
-                // Checking for volumes overlap
+                // Checking for volumes overlap               
                 else
                 {
-                    foreach (Solid solidRoom in room.get_Geometry(options))
+                    foreach (GeometryObject geometryObject in room.get_Geometry(options))
                     {
-                        foreach (Solid solidCollected in solidsCollected)
+                        if (geometryObject is Solid solidRoom)
                         {
-                            Solid solid = BooleanOperationsUtils.ExecuteBooleanOperation(solidRoom, solidCollected, BooleanOperationsType.Intersect);
-                            if (solid.Volume > 0)
-                                countRoomsIntersect++;
+                            foreach (Solid solidCollected in solidsCollected)
+                            {
+                                try
+                                {
+                                    Solid solid = BooleanOperationsUtils.ExecuteBooleanOperation(solidRoom, solidCollected, BooleanOperationsType.Intersect);
+                                    if (solid.Volume > 0)
+                                        countRoomsIntersect++;
+                                }
+                                catch (Autodesk.Revit.Exceptions.InvalidOperationException exception) { }
+                            }
+                            solidsCollected.Add(solidRoom);
                         }
-                        solidsCollected.Add(solidRoom);
                     }
-                }
+                }               
             }
 
             if (countRoomsPlacement != 0)

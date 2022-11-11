@@ -1,9 +1,8 @@
-﻿using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
-using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 
 namespace BIM_Leaders_Windows
 {
@@ -17,13 +16,10 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="DimensionsPlanCheckForm"/>
         /// </summary>
-        public DimensionsPlanCheckForm(DimensionsPlanCheckVM viewModel)
+        public DimensionsPlanCheckForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            if (viewModel.CloseAction == null)
-                viewModel.CloseAction = new Action(() => this.Close());
         }
 
         private void InitializeMaterialDesign()
@@ -34,11 +30,6 @@ namespace BIM_Leaders_Windows
             // are searched relative to Eclipse's path, so they're not found.
             var card = new Card();
             var hue = new Hue("Dummy", Colors.Black, Colors.White);
-        }
-
-        private void ButtonExitClick(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         // Move the window

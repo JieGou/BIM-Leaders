@@ -1,8 +1,8 @@
-﻿using System.Windows.Media;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using BIM_Leaders_Logic;
-using System;
 
 namespace BIM_Leaders_Windows
 {
@@ -33,10 +33,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="TagsPlanCheckVM"/> class.
-        /// </summary>
         public TagsPlanCheckVM(TagsPlanCheckM model)
         {
             Model = model;
@@ -48,7 +44,8 @@ namespace BIM_Leaders_Windows
                 B = 39
             };
 
-            RunCommand = new RunCommand(RunAction);
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
         }
 
         #region INOTIFYPROPERTYCHANGED
@@ -66,16 +63,22 @@ namespace BIM_Leaders_Windows
 
         public ICommand RunCommand { get; set; }
 
-        private void RunAction()
+        private void RunAction(Window window)
         {
             Model.FilterColorSystem = FilterColor;
 
             Model.Run();
 
-            CloseAction();
+            CloseAction(window);
         }
 
-        public Action CloseAction { get; set; }
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
 
         #endregion
 

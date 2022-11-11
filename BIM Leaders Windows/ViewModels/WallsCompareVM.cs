@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
 
@@ -69,17 +69,14 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="WallsCompareVM"/> class.
-        /// </summary>
         public WallsCompareVM(WallsCompareM model)
         {
             Model = model;
 
             CheckOneLink = true;
 
-            RunCommand = new RunCommand(RunAction);
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
         }
 
         #region INOTIFYPROPERTYCHANGED
@@ -97,7 +94,7 @@ namespace BIM_Leaders_Windows
 
         public ICommand RunCommand { get; set; }
 
-        private void RunAction()
+        private void RunAction(Window window)
         {
             Model.CheckOneLink = CheckOneLink;
             Model.MaterialsSelected = MaterialsSelected;
@@ -105,10 +102,16 @@ namespace BIM_Leaders_Windows
 
             Model.Run();
 
-            CloseAction();
+            CloseAction(window);
         }
 
-        public Action CloseAction { get; set; }
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
 
         #endregion
     }

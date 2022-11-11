@@ -17,13 +17,10 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="PurgeForm"/>
         /// </summary>
-        public PurgeForm(PurgeVM viewModel)
+        public PurgeForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            if (viewModel.CloseAction == null)
-                viewModel.CloseAction = new Action(() => this.Close());
         }
 
         private void InitializeMaterialDesign()

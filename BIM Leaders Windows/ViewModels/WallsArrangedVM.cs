@@ -1,10 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Globalization;
 using BIM_Leaders_Logic;
-using System.Collections.Generic;
-using System;
 
 namespace BIM_Leaders_Windows
 {
@@ -136,10 +136,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="WallsArrangedVM"/> class.
-        /// </summary>
         public WallsArrangedVM(WallsArrangedM model, SelectReferencePlanesM selectModel)
         {
             Model = model;
@@ -167,8 +163,9 @@ namespace BIM_Leaders_Windows
             SelectedElements = new List<int> { 0, 0 };
             SelectedElementsString = "No selection";
 
-            RunCommand = new RunCommand(RunAction);
-            SelectReferencePlanesCommand = new RunCommand(SelectReferencePlanesAction);
+            RunCommand = new CommandWindow(RunAction);
+            SelectReferencePlanesCommand = new CommandGeneric(SelectReferencePlanesAction);
+            CloseCommand = new CommandWindow(CloseAction);
         }
 
         #region INOTIFYPROPERTYCHANGED
@@ -266,7 +263,7 @@ namespace BIM_Leaders_Windows
 
         public ICommand RunCommand { get; set; }
 
-        private void RunAction()
+        private void RunAction(Window window)
         {
             Model.DistanceStepCm = DistanceStep;
             Model.DistanceToleranceCm = DistanceTolerance;
@@ -276,7 +273,7 @@ namespace BIM_Leaders_Windows
 
             Model.Run();
 
-            CloseAction();
+            CloseAction(window);
         }
 
         public ICommand SelectReferencePlanesCommand { get; set; }
@@ -297,7 +294,13 @@ namespace BIM_Leaders_Windows
             IsVisible = true;
         }
 
-        public Action CloseAction { get; set; }
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
 
         #endregion
     }

@@ -30,7 +30,11 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                ShowResult();
+                string text = (_countParametersChanged == 0)
+                    ? "No parameters changed."
+                    : $"{_countParametersChanged} parameters changed.";
+
+                ShowResult(text);
 
                 return Result.Succeeded;
             }
@@ -62,14 +66,17 @@ namespace BIM_Leaders_Core
             _countParametersChanged = parameters.Count();
         }
 
-        private static void ShowResult()
+        private static void ShowResult(string resultText)
         {
-            // Show result
-            string text = (_countParametersChanged == 0)
-                ? "No parameters changed."
-                : $"{_countParametersChanged} parameters changed.";
-            
-            TaskDialog.Show(TRANSACTION_NAME, text);
+            if (resultText == null)
+                return;
+
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

@@ -96,15 +96,16 @@ namespace BIM_Leaders_Core
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            WallsCompareVM formVM = new WallsCompareVM(formM);
-
-            formVM.Materials = _materials;
-            formVM.FillTypes = _fillTypes;
-            formVM.MaterialsSelected = _materials.First().Value;
-            formVM.FillTypesSelected = _fillTypes.First().Value;
+            WallsCompareVM formVM = new WallsCompareVM(formM)
+            {
+                Materials = _materials,
+                FillTypes = _fillTypes,
+                MaterialsSelected = _materials.First().Value,
+                FillTypesSelected = _fillTypes.First().Value
+            };
 
             // View
-            WallsCompareForm form = new WallsCompareForm(formVM) { DataContext = formVM };
+            WallsCompareForm form = new WallsCompareForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -114,6 +115,9 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
+            if (resultText == null)
+                return;
+
             // ViewModel
             ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 

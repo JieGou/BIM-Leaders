@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,13 +18,10 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="CheckerForm"/>
         /// </summary>
-        public CheckerForm(CheckerVM viewModel)
+        public CheckerForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
-
-            if (viewModel.CloseAction == null)
-                viewModel.CloseAction = new Action(() => this.Close());
         }
 
         private void InitializeMaterialDesign()
@@ -53,23 +49,11 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        private void ButtonExitClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
         // Move the window
         private void FormMouseMove(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
-        /*
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            e.Cancel = true;
-            Visibility = Visibility.Hidden;
-        }
-        */
     }
 }

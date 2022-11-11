@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
 
@@ -162,8 +163,9 @@ namespace BIM_Leaders_Windows
             SelectedElement = 0;
             SelectedElementString = "No selection";
 
-            RunCommand = new RunCommand(RunAction);
-            SelectLineCommand = new RunCommand(SelectLineAction);
+            RunCommand = new CommandWindow(RunAction);
+            SelectLineCommand = new CommandGeneric(SelectLineAction);
+            CloseCommand = new CommandWindow(CloseAction);
         }
 
         #region INOTIFYPROPERTYCHANGED
@@ -254,7 +256,7 @@ namespace BIM_Leaders_Windows
 
         public ICommand RunCommand { get; set; }
 
-        private void RunAction()
+        private void RunAction(Window window)
         {
             Model.PlaceSpots = PlaceSpots;
 
@@ -266,7 +268,7 @@ namespace BIM_Leaders_Windows
 
             Model.Run();
 
-            CloseAction();
+            CloseAction(window);
         }
 
         public ICommand SelectLineCommand { get; set; }
@@ -286,7 +288,13 @@ namespace BIM_Leaders_Windows
             IsVisible = true;
         }
 
-        public Action CloseAction { get; set; }
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
 
         #endregion
     }

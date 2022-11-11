@@ -36,7 +36,7 @@ namespace BIM_Leaders_Core
             formVM.ParametersList = _parametersList;
 
             // View
-            FamilyParameterSetForm form = new FamilyParameterSetForm(formVM) { DataContext = formVM };
+            FamilyParameterSetForm form = new FamilyParameterSetForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -64,6 +64,9 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
+            if (resultText == null)
+                return;
+
             // ViewModel
             ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 
