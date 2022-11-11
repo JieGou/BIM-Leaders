@@ -60,6 +60,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -95,8 +106,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 ConvertUserInput();
@@ -116,11 +125,12 @@ namespace BIM_Leaders_Logic
                 }
                 _uidoc.Selection.SetElementIds(railingIds);
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -292,24 +302,25 @@ namespace BIM_Leaders_Logic
             view.SetFilterOverrides(filterId, overrideSettings);
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            if (RunResult.Length == 0)
+            string text = "";
+
+            if (_countUntaggedElements + _countUntaggedRailings == 0)
+                text = "All elements are tagged.";
+            else
             {
-                if (_countUntaggedElements + _countUntaggedRailings == 0)
-                    RunResult = "All elements are tagged.";
-                else
+                if (_countUntaggedElements > 0)
+                    text += $"{_countUntaggedElements} elements added to filter \"Check - Tags\".";
+                if (_countUntaggedRailings > 0)
                 {
-                    if (_countUntaggedElements > 0)
-                        RunResult += $"{_countUntaggedElements} elements added to filter \"Check - Tags\".";
-                    if (_countUntaggedRailings > 0)
-                    {
-                        if (RunResult.Length > 0)
-                            RunResult += " ";
-                        RunResult += $"Railings filters not usable, so {_countUntaggedRailings} untagged railings were selected.";
-                    }
+                    if (text.Length > 0)
+                        text += " ";
+                    text += $"Railings filters not usable, so {_countUntaggedRailings} untagged railings were selected.";
                 }
             }
+
+            return text;
         }
 
         #endregion

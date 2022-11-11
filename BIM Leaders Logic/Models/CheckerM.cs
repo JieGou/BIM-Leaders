@@ -97,6 +97,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -159,16 +170,14 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 ReportDataSet = CheckAll();
             }
             catch (Exception e)
             {
-                //Exception = e;
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
             //EventCompleted?.Invoke(this, RunResult);
         }

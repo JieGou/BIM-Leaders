@@ -60,6 +60,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -95,8 +106,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 using (Transaction trans = new Transaction(_doc, TransactionName))
@@ -110,11 +119,12 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -225,21 +235,22 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            if (RunResult.Length == 0)
+            string text = "";
+
+            if (_countRunsNumbersPlaced == 0)
+                text = "No annotations created.";
+            else
             {
-                if (_countRunsNumbersPlaced == 0)
-                    RunResult = "No annotations created.";
-                else
-                {
-                    if (_countStairsGrouped > 0)
-                        RunResult += $"{_countStairsGrouped} stairs are in groups! Exclude them from groups!{Environment.NewLine}";
-                    RunResult += $"{_countRunsNumbersPlaced} runs with {_countRisersNumbers} threads was numbered.";
-                    if (_countStairsUnpinned > 0)
-                        RunResult += $"{Environment.NewLine}{_countStairsUnpinned} stairs were unpinned!";
-                }
+                if (_countStairsGrouped > 0)
+                    text += $"{_countStairsGrouped} stairs are in groups! Exclude them from groups!{Environment.NewLine}";
+                text += $"{_countRunsNumbersPlaced} runs with {_countRisersNumbers} threads was numbered.";
+                if (_countStairsUnpinned > 0)
+                    text += $"{Environment.NewLine}{_countStairsUnpinned} stairs were unpinned!";
             }
+
+            return text;
         }
 
         #endregion

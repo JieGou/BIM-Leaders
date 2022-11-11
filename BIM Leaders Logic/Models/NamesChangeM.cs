@@ -88,6 +88,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -123,8 +134,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 using (Transaction trans = new Transaction(_doc, TransactionName))
@@ -136,11 +145,12 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -223,11 +233,15 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            RunResult = (_countNamesChanged == 0)
+            string text = "";
+
+            text = (_countNamesChanged == 0)
                 ? "No names changed"
                 : $"{_countNamesChanged} names changed";
+
+            return text;
         }
 
         #endregion

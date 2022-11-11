@@ -46,6 +46,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -82,8 +93,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
@@ -110,11 +119,12 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -323,14 +333,15 @@ namespace BIM_Leaders_Logic
             return result;
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            if (RunResult.Length == 0)
-            {
-                RunResult = (_countSegments == 0)
+            string text = "";
+
+            text = (_countSegments == 0)
                 ? "Dimension creating error."
                 : $"Dimension with {_countSegments} segments was created.";
-            }
+
+            return text;
         }
 
         #endregion

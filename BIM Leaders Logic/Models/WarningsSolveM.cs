@@ -69,6 +69,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -104,8 +115,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 using (Transaction trans = new Transaction(_doc, TransactionName))
@@ -117,11 +126,12 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -220,31 +230,32 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            if (RunResult.Length == 0)
+            string text = "";
+
+            if (_countWarningsJoin + _countWarningsWallsAttached + _countWarningsRoomNotEnclosed == 0)
+                text = "No warnings solved";
+            else
             {
-                if (_countWarningsJoin + _countWarningsWallsAttached + _countWarningsRoomNotEnclosed == 0)
-                    RunResult = "No warnings solved";
-                else
+                if (_countWarningsJoin > 0)
+                    text += $"{_countWarningsJoin} elements join warnings";
+                if (_countWarningsWallsAttached > 0)
                 {
-                    if (_countWarningsJoin > 0)
-                        RunResult += $"{_countWarningsJoin} elements join warnings";
-                    if (_countWarningsWallsAttached > 0)
-                    {
-                        if (RunResult.Length > 0)
-                            RunResult += ", ";
-                        RunResult += $"{_countWarningsWallsAttached} walls attached warnings";
-                    }
-                    if (_countWarningsRoomNotEnclosed > 0)
-                    {
-                        if (RunResult.Length > 0)
-                            RunResult += ", ";
-                        RunResult += $"{_countWarningsRoomNotEnclosed} rooms not enclosed warnings";
-                    }
-                    RunResult += " were solved.";
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{_countWarningsWallsAttached} walls attached warnings";
                 }
+                if (_countWarningsRoomNotEnclosed > 0)
+                {
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{_countWarningsRoomNotEnclosed} rooms not enclosed warnings";
+                }
+                text += " were solved.";
             }
+
+            return text;
         }
 
         #endregion

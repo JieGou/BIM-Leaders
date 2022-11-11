@@ -108,6 +108,7 @@
     <Compile Include="SelectionModels\SelectLineM.cs" />
     <Compile Include="Utils\Categories.cs" />
     <Compile Include="Utils\DatumPlaneUtils.cs" />
+    <Compile Include="Utils\ExceptionUtils.cs" />
     <Compile Include="Utils\DimensionUtils.cs" />
     <Compile Include="Utils\SelectionFilterByCategory.cs" />
     <Compile Include="Utils\ReportMessage.cs" />

@@ -68,6 +68,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -103,8 +114,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 string materialName = _doc.GetElement(new ElementId(MaterialsSelected)).Name;
@@ -178,11 +187,12 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -343,12 +353,13 @@ namespace BIM_Leaders_Logic
             return loopList;
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            if (RunResult.Length == 0)
-            {
-                RunResult = $"{_countFilledRegions} filled regions created.";
-            }
+            string text = "";
+
+            text = $"{_countFilledRegions} filled regions created.";
+
+            return text;
         }
 
         #endregion
