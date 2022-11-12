@@ -17,12 +17,16 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            Run(commandData);
+            Task<DataSet> runTask = new Task<DataSet>(() => Run(commandData));
+            Task resultTask = runTask.ContinueWith(t => ShowResult());
+
+            runTask.Start();
+            resultTask.Wait();
 
             return Result.Succeeded;
         }
 
-        private async void Run(ExternalCommandData commandData)
+        private DataSet Run(ExternalCommandData commandData)
         {
             // Model
             CheckerM formM = new CheckerM(commandData, TRANSACTION_NAME);
@@ -36,11 +40,12 @@ namespace BIM_Leaders_Core
             CheckerForm form = new CheckerForm(formVM) { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            //await Task.Delay(1000);
 
             _reportDataSet = formM.ReportDataSet;
+            return formM.ReportDataSet;
 
-            ShowResult();
+            //ShowResult();
         }
 
         private void ShowResult()
