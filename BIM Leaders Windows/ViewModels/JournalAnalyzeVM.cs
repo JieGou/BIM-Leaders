@@ -1,28 +1,34 @@
 ﻿using System.Data;
 using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "Journal Analyze"
+    /// View model for command "JournalAnalyze"
     /// </summary>
     public class JournalAnalyzeVM : INotifyPropertyChanged
     {
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="JournalAnalyzeVM"/> class.
-        /// </summary>
-        public JournalAnalyzeVM(DataSet commandsDataSet)
-        {
-            _commandsDataSet = commandsDataSet;
-        }
+        #region PROPERTIES
 
         private DataSet _commandsDataSet;
         public DataSet CommandsDataSet
         {
             get { return _commandsDataSet; }
-            set { }
+            set { _commandsDataSet = value; }
         }
+
+        #endregion
+
+        public JournalAnalyzeVM(DataSet commandsDataSet)
+        {
+            CommandsDataSet = commandsDataSet;
+
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -30,5 +36,19 @@ namespace BIM_Leaders_Windows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region COMMANDS
+
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
+
+        #endregion
     }
 }

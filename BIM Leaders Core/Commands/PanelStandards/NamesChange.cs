@@ -32,7 +32,7 @@ namespace BIM_Leaders_Core
             NamesChangeVM formVM = new NamesChangeVM(formM);
 
             // View
-            NamesChangeForm form = new NamesChangeForm(formVM) { DataContext = formVM };
+            NamesChangeForm form = new NamesChangeForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -42,7 +42,15 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
-            TaskDialog.Show(TRANSACTION_NAME, resultText);
+            if (resultText.Length == 0)
+                return;
+
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }     
 
         /// <summary>

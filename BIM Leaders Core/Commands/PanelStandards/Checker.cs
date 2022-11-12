@@ -5,6 +5,8 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
+using System.Windows.Media;
+using System.Windows.Forms;
 
 namespace BIM_Leaders_Core
 {
@@ -37,7 +39,7 @@ namespace BIM_Leaders_Core
             CheckerVM formVM = new CheckerVM(formM);
 
             // View
-            CheckerForm form = new CheckerForm(formVM) { DataContext = formVM };
+            CheckerForm form = new CheckerForm() { DataContext = formVM };
             form.ShowDialog();
 
             //await Task.Delay(1000);
@@ -45,17 +47,31 @@ namespace BIM_Leaders_Core
             _reportDataSet = formM.ReportDataSet;
             return formM.ReportDataSet;
 
-            //ShowResult();
+            ShowResult(formM.RunResult);
         }
 
-        private void ShowResult()
+        private void ShowResult(string resultText)
         {
-            // ViewModel
-            CheckerReportVM formReportVM = new CheckerReportVM(_reportDataSet);
+            if (resultText == null)
+                return;
+            if (resultText.Length > 0)
+            {
+                // ViewModel
+                ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 
-            // View
-            CheckerReportForm formReport = new CheckerReportForm(formReportVM) { DataContext = formReportVM };
-            formReport.ShowDialog();
+                // View
+                ReportForm form = new ReportForm() { DataContext = formVM };
+                form.ShowDialog();
+            }
+            else
+            {
+                // ViewModel
+                CheckerReportVM formReportVM = new CheckerReportVM(_reportDataSet);
+
+                // View
+                CheckerReportForm formReport = new CheckerReportForm() { DataContext = formReportVM };
+                formReport.ShowDialog();
+            }
         }
 
         public static string GetPath()

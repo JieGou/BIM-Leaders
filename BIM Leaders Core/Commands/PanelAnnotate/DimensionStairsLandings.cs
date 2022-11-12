@@ -43,7 +43,7 @@ namespace BIM_Leaders_Core
             DimensionStairsLandingsVM formVM = new DimensionStairsLandingsVM(formM);
 
             // View
-            DimensionStairsLandingsForm form = new DimensionStairsLandingsForm(formVM) { DataContext = formVM };
+            DimensionStairsLandingsForm form = new DimensionStairsLandingsForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -53,6 +53,9 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
+            if (resultText == null)
+                return;
+
             // ViewModel
             ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 

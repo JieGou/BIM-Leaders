@@ -116,6 +116,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -152,8 +163,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 ConvertUserInput();
@@ -179,11 +188,12 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -371,24 +381,25 @@ namespace BIM_Leaders_Logic
             return true;
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            if (RunResult.Length == 0)
+            string text = "";
+
+            if (_countWallsFilteredDistance + _countWallsFilteredAngle == 0)
+                text = "All walls are clear";
+            else
             {
-                if (_countWallsFilteredDistance + _countWallsFilteredAngle == 0)
-                    RunResult = "All walls are clear";
-                else
+                if (_countWallsFilteredDistance > 0)
+                    text += $"{_countWallsFilteredDistance} walls added to filter \"{FILTER_NAME_DISTANCE}\".";
+                if (_countWallsFilteredAngle > 0)
                 {
-                    if (_countWallsFilteredDistance > 0)
-                        RunResult += $"{_countWallsFilteredDistance} walls added to filter \"{FILTER_NAME_DISTANCE}\".";
-                    if (_countWallsFilteredAngle > 0)
-                    {
-                        if (RunResult.Length > 0)
-                            RunResult += " ";
-                        RunResult += $"{_countWallsFilteredAngle} walls added to filter \"{FILTER_NAME_ANGLE}\".";
-                    }
+                    if (text.Length > 0)
+                        text += " ";
+                    text += $"{_countWallsFilteredAngle} walls added to filter \"{FILTER_NAME_ANGLE}\".";
                 }
             }
+
+            return text;
         }
 
         #endregion

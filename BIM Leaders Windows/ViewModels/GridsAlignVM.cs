@@ -1,5 +1,5 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
 
@@ -74,10 +74,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="GridsAlignVM"/> class.
-        /// </summary>
         public GridsAlignVM(GridsAlignM model)
         {
             Model = model;
@@ -86,7 +82,8 @@ namespace BIM_Leaders_Windows
             Side2 = true;
             Switch2D = true;
 
-            RunCommand = new RunCommand(RunAction);
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
         }
 
         #region INOTIFYPROPERTYCHANGED
@@ -104,7 +101,7 @@ namespace BIM_Leaders_Windows
 
         public ICommand RunCommand { get; set; }
 
-        private void RunAction()
+        private void RunAction(Window window)
         {
             Model.Side1 = Side1;
             Model.Side2 = Side2;
@@ -113,10 +110,16 @@ namespace BIM_Leaders_Windows
 
             Model.Run();
 
-            CloseAction();
+            CloseAction(window);
         }
 
-        public Action CloseAction { get; set; }
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
 
         #endregion
     }

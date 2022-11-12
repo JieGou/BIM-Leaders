@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
@@ -104,7 +104,8 @@ namespace BIM_Leaders_Windows
             StairsHeadHeight = 210;
             StairsHeadHeightString = StairsHeadHeight.ToString();
 
-            RunCommand = new RunCommand(RunAction);
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
         }
 
         #region INOTIFYPROPERTYCHANGED
@@ -197,7 +198,7 @@ namespace BIM_Leaders_Windows
 
         public ICommand RunCommand { get; set; }
 
-        private void RunAction()
+        private void RunAction(Window window)
         {
             Model.CheckCategories = CheckCategories;
             Model.Prefix = Prefix;
@@ -207,10 +208,16 @@ namespace BIM_Leaders_Windows
 
             Model.Run();
 
-            CloseAction();
+            CloseAction(window);
         }
 
-        public Action CloseAction { get; set; }
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
 
         #endregion
     }

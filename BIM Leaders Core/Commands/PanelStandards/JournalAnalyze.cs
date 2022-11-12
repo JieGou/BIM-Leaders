@@ -7,6 +7,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using System.Windows.Shapes;
 
 namespace BIM_Leaders_Core
 {
@@ -14,6 +15,8 @@ namespace BIM_Leaders_Core
     public class JournalAnalyze : IExternalCommand
     {
         private static Document _doc;
+        private string[] _journalContent;
+        private DataSet _commandsDataSet;
 
         private const string TRANSACTION_NAME = "Analyze Journal";
 
@@ -21,35 +24,22 @@ namespace BIM_Leaders_Core
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
-            // Journal Path
-            string path = _doc.Application.RecordingJournalFilename;
-            string pathNew = path.Substring(0, path.Length - 4) + "TEMP.txt";
-
-            string[] content = new string[] { };
-
             try
             {
                 using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
                 {
                     trans.Start();
 
-                    if (File.Exists(pathNew))
-                        File.Delete(pathNew);
-
-                    File.Copy(path, pathNew);
-
-                    content = File.ReadAllLines(pathNew);
-
-                    File.Delete(pathNew);
+                    _journalContent = GetJournalContent();
 
                     trans.Commit();
                 }
 
-                List<string> commands = FindCommands(content);
+                List<string> commands = FindCommands();
                 Dictionary<string, int> commandsSorted = commands.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
-                DataSet commandsDataSet = CreateDataSet(commandsSorted);
+                _commandsDataSet = CreateDataSet(commandsSorted);
                 
-                ShowResult(commandsDataSet);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -60,16 +50,36 @@ namespace BIM_Leaders_Core
             }
         }
 
+        private string[] GetJournalContent()
+        {
+            string[] content;
+
+            // Journal Path
+            string path = _doc.Application.RecordingJournalFilename;
+            string pathNew = path.Substring(0, path.Length - 4) + "TEMP.txt";
+
+            if (File.Exists(pathNew))
+                File.Delete(pathNew);
+
+            File.Copy(path, pathNew);
+
+            content = File.ReadAllLines(pathNew);
+
+            File.Delete(pathNew);
+
+            return content;
+        }
+
         /// <summary>
         /// Find all revit commands in a given string array.
         /// </summary>
         /// <param name="content">String array.</param>
         /// <returns>List of strings that contains revit commands descriptions.</returns>
-        private static List<string> FindCommands(string[] content)
+        private List<string> FindCommands()
         {
             List<string> commands = new List<string>();
 
-            foreach (string line in content)
+            foreach (string line in _journalContent)
             {
                 if (!line.Contains("'") && line.Contains("Jrn."))
                 {
@@ -312,7 +322,7 @@ namespace BIM_Leaders_Core
 
             // Create 4 columns, and add them to the table
             DataColumn dataColumn0 = new DataColumn("Command", typeof(string));
-            DataColumn dataColumn1 = new DataColumn("Count", typeof(string));
+            DataColumn dataColumn1 = new DataColumn("Count", typeof(int));
 
             dataTable.Columns.Add(dataColumn0);
             dataTable.Columns.Add(dataColumn1);
@@ -325,7 +335,7 @@ namespace BIM_Leaders_Core
             {
                 // Name
                 string iCommand = i.Key;
-                string iCount = i.Value.ToString();
+                int iCount = i.Value;
 
                 DataRow dataRow = dataTable.NewRow();
 
@@ -338,12 +348,24 @@ namespace BIM_Leaders_Core
             return dataSet;
         }
 
-        private static void ShowResult(DataSet commandsDataSet)
+        private void ShowResult()
         {
-            JournalAnalyzeForm form = new JournalAnalyzeForm();
-            JournalAnalyzeVM formVM = new JournalAnalyzeVM(commandsDataSet);
-            form.DataContext = formVM;
-            form.ShowDialog();
+            if (_commandsDataSet.Tables[0].Rows.Count == 0)
+            {
+                // ViewModel
+                ReportVM formVM = new ReportVM(TRANSACTION_NAME, "No commands found in the journal file.");
+
+                // View
+                ReportForm form = new ReportForm() { DataContext = formVM };
+                form.ShowDialog();
+            }
+            else
+            {
+                JournalAnalyzeVM formReportVM = new JournalAnalyzeVM(_commandsDataSet);
+
+                JournalAnalyzeForm formReport = new JournalAnalyzeForm() { DataContext = formReportVM };
+                formReport.ShowDialog();
+            }
         }
 
         public static string GetPath()

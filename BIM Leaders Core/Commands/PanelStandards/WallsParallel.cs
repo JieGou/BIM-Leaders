@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
@@ -45,7 +46,12 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                ShowResult();
+
+                string text = (_countWallsFiltered == 0)
+                    ? "All walls are clear"
+                    : $"{_countWallsFiltered} walls added to filter \"{FILTER_NAME}\".";
+
+                ShowResult(text);
 
                 return Result.Succeeded;
             }
@@ -129,14 +135,17 @@ namespace BIM_Leaders_Core
             return wallsFilter;
         }
 
-        private static void ShowResult()
+        private static void ShowResult(string resultText)
         {
-            // Show result
-            string text = (_countWallsFiltered == 0)
-                ? "All walls are clear"
-                : $"{_countWallsFiltered} walls added to filter \"{FILTER_NAME}\".";
-            
-            TaskDialog.Show(TRANSACTION_NAME, text);
+            if (resultText == null)
+                return;
+
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

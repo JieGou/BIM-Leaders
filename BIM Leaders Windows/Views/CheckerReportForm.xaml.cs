@@ -1,9 +1,8 @@
-﻿using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 
 namespace BIM_Leaders_Windows
 {
@@ -17,7 +16,7 @@ namespace BIM_Leaders_Windows
         /// Default constructor.
         /// Initializes a new instance of the <see cref="CheckerReportForm"/>
         /// </summary>
-        public CheckerReportForm(CheckerReportVM viewModel)
+        public CheckerReportForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();
@@ -31,22 +30,6 @@ namespace BIM_Leaders_Windows
             // are searched relative to Eclipse's path, so they're not found.
             var card = new Card();
             var hue = new Hue("Dummy", Colors.Black, Colors.White);
-        }
-
-        private void ButtonExitClick(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        /// <summary>
-        /// Handles the Click event of the Button_ok control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        private void ButtonOkClick(object sender, System.EventArgs e)
-        {
-            DialogResult = true;
-            Close();
         }
 
         // Move the window

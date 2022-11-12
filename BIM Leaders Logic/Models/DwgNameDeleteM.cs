@@ -46,6 +46,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -81,8 +92,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 using (Transaction trans = new Transaction(_doc, TransactionName))
@@ -90,11 +99,12 @@ namespace BIM_Leaders_Logic
                     DeleteDwg();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -121,14 +131,15 @@ namespace BIM_Leaders_Logic
             _countDwgDeleted = dwgDelete.Count;
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            if (RunResult.Length == 0)
-            {
-                RunResult = (_countDwgDeleted == 0)
-                    ? "No DWG deleted"
-                    : $"{_countDwgDeleted} DWG named {_dwgName} deleted";
-            }
+            string text = "";
+
+            text = (_countDwgDeleted == 0)
+                ? "No DWG deleted"
+                : $"{_countDwgDeleted} DWG named {_dwgName} deleted";
+
+            return text;
         }
 
         #endregion

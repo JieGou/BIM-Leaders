@@ -30,7 +30,7 @@ namespace BIM_Leaders_Core
             StairsStepsEnumerateVM formVM = new StairsStepsEnumerateVM(formM);
 
             // View
-            StairsStepsEnumerateForm form = new StairsStepsEnumerateForm(formVM) { DataContext = formVM };
+            StairsStepsEnumerateForm form = new StairsStepsEnumerateForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -40,6 +40,9 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
+            if (resultText == null)
+                return;
+
             // ViewModel
             ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 

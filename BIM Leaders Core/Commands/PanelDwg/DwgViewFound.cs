@@ -24,7 +24,8 @@ namespace BIM_Leaders_Core
             _doc = commandData.Application.ActiveUIDocument.Document;
             _dwgList = GetDwgList(commandData);
 
-            Run(commandData);
+            if (_dwgList != null)
+                Run(commandData);
 
             return Result.Succeeded;
         }
@@ -41,7 +42,7 @@ namespace BIM_Leaders_Core
 
                 if (imports.Count() == 0)
                 {
-                    ShowResult("No imports in the file.");
+                    ShowResult("Document has no DWG.");
                     return null;
                 }   
                 else
@@ -122,11 +123,13 @@ namespace BIM_Leaders_Core
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            DwgViewFoundVM formVM = new DwgViewFoundVM(formM);
-            formVM.DwgList = _dwgList;
+            DwgViewFoundVM formVM = new DwgViewFoundVM(formM)
+            {
+                DwgList = _dwgList
+            };
 
             // View
-            DwgViewFoundForm form = new DwgViewFoundForm(formVM) { DataContext = formVM };
+            DwgViewFoundForm form = new DwgViewFoundForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -136,6 +139,9 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
+            if (resultText == null)
+                return;
+
             // ViewModel
             ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 

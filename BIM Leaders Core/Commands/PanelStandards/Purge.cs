@@ -11,12 +11,17 @@ namespace BIM_Leaders_Core
     public class Purge : IExternalCommand
     {
         private const string TRANSACTION_NAME = "Purge";
+        private bool _runFailed;
+        private string _runResult;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Run(commandData);
 
-            return Result.Succeeded;
+            if (_runFailed)
+                return Result.Failed;
+            else
+                return Result.Succeeded;
         }
 
         private async void Run(ExternalCommandData commandData)
@@ -30,17 +35,25 @@ namespace BIM_Leaders_Core
             PurgeVM formVM = new PurgeVM(formM);
 
             // View
-            PurgeForm form = new PurgeForm(formVM) { DataContext = formVM };
+            PurgeForm form = new PurgeForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
 
-            ShowResult(formM.RunResult);
+            _runFailed = formM.RunFailed;
+            _runResult = formM.RunResult;
+
+            ShowResult();
         }
 
-        private void ShowResult(string resultText)
+        private void ShowResult()
         {
-            TaskDialog.Show(TRANSACTION_NAME, resultText);
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

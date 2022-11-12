@@ -80,7 +80,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\RunCommand.cs" />
+    <Compile Include="Commands\CommandGeneric.cs" />
+    <Compile Include="Commands\CommandWindow.cs" />
     <Compile Include="Converters\MultivalueTextBoxesConverter.cs" />
     <Compile Include="ViewModels\CheckerReportVM.cs" />
     <Compile Include="ViewModels\DimensionPlanLineVM.cs" />

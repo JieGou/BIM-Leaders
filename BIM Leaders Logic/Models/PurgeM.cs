@@ -129,6 +129,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -164,8 +175,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 using (Transaction trans = new Transaction(_doc, TransactionName))
@@ -177,11 +186,12 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -276,7 +286,6 @@ namespace BIM_Leaders_Logic
                     filtersUsed.AddRange(viewFilters.Where(x => !filtersUsed.Contains(x)));
                 }
             }
-
             ICollection<ElementId> filtersUnused = filtersAll.Where(x => !filtersUsed.Contains(x)).ToList();
 
             _countFiltersUnused = filtersUnused.Count;
@@ -393,52 +402,56 @@ namespace BIM_Leaders_Logic
             _countLinePatterns = linePatterns.Count;
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
+            string text = "";
+
             if (_countLineStylesUnused + _countFiltersUnused == 0)
-                RunResult = "No elements deleted";
+                text = "No elements deleted";
             else
             {
                 if (_countRoomsNotPlaced > 0)
-                    RunResult += $"{_countRoomsNotPlaced} non-placed rooms deleted";
+                    text += $"{_countRoomsNotPlaced} non-placed rooms deleted";
                 if (_countTagsEmpty > 0)
                 {
-                    if (RunResult.Length > 0)
-                        RunResult += ", ";
-                    RunResult += $"{_countTagsEmpty} empty tags deleted";
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{_countTagsEmpty} empty tags deleted";
                 }
                 if (_countFiltersUnused > 0)
                 {
-                    if (RunResult.Length > 0)
-                        RunResult += ", ";
-                    RunResult += $"{_countFiltersUnused} unused filters deleted";
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{_countFiltersUnused} unused filters deleted";
                 }
                 if (_countViewTemplatesUnused > 0)
                 {
-                    if (RunResult.Length > 0)
-                        RunResult += ", ";
-                    RunResult += $"{_countViewTemplatesUnused} unused view templates deleted";
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{_countViewTemplatesUnused} unused view templates deleted";
                 }
                 if (_countSheetsEmpty > 0)
                 {
-                    if (RunResult.Length > 0)
-                        RunResult += ", ";
-                    RunResult += $"{_countSheetsEmpty} empty sheets deleted";
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{_countSheetsEmpty} empty sheets deleted";
                 }
                 if (_countLineStylesUnused > 0)
                 {
-                    if (RunResult.Length > 0)
-                        RunResult += ", ";
-                    RunResult += $"{_countLineStylesUnused} unused linestyles deleted";
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{_countLineStylesUnused} unused linestyles deleted";
                 }
                 if (_countLinePatterns > 0)
                 {
-                    if (RunResult.Length > 0)
-                        RunResult += ", ";
-                    RunResult += $"{_countLinePatterns} line patterns with names included \"{LinePatternName}\" deleted";
+                    if (text.Length > 0)
+                        text += ", ";
+                    text += $"{_countLinePatterns} line patterns with names included \"{LinePatternName}\" deleted";
                 }
-                RunResult += ".";
+                text += ".";
             }
+
+            return text;
         }
 
         #endregion

@@ -124,6 +124,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -159,8 +170,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 ConvertUserInput();
@@ -180,11 +189,12 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -458,14 +468,15 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            if (RunResult.Length == 0)
-            {
-                RunResult = (_countSpots == 0 && _countDimensions == 0)
-                    ? "No annotations created."
-                    : $"{_countSpots} spot elevations were created. {_countDimensions} dimension lines were created.";
-            }
+            string text = "";
+
+            text = (_countSpots == 0 && _countDimensions == 0)
+                ? "No annotations created."
+                : $"{_countSpots} spot elevations were created. {_countDimensions} dimension lines were created.";
+
+            return text;
         }
 
         #endregion

@@ -31,7 +31,7 @@ namespace BIM_Leaders_Core
             DimensionPlanLineVM formVM = new DimensionPlanLineVM(formM, formSelectionM);
 
             // View
-            DimensionPlanLineForm form = new DimensionPlanLineForm(formVM) { DataContext = formVM };
+            DimensionPlanLineForm form = new DimensionPlanLineForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -41,6 +41,9 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
+            if (resultText == null)
+                return;
+
             // ViewModel
             ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 

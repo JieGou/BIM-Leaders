@@ -70,13 +70,14 @@ namespace BIM_Leaders_Core
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            DwgNameDeleteVM formVM = new DwgNameDeleteVM(formM);
-
-            formVM.DwgList = _dwgList;
-            formVM.DwgListSelected = _dwgList.First().Value;
+            DwgNameDeleteVM formVM = new DwgNameDeleteVM(formM)
+            {
+                DwgList = _dwgList,
+                DwgListSelected = _dwgList.First().Value
+            };
 
             // View
-            DwgNameDeleteForm form = new DwgNameDeleteForm(formVM) { DataContext = formVM };
+            DwgNameDeleteForm form = new DwgNameDeleteForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -87,6 +88,9 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
+            if (resultText == null)
+                return;
+
             // ViewModel
             ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 

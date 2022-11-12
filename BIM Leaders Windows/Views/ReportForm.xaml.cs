@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using MaterialDesignColors;
@@ -31,11 +30,6 @@ namespace BIM_Leaders_Windows
             // are searched relative to Eclipse's path, so they're not found.
             var card = new Card();
             var hue = new Hue("Dummy", Colors.Black, Colors.White);
-        }
-
-        private void ButtonExitClick(object sender, RoutedEventArgs e)
-        {
-            Close();
         }
 
         // Move the window

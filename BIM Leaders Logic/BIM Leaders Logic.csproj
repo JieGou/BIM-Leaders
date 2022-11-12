@@ -98,14 +98,17 @@
     <Compile Include="Models\FamilyParameterSetM.cs" />
     <Compile Include="Models\CheckerM.cs" />
     <Compile Include="Models\NamesChangeM.cs" />
+    <Compile Include="Models\WarningsSolveM.cs" />
     <Compile Include="Models\_TEMPLATE.cs" />
     <Compile Include="Models\DimensionsPlanM.cs" />
     <Compile Include="Models\PurgeM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="RevitTask.cs" />
     <Compile Include="SelectionModels\SelectReferencePlanesM.cs" />
     <Compile Include="SelectionModels\SelectLineM.cs" />
     <Compile Include="Utils\Categories.cs" />
     <Compile Include="Utils\DatumPlaneUtils.cs" />
+    <Compile Include="Utils\ExceptionUtils.cs" />
     <Compile Include="Utils\DimensionUtils.cs" />
     <Compile Include="Utils\SelectionFilterByCategory.cs" />
     <Compile Include="Utils\ReportMessage.cs" />

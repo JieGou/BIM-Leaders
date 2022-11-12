@@ -112,6 +112,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runFailed;
+        public bool RunFailed
+        {
+            get { return _runFailed; }
+            set
+            {
+                _runFailed = value;
+                OnPropertyChanged(nameof(RunFailed));
+            }
+        }
+
         private string _runResult;
         public string RunResult
         {
@@ -147,8 +158,6 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
-            RunResult = "";
-
             try
             {
                 ConvertUserInput();
@@ -175,11 +184,12 @@ namespace BIM_Leaders_Logic
                     trans.Commit();
                 }
 
-                GetRunResult();
+                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
-                RunResult = e.Message;
+                RunFailed = true;
+                RunResult = ExceptionUtils.GetMessage(e);
             }
         }
 
@@ -370,17 +380,22 @@ namespace BIM_Leaders_Logic
             _countSegments += references.Size - 1;
         }
 
-        private void GetRunResult()
+        private string GetRunResult()
         {
-            if (RunResult.Length == 0)
+            string text = "";
+
+            if (_countSpots == 0 && _countSegments == 0)
             {
-                if (_countSpots == 0 && _countSegments == 0)
-                    RunResult = "No annotations created.";
-                else
-                    RunResult = (PlaceSpots)
-                        ? $"{_countSpots} spot elevations created."
-                        : $"Dimension with {_countSegments} segments created.";
+                text = "No annotations created.";
             }
+            else
+            {
+                text = (PlaceSpots)
+                    ? $"{_countSpots} spot elevations created."
+                    : $"Dimension with {_countSegments} segments created.";
+            }
+
+            return text;
         }
 
         #endregion

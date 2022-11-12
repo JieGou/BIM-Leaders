@@ -30,7 +30,7 @@ namespace BIM_Leaders_Core
             DimensionsPlanCheckVM formVM = new DimensionsPlanCheckVM(formM);
 
             // View
-            DimensionsPlanCheckForm form = new DimensionsPlanCheckForm(formVM) { DataContext = formVM };
+            DimensionsPlanCheckForm form = new DimensionsPlanCheckForm() { DataContext = formVM };
             form.ShowDialog();
 
             await Task.Delay(1000);
@@ -40,6 +40,9 @@ namespace BIM_Leaders_Core
 
         private void ShowResult(string resultText)
         {
+            if (resultText == null)
+                return;
+
             // ViewModel
             ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
 

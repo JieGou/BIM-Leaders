@@ -1,63 +1,89 @@
 ﻿using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Information and data model for command "WarningsSolve"
+    /// View model for command "WarningsSolve"
     /// </summary>
     public class WarningsSolveVM : INotifyPropertyChanged, IDataErrorInfo
     {
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="WarningsSolveVM"/> class.
-        /// </summary>
-        public WarningsSolveVM()
+        #region PROPERTIES
+
+        private WarningsSolveM _model;
+        public WarningsSolveM Model
         {
-            ResultFixWarningsJoin = true;
-            ResultFixWarningsWallsAttached = false;
-            ResultFixWarningsRoomNotEnclosed = true;
+            get { return _model; }
+            set { _model = value; }
         }
 
-        private bool _resultFixWarningsJoin;
-        public bool ResultFixWarningsJoin
+        private bool _fixWarningsJoin;
+        public bool FixWarningsJoin
         {
-            get { return _resultFixWarningsJoin; }
+            get { return _fixWarningsJoin; }
             set
             {
-                _resultFixWarningsJoin = value;
-                OnPropertyChanged(nameof(ResultFixWarningsJoin));
-                OnPropertyChanged(nameof(ResultFixWarningsWallsAttached));
-                OnPropertyChanged(nameof(ResultFixWarningsRoomNotEnclosed));
+                _fixWarningsJoin = value;
+                OnPropertyChanged(nameof(FixWarningsJoin));
+                OnPropertyChanged(nameof(FixWarningsWallsAttached));
+                OnPropertyChanged(nameof(FixWarningsRoomNotEnclosed));
             }
         }
 
-        private bool _resultFixWarningsWallsAttached;
-        public bool ResultFixWarningsWallsAttached
+        private bool _fixWarningsWallsAttached;
+        public bool FixWarningsWallsAttached
         {
-            get { return _resultFixWarningsWallsAttached; }
+            get { return _fixWarningsWallsAttached; }
             set
             {
-                _resultFixWarningsWallsAttached = value;
-                OnPropertyChanged(nameof(ResultFixWarningsJoin));
-                OnPropertyChanged(nameof(ResultFixWarningsWallsAttached));
-                OnPropertyChanged(nameof(ResultFixWarningsRoomNotEnclosed));
+                _fixWarningsWallsAttached = value;
+                OnPropertyChanged(nameof(FixWarningsJoin));
+                OnPropertyChanged(nameof(FixWarningsWallsAttached));
+                OnPropertyChanged(nameof(FixWarningsRoomNotEnclosed));
             }
         }
 
-        private bool _resultFixWarningsRoomNotEnclosed;
-        public bool ResultFixWarningsRoomNotEnclosed
+        private bool _fixWarningsRoomNotEnclosed;
+        public bool FixWarningsRoomNotEnclosed
         {
-            get { return _resultFixWarningsRoomNotEnclosed; }
+            get { return _fixWarningsRoomNotEnclosed; }
             set
             {
-                _resultFixWarningsRoomNotEnclosed = value;
-                OnPropertyChanged(nameof(ResultFixWarningsJoin));
-                OnPropertyChanged(nameof(ResultFixWarningsWallsAttached));
-                OnPropertyChanged(nameof(ResultFixWarningsRoomNotEnclosed));
+                _fixWarningsRoomNotEnclosed = value;
+                OnPropertyChanged(nameof(FixWarningsJoin));
+                OnPropertyChanged(nameof(FixWarningsWallsAttached));
+                OnPropertyChanged(nameof(FixWarningsRoomNotEnclosed));
             }
         }
 
-        #region Validation
+        #endregion
+
+        public WarningsSolveVM(WarningsSolveM model)
+        {
+            Model = model;
+
+            FixWarningsJoin = true;
+            FixWarningsWallsAttached = false;
+            FixWarningsRoomNotEnclosed = true;
+
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region INOTIFYPROPERTYCHANGED
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
+        #region VALIDATION
 
         public string Error { get { return null; } }
         public string this[string propertyName]
@@ -74,13 +100,13 @@ namespace BIM_Leaders_Windows
 
             switch (propertyName)
             {
-                case "ResultFixWarningsJoin":
+                case "FixWarningsJoin":
                     error = ValidateResult();
                     break;
-                case "ResultFixWarningsWallsAttached":
+                case "FixWarningsWallsAttached":
                     error = ValidateResult();
                     break;
-                case "ResultFixWarningsRoomNotEnclosed":
+                case "FixWarningsRoomNotEnclosed":
                     error = ValidateResult();
                     break;
             }
@@ -89,19 +115,38 @@ namespace BIM_Leaders_Windows
 
         private string ValidateResult()
         {
-            if (ResultFixWarningsJoin == false && ResultFixWarningsWallsAttached == false
-                && ResultFixWarningsRoomNotEnclosed == false)
+            if (FixWarningsJoin == false &&
+                FixWarningsWallsAttached == false &&
+                FixWarningsRoomNotEnclosed == false)
                 return "Check at least one check";
             return null;
         }
 
         #endregion
 
+        #region COMMANDS
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
+        public ICommand RunCommand { get; set; }
+
+        private void RunAction(Window window)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            Model.FixWarningsJoin = FixWarningsJoin;
+            Model.FixWarningsWallsAttached = FixWarningsWallsAttached;
+            Model.FixWarningsRoomNotEnclosed = FixWarningsRoomNotEnclosed;
+
+            Model.Run();
+
+            CloseAction(window);
         }
+
+        public ICommand CloseCommand { get; set; }
+
+        private void CloseAction(Window window)
+        {
+            if (window != null)
+                window.Close();
+        }
+
+        #endregion
     }
 }
