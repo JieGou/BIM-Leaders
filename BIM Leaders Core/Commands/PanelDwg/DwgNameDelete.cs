@@ -23,6 +23,8 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _runStarted = true;
+
             _doc = commandData.Application.ActiveUIDocument.Document;
             _dwgList = GetDwgList();
 
@@ -33,7 +35,6 @@ namespace BIM_Leaders_Core
                 return Result.Failed;
             }
 
-            _runStarted = true;
             Run(commandData);
 
             if (!_runStarted)

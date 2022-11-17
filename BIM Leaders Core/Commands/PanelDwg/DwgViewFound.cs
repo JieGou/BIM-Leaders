@@ -2,12 +2,12 @@
 using System.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
-using System.Threading.Tasks;
 
 namespace BIM_Leaders_Core
 {
@@ -25,14 +25,13 @@ namespace BIM_Leaders_Core
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _runStarted = true;
+
             _doc = commandData.Application.ActiveUIDocument.Document;
             _dwgList = GetDwgList(commandData);
 
             if (_dwgList != null)
-            {
-                _runStarted = true;
                 Run(commandData);
-            }
 
             if (!_runStarted)
                 return Result.Cancelled;

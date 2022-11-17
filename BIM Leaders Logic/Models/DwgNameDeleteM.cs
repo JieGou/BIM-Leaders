@@ -8,7 +8,7 @@ using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Logic
 {
-	[Transaction(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public class DwgNameDeleteM : INotifyPropertyChanged, IExternalEventHandler
     {
         private UIDocument _uidoc;
@@ -109,7 +109,11 @@ namespace BIM_Leaders_Logic
             {
                 using (Transaction trans = new Transaction(_doc, TransactionName))
                 {
+                    trans.Start();
+
                     DeleteDwg();
+
+                    trans.Commit();
                 }
 
                 RunResult = GetRunResult();
@@ -128,7 +132,7 @@ namespace BIM_Leaders_Logic
         private void DeleteDwg()
         {
             ElementId dwgId = new ElementId(DwgListSelected);
-            string _dwgName = _doc?.GetElement(dwgId).Category.Name;
+            _dwgName = _doc?.GetElement(dwgId).Category.Name;
 
             // Get all Imports with name same as input from a form
             ICollection<ElementId> dwgDelete = new FilteredElementCollector(_doc)
@@ -146,9 +150,7 @@ namespace BIM_Leaders_Logic
 
         private string GetRunResult()
         {
-            string text = "";
-
-            text = (_countDwgDeleted == 0)
+            string text = (_countDwgDeleted == 0)
                 ? "No DWG deleted"
                 : $"{_countDwgDeleted} DWG named {_dwgName} deleted";
 
