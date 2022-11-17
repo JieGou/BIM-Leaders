@@ -365,10 +365,10 @@ namespace BIM_Leaders_Core
             if (_commandsDataSet.Tables[0].Rows.Count == 0)
             {
                 // ViewModel
-                ReportVM formVM = new ReportVM(TRANSACTION_NAME, "No commands found in the journal file.");
+                ResultVM formVM = new ResultVM(TRANSACTION_NAME, "No commands found in the journal file.");
 
                 // View
-                ReportForm form = new ReportForm() { DataContext = formVM };
+                ResultForm form = new ResultForm() { DataContext = formVM };
                 form.ShowDialog();
             }
             else

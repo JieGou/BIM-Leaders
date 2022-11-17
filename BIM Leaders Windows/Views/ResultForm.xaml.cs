@@ -6,17 +6,9 @@ using MaterialDesignThemes.Wpf;
 
 namespace BIM_Leaders_Windows
 {
-    /// <summary>
-    /// Dimension floors aquisition form.
-    /// </summary>
-    /// <seealso cref="System.Windows.Window"/>
-    public partial class CheckerReportForm : Window
+    public partial class ResultForm : Window
     {
-        /// <summary>
-        /// Default constructor.
-        /// Initializes a new instance of the <see cref="CheckerReportForm"/>
-        /// </summary>
-        public CheckerReportForm()
+        public ResultForm()
         {
             InitializeMaterialDesign();
             InitializeComponent();

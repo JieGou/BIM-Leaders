@@ -109,7 +109,7 @@ namespace BIM_Leaders_Core
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
+            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };

@@ -8,30 +8,14 @@ using BIM_Leaders_Windows;
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class Purge : IExternalCommand
+    public class Purge : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Purge";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        private protected override async void Run(ExternalCommandData commandData)
         {
-            Run(commandData);
+            _transactionName = "Purge";
 
-            if (!_runStarted)
-                return Result.Cancelled;
-            if (_runFailed)
-                return Result.Failed;
-            else
-                return Result.Succeeded;
-        }
-
-        private async void Run(ExternalCommandData commandData)
-        {
             // Model
-            PurgeM2 formM = new PurgeM2(commandData, TRANSACTION_NAME);
+            PurgeM formM = new PurgeM(commandData, _transactionName);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -47,23 +31,9 @@ namespace BIM_Leaders_Core
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
             _runResult = formM.RunResult;
+            _runReport = formM.RunReport;
 
             ShowResult();
-        }
-
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ReportForm form = new ReportForm() { DataContext = formVM };
-            form.ShowDialog();
         }
 
         public static string GetPath()

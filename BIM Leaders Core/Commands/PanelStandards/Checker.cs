@@ -16,8 +16,7 @@ namespace BIM_Leaders_Core
         private bool _runStarted;
         private bool _runFailed;
         private string _runResult;
-
-        private DataSet _reportDataSet;
+        private DataSet _runReport;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -50,7 +49,7 @@ namespace BIM_Leaders_Core
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
             _runResult = formM.RunResult;
-            _reportDataSet = formM.ReportDataSet;
+            _runReport = formM.RunReport;
 
             ShowResult();
         }
@@ -62,19 +61,21 @@ namespace BIM_Leaders_Core
             if (!string.IsNullOrEmpty(_runResult))
             {
                 // ViewModel
-                ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
+                ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
 
                 // View
                 ReportForm form = new ReportForm() { DataContext = formVM };
                 form.ShowDialog();
+
+                return;
             }
-            else
+            if (_runReport != null)
             {
                 // ViewModel
-                CheckerReportVM formReportVM = new CheckerReportVM(_reportDataSet);
+                ReportVM formReportVM = new ReportVM(_runReport);
 
                 // View
-                CheckerReportForm formReport = new CheckerReportForm() { DataContext = formReportVM };
+                ReportForm formReport = new ReportForm() { DataContext = formReportVM };
                 formReport.ShowDialog();
             }
         }

@@ -3,6 +3,8 @@ using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using System.Data;
+using System.Collections.Generic;
 
 namespace BIM_Leaders_Logic
 {
@@ -64,6 +66,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private DataSet _runReport;
+        public DataSet RunReport
+        {
+            get { return _runReport; }
+            set
+            {
+                _runReport = value;
+                OnPropertyChanged(nameof(RunReport));
+            }
+        }
+
         #endregion
 
         public BaseModel(ExternalCommandData commandData, string transactionName)
@@ -92,6 +105,7 @@ namespace BIM_Leaders_Logic
         #region METHODS
 
         private protected abstract string GetRunResult();
+        private protected abstract DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages);
 
         #endregion
 

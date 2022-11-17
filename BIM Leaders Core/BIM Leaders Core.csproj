@@ -121,9 +121,11 @@
     <Compile Include="Commands\PanelFamily\FamilyParameterChange.cs" />
     <Compile Include="Commands\PanelFamily\FamilyParameterSet.cs" />
     <Compile Include="Commands\PanelStandards\JournalAnalyze.cs" />
+    <None Include="Commands\PanelStandards\Purge - Copy.cs" />
     <Compile Include="Commands\PanelStandards\WarningsSolve.cs" />
     <Compile Include="Commands\PanelStandards\WallsArranged.cs" />
     <Compile Include="Commands\PanelStandards\HelpStandards.cs" />
+    <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="CoreAssembly.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionSectionFloors.cs" />
     <Compile Include="Commands\PanelDwg\DwgNameDelete.cs" />

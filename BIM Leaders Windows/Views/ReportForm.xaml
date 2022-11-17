@@ -10,10 +10,10 @@
         
         WindowStyle="None"
         Style="{DynamicResource SWindow}"
-        Title="BIM Leaders - Solve Warnings"
+        Title="BIM Leaders - Report"
         WindowStartupLocation="CenterScreen"
-        Width="612"
-        Height="153"
+        Width="810"
+        Height="540"
         
         d:DataContext="{d:DesignInstance Type=local:ReportVM}"
         MouseLeftButtonDown="FormMouseMove">
@@ -35,24 +35,39 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="72" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
-                    <TextBlock Text="{Binding CommandName}"
+                    <TextBlock Text="Report"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel"
-                            Command = "{Binding CloseCommand, Mode=OneWay}"
-                            CommandParameter = "{Binding ElementName=ReportWindow}"
+                            Command="{Binding CloseCommand, Mode=OneWay}"
+                            CommandParameter="{Binding ElementName=ReportWindow}"
                             Style="{StaticResource SButtonClose}" />
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <StackPanel Margin="18,0">
-                        <Label Content="{Binding ReportText}" 
-                               Style="{StaticResource SLabel}" />
-                    </StackPanel>
+                    <DataGrid x:Name="datagridReport"
+                              ItemsSource="{Binding Report.Tables[0]}" IsReadOnly="True"
+                              Margin="18,0"
+                              Style="{StaticResource SDataGridSimple}">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
                 </Grid>
-                
+
+                <Grid Grid.Row="2">
+                    <Button x:Name="buttonOk"
+                            Command="{Binding CloseCommand, Mode=OneWay}"
+                            CommandParameter="{Binding ElementName=ReportWindow}"
+                            Content="OK" ToolTip="Exit"
+                            Width="234"
+                            Style="{StaticResource SButtonOk}" />
+                </Grid>
             </Grid>
 
         </materialDesign:Card>

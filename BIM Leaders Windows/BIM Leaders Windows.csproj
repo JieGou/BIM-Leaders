@@ -83,9 +83,9 @@
     <Compile Include="Commands\CommandGeneric.cs" />
     <Compile Include="Commands\CommandWindow.cs" />
     <Compile Include="Converters\MultivalueTextBoxesConverter.cs" />
-    <Compile Include="ViewModels\CheckerReportVM.cs" />
-    <Compile Include="ViewModels\DimensionPlanLineVM.cs" />
     <Compile Include="ViewModels\ReportVM.cs" />
+    <Compile Include="ViewModels\DimensionPlanLineVM.cs" />
+    <Compile Include="ViewModels\ResultVM.cs" />
     <Compile Include="Views\DimensionPlanLineForm.xaml.cs">
       <DependentUpon>DimensionPlanLineForm.xaml</DependentUpon>
     </Compile>
@@ -108,8 +108,8 @@
     </Compile>
     <Compile Include="Converters\MultivalueBoolConverter.cs" />
     <Compile Include="ViewModels\WarningsSolveVM.cs" />
-    <Compile Include="Views\ReportForm.xaml.cs">
-      <DependentUpon>ReportForm.xaml</DependentUpon>
+    <Compile Include="Views\ResultForm.xaml.cs">
+      <DependentUpon>ResultForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WarningsSolveForm.xaml.cs">
       <DependentUpon>WarningsSolveForm.xaml</DependentUpon>
@@ -127,8 +127,8 @@
     </Compile>
     <Compile Include="ViewModels\DwgViewFoundVM.cs" />
     <Compile Include="ViewModels\CheckerVM.cs" />
-    <Compile Include="Views\CheckerReportForm.xaml.cs">
-      <DependentUpon>CheckerReportForm.xaml</DependentUpon>
+    <Compile Include="Views\ReportForm.xaml.cs">
+      <DependentUpon>ReportForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\NamesChangeVM.cs" />
     <Compile Include="ViewModels\PurgeVM.cs" />
@@ -225,7 +225,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\CheckerReportForm.xaml">
+    <Page Include="Views\ReportForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -253,7 +253,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ReportForm.xaml">
+    <Page Include="Views\ResultForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

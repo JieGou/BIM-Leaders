@@ -1,45 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB.Architecture;
+using System.Data;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class PurgeM : INotifyPropertyChanged, IExternalEventHandler
+    public class PurgeM : BaseModel
     {
-        private UIDocument _uidoc;
-        private Document _doc;
-        private int _countRoomsNotPlaced;
-        private int _countTagsEmpty;
-        private int _countFiltersUnused;
-        private int _countViewTemplatesUnused;
-        private int _countSheetsEmpty;
-        private int _countLineStylesUnused;
-        private int _countLinePatterns;
-
         #region PROPERTIES
-
-        /// <summary>
-        /// ExternalEvent needed for Revit to run transaction in API context.
-        /// So we must call not the main method but raise the event.
-        /// </summary>
-        public ExternalEvent ExternalEvent { get; set; }
-
-        private string _transactionName;
-        public string TransactionName
-        {
-            get { return _transactionName; }
-            set
-            {
-                _transactionName = value;
-                OnPropertyChanged(nameof(TransactionName));
-            }
-        }
 
         private bool _purgeRooms;
         public bool PurgeRooms
@@ -129,62 +102,16 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private bool _runStarted;
-        public bool RunStarted
-        {
-            get { return _runStarted; }
-            set
-            {
-                _runStarted = value;
-                OnPropertyChanged(nameof(RunStarted));
-            }
-        }
-
-        private bool _runFailed;
-        public bool RunFailed
-        {
-            get { return _runFailed; }
-            set
-            {
-                _runFailed = value;
-                OnPropertyChanged(nameof(RunFailed));
-            }
-        }
-
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
         #endregion
 
-        public PurgeM(ExternalCommandData commandData, string transactionName)
+        public PurgeM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
         {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
 
-            TransactionName = transactionName;
-        }
-
-        public void Run()
-        {
-            ExternalEvent.Raise();
         }
 
         #region IEXTERNALEVENTHANDLER
 
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        public void Execute(UIApplication app)
+        public override void Execute(UIApplication app)
         {
             RunStarted = true;
 
@@ -194,12 +121,10 @@ namespace BIM_Leaders_Logic
                 {
                     trans.Start();
 
-                    RunPurges();
+                    RunReport = RunPurges();
 
                     trans.Commit();
                 }
-
-                RunResult = GetRunResult();
             }
             catch (Exception e)
             {
@@ -212,29 +137,35 @@ namespace BIM_Leaders_Logic
 
         #region METHODS
 
-        private void RunPurges()
+        private DataSet RunPurges()
         {
+            List<ReportMessage> reportMessageList = new List<ReportMessage>();
+
             if (PurgeRooms)
-                PurgeRoomsNotPlaced();
+                reportMessageList.AddRange(PurgeRoomsNotPlaced());
             if (PurgeTags)
-                PurgeTagsEmpty();
+                reportMessageList.AddRange(PurgeTagsEmpty());
             if (PurgeFilters)
-                PurgeFiltersUnused();
+                reportMessageList.AddRange(PurgeFiltersUnused());
             if (PurgeViewTemplates)
-                PurgeViewTemplatesUnused();
+                reportMessageList.AddRange(PurgeViewTemplatesUnused());
             if (PurgeSheets)
-                PurgeSheetsEmpty();
+                reportMessageList.AddRange(PurgeSheetsEmpty());
             if (PurgeLineStyles)
-                PurgeLineStylesUnused();
+                reportMessageList.AddRange(PurgeLineStylesUnused());
             if (PurgeLinePatterns)
-                PurgeLinePatternsByName();
+                reportMessageList.AddRange(PurgeLinePatternsByName());
+
+            return GetRunReport(reportMessageList);
         }
 
         /// <summary>
         /// Delete unplaced rooms in the document.
         /// </summary>
-        private void PurgeRoomsNotPlaced()
+        private IEnumerable<ReportMessage> PurgeRoomsNotPlaced()
         {
+            ReportMessage reportMessage = new ReportMessage("Rooms not placed");
+
             ICollection<ElementId> rooms = new FilteredElementCollector(_doc)
                 .OfClass(typeof(SpatialElement))
                 .WherePasses(new RoomFilter())
@@ -244,16 +175,20 @@ namespace BIM_Leaders_Logic
                 .Select(x => x.Id)
                 .ToList();
 
-            _countRoomsNotPlaced = rooms.Count;
-
             _doc.Delete(rooms);
+
+            reportMessage.MessageText = $"{rooms.Count} rooms deleted.";
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Delete empty tags from the document.
         /// </summary>
-        private void PurgeTagsEmpty()
+        private IEnumerable<ReportMessage> PurgeTagsEmpty()
         {
+            ReportMessage reportMessage = new ReportMessage("Empty tags");
+
             ICollection<ElementId> tags = new FilteredElementCollector(_doc)
                 .OfClass(typeof(IndependentTag))
                 .WhereElementIsNotElementType()
@@ -263,16 +198,20 @@ namespace BIM_Leaders_Logic
                 .Select(x => x.Id)
                 .ToList();
 
-            _countTagsEmpty = tags.Count;
-
             _doc.Delete(tags);
+
+            reportMessage.MessageText = $"{tags.Count} tags deleted.";
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Delete unused filters from the document.
         /// </summary>
-        private void PurgeFiltersUnused()
+        private IEnumerable<ReportMessage> PurgeFiltersUnused()
         {
+            ReportMessage reportMessage = new ReportMessage("Unused filters");
+
             IEnumerable<View> views = new FilteredElementCollector(_doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
@@ -301,16 +240,20 @@ namespace BIM_Leaders_Logic
             }
             ICollection<ElementId> filtersUnused = filtersAll.Where(x => !filtersUsed.Contains(x)).ToList();
 
-            _countFiltersUnused = filtersUnused.Count;
-
             _doc.Delete(filtersUnused);
+
+            reportMessage.MessageText = $"{filtersUnused.Count} filters deleted.";
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Delete unused view templates from the document.
         /// </summary>
-        private void PurgeViewTemplatesUnused()
+        private IEnumerable<ReportMessage> PurgeViewTemplatesUnused()
         {
+            ReportMessage reportMessage = new ReportMessage("Unused view templates");
+
             IEnumerable<View> viewsAll = new FilteredElementCollector(_doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
@@ -329,16 +272,20 @@ namespace BIM_Leaders_Logic
                     templateIds = templateIds.Where(x => x != view.ViewTemplateId).ToList();
             }
 
-            _countViewTemplatesUnused = templateIds.Count;
-
             _doc.Delete(templateIds);
+
+            reportMessage.MessageText = $"{templateIds.Count} view templates deleted.";
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Delete empty sheets witout any placed views from the document.
         /// </summary>
-        private void PurgeSheetsEmpty()
+        private IEnumerable<ReportMessage> PurgeSheetsEmpty()
         {
+            ReportMessage reportMessage = new ReportMessage("Empty sheets");
+
             IEnumerable<ViewSheet> sheets = new FilteredElementCollector(_doc)
                 .OfClass(typeof(ViewSheet))
                 .WhereElementIsNotElementType()
@@ -360,16 +307,20 @@ namespace BIM_Leaders_Logic
                 .Where(x => !schedulesSheets.Contains(x))
                 .ToList();
 
-            _countSheetsEmpty = sheetsEmpty.Count;
-
             _doc.Delete(sheetsEmpty);
+
+            reportMessage.MessageText = $"{sheetsEmpty.Count} sheets deleted.";
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Delete unused linestyles from the document.
         /// </summary>
-        private void PurgeLineStylesUnused()
+        private IEnumerable<ReportMessage> PurgeLineStylesUnused()
         {
+            ReportMessage reportMessage = new ReportMessage("Unused linestyles");
+
             ICollection<ElementId> lineStylesUnused = new List<ElementId>();
 
             // Get all used linestyles in the project.
@@ -392,17 +343,21 @@ namespace BIM_Leaders_Logic
                 .Where(x => !lineStylesUsed.Contains(x))
                 .ToList();
 
-            _countLineStylesUnused = lineStylesUnused.Count;
-
             _doc.Delete(lineStylesUnused);
+
+            reportMessage.MessageText = $"{lineStylesUnused.Count} linestyles deleted.";
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
         /// <summary>
         /// Delete line patterns by given part of the name.
         /// </summary>
         /// <param name="name">String to search in names.</param>
-        private void PurgeLinePatternsByName()
+        private IEnumerable<ReportMessage> PurgeLinePatternsByName()
         {
+            ReportMessage reportMessage = new ReportMessage("Line patterns");
+
             ICollection<ElementId> linePatterns = new FilteredElementCollector(_doc)
                     .OfClass(typeof(LinePatternElement))
                     .WhereElementIsNotElementType()
@@ -412,74 +367,41 @@ namespace BIM_Leaders_Logic
 
             _doc.Delete(linePatterns);
 
-            _countLinePatterns = linePatterns.Count;
+            reportMessage.MessageText = $"{linePatterns.Count} line patterns with names containing \"{LinePatternName}\" deleted.";
+
+            return new List<ReportMessage>() { reportMessage };
         }
 
-        private string GetRunResult()
+        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages)
         {
-            string text = "";
+            DataSet reportDataSet = new DataSet("reportDataSet");
 
-            if (_countLineStylesUnused + _countFiltersUnused == 0)
-                text = "No elements deleted";
-            else
+            // Create DataTable
+            DataTable reportDataTable = new DataTable("Purge");
+            // Create 4 columns, and add them to the table
+            DataColumn reportColumnCheck = new DataColumn("Purge", typeof(string));
+            DataColumn reportColumnResult = new DataColumn("Result", typeof(string));
+
+            reportDataTable.Columns.Add(reportColumnCheck);
+            reportDataTable.Columns.Add(reportColumnResult);
+
+            // Add the table to the DataSet
+            reportDataSet.Tables.Add(reportDataTable);
+
+            // Fill the table
+            foreach (ReportMessage reportMessage in reportMessages)
             {
-                if (_countRoomsNotPlaced > 0)
-                    text += $"{_countRoomsNotPlaced} non-placed rooms deleted";
-                if (_countTagsEmpty > 0)
-                {
-                    if (text.Length > 0)
-                        text += ", ";
-                    text += $"{_countTagsEmpty} empty tags deleted";
-                }
-                if (_countFiltersUnused > 0)
-                {
-                    if (text.Length > 0)
-                        text += ", ";
-                    text += $"{_countFiltersUnused} unused filters deleted";
-                }
-                if (_countViewTemplatesUnused > 0)
-                {
-                    if (text.Length > 0)
-                        text += ", ";
-                    text += $"{_countViewTemplatesUnused} unused view templates deleted";
-                }
-                if (_countSheetsEmpty > 0)
-                {
-                    if (text.Length > 0)
-                        text += ", ";
-                    text += $"{_countSheetsEmpty} empty sheets deleted";
-                }
-                if (_countLineStylesUnused > 0)
-                {
-                    if (text.Length > 0)
-                        text += ", ";
-                    text += $"{_countLineStylesUnused} unused linestyles deleted";
-                }
-                if (_countLinePatterns > 0)
-                {
-                    if (text.Length > 0)
-                        text += ", ";
-                    text += $"{_countLinePatterns} line patterns with names included \"{LinePatternName}\" deleted";
-                }
-                text += ".";
+                DataRow dataRow = reportDataTable.NewRow();
+                dataRow["Purge"] = reportMessage.MessageName;
+                dataRow["Result"] = reportMessage.MessageText;
+                reportDataTable.Rows.Add(dataRow);
             }
 
-            return text;
+            return reportDataSet;
         }
 
-        #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        private protected override string GetRunResult() { return ""; }
 
         #endregion
-
     }
 }

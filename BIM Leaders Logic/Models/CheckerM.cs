@@ -130,14 +130,14 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private DataSet _reportDataSet;
-        public DataSet ReportDataSet
+        private DataSet _runReport;
+        public DataSet RunReport
         {
-            get { return _reportDataSet; }
+            get { return _runReport; }
             set
             {
-                _reportDataSet = value;
-                OnPropertyChanged(nameof(ReportDataSet));
+                _runReport = value;
+                OnPropertyChanged(nameof(RunReport));
             }
         }
 
@@ -185,7 +185,7 @@ namespace BIM_Leaders_Logic
 
             try
             {
-                ReportDataSet = CheckAll();
+                RunReport = CheckAll();
             }
             catch (Exception e)
             {

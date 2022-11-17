@@ -7,14 +7,14 @@ using MaterialDesignThemes.Wpf;
 namespace BIM_Leaders_Windows
 {
     /// <summary>
-    /// Dimension floors aquisition form.
+    /// Report table form.
     /// </summary>
     /// <seealso cref="System.Windows.Window"/>
     public partial class ReportForm : Window
     {
         /// <summary>
         /// Default constructor.
-        /// Initializes a new instance of the <see cref="WarningsSolveForm"/>
+        /// Initializes a new instance of the <see cref="CheckerReportForm"/>
         /// </summary>
         public ReportForm()
         {
