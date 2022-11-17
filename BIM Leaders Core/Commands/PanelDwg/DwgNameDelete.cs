@@ -33,6 +33,7 @@ namespace BIM_Leaders_Core
                 return Result.Failed;
             }
 
+            _runStarted = true;
             Run(commandData);
 
             if (!_runStarted)

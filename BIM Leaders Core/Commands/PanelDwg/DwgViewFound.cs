@@ -29,7 +29,10 @@ namespace BIM_Leaders_Core
             _dwgList = GetDwgList(commandData);
 
             if (_dwgList != null)
+            {
+                _runStarted = true;
                 Run(commandData);
+            }
 
             if (!_runStarted)
                 return Result.Cancelled;
