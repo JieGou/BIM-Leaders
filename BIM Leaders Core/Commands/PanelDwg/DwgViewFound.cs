@@ -53,7 +53,8 @@ namespace BIM_Leaders_Core
 
                 if (imports.Count() == 0)
                 {
-                    ShowResult("Document has no DWG.");
+                    _runResult = "Document has no DWG.";
+                    ShowResult();
                     return null;
                 }   
                 else
@@ -64,7 +65,9 @@ namespace BIM_Leaders_Core
             }
             catch (Exception e)
             {
-                ShowResult(e.Message);
+                _runFailed = true;
+                _runResult = e.Message;
+                ShowResult();
                 return null;
             }
         }

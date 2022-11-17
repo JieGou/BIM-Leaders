@@ -31,7 +31,7 @@ namespace BIM_Leaders_Core
         private async void Run(ExternalCommandData commandData)
         {
             // Model
-            PurgeM formM = new PurgeM(commandData, TRANSACTION_NAME);
+            PurgeM2 formM = new PurgeM2(commandData, TRANSACTION_NAME);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

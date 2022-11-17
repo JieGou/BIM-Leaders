@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\PurgeM2.cs" />
     <Compile Include="Models\WallsArrangedM.cs" />
     <Compile Include="Models\DimensionSectionFloorsM.cs" />
     <Compile Include="Models\DimensionsPlanCheckM.cs" />

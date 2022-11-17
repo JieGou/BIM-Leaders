@@ -13,8 +13,8 @@ namespace BIM_Leaders_Windows
     {
         #region PROPERTIES
 
-        private PurgeM _model;
-        public PurgeM Model
+        private PurgeM2 _model;
+        public PurgeM2 Model
         {
             get { return _model; }
             set { _model = value; }
@@ -156,7 +156,7 @@ namespace BIM_Leaders_Windows
         /// Default constructor
         /// Initializing a new instance of the <see cref="PurgeVM"/> class.
         /// </summary>
-        public PurgeVM(PurgeM model)
+        public PurgeVM(PurgeM2 model)
         {
             Model = model;
 

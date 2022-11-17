@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using Autodesk.Revit.DB.Architecture;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class BaseModel : INotifyPropertyChanged, IExternalEventHandler
+    public abstract class BaseModel : INotifyPropertyChanged, IExternalEventHandler
     {
-        private UIDocument _uidoc;
-        private Document _doc;
+        private protected UIDocument _uidoc;
+        private protected Document _doc;
 
         #region PROPERTIES
 
@@ -88,40 +85,13 @@ namespace BIM_Leaders_Logic
         {
             return TransactionName;
         }
-
-        public void Execute(UIApplication app)
-        {
-            RunStarted = true;
-
-            try
-            {
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    RunPurges();
-
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
+        public abstract void Execute(UIApplication app);
 
         #endregion
 
         #region METHODS
 
-        private string GetRunResult()
-        {
-            string text = "";
-            return text;
-        }
+        private protected abstract string GetRunResult();
 
         #endregion
 
