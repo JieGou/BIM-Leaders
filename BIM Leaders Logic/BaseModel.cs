@@ -5,16 +5,15 @@ using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB.Architecture;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class DwgNameDeleteM : INotifyPropertyChanged, IExternalEventHandler
+    public class BaseModel : INotifyPropertyChanged, IExternalEventHandler
     {
         private UIDocument _uidoc;
         private Document _doc;
-        private string _dwgName;
-        private int _countDwgDeleted;
 
         #region PROPERTIES
 
@@ -32,17 +31,6 @@ namespace BIM_Leaders_Logic
             {
                 _transactionName = value;
                 OnPropertyChanged(nameof(TransactionName));
-            }
-        }
-
-        private int _dwgListSelected;
-        public int DwgListSelected
-        {
-            get { return _dwgListSelected; }
-            set
-            {
-                _dwgListSelected = value;
-                OnPropertyChanged(nameof(DwgListSelected));
             }
         }
 
@@ -81,7 +69,7 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DwgNameDeleteM(ExternalCommandData commandData, string transactionName)
+        public BaseModel(ExternalCommandData commandData, string transactionName)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
@@ -109,7 +97,11 @@ namespace BIM_Leaders_Logic
             {
                 using (Transaction trans = new Transaction(_doc, TransactionName))
                 {
-                    DeleteDwg();
+                    trans.Start();
+
+                    RunPurges();
+
+                    trans.Commit();
                 }
 
                 RunResult = GetRunResult();
@@ -125,33 +117,9 @@ namespace BIM_Leaders_Logic
 
         #region METHODS
 
-        private void DeleteDwg()
-        {
-            ElementId dwgId = new ElementId(DwgListSelected);
-            string _dwgName = _doc?.GetElement(dwgId).Category.Name;
-
-            // Get all Imports with name same as input from a form
-            ICollection<ElementId> dwgDelete = new FilteredElementCollector(_doc)
-                .OfClass(typeof(ImportInstance))
-                .WhereElementIsNotElementType()
-                .Where(x => x.Category.Name == _dwgName)
-                .ToList()
-                .ConvertAll(x => x.Id)
-                .ToList();
-
-            _doc.Delete(dwgDelete);
-
-            _countDwgDeleted = dwgDelete.Count;
-        }
-
         private string GetRunResult()
         {
             string text = "";
-
-            text = (_countDwgDeleted == 0)
-                ? "No DWG deleted"
-                : $"{_countDwgDeleted} DWG named {_dwgName} deleted";
-
             return text;
         }
 

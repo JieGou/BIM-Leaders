@@ -45,6 +45,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private bool _runStarted;
+        public bool RunStarted
+        {
+            get { return _runStarted; }
+            set
+            {
+                _runStarted = value;
+                OnPropertyChanged(nameof(RunStarted));
+            }
+        }
+
         private bool _runFailed;
         public bool RunFailed
         {
@@ -91,6 +102,8 @@ namespace BIM_Leaders_Logic
 
         public void Execute(UIApplication app)
         {
+            RunStarted = true;
+
             try
             {
                 // Get Imports

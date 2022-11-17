@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
@@ -12,12 +13,17 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class WallsParallel : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Walls Parralel Check";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         private static UIDocument _uidoc;
         private static Document _doc;
         private static double _toleranceAngle;
         private static int _countWallsFiltered;
 
-        private const string TRANSACTION_NAME = "Walls Parralel Check";
         private const string FILTER_NAME = "Check - Walls parralel";
         private readonly Color FILTER_COLOR = new Color(255, 127, 39);
 
@@ -26,6 +32,8 @@ namespace BIM_Leaders_Core
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
             _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad.
+
+            _runStarted = true;
 
             try
             {
@@ -47,17 +55,15 @@ namespace BIM_Leaders_Core
                     trans.Commit();
                 }
 
-                string text = (_countWallsFiltered == 0)
-                    ? "All walls are clear"
-                    : $"{_countWallsFiltered} walls added to filter \"{FILTER_NAME}\".";
-
-                ShowResult(text);
-
+                _runResult = GetRunResult();
+                ShowResult();
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
+                ShowResult();
                 return Result.Failed;
             }
         }
@@ -135,13 +141,24 @@ namespace BIM_Leaders_Core
             return wallsFilter;
         }
 
-        private static void ShowResult(string resultText)
+        private string GetRunResult()
         {
-            if (resultText == null)
+            string text = (_countWallsFiltered == 0)
+                ? "All walls are clear"
+                : $"{_countWallsFiltered} walls added to filter \"{FILTER_NAME}\".";
+
+            return text;
+        }
+
+        private void ShowResult()
+        {
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };

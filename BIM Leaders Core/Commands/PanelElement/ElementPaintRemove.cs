@@ -3,23 +3,30 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
+using System.Diagnostics;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class ElementPaintRemove : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Remove Paint from Element";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         private static UIDocument _uidoc;
         private static Document _doc;
         private static int _countFacesAll;
         private static int _countFacesCleared;
 
-        private const string TRANSACTION_NAME = "Remove Paint from Element";
-
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            _runStarted = true;
 
             try
             {
@@ -36,17 +43,16 @@ namespace BIM_Leaders_Core
                     trans.Commit();
                 }
 
-                string text = (_countFacesCleared == 0)
-                    ? "Painted faces not found."
-                    : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
+                _runResult = GetRunResult();
 
-                ShowResult(text);
+                ShowResult();
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
                 return Result.Failed;
             }
         }
@@ -76,13 +82,24 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static void ShowResult(string resultText)
+        private string GetRunResult()
         {
-            if (resultText == null)
+            string text = (_countFacesCleared == 0)
+                    ? "Painted faces not found."
+                    : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
+
+            return text;
+        }
+
+        private void ShowResult()
+        {
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };

@@ -4,14 +4,14 @@ using Autodesk.Revit.DB;
 
 namespace BIM_Leaders_Logic
 {
-    internal static class ViewFilterUtils
+    public static class ViewFilterUtils
     {
         /// <summary>
         /// Create a selection filter with given set of elements. Applies created filter to the active view.
         /// Filters order are not introduced in the API (only get).
         /// </summary>
         /// <returns>Created filter.</returns>
-        internal static SelectionFilterElement CreateSelectionFilter(Document doc, string filterName, ICollection<Element> elements)
+        public static SelectionFilterElement CreateSelectionFilter(Document doc, string filterName, ICollection<Element> elements)
         {
             SelectionFilterElement filter;
 
@@ -40,7 +40,7 @@ namespace BIM_Leaders_Logic
         /// <summary>
         /// Change filter settings. Must be applied after regeneration when filter is new.
         /// </summary>
-        internal static void SetupFilter(Document doc, Element filter, Color filterColor)
+        public static void SetupFilter(Document doc, Element filter, Color filterColor)
         {
             View view = doc.ActiveView;
 

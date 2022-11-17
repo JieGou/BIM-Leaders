@@ -142,10 +142,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref=DimensionSectionFloorsVM"/> class.
-        /// </summary>
         public DimensionSectionFloorsVM(DimensionSectionFloorsM model, SelectLineM selectLineModel)
         {
             Model = model;

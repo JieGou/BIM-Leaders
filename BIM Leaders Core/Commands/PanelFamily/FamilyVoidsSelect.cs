@@ -4,12 +4,19 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.ReadOnly)]
     public class FamilyVoidsSelect : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Voids";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         private static UIDocument _uidoc;
         private static Document _doc;
 
@@ -17,6 +24,8 @@ namespace BIM_Leaders_Core
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            _runStarted = true;
 
             try
             {
@@ -39,8 +48,9 @@ namespace BIM_Leaders_Core
 
                 if (voids.Count == 0)
                 {
-                    TaskDialog.Show("Voids", "No voids found in this family");
-                    return Result.Failed;
+                    _runResult = "No voids found in this family";
+                    ShowResult();
+                    return Result.Succeeded;
                 }
 
                 _uidoc.Selection.SetElementIds(voids.ConvertAll(x => x.Id));
@@ -49,9 +59,26 @@ namespace BIM_Leaders_Core
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
+                ShowResult();
                 return Result.Failed;
             }
+        }
+
+        private void ShowResult()
+        {
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
+                return;
+
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         public static string GetPath()

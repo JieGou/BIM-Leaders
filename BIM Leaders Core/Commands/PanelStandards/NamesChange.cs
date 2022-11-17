@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
@@ -14,11 +12,20 @@ namespace BIM_Leaders_Core
     {
         private const string TRANSACTION_NAME = "Change Names";
 
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Run(commandData);
 
-            return Result.Succeeded;
+            if (!_runStarted)
+                return Result.Cancelled;
+            if (_runFailed)
+                return Result.Failed;
+            else
+                return Result.Succeeded;
         }
 
         private async void Run(ExternalCommandData commandData)
@@ -37,26 +44,28 @@ namespace BIM_Leaders_Core
 
             await Task.Delay(1000);
 
-            ShowResult(formM.RunResult);
+            _runStarted = formM.RunStarted;
+            _runFailed = formM.RunFailed;
+            _runResult = formM.RunResult;
+
+            ShowResult();
         }
 
-        private void ShowResult(string resultText)
+        private void ShowResult()
         {
-            if (resultText.Length == 0)
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };
             form.ShowDialog();
         }     
 
-        /// <summary>
-        /// Gets the full namespace path to this command
-        /// </summary>
-        /// <returns></returns>
         public static string GetPath()
         {
             // Return constructed namespace path

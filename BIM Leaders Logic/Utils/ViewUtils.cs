@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using Autodesk.Revit.DB;
 
-namespace BIM_Leaders_Core
+namespace BIM_Leaders_Logic
 {
-    internal static class ViewUtils
+    public static class ViewUtils
     {
         /// <summary>
         /// Filter for FilteredElementCollector to get elements that only cuts the current view.
         /// </summary>
         /// <returns>ElementIntersectsSolidFilter element.</returns>
-        internal static ElementIntersectsSolidFilter GetViewCutIntersectFilter(View view)
+        public static ElementIntersectsSolidFilter GetViewCutIntersectFilter(View view)
         {
             // Solid of view section plane for filtering
             IList<CurveLoop> viewCrop = view.GetCropRegionShapeManager().GetCropShape();

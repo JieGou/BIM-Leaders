@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
@@ -10,12 +11,17 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class ElementsJoin : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Join walls and floors on section";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
+        private const double TOLERANCE = 0.1;
+
         private static Document _doc;
         private static int _countCutted;
         private static int _countJoined;
-
-        private const string TRANSACTION_NAME = "Join walls and floors on section";
-        private const double TOLERANCE = 0.1;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -31,17 +37,17 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                string text = (_countJoined == 0)
-                    ? "No joins found."
-                    : $"{_countCutted} elements cuts a view. {_countJoined} elements joins were done.";
 
-                ShowResult(text);
+                _runResult = GetRunResult();
+
+                ShowResult();
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
                 return Result.Failed;
             }
         }
@@ -111,13 +117,24 @@ namespace BIM_Leaders_Core
             catch { }
         }
 
-        private static void ShowResult(string resultText)
+        private string GetRunResult()
         {
-            if (resultText == null)
+            string text = (_countJoined == 0)
+                    ? "No joins found."
+                    : $"{_countCutted} elements cuts a view. {_countJoined} elements joins were done.";
+
+            return text;
+        }
+
+        private void ShowResult()
+        {
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };

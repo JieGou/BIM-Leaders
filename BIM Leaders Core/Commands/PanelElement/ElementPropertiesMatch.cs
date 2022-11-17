@@ -4,23 +4,31 @@ using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
+using System.Diagnostics;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class ElementPropertiesMatch : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Match instance properties";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         private static UIDocument _uidoc;
         private static Document _doc;
         private static int _countPropertiesMatched;
-
-        private const string TRANSACTION_NAME = "Match instance properties";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            _runStarted = true;
 
             try
             {
@@ -43,11 +51,9 @@ namespace BIM_Leaders_Core
                     trans.Commit();
                 }
 
-                string text = (_countPropertiesMatched == 0)
-                    ? "No properties set."
-                    : $"{_countPropertiesMatched} properties have been matched.";
+                _runResult = GetRunResult();
 
-                ShowResult(text);
+                ShowResult();
 
                 return Result.Succeeded;
             }
@@ -132,13 +138,24 @@ namespace BIM_Leaders_Core
             return parametersList;
         }
 
-        private static void ShowResult(string resultText)
+        private string GetRunResult()
         {
-            if (resultText == null)
+            string text = (_countPropertiesMatched == 0)
+                    ? "No properties set."
+                    : $"{_countPropertiesMatched} properties have been matched.";
+
+            return text;
+        }
+
+        private void ShowResult()
+        {
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };

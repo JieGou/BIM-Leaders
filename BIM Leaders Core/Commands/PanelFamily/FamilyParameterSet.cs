@@ -11,9 +11,13 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class FamilyParameterSet : IExternalCommand
     {
-        private List<string> _parametersList;
-
         private const string TRANSACTION_NAME = "Set Parameter";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
+        private List<string> _parametersList;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -21,7 +25,12 @@ namespace BIM_Leaders_Core
 
             Run(commandData);
 
-            return Result.Succeeded;
+            if (!_runStarted)
+                return Result.Cancelled;
+            if (_runFailed)
+                return Result.Failed;
+            else
+                return Result.Succeeded;
         }
 
         private async void Run(ExternalCommandData commandData)
@@ -41,7 +50,11 @@ namespace BIM_Leaders_Core
 
             await Task.Delay(1000);
 
-            ShowResult(formM.RunResult);
+            _runStarted = formM.RunStarted;
+            _runFailed = formM.RunFailed;
+            _runResult = formM.RunResult;
+
+            ShowResult();
         }
 
         private List<string> GetParametersList(ExternalCommandData commandData)
@@ -62,13 +75,15 @@ namespace BIM_Leaders_Core
             return parametersNames;
         }
 
-        private void ShowResult(string resultText)
+        private void ShowResult()
         {
-            if (resultText == null)
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };

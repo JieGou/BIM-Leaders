@@ -12,11 +12,15 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class WallsCompare : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Compare Walls";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         private Document _doc;
         private SortedDictionary<string, int> _materials;
         private SortedDictionary<string, int> _fillTypes;
-
-        private const string TRANSACTION_NAME = "Compare Walls";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -26,7 +30,12 @@ namespace BIM_Leaders_Core
 
             Run(commandData);
 
-            return Result.Succeeded;
+            if (!_runStarted)
+                return Result.Cancelled;
+            if (_runFailed)
+                return Result.Failed;
+            else
+                return Result.Succeeded;
         }
 
         private SortedDictionary<string, int> GetListMaterials()
@@ -110,16 +119,22 @@ namespace BIM_Leaders_Core
 
             await Task.Delay(1000);
 
-            ShowResult(formM.RunResult);
+            _runStarted = formM.RunStarted;
+            _runFailed = formM.RunFailed;
+            _runResult = formM.RunResult;
+
+            ShowResult();
         }
 
-        private void ShowResult(string resultText)
+        private void ShowResult()
         {
-            if (resultText == null)
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };

@@ -3,22 +3,29 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class FamilyZeroCoordinates : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Family Zero Coordinates";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         private static UIDocument _uidoc;
         private static Document _doc;
         private static double _linesLength = 1;
-
-        private const string TRANSACTION_NAME = "Family Zero Coordinates"; 
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            _runStarted = true;
 
             try
             {
@@ -51,10 +58,28 @@ namespace BIM_Leaders_Core
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
+                ShowResult();
                 return Result.Failed;
             }
         }
+
+        private void ShowResult()
+        {
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
+                return;
+
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
+        }
+
         public static string GetPath()
         {
             // Return constructed namespace path

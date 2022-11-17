@@ -4,6 +4,7 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
+using System.Data;
 
 namespace BIM_Leaders_Core
 {
@@ -12,11 +13,20 @@ namespace BIM_Leaders_Core
     {
         private const string TRANSACTION_NAME = "Dimension Plan Walls";
 
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Run(commandData);
 
-            return Result.Succeeded;
+            if (!_runStarted)
+                return Result.Cancelled;
+            if (_runFailed)
+                return Result.Failed;
+            else
+                return Result.Succeeded;
         }
 
         private async void Run(ExternalCommandData commandData)
@@ -36,16 +46,22 @@ namespace BIM_Leaders_Core
 
             await Task.Delay(1000);
 
-            ShowResult(formM.RunResult);
+            _runStarted = formM.RunStarted;
+            _runFailed = formM.RunFailed;
+            _runResult = formM.RunResult;
+
+            ShowResult();
         }
 
-        private void ShowResult(string resultText)
+        private void ShowResult()
         {
-            if (resultText == null)
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };

@@ -7,22 +7,27 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Windows;
-using System.Windows.Shapes;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
     public class JournalAnalyze : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Analyze Journal";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         private static Document _doc;
         private string[] _journalContent;
         private DataSet _commandsDataSet;
 
-        private const string TRANSACTION_NAME = "Analyze Journal";
-
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
+
+            _runStarted = true;
 
             try
             {
@@ -45,7 +50,9 @@ namespace BIM_Leaders_Core
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
+                ShowResult();
                 return Result.Failed;
             }
         }
@@ -350,6 +357,11 @@ namespace BIM_Leaders_Core
 
         private void ShowResult()
         {
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
+                return;
+
             if (_commandsDataSet.Tables[0].Rows.Count == 0)
             {
                 // ViewModel

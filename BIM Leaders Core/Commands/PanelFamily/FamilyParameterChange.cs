@@ -11,14 +11,20 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class FamilyParameterChange : IExternalCommand
     {
+        private const string TRANSACTION_NAME = "Change Parameter";
+
+        private bool _runStarted;
+        private bool _runFailed;
+        private string _runResult;
+
         private static Document _doc;
         private static int _countParametersChanged = 0;
-
-        private const string TRANSACTION_NAME = "Change Parameter";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
+
+            _runStarted = true;
 
             try
             {
@@ -30,17 +36,17 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                string text = (_countParametersChanged == 0)
-                    ? "No parameters changed."
-                    : $"{_countParametersChanged} parameters changed.";
 
-                ShowResult(text);
+                _runResult = GetRunResult();
+
+                ShowResult();
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
                 return Result.Failed;
             }
         }
@@ -66,13 +72,24 @@ namespace BIM_Leaders_Core
             _countParametersChanged = parameters.Count();
         }
 
-        private static void ShowResult(string resultText)
+        private string GetRunResult()
         {
-            if (resultText == null)
+            string text = (_countParametersChanged == 0)
+                    ? "No parameters changed."
+                    : $"{_countParametersChanged} parameters changed.";
+
+            return text;
+        }
+
+        private void ShowResult()
+        {
+            if (!_runStarted)
+                return;
+            if (string.IsNullOrEmpty(_runResult))
                 return;
 
             // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
             // View
             ReportForm form = new ReportForm() { DataContext = formVM };
