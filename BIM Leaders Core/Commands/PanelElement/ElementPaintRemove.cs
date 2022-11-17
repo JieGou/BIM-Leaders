@@ -1,27 +1,24 @@
 ﻿using System;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
-using System.Diagnostics;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class ElementPaintRemove : IExternalCommand
+    public class ElementPaintRemove : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Remove Paint from Element";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private static UIDocument _uidoc;
         private static Document _doc;
         private static int _countFacesAll;
         private static int _countFacesCleared;
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public ElementPaintRemove()
+        {
+            _transactionName = "Remove Paint from Element";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
@@ -34,7 +31,7 @@ namespace BIM_Leaders_Core
                 Reference reference = _uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
                 Element element = _doc.GetElement(reference.ElementId);
 
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -85,31 +82,17 @@ namespace BIM_Leaders_Core
         private string GetRunResult()
         {
             string text = (_countFacesCleared == 0)
-                    ? "Painted faces not found."
-                    : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
+                ? "Painted faces not found."
+                : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
 
             return text;
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
-
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(ElementPaintRemove).Namespace + "." + nameof(ElementPaintRemove);
         }
+
+        private protected override void Run(ExternalCommandData commandData) { return; }
     }
 }

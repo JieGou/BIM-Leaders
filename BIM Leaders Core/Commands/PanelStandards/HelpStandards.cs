@@ -1,23 +1,21 @@
 ﻿using System;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class HelpStandards : IExternalCommand
+    public class HelpStandards : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Help";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private const string URL = @"https://bimleaders.sharepoint.com/:o:/r/sites/BIMAcademy-Archtecture/Shared%20Documents/Architecture/Standards?d=w1010ae6834644745b60c696943c0e12b&csf=1&web=1&e=6or6hJ";
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public HelpStandards()
+        {
+            _transactionName = "Help";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _runStarted = true;
 
@@ -36,24 +34,10 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
+        private protected override async void Run(ExternalCommandData commandData) { return; }
 
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(HelpStandards).Namespace + "." + nameof(HelpStandards);
         }
     }

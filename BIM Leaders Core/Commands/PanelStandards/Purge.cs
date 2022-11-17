@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
@@ -10,10 +10,13 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class Purge : BaseCommand
     {
-        private protected override async void Run(ExternalCommandData commandData)
+        public Purge()
         {
             _transactionName = "Purge";
+        }
 
+        private protected override async void Run(ExternalCommandData commandData)
+        {
             // Model
             PurgeM formM = new PurgeM(commandData, _transactionName);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
@@ -38,7 +41,6 @@ namespace BIM_Leaders_Core
 
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(Purge).Namespace + "." + nameof(Purge);
         }
     }

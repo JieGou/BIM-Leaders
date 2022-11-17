@@ -1,39 +1,24 @@
-﻿using System.Data;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class Checker : IExternalCommand
+    public class Checker : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Check";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-        private DataSet _runReport;
-
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public Checker()
         {
-            Run(commandData);
-
-            if (!_runStarted)
-                return Result.Cancelled;
-            if (_runFailed)
-                return Result.Failed;
-            else
-                return Result.Succeeded;
+            _transactionName = "Check";
         }
 
-        private async void Run(ExternalCommandData commandData)
+        private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            CheckerM formM = new CheckerM(commandData, TRANSACTION_NAME);
+            CheckerM formM = new CheckerM(commandData, _transactionName);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -54,35 +39,8 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (!string.IsNullOrEmpty(_runResult))
-            {
-                // ViewModel
-                ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-                // View
-                ReportForm form = new ReportForm() { DataContext = formVM };
-                form.ShowDialog();
-
-                return;
-            }
-            if (_runReport != null)
-            {
-                // ViewModel
-                ReportVM formReportVM = new ReportVM(_runReport);
-
-                // View
-                ReportForm formReport = new ReportForm() { DataContext = formReportVM };
-                formReport.ShowDialog();
-            }
-        }
-
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(Checker).Namespace + "." + nameof(Checker);
         }
     }

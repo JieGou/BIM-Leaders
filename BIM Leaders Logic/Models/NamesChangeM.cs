@@ -1,37 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Data;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class NamesChangeM : INotifyPropertyChanged, IExternalEventHandler
+    public class NamesChangeM : BaseModel
     {
-        private UIDocument _uidoc;
-        private Document _doc;
         private static int _countNamesChanged;
 
         #region PROPERTIES
-
-        /// <summary>
-        /// ExternalEvent needed for Revit to run transaction in API context.
-        /// So we must call not the main method but raise the event.
-        /// </summary>
-        public ExternalEvent ExternalEvent { get; set; }
-
-        private string _transactionName;
-        public string TransactionName
-        {
-            get { return _transactionName; }
-            set
-            {
-                _transactionName = value;
-                OnPropertyChanged(nameof(TransactionName));
-            }
-        }
 
         private List<bool> _selectedCategories;
         public List<bool> SelectedCategories
@@ -88,62 +69,15 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private bool _runStarted;
-        public bool RunStarted
-        {
-            get { return _runStarted; }
-            set
-            {
-                _runStarted = value;
-                OnPropertyChanged(nameof(RunStarted));
-            }
-        }
-
-        private bool _runFailed;
-        public bool RunFailed
-        {
-            get { return _runFailed; }
-            set
-            {
-                _runFailed = value;
-                OnPropertyChanged(nameof(RunFailed));
-            }
-        }
-
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
         #endregion
 
-        public NamesChangeM(ExternalCommandData commandData, string transactionName)
+        public NamesChangeM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
         {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
-
-            TransactionName = transactionName;
-        }
-
-        public void Run()
-        {
-            ExternalEvent.Raise();
         }
 
         #region IEXTERNALEVENTHANDLER
 
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        public void Execute(UIApplication app)
+        public override void Execute(UIApplication app)
         {
             RunStarted = true;
 
@@ -246,30 +180,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private string GetRunResult()
+        private protected override string GetRunResult()
         {
-            string text = "";
-
-            text = (_countNamesChanged == 0)
+            string text = (_countNamesChanged == 0)
                 ? "No names changed"
                 : $"{_countNamesChanged} names changed";
 
             return text;
         }
 
-        #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
-
     }
 }

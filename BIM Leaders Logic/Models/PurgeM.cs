@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using Autodesk.Revit.DB.Architecture;
 using System.Data;
+using System.Linq;
+using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Logic
 {
@@ -106,7 +106,6 @@ namespace BIM_Leaders_Logic
 
         public PurgeM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
         {
-
         }
 
         #region IEXTERNALEVENTHANDLER

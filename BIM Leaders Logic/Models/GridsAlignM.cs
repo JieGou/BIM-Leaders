@@ -1,16 +1,15 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
+using System.Data;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class GridsAlignM : INotifyPropertyChanged, IExternalEventHandler
+    public class GridsAlignM : BaseModel
     {
-        private UIDocument _uidoc;
-        private Document _doc;
         private int _countGridsAligned;
 
         #region PROPERTIES
@@ -111,27 +110,13 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public GridsAlignM(ExternalCommandData commandData, string transactionName)
+        public GridsAlignM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
         {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
-
-            TransactionName = transactionName;
-        }
-
-        public void Run()
-        {
-            ExternalEvent.Raise();
         }
 
         #region IEXTERNALEVENTHANDLER
 
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        public void Execute(UIApplication app)
+        public override void Execute(UIApplication app)
         {
             RunStarted = true;
 
@@ -159,7 +144,7 @@ namespace BIM_Leaders_Logic
 
         #region METHODS
 
-        private string  GetRunResult()
+        private protected override string  GetRunResult()
         {
             string text = "No grids aligned.";
             
@@ -173,17 +158,7 @@ namespace BIM_Leaders_Logic
             return text;
         }
 
-        #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
     }

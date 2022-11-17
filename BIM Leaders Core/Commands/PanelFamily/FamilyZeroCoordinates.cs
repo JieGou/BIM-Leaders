@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class FamilyZeroCoordinates : IExternalCommand
+    public class FamilyZeroCoordinates : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Family Zero Coordinates";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private static UIDocument _uidoc;
         private static Document _doc;
         private static double _linesLength = 1;
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public FamilyZeroCoordinates()
+        {
+            _transactionName = "Family Zero Coordinates";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
@@ -40,7 +38,7 @@ namespace BIM_Leaders_Core
                 List<Line> lines = points
                     .ConvertAll(x => Line.CreateBound(zero, x));
 
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -65,24 +63,10 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
+        private protected override void Run(ExternalCommandData commandData) { return; }
 
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(FamilyZeroCoordinates).Namespace + "." + nameof(FamilyZeroCoordinates);
         }
     }

@@ -1,37 +1,24 @@
-﻿using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
+﻿using System.Threading.Tasks;
 using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
-using System.Threading.Tasks;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class NamesChange : IExternalCommand
+    public class NamesChange : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Change Names";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public NamesChange()
         {
-            Run(commandData);
-
-            if (!_runStarted)
-                return Result.Cancelled;
-            if (_runFailed)
-                return Result.Failed;
-            else
-                return Result.Succeeded;
+            _transactionName = "Change Names";
         }
 
-        private async void Run(ExternalCommandData commandData)
+        private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            NamesChangeM formM = new NamesChangeM(commandData, TRANSACTION_NAME);
+            NamesChangeM formM = new NamesChangeM(commandData, _transactionName);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -49,26 +36,10 @@ namespace BIM_Leaders_Core
             _runResult = formM.RunResult;
 
             ShowResult();
-        }
-
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }     
+        }   
 
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(NamesChange).Namespace + "." + nameof(NamesChange);
         }
     }

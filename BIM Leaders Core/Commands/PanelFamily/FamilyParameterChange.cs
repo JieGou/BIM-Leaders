@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class FamilyParameterChange : IExternalCommand
+    public class FamilyParameterChange : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Change Parameter";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private static Document _doc;
         private static int _countParametersChanged = 0;
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public FamilyParameterChange()
+        {
+            _transactionName = "Change Parameter";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
@@ -28,7 +26,7 @@ namespace BIM_Leaders_Core
 
             try
             {
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -81,24 +79,10 @@ namespace BIM_Leaders_Core
             return text;
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
+        private protected override async void Run(ExternalCommandData commandData) { return; }
 
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(FamilyParameterChange).Namespace + "." + nameof(FamilyParameterChange);
         }
     }

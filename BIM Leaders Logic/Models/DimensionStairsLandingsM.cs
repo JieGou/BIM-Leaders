@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB.Architecture;
+using System.Data;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class DimensionStairsLandingsM : INotifyPropertyChanged, IExternalEventHandler
+    public class DimensionStairsLandingsM : BaseModel
     {
-        private UIDocument _uidoc;
-        private Document _doc;
         private int _countSpots;
         private int _countDimensions;
 
@@ -159,27 +157,14 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DimensionStairsLandingsM(ExternalCommandData commandData, string transactionName)
+        public DimensionStairsLandingsM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
         {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
 
-            TransactionName = transactionName;
-        }
-
-        public void Run()
-        {
-            ExternalEvent.Raise();
         }
 
         #region IEXTERNALEVENTHANDLER
 
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        public void Execute(UIApplication app)
+        public override void Execute(UIApplication app)
         {
             RunStarted = true;
 
@@ -481,30 +466,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private string GetRunResult()
+        private protected override string GetRunResult()
         {
-            string text = "";
-
-            text = (_countSpots == 0 && _countDimensions == 0)
+            string text = (_countSpots == 0 && _countDimensions == 0)
                 ? "No annotations created."
                 : $"{_countSpots} spot elevations were created. {_countDimensions} dimension lines were created.";
 
             return text;
         }
 
-        #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
-
     }
 }

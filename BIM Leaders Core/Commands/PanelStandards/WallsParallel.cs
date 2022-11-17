@@ -1,24 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
-using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class WallsParallel : IExternalCommand
+    public class WallsParallel : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Walls Parralel Check";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private static UIDocument _uidoc;
         private static Document _doc;
         private static double _toleranceAngle;
@@ -27,7 +20,12 @@ namespace BIM_Leaders_Core
         private const string FILTER_NAME = "Check - Walls parralel";
         private readonly Color FILTER_COLOR = new Color(255, 127, 39);
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public WallsParallel()
+        {
+            _transactionName = "Walls Parralel Check";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
@@ -45,7 +43,7 @@ namespace BIM_Leaders_Core
                 if (wallsFilter.Count == 0)
                     return Result.Succeeded;
 
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -150,24 +148,10 @@ namespace BIM_Leaders_Core
             return text;
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
+        private protected override async void Run(ExternalCommandData commandData) { return; }
 
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(WallsParallel).Namespace + "." + nameof(WallsParallel);
         }
     }

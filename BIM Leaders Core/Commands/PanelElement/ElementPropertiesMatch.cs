@@ -1,29 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
-using BIM_Leaders_Windows;
-using System.Diagnostics;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class ElementPropertiesMatch : IExternalCommand
+    public class ElementPropertiesMatch : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Match instance properties";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private static UIDocument _uidoc;
         private static Document _doc;
         private static int _countPropertiesMatched;
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public ElementPropertiesMatch()
+        {
+            _transactionName = "Match instance properties";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
@@ -42,7 +39,7 @@ namespace BIM_Leaders_Core
                 Reference reference1 = _uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, category);
                 Element elementTo = _doc.GetElement(reference1.ElementId);
 
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -141,31 +138,17 @@ namespace BIM_Leaders_Core
         private string GetRunResult()
         {
             string text = (_countPropertiesMatched == 0)
-                    ? "No properties set."
-                    : $"{_countPropertiesMatched} properties have been matched.";
+                ? "No properties set."
+                : $"{_countPropertiesMatched} properties have been matched.";
 
             return text;
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
-
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(ElementPropertiesMatch).Namespace + "." + nameof(ElementPropertiesMatch);
         }
+
+        private protected override void Run(ExternalCommandData commandData) { return; }
     }
 }

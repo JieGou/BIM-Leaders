@@ -1,46 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.DB.Mechanical;
+using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Logic
 {
     [Transaction(TransactionMode.Manual)]
-    public class CheckerM : INotifyPropertyChanged, IExternalEventHandler
+    public class CheckerM : BaseModel
     {
-        private UIDocument _uidoc;
-        private Document _doc;
-
-        //private TaskCompletionSource<string> TaskCompletionSource;
-        //public event EventHandler<string> EventCompleted;
-
         #region PROPERTIES
-
-        /// <summary>
-        /// ExternalEvent needed for Revit to run transaction in API context.
-        /// So we must call not the main method but raise the event.
-        /// </summary>
-        public ExternalEvent ExternalEvent { get; set; }
-        
-        //public Exception Exception { get; private set; }
-
-        private string _transactionName;
-        public string TransactionName
-        {
-            get { return _transactionName; }
-            set
-            {
-                _transactionName = value;
-                OnPropertyChanged(nameof(TransactionName));
-            }
-        }
 
         private List<bool> _checkCategories;
         public List<bool> CheckCategories
@@ -97,89 +70,15 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private bool _runStarted;
-        public bool RunStarted
-        {
-            get { return _runStarted; }
-            set
-            {
-                _runStarted = value;
-                OnPropertyChanged(nameof(RunStarted));
-            }
-        }
-
-        private bool _runFailed;
-        public bool RunFailed
-        {
-            get { return _runFailed; }
-            set
-            {
-                _runFailed = value;
-                OnPropertyChanged(nameof(RunFailed));
-            }
-        }
-
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
-        private DataSet _runReport;
-        public DataSet RunReport
-        {
-            get { return _runReport; }
-            set
-            {
-                _runReport = value;
-                OnPropertyChanged(nameof(RunReport));
-            }
-        }
-
         #endregion
 
-        public CheckerM(ExternalCommandData commandData, string transactionName)
+        public CheckerM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
         {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
-
-            TransactionName = transactionName;
-
-            //EventCompleted += OnEventCompleted;
         }
-
-        public void Run()
-        {
-            //TaskCompletionSource = new TaskCompletionSource<string>();
-            //Task task = Task.Run(async () => (string)await TaskCompletionSource.Task);
-
-            ExternalEvent.Raise();
-
-            //return task;
-        }
-        /*
-        private void OnEventCompleted(object sender, string result)
-        {
-            if (Exception == null)
-                TaskCompletionSource.TrySetResult(result);
-            else
-                TaskCompletionSource.TrySetException(Exception);
-        }
-        */
 
         #region IEXTERNALEVENTHANDLER
 
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        public void Execute(UIApplication app)
+        public override void Execute(UIApplication app)
         {
             RunStarted = true;
 
@@ -192,7 +91,6 @@ namespace BIM_Leaders_Logic
                 RunFailed = true;
                 RunResult = ExceptionUtils.GetMessage(e);
             }
-            //EventCompleted?.Invoke(this, RunResult);
         }
 
         #endregion
@@ -234,7 +132,7 @@ namespace BIM_Leaders_Logic
             if (CheckCodes[1])
                 reportMessageList.AddRange(CheckStairsHeadHeight());
 
-            return CreateReportDataSet(reportMessageList);
+            return GetRunReport(reportMessageList);
         }
 
         /// <summary>
@@ -998,7 +896,7 @@ namespace BIM_Leaders_Logic
         /// Create DataSet table for report window.
         /// </summary>
         /// <returns>DataSet object contains all data.</returns>
-        private DataSet CreateReportDataSet(IEnumerable<ReportMessage> reportMessages)
+        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages)
         {
             DataSet reportDataSet = new DataSet("reportDataSet");
 
@@ -1026,19 +924,8 @@ namespace BIM_Leaders_Logic
             return reportDataSet;
         }
 
-        #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        private protected override string GetRunResult() { return ""; }
 
         #endregion
-
     }
 }

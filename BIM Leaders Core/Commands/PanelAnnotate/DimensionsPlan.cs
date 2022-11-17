@@ -1,24 +1,25 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
-using System.Threading.Tasks;
 
 namespace BIM_Leaders_Core
 {
 	[Transaction(TransactionMode.Manual)]
-    public class DimensionsPlan : IExternalCommand
-	{
-        private const string TRANSACTION_NAME = "Dimension Plan Walls";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+    public class DimensionsPlan : BaseCommand
+    {
+        public DimensionsPlan()
         {
+            _transactionName = "Dimension Plan Walls";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            
+
             if (ShowDialogAboutPlanRegions(commandData) == TaskDialogResult.No)
                 return Result.Cancelled;
 
@@ -36,13 +37,13 @@ namespace BIM_Leaders_Core
         /// Inform user that plan regions are on the view and may cause errors.
         /// </summary>
         /// <returns>TaskDialogResult.No if user cancelled the command.</returns>
-        private static TaskDialogResult ShowDialogAboutPlanRegions(ExternalCommandData commandData)
+        private TaskDialogResult ShowDialogAboutPlanRegions(ExternalCommandData commandData)
 		{
             TaskDialogResult taskDialogResult = TaskDialogResult.None;
 
             if (CheckViewHasPlanRegions(commandData))
             {
-                TaskDialog dialog = new TaskDialog(TRANSACTION_NAME)
+                TaskDialog dialog = new TaskDialog(_transactionName)
                 {
                     MainContent = "Plan regions are on the current view. This can cause error \"One or more dimension references are or have become invalid.\" Continue?",
                     CommonButtons = TaskDialogCommonButtons.Yes | TaskDialogCommonButtons.No,
@@ -74,10 +75,10 @@ namespace BIM_Leaders_Core
 			return planContainsRegions;
 		}
 
-        private async void Run(ExternalCommandData commandData)
+        private protected override async void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionsPlanM formM = new DimensionsPlanM(commandData, TRANSACTION_NAME);
+            DimensionsPlanM formM = new DimensionsPlanM(commandData, _transactionName);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -97,24 +98,8 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
-
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(DimensionsPlan).Namespace + "." + nameof(DimensionsPlan);
         }
     }

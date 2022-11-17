@@ -3,27 +3,26 @@ using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.ReadOnly)]
-    public class DwgViewFound : IExternalCommand
+    public class DwgViewFound : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Imports";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private Document _doc;
         private DataSet _dwgList;
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public DwgViewFound()
+        {
+            _transactionName = "Imports";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _runStarted = true;
 
@@ -131,10 +130,10 @@ namespace BIM_Leaders_Core
             return dwgDataSet;
         }
 
-        private async void Run(ExternalCommandData commandData)
+        private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            DwgViewFoundM formM = new DwgViewFoundM(commandData, TRANSACTION_NAME);
+            DwgViewFoundM formM = new DwgViewFoundM(commandData, _transactionName);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -155,21 +154,6 @@ namespace BIM_Leaders_Core
             _runResult = formM.RunResult;
 
             ShowResult();
-        }
-
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
         }
 
         public static string GetPath()

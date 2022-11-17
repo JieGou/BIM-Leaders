@@ -1,35 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
-using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class ElementsJoin : IExternalCommand
+    public class ElementsJoin : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Join walls and floors on section";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private const double TOLERANCE = 0.1;
 
         private static Document _doc;
         private static int _countCutted;
         private static int _countJoined;
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public ElementsJoin()
+        {
+            _transactionName = "Join walls and floors on section";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
             try
             {
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -120,25 +118,10 @@ namespace BIM_Leaders_Core
         private string GetRunResult()
         {
             string text = (_countJoined == 0)
-                    ? "No joins found."
-                    : $"{_countCutted} elements cuts a view. {_countJoined} elements joins were done.";
+                ? "No joins found."
+                : $"{_countCutted} elements cuts a view. {_countJoined} elements joins were done.";
 
             return text;
-        }
-
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
         }
 
         public static string GetPath()
@@ -146,5 +129,7 @@ namespace BIM_Leaders_Core
             // Return constructed namespace path
             return typeof(ElementsJoin).Namespace + "." + nameof(ElementsJoin);
         }
+
+        private protected override void Run(ExternalCommandData commandData) { return; }
     }
 }

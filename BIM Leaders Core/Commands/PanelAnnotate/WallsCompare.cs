@@ -1,28 +1,27 @@
-﻿using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class WallsCompare : IExternalCommand
+    public class WallsCompare : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Compare Walls";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private Document _doc;
         private SortedDictionary<string, int> _materials;
         private SortedDictionary<string, int> _fillTypes;
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public WallsCompare()
+        {
+            _transactionName = "Compare Walls";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
             _materials = GetListMaterials();
@@ -97,10 +96,10 @@ namespace BIM_Leaders_Core
             return fillTypesList;
         }
 
-        private async void Run(ExternalCommandData commandData)
+        private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            WallsCompareM formM = new WallsCompareM(commandData, TRANSACTION_NAME);
+            WallsCompareM formM = new WallsCompareM(commandData, _transactionName);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -126,24 +125,8 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
-
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(WallsCompare).Namespace + "." + nameof(WallsCompare);
         }
     }

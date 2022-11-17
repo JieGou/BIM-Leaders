@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.ReadOnly)]
-    public class FamilyVoidsSelect : IExternalCommand
+    public class FamilyVoidsSelect : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Voids";
-
-        private bool _runStarted;
-        private bool _runFailed;
-        private string _runResult;
-
         private static UIDocument _uidoc;
         private static Document _doc;
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public FamilyVoidsSelect()
+        {
+            _transactionName = "Voids";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
@@ -66,24 +64,10 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private void ShowResult()
-        {
-            if (!_runStarted)
-                return;
-            if (string.IsNullOrEmpty(_runResult))
-                return;
-
-            // ViewModel
-            ResultVM formVM = new ResultVM(TRANSACTION_NAME, _runResult);
-
-            // View
-            ResultForm form = new ResultForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
+        private protected override async void Run(ExternalCommandData commandData) { return; }
 
         public static string GetPath()
         {
-            // Return constructed namespace path
             return typeof(FamilyVoidsSelect).Namespace + "." + nameof(FamilyVoidsSelect);
         }
     }
