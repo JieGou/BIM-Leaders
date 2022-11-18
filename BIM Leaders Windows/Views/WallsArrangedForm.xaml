@@ -10,7 +10,7 @@
         
         WindowStyle="None"
         Style="{DynamicResource SWindow}"
-        Title="BIM Leaders - Dimension Section Floors"
+        Title="BIM Leaders - Walls Arranged Check"
         WindowStartupLocation="CenterScreen"
         Width="306"
         Height="540"

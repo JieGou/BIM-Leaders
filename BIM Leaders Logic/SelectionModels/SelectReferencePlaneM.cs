@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -6,19 +7,12 @@ using Autodesk.Revit.UI.Selection;
 
 namespace BIM_Leaders_Logic
 {
-    public class SelectLineM : INotifyPropertyChanged
+    public class SelectReferencePlaneM : INotifyPropertyChanged
     {
         private UIDocument _uidoc;
         private Document _doc;
 
         #region PROPERTIES
-
-        private bool _allowOnlyVertical;
-        public bool AllowOnlyVertical
-        {
-            get { return _allowOnlyVertical; }
-            set { _allowOnlyVertical = value; }
-        }
 
         private int _selectedElement;
         public int SelectedElement
@@ -44,7 +38,7 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public SelectLineM(ExternalCommandData commandData)
+        public SelectReferencePlaneM(ExternalCommandData commandData)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
@@ -52,28 +46,21 @@ namespace BIM_Leaders_Logic
 
         public void Run()
         {
+            Error = "";
+
             try
             {
                 // Get the line from user selection
-                Reference referenceLine = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
-                DetailCurve detailCurve = _doc.GetElement(referenceLine) as DetailCurve;
-                if (detailCurve == null)
+                Reference referenceUnchecked = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Reference Plane");
+
+                // Getting Reference plane.
+                ReferencePlane reference = _doc.GetElement(referenceUnchecked.ElementId) as ReferencePlane;
+
+                if (reference == null)
                     Error = "Wrong selection";
 
-                if (detailCurve.GeometryCurve is Line line)
-                {
-                    if (AllowOnlyVertical)
-                    {
-                        double direction = line.Direction.Z;
-                        if (direction != 1 && direction != -1)
-                            Error = "Selected line is not vertical";
-                    }
-                }
-                else
-                    Error = "Selected line is not straight";
-
                 SelectedElement = (Error.Length == 0)
-                    ? detailCurve.Id.IntegerValue
+                    ? reference.Id.IntegerValue
                     : 0;
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException oce)

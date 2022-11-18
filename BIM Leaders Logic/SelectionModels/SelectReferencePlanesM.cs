@@ -50,30 +50,45 @@ namespace BIM_Leaders_Logic
         {
             Error = "";
 
-            // Get the line from user selection
-            IList<Reference> referenceUncheckedList = _uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Two Perpendicular Reference Planes");
-
-            // Checking for invalid selection.
-            if (referenceUncheckedList.Count != 2)
+            try
             {
-                Error = "Wrong count of reference planes selected. Select 2 perendicular reference planes.";
-                return;
+                // Get the line from user selection
+                IList<Reference> referenceUncheckedList = _uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("Reference Planes"), "Select Two Perpendicular Reference Planes");
+
+                // Checking for invalid selection.
+                if (referenceUncheckedList.Count != 2)
+                {
+                    Error = "Wrong count of reference planes selected";
+                    SelectedElements = new List<int> { 0, 0 };
+                    return;
+                }
+
+                // Getting Reference planes.
+                ReferencePlane reference0 = _doc.GetElement(referenceUncheckedList[0].ElementId) as ReferencePlane;
+                ReferencePlane reference1 = _doc.GetElement(referenceUncheckedList[1].ElementId) as ReferencePlane;
+
+                // Checking for perpendicular input
+                if (reference0.Direction.DotProduct(reference1.Direction) > _toleranceAngle)
+                {
+                    Error = "Selected reference planes are not perpendicular";
+                    SelectedElements = new List<int> { 0, 0 };
+                    return;
+                }
+
+                SelectedElements = (Error.Length == 0)
+                    ? new List<int> { reference0.Id.IntegerValue, reference1.Id.IntegerValue }
+                    : new List<int> { 0, 0 };
             }
-
-            // Getting Reference planes.
-            ReferencePlane reference0 = _doc.GetElement(referenceUncheckedList[0].ElementId) as ReferencePlane;
-            ReferencePlane reference1 = _doc.GetElement(referenceUncheckedList[1].ElementId) as ReferencePlane;
-
-            // Checking for perpendicular input
-            if (reference0.Direction.DotProduct(reference1.Direction) > _toleranceAngle)
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException oce)
             {
-                Error = "Selected reference planes are not perpendicular. Select 2 perendicular reference planes.";
-                return;
+                Error = "Selection cancelled";
+                SelectedElements = new List<int> { 0, 0 };
             }
-
-            SelectedElements = (Error.Length == 0)
-                ? new List<int> { reference0.Id.IntegerValue, reference1.Id.IntegerValue }
-                : new List<int> { 0, 0 };
+            catch (Exception e)
+            {
+                Error = e.Message;
+                SelectedElements = new List<int> { 0, 0 };
+            }
         }
 
         #region INOTIFYPROPERTYCHANGED
