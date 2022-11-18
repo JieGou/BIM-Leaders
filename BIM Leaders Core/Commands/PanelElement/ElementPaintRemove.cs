@@ -88,11 +88,8 @@ namespace BIM_Leaders_Core
             return text;
         }
 
-        public static string GetPath()
-        {
-            return typeof(ElementPaintRemove).Namespace + "." + nameof(ElementPaintRemove);
-        }
-
         private protected override void Run(ExternalCommandData commandData) { return; }
+
+        public static string GetPath() => typeof(ElementPaintRemove).Namespace + "." + nameof(ElementPaintRemove);
     }
 }

@@ -12,6 +12,8 @@ namespace BIM_Leaders_Windows
     {
         #region PROPERTIES
 
+        public bool Closed { get; private set; }
+
         private DataSet _report;
         public DataSet Report
         {
@@ -46,7 +48,10 @@ namespace BIM_Leaders_Windows
         private void CloseAction(Window window)
         {
             if (window != null)
+            {
+                Closed = true;
                 window.Close();
+            }
         }
 
         #endregion

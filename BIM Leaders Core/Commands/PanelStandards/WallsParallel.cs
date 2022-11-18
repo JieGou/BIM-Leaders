@@ -150,9 +150,6 @@ namespace BIM_Leaders_Core
 
         private protected override async void Run(ExternalCommandData commandData) { return; }
 
-        public static string GetPath()
-        {
-            return typeof(WallsParallel).Namespace + "." + nameof(WallsParallel);
-        }
+        public static string GetPath() => typeof(WallsParallel).Namespace + "." + nameof(WallsParallel);
     }
 }

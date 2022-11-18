@@ -11,6 +11,8 @@ namespace BIM_Leaders_Windows
     {
         #region PROPERTIES
 
+        public bool Closed { get; private set; }
+
         private string _commandName;
         public string CommandName
         {
@@ -35,10 +37,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="StairsStepsEnumerateVM"/> class.
-        /// </summary>
         public ResultVM(string commandName, string reportText)
         {
             CommandName = commandName;
@@ -65,7 +63,10 @@ namespace BIM_Leaders_Windows
         private void CloseAction(Window window)
         {
             if (window != null)
+            {
+                Closed = true;
                 window.Close();
+            }
         }
 
         #endregion

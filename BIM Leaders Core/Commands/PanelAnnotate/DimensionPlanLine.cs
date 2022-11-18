@@ -30,7 +30,8 @@ namespace BIM_Leaders_Core
             DimensionPlanLineForm form = new DimensionPlanLineForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -39,9 +40,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            return typeof(DimensionPlanLine).Namespace + "." + nameof(DimensionPlanLine);
-        }
+        public static string GetPath() => typeof(DimensionPlanLine).Namespace + "." + nameof(DimensionPlanLine);
     }
 }

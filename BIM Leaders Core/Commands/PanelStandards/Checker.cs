@@ -29,7 +29,8 @@ namespace BIM_Leaders_Core
             CheckerForm form = new CheckerForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -39,9 +40,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            return typeof(Checker).Namespace + "." + nameof(Checker);
-        }
+        public static string GetPath() => typeof(Checker).Namespace + "." + nameof(Checker);
     }
 }

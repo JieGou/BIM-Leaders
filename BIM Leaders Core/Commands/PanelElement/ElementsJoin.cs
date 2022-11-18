@@ -124,12 +124,8 @@ namespace BIM_Leaders_Core
             return text;
         }
 
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(ElementsJoin).Namespace + "." + nameof(ElementsJoin);
-        }
-
         private protected override void Run(ExternalCommandData commandData) { return; }
+
+        public static string GetPath() => typeof(ElementsJoin).Namespace + "." + nameof(ElementsJoin);
     }
 }

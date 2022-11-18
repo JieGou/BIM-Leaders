@@ -47,7 +47,8 @@ namespace BIM_Leaders_Core
             FamilyParameterSetForm form = new FamilyParameterSetForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -74,9 +75,6 @@ namespace BIM_Leaders_Core
             return parametersNames;
         }
 
-        public static string GetPath()
-        {
-            return typeof(FamilyParameterSet).Namespace + "." + nameof(FamilyParameterSet);
-        }
+        public static string GetPath() => typeof(FamilyParameterSet).Namespace + "." + nameof(FamilyParameterSet);
     }
 }

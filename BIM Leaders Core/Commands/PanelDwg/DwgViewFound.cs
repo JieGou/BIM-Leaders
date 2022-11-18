@@ -147,7 +147,8 @@ namespace BIM_Leaders_Core
             DwgViewFoundForm form = new DwgViewFoundForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -156,10 +157,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(DwgViewFound).Namespace + "." + nameof(DwgViewFound);
-        }
+        public static string GetPath() => typeof(DwgViewFound).Namespace + "." + nameof(DwgViewFound);
     }
 }

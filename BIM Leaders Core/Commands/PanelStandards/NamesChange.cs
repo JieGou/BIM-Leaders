@@ -29,7 +29,8 @@ namespace BIM_Leaders_Core
             NamesChangeForm form = new NamesChangeForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -38,9 +39,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }   
 
-        public static string GetPath()
-        {
-            return typeof(NamesChange).Namespace + "." + nameof(NamesChange);
-        }
+        public static string GetPath() => typeof(NamesChange).Namespace + "." + nameof(NamesChange);
     }
 }

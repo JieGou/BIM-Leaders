@@ -90,7 +90,8 @@ namespace BIM_Leaders_Core
             DwgNameDeleteForm form = new DwgNameDeleteForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -99,9 +100,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            return typeof(DwgNameDelete).Namespace + "." + nameof(DwgNameDelete);
-        }
+        public static string GetPath() => typeof(DwgNameDelete).Namespace + "." + nameof(DwgNameDelete);
     }
 }

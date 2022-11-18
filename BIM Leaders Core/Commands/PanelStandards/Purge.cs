@@ -29,7 +29,8 @@ namespace BIM_Leaders_Core
             PurgeForm form = new PurgeForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -39,9 +40,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            return typeof(Purge).Namespace + "." + nameof(Purge);
-        }
+        public static string GetPath() => typeof(Purge).Namespace + "." + nameof(Purge);
     }
 }

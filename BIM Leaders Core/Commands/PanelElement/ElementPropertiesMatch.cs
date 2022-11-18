@@ -144,11 +144,8 @@ namespace BIM_Leaders_Core
             return text;
         }
 
-        public static string GetPath()
-        {
-            return typeof(ElementPropertiesMatch).Namespace + "." + nameof(ElementPropertiesMatch);
-        }
-
         private protected override void Run(ExternalCommandData commandData) { return; }
+
+        public static string GetPath() => typeof(ElementPropertiesMatch).Namespace + "." + nameof(ElementPropertiesMatch);
     }
 }

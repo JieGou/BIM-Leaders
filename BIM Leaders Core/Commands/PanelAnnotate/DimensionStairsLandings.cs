@@ -57,7 +57,8 @@ namespace BIM_Leaders_Core
             DimensionStairsLandingsForm form = new DimensionStairsLandingsForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -66,9 +67,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            return typeof(DimensionStairsLandings).Namespace + "." + nameof(DimensionStairsLandings);
-        }
+        public static string GetPath() => typeof(DimensionStairsLandings).Namespace + "." + nameof(DimensionStairsLandings);
     }
 }

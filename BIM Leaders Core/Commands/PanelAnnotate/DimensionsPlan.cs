@@ -89,7 +89,8 @@ namespace BIM_Leaders_Core
             DimensionsPlanForm form = new DimensionsPlanForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -98,9 +99,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            return typeof(DimensionsPlan).Namespace + "." + nameof(DimensionsPlan);
-        }
+        public static string GetPath() => typeof(DimensionsPlan).Namespace + "." + nameof(DimensionsPlan);
     }
 }

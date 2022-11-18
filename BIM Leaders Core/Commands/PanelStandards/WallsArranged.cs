@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Data;
+using System.Threading.Tasks;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -30,8 +32,9 @@ namespace BIM_Leaders_Core
             WallsArrangedForm form = new WallsArrangedForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
-
+            while (!formVM.Closed)
+                await Task.Delay(1000);
+            
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
             _runResult = formM.RunResult;
@@ -39,9 +42,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            return typeof(WallsArranged).Namespace + "." + nameof(WallsArranged);
-        }
+        public static string GetPath() => typeof(WallsArranged).Namespace + "." + nameof(WallsArranged);
     }
 }

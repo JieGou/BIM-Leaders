@@ -56,7 +56,8 @@ namespace BIM_Leaders_Core
             DimensionSectionFloorsForm form = new DimensionSectionFloorsForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -65,9 +66,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            return typeof(DimensionSectionFloors).Namespace + "." + nameof(DimensionSectionFloors);
-        }
+        public static string GetPath() => typeof(DimensionSectionFloors).Namespace + "." + nameof(DimensionSectionFloors);
     }
 }

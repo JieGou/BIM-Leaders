@@ -29,7 +29,8 @@ namespace BIM_Leaders_Core
             DimensionsPlanCheckForm form = new DimensionsPlanCheckForm() { DataContext = formVM };
             form.ShowDialog();
 
-            await Task.Delay(1000);
+            while(!formVM.Closed)
+                await Task.Delay(1000);
 
             _runStarted = formM.RunStarted;
             _runFailed = formM.RunFailed;
@@ -38,9 +39,6 @@ namespace BIM_Leaders_Core
             ShowResult();
         }
 
-        public static string GetPath()
-        {
-            return typeof(DimensionsPlanCheck).Namespace + "." + nameof(DimensionsPlanCheck);
-        }
+        public static string GetPath() => typeof(DimensionsPlanCheck).Namespace + "." + nameof(DimensionsPlanCheck);
     }
 }

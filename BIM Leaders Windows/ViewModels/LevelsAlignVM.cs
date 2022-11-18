@@ -19,11 +19,8 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating if <see cref="GridsAlignVM"/> chosen Side 1.
-        /// </summary>
-        /// <value><c>true</c> if Side 1 is chosen, if not, then <c>false</c>.
-        /// </value>
+        public bool Closed { get; private set; }
+
         private bool _side1;
         public bool Side1
         {
@@ -35,11 +32,6 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating if <see cref="GridsAlignVM"/> chosen Side 2.
-        /// </summary>
-        /// <value><c>true</c> if Side 2 is chosen, if not, then <c>false</c>.
-        /// </value>
         private bool _side2;
         public bool Side2
         {
@@ -118,7 +110,10 @@ namespace BIM_Leaders_Windows
         private void CloseAction(Window window)
         {
             if (window != null)
+            {
+                Closed = true;
                 window.Close();
+            }
         }
 
         #endregion

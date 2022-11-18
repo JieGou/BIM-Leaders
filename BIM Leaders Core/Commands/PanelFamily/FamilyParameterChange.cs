@@ -81,9 +81,6 @@ namespace BIM_Leaders_Core
 
         private protected override async void Run(ExternalCommandData commandData) { return; }
 
-        public static string GetPath()
-        {
-            return typeof(FamilyParameterChange).Namespace + "." + nameof(FamilyParameterChange);
-        }
+        public static string GetPath() => typeof(FamilyParameterChange).Namespace + "." + nameof(FamilyParameterChange);
     }
 }

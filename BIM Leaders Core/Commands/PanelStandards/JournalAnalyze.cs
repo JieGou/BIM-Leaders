@@ -358,9 +358,6 @@ namespace BIM_Leaders_Core
 
         private protected override async void Run(ExternalCommandData commandData) { return; }
 
-        public static string GetPath()
-        {
-            return typeof(JournalAnalyze).Namespace + "." + nameof(JournalAnalyze);
-        }
+        public static string GetPath() => typeof(JournalAnalyze).Namespace + "." + nameof(JournalAnalyze);
     }
 }

@@ -65,9 +65,6 @@ namespace BIM_Leaders_Core
 
         private protected override void Run(ExternalCommandData commandData) { return; }
 
-        public static string GetPath()
-        {
-            return typeof(FamilyZeroCoordinates).Namespace + "." + nameof(FamilyZeroCoordinates);
-        }
+        public static string GetPath() => typeof(FamilyZeroCoordinates).Namespace + "." + nameof(FamilyZeroCoordinates);
     }
 }
