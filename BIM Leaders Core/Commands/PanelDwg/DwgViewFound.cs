@@ -46,10 +46,8 @@ namespace BIM_Leaders_Core
         {
             try
             {
-                Document doc = commandData.Application.ActiveUIDocument.Document;
-
                 // Get Imports
-                IEnumerable<ImportInstance> imports = new FilteredElementCollector(doc)
+                IEnumerable<ImportInstance> imports = new FilteredElementCollector(_doc)
                     .OfClass(typeof(ImportInstance))
                     .WhereElementIsNotElementType()
                     .Cast<ImportInstance>();
