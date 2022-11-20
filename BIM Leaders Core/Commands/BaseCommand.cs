@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using BIM_Leaders_Windows;
@@ -15,7 +16,7 @@ namespace BIM_Leaders_Core
 
         public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            Run(commandData);
+            RunAsync(commandData); //
 
             if (!_runStarted)
                 return Result.Cancelled;
@@ -26,6 +27,8 @@ namespace BIM_Leaders_Core
         }
 
         private protected abstract void Run(ExternalCommandData commandData);
+
+        private protected virtual Task<string> RunAsync(ExternalCommandData commandData) { return null; } //
 
         private protected void ShowResult()
         {

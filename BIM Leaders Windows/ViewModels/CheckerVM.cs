@@ -90,10 +90,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="CheckerVM"/> class.
-        /// </summary>
         public CheckerVM(CheckerM model)
         {
             Model = model;
