@@ -12,6 +12,8 @@ namespace BIM_Leaders_Core
     public class FamilyParameterSet : BaseCommand
     {
         private List<string> _parametersList;
+        private bool _runFailed;
+        private string _runResult;
 
         public FamilyParameterSet()
         {

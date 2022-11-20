@@ -16,6 +16,8 @@ namespace BIM_Leaders_Core
     {
         private Document _doc;
         private DataSet _dwgList;
+        private bool _runFailed;
+        private string _runResult;
 
         public DwgViewFound()
         {

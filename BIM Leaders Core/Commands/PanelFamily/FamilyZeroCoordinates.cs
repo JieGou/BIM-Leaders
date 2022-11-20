@@ -12,6 +12,8 @@ namespace BIM_Leaders_Core
         private static UIDocument _uidoc;
         private static Document _doc;
         private static double _linesLength = 1;
+        private bool _runFailed;
+        private string _runResult;
 
         public FamilyZeroCoordinates()
         {

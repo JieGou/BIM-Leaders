@@ -12,6 +12,8 @@ namespace BIM_Leaders_Core
     {
         private static UIDocument _uidoc;
         private static Document _doc;
+        private bool _runFailed;
+        private string _runResult;
 
         public FamilyVoidsSelect()
         {
@@ -62,6 +64,16 @@ namespace BIM_Leaders_Core
                 ShowResult();
                 return Result.Failed;
             }
+        }
+
+        private void ShowResult()
+        {
+            // ViewModel
+            ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
+
+            // View
+            ReportForm form = new ReportForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
         private protected override async void Run(ExternalCommandData commandData) { return; }

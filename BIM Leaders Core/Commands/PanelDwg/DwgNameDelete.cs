@@ -14,6 +14,8 @@ namespace BIM_Leaders_Core
     {
         private Document _doc;
         private SortedDictionary<string, int> _dwgList;
+        private bool _runFailed;
+        private string _runResult;
 
         public DwgNameDelete()
         {

@@ -15,6 +15,8 @@ namespace BIM_Leaders_Core
         private static Document _doc;
         private string[] _journalContent;
         private DataSet _commandsDataSet;
+        private bool _runFailed;
+        private string _runResult;
 
         public JournalAnalyze()
         {

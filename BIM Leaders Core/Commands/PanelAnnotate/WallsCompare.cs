@@ -15,6 +15,8 @@ namespace BIM_Leaders_Core
         private Document _doc;
         private SortedDictionary<string, int> _materials;
         private SortedDictionary<string, int> _fillTypes;
+        private bool _runFailed;
+        private string _runResult;
 
         public WallsCompare()
         {

@@ -12,6 +12,8 @@ namespace BIM_Leaders_Core
     {
         private static Document _doc;
         private static int _countParametersChanged = 0;
+        private bool _runFailed;
+        private string _runResult;
 
         public FamilyParameterChange()
         {

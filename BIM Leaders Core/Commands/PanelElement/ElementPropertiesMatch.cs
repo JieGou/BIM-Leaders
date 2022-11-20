@@ -14,6 +14,8 @@ namespace BIM_Leaders_Core
         private static UIDocument _uidoc;
         private static Document _doc;
         private static int _countPropertiesMatched;
+        private bool _runFailed;
+        private string _runResult;
 
         public ElementPropertiesMatch()
         {
@@ -56,7 +58,8 @@ namespace BIM_Leaders_Core
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runResult = e.Message;
+                ShowResult();
                 return Result.Failed;
             }
         }
