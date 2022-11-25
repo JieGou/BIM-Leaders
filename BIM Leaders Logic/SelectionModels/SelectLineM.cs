@@ -52,6 +52,8 @@ namespace BIM_Leaders_Logic
 
         public void Run()
         {
+            Error = "";
+
             try
             {
                 // Get the line from user selection
