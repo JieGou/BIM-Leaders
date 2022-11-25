@@ -15,7 +15,7 @@ namespace BIM_Leaders_Core
             _transactionName = "Purge";
         }
 
-        private protected override async void Run(ExternalCommandData commandData)
+        private protected override void Run(ExternalCommandData commandData)
         {
             // Model
             PurgeM formM = new PurgeM(commandData, _transactionName);
@@ -28,16 +28,6 @@ namespace BIM_Leaders_Core
             // View
             PurgeForm form = new PurgeForm() { DataContext = formVM };
             form.ShowDialog();
-
-            while(!formVM.Closed)
-                await Task.Delay(1000);
-
-            _runStarted = formM.RunStarted;
-            _runFailed = formM.RunFailed;
-            _runResult = formM.RunResult;
-            _runReport = formM.RunReport;
-
-            ShowResult();
         }
 
         public static string GetPath() => typeof(Purge).Namespace + "." + nameof(Purge);

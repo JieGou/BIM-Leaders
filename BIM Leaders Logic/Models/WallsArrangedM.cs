@@ -99,54 +99,44 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public WallsArrangedM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
+        public WallsArrangedM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction)
         {
             _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad.
         }
 
-        #region IEXTERNALEVENTHANDLER
+        #region METHODS
 
-        public override void Execute(UIApplication app)
+        private protected override void TryExecute()
         {
-            RunStarted = true;
+            ConvertUserInput();
 
-            try
+            (ICollection<Element> wallsToFilterDistance, ICollection<Element> wallsToFilterAngle) = GetWallsToFilter();
+
+            // Create annotations
+            using (Transaction trans = new Transaction(_doc, TransactionName))
             {
-                ConvertUserInput();
+                trans.Start();
 
-                (ICollection<Element> wallsToFilterDistance, ICollection<Element> wallsToFilterAngle) = GetWallsToFilter();
-
-                // Create annotations
-                using (Transaction trans = new Transaction(_doc, TransactionName))
+                if (wallsToFilterDistance.Count != 0)
                 {
-                    trans.Start();
-
-                    if (wallsToFilterDistance.Count != 0)
-                    {
-                        Element filter0 = ViewFilterUtils.CreateSelectionFilter(_doc, FILTER_NAME_DISTANCE, wallsToFilterDistance);
-                        ViewFilterUtils.SetupFilter(_doc, filter0, FilterColorDistance);
-                    }
-                    if (wallsToFilterAngle.Count != 0)
-                    {
-                        Element filter1 = ViewFilterUtils.CreateSelectionFilter(_doc, FILTER_NAME_ANGLE, wallsToFilterAngle);
-                        ViewFilterUtils.SetupFilter(_doc, filter1, FilterColorAngle);
-                    }
-
-                    trans.Commit();
+                    Element filter0 = ViewFilterUtils.CreateSelectionFilter(_doc, FILTER_NAME_DISTANCE, wallsToFilterDistance);
+                    ViewFilterUtils.SetupFilter(_doc, filter0, FilterColorDistance);
+                }
+                if (wallsToFilterAngle.Count != 0)
+                {
+                    Element filter1 = ViewFilterUtils.CreateSelectionFilter(_doc, FILTER_NAME_ANGLE, wallsToFilterAngle);
+                    ViewFilterUtils.SetupFilter(_doc, filter1, FilterColorAngle);
                 }
 
-                RunResult = GetRunResult();
+                trans.Commit();
             }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
+
+            _result.Result = GetRunResult();
         }
-
-        #endregion
-
-        #region METHODS
 
         private void ConvertUserInput()
         {
@@ -348,8 +338,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
     }

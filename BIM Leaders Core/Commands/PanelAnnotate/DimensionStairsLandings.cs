@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Autodesk.Revit.Attributes;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
@@ -43,10 +42,10 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private protected override async void Run(ExternalCommandData commandData)
+        private protected override void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionStairsLandingsM formM = new DimensionStairsLandingsM(commandData, _transactionName);
+            DimensionStairsLandingsM formM = new DimensionStairsLandingsM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -56,15 +55,6 @@ namespace BIM_Leaders_Core
             // View
             DimensionStairsLandingsForm form = new DimensionStairsLandingsForm() { DataContext = formVM };
             form.ShowDialog();
-
-            while(!formVM.Closed)
-                await Task.Delay(1000);
-
-            _runStarted = formM.RunStarted;
-            _runFailed = formM.RunFailed;
-            _runResult = formM.RunResult;
-
-            ShowResult();
         }
 
         public static string GetPath() => typeof(DimensionStairsLandings).Namespace + "." + nameof(DimensionStairsLandings);

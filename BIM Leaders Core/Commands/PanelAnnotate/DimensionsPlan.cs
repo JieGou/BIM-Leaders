@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -18,8 +17,6 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            
-
             if (ShowDialogAboutPlanRegions(commandData) == TaskDialogResult.No)
                 return Result.Cancelled;
 
@@ -75,10 +72,10 @@ namespace BIM_Leaders_Core
 			return planContainsRegions;
 		}
 
-        private protected override async void Run(ExternalCommandData commandData)
+        private protected override void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionsPlanM formM = new DimensionsPlanM(commandData, _transactionName);
+            DimensionsPlanM formM = new DimensionsPlanM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -88,15 +85,6 @@ namespace BIM_Leaders_Core
             // View
             DimensionsPlanForm form = new DimensionsPlanForm() { DataContext = formVM };
             form.ShowDialog();
-
-            while(!formVM.Closed)
-                await Task.Delay(1000);
-
-            _runStarted = formM.RunStarted;
-            _runFailed = formM.RunFailed;
-            _runResult = formM.RunResult;
-
-            ShowResult();
         }
 
         public static string GetPath() => typeof(DimensionsPlan).Namespace + "." + nameof(DimensionsPlan);

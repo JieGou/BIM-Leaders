@@ -1,7 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
@@ -41,10 +40,10 @@ namespace BIM_Leaders_Core
 #endif
         }
 
-        private protected override async void Run(ExternalCommandData commandData)
+        private protected override void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData, _transactionName);
+            DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
             SelectLineM formSelectionM = new SelectLineM(commandData);
@@ -55,15 +54,6 @@ namespace BIM_Leaders_Core
             // View
             DimensionSectionFloorsForm form = new DimensionSectionFloorsForm() { DataContext = formVM };
             form.ShowDialog();
-
-            while(!formVM.Closed)
-                await Task.Delay(1000);
-
-            _runStarted = formM.RunStarted;
-            _runFailed = formM.RunFailed;
-            _runResult = formM.RunResult;
-
-            ShowResult();
         }
 
         public static string GetPath() => typeof(DimensionSectionFloors).Namespace + "." + nameof(DimensionSectionFloors);

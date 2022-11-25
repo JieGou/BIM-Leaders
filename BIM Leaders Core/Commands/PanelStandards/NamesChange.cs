@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Autodesk.Revit.Attributes;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
@@ -15,10 +14,10 @@ namespace BIM_Leaders_Core
             _transactionName = "Change Names";
         }
 
-        private protected override async void Run(ExternalCommandData commandData)
+        private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            NamesChangeM formM = new NamesChangeM(commandData, _transactionName);
+            NamesChangeM formM = new NamesChangeM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -28,15 +27,6 @@ namespace BIM_Leaders_Core
             // View
             NamesChangeForm form = new NamesChangeForm() { DataContext = formVM };
             form.ShowDialog();
-
-            while(!formVM.Closed)
-                await Task.Delay(1000);
-
-            _runStarted = formM.RunStarted;
-            _runFailed = formM.RunFailed;
-            _runResult = formM.RunResult;
-
-            ShowResult();
         }   
 
         public static string GetPath() => typeof(NamesChange).Namespace + "." + nameof(NamesChange);

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -60,39 +58,27 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public LevelsAlignM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
-        {
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public override void Execute(UIApplication app)
-        {
-            RunStarted = true;
-
-            try
-            {
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    DatumPlaneUtils.SetDatumPlanes(_doc, typeof(Level), Switch2D, Switch3D, Side1, Side2, ref _countLevelsAligned);
-
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public LevelsAlignM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                DatumPlaneUtils.SetDatumPlanes(_doc, typeof(Level), Switch2D, Switch3D, Side1, Side2, ref _countLevelsAligned);
+
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         private protected override string GetRunResult()
         {
@@ -107,8 +93,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
     }

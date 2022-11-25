@@ -29,39 +29,27 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DwgNameDeleteM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
-        {
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public override void Execute(UIApplication app)
-        {
-            RunStarted = true;
-
-            try
-            {
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    DeleteDwg();
-
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public DwgNameDeleteM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                DeleteDwg();
+
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         private void DeleteDwg()
         {
@@ -90,8 +78,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
     }

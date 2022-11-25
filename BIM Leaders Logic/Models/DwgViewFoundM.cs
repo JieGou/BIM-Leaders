@@ -26,57 +26,41 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DwgViewFoundM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
-        {
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public override void Execute(UIApplication app)
-        {
-            RunStarted = true;
-
-            try
-            {
-                // Get Imports
-                IEnumerable<ImportInstance> imports = new FilteredElementCollector(_doc)
-                    .OfClass(typeof(ImportInstance))
-                    .WhereElementIsNotElementType()
-                    .Cast<ImportInstance>();
-
-                int dwgId = 0;
-                if (!Int32.TryParse(SelectedDwg, out dwgId))
-                {
-                    RunResult = "Error getting a DWG from the selected item.";
-                    TaskDialog.Show(TransactionName, RunResult);
-                    return;
-                }
-
-                Element dwg = _doc.GetElement(new ElementId(dwgId));
-                List<ElementId> selectionSet = new List<ElementId>() { new ElementId(dwgId) };
-
-                if (dwg.ViewSpecific)
-                {
-                    View view = _doc.GetElement(dwg.OwnerViewId) as View;
-                    _uidoc.ActiveView = view;
-                }
-
-                _uidoc.Selection.SetElementIds(selectionSet);
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public DwgViewFoundM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
 
-        private protected override string GetRunResult() { return ""; }
+        private protected override void TryExecute()
+        {
+            // Get Imports
+            IEnumerable<ImportInstance> imports = new FilteredElementCollector(_doc)
+                .OfClass(typeof(ImportInstance))
+                .WhereElementIsNotElementType()
+                .Cast<ImportInstance>();
 
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
+            int dwgId = 0;
+            if (!Int32.TryParse(SelectedDwg, out dwgId))
+            {
+                _result.Result = "Error getting a DWG from the selected item.";
+                TaskDialog.Show(TransactionName, _result.Result);
+                return;
+            }
+
+            Element dwg = _doc.GetElement(new ElementId(dwgId));
+            List<ElementId> selectionSet = new List<ElementId>() { new ElementId(dwgId) };
+
+            if (dwg.ViewSpecific)
+            {
+                View view = _doc.GetElement(dwg.OwnerViewId) as View;
+                _uidoc.ActiveView = view;
+            }
+
+            _uidoc.Selection.SetElementIds(selectionSet);
+        }
 
         #endregion
     }

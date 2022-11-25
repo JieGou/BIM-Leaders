@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using Autodesk.Revit.DB.Architecture;
 using System.Data;
+using System.Linq;
+using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Logic
 {
@@ -44,41 +43,29 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public StairsStepsEnumerateM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
-        {
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public override void Execute(UIApplication app)
-        {
-            RunStarted = true;
-
-            try
-            {
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    IOrderedEnumerable<Stairs> stairsSorted = GetStairs();
-                    ChangeTreadNumbers(stairsSorted);
-                    CreateNumbers();
-
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public StairsStepsEnumerateM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                IOrderedEnumerable<Stairs> stairsSorted = GetStairs();
+                ChangeTreadNumbers(stairsSorted);
+                CreateNumbers();
+
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         /// <summary>
         /// Get all unpinned and ungrouped stairs on the current view.
@@ -200,8 +187,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
     }

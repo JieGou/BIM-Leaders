@@ -75,49 +75,39 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public WallsParallelM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
+        public WallsParallelM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction)
         {
             _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad.
         }
 
-        #region IEXTERNALEVENTHANDLER
+        #region METHODS
 
-        public override void Execute(UIApplication app)
+        private protected override void TryExecute()
         {
-            RunStarted = true;
+            ConvertUserInput();
 
-            try
+            ICollection<Element> wallsToFilter = GetWallsToFilter();
+
+            // Create annotations
+            using (Transaction trans = new Transaction(_doc, TransactionName))
             {
-                ConvertUserInput();
+                trans.Start();
 
-                ICollection<Element> wallsToFilter = GetWallsToFilter();
-
-                // Create annotations
-                using (Transaction trans = new Transaction(_doc, TransactionName))
+                if (wallsToFilter.Count != 0)
                 {
-                    trans.Start();
-
-                    if (wallsToFilter.Count != 0)
-                    {
-                        Element filter = ViewFilterUtils.CreateSelectionFilter(_doc, FILTER_NAME, wallsToFilter);
-                        ViewFilterUtils.SetupFilter(_doc, filter, FilterColor);
-                    }
-
-                    trans.Commit();
+                    Element filter = ViewFilterUtils.CreateSelectionFilter(_doc, FILTER_NAME, wallsToFilter);
+                    ViewFilterUtils.SetupFilter(_doc, filter, FilterColor);
                 }
 
-                RunResult = GetRunResult();
+                trans.Commit();
             }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
+
+            _result.Result = GetRunResult();
         }
-
-        #endregion
-
-        #region METHODS
 
         private void ConvertUserInput()
         {
@@ -230,8 +220,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
     }

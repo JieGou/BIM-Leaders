@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -13,7 +11,7 @@ using Autodesk.Revit.UI;
 namespace BIM_Leaders_Logic
 {
     [Transaction(TransactionMode.Manual)]
-    public class CheckerM : INotifyPropertyChanged, IExternalEventHandler
+    public class CheckerM : BaseModel
     {
         #region PROPERTIES
 
@@ -72,37 +70,17 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        #endregion
+        #endregion    
 
-        /*
-        public CheckerM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
-        {
-        }
-        */
-
-        #region IEXTERNALEVENTHANDLER
-
-        public async void Execute(UIApplication app) //
-        {
-            RunStarted = true;
-
-            try
-            {
-                //RunReport = CheckAll();
-                RunReport = await Task.Run(() => CheckAll());
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public CheckerM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
 
-        private DataSet CheckAll()
+        private protected override void TryExecute()
         {
             List<ReportMessage> reportMessageList = new List<ReportMessage>();
 
@@ -137,7 +115,7 @@ namespace BIM_Leaders_Logic
             if (CheckCodes[1])
                 reportMessageList.AddRange(CheckStairsHeadHeight());
 
-            return GetRunReport(reportMessageList);
+            _result.Report = GetRunReport(reportMessageList);
         }
 
         /// <summary>
@@ -901,7 +879,7 @@ namespace BIM_Leaders_Logic
         /// Create DataSet table for report window.
         /// </summary>
         /// <returns>DataSet object contains all data.</returns>
-        private protected DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages)
+        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages)
         {
             DataSet reportDataSet = new DataSet("reportDataSet");
 
@@ -927,126 +905,6 @@ namespace BIM_Leaders_Logic
             }
 
             return reportDataSet;
-        }
-
-        private protected string GetRunResult() { return ""; }
-
-        #endregion
-
-
-
-
-
-
-
-
-        ////
-        ////
-        ////
-        
-
-        // BELOW IS THINGS COPIES FROM BASE CLASS !!!!! FOR TESTING ONLY !!!!!
-
-
-
-        private protected UIDocument _uidoc;
-        private protected Document _doc;
-
-        #region PROPERTIES
-
-        /// <summary>
-        /// ExternalEvent needed for Revit to run transaction in API context.
-        /// So we must call not the main method but raise the event.
-        /// </summary>
-        public ExternalEvent ExternalEvent { get; set; }
-
-        private string _transactionName;
-        public string TransactionName
-        {
-            get { return _transactionName; }
-            set
-            {
-                _transactionName = value;
-                OnPropertyChanged(nameof(TransactionName));
-            }
-        }
-
-        private bool _runStarted;
-        public bool RunStarted
-        {
-            get { return _runStarted; }
-            set
-            {
-                _runStarted = value;
-                OnPropertyChanged(nameof(RunStarted));
-            }
-        }
-
-        private bool _runFailed;
-        public bool RunFailed
-        {
-            get { return _runFailed; }
-            set
-            {
-                _runFailed = value;
-                OnPropertyChanged(nameof(RunFailed));
-            }
-        }
-
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
-        private DataSet _runReport;
-        public DataSet RunReport
-        {
-            get { return _runReport; }
-            set
-            {
-                _runReport = value;
-                OnPropertyChanged(nameof(RunReport));
-            }
-        }
-
-        #endregion
-
-        public CheckerM(ExternalCommandData commandData, string transactionName)
-        {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
-
-            TransactionName = transactionName;
-        }
-
-        public void Run()
-        {
-            ExternalEvent.Raise();
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

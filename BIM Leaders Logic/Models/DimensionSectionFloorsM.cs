@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Logic
 {
@@ -94,55 +93,42 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DimensionSectionFloorsM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
-        {
-
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public override void Execute(UIApplication app)
-        {
-            RunStarted = true;
-
-            try
-            {
-                ConvertUserInput();
-
-                GetDividedFloors(out List<Floor> floorsThin, out List<Floor> floorsThick);
-                DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
-                Line line = detailLine.GeometryCurve as Line;
-                List<Face> intersectionFacesAll = GetIntersectionFaces(line, floorsThin, floorsThick);
-
-                // Check if no intersections
-                if (intersectionFacesAll.Count == 0)
-                    RunResult = "No intersections were found";
-
-                // Create annotations
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-                    
-                    if (PlaceSpots)
-                        CreateSpots(line, intersectionFacesAll);
-                    else
-                        CreateDimensions(line, intersectionFacesAll);
-                    
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public DimensionSectionFloorsM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            ConvertUserInput();
+
+            GetDividedFloors(out List<Floor> floorsThin, out List<Floor> floorsThick);
+            DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
+            Line line = detailLine.GeometryCurve as Line;
+            List<Face> intersectionFacesAll = GetIntersectionFaces(line, floorsThin, floorsThick);
+
+            // Check if no intersections
+            if (intersectionFacesAll.Count == 0)
+                _result.Result = "No intersections were found";
+
+            // Create annotations
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                if (PlaceSpots)
+                    CreateSpots(line, intersectionFacesAll);
+                else
+                    CreateDimensions(line, intersectionFacesAll);
+
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         private void ConvertUserInput()
         {
@@ -346,8 +332,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
     }

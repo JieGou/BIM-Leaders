@@ -51,101 +51,89 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public WallsCompareM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
-        {
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public override void Execute(UIApplication app)
-        {
-            RunStarted = true;
-
-            try
-            {
-                string materialName = _doc.GetElement(new ElementId(MaterialsSelected)).Name;
-                FilledRegionType fill = _doc.GetElement(new ElementId(FillTypesSelected)) as FilledRegionType;
-
-                double elevation = _doc.ActiveView.GenLevel.Elevation;
-
-                // Links selection.
-                List<Wall> walls1 = new List<Wall>();
-                List<Wall> walls2 = new List<Wall>();
-                Transform transform1 = _doc.ActiveView.CropBox.Transform; // Just new transform, view is dummy
-                Transform transform2 = _doc.ActiveView.CropBox.Transform; // Just new transform, view is dummy
-
-                // If only one file is a link
-                if (CheckOneLink)
-                {
-                    Reference linkReference = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select Link");
-                    RevitLinkInstance link1 = _doc.GetElement(linkReference.ElementId) as RevitLinkInstance;
-
-                    walls1 = GetWalls(link1.GetLinkDocument(), elevation, materialName);
-                    walls2 = GetWalls(_doc, elevation, materialName);
-
-                    transform1 = link1.GetTotalTransform();
-                    transform2 = transform1; // Don't need this because its doc file itself
-                }
-                else
-                {
-                    IList<Reference> linkReferences = _uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select 2 Links");
-                    Reference linkReference1 = linkReferences.First();
-                    Reference linkReference2 = linkReferences.Last();
-                    RevitLinkInstance link1 = _doc.GetElement(linkReference1.ElementId) as RevitLinkInstance;
-                    RevitLinkInstance link2 = _doc.GetElement(linkReference2.ElementId) as RevitLinkInstance;
-
-                    walls1 = GetWalls(link1.GetLinkDocument(), elevation, materialName);
-                    walls2 = GetWalls(link2.GetLinkDocument(), elevation, materialName);
-
-                    transform1 = link1.GetTotalTransform();
-                    transform2 = link2.GetTotalTransform();
-                }
-
-                // Getting plan loops of walls
-                List<CurveLoop> loops1 = GetWallsLoops(walls1);
-                List<CurveLoop> loops2 = GetWallsLoops(walls2);
-
-                // Getting total plan loop of wall set
-                Solid solid1 = GetWallsLoop(loops1);
-                Solid solid2 = GetWallsLoop(loops2);
-
-                // Transform solids
-                Solid solid1Transformed = SolidUtils.CreateTransformed(solid1, transform1);
-                Solid solid2Transformed = solid2;
-                if (!CheckOneLink)
-                    solid2Transformed = SolidUtils.CreateTransformed(solid2, transform2);
-
-                if (solid1Transformed.Volume == 0 || solid2Transformed.Volume == 0)
-                {
-                    RunResult = "No intersections found.";
-                    return;
-                }
-
-                // Get list of curveloops by intersecting two solids.
-                List<CurveLoop> loopList = GetCurveLoops(solid1Transformed, solid2Transformed);
-
-                // Drawing filled region
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    FilledRegion region = FilledRegion.Create(_doc, fill.Id, _doc.ActiveView.Id, loopList);
-
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public WallsCompareM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            string materialName = _doc.GetElement(new ElementId(MaterialsSelected)).Name;
+            FilledRegionType fill = _doc.GetElement(new ElementId(FillTypesSelected)) as FilledRegionType;
+
+            double elevation = _doc.ActiveView.GenLevel.Elevation;
+
+            // Links selection.
+            List<Wall> walls1 = new List<Wall>();
+            List<Wall> walls2 = new List<Wall>();
+            Transform transform1 = _doc.ActiveView.CropBox.Transform; // Just new transform, view is dummy
+            Transform transform2 = _doc.ActiveView.CropBox.Transform; // Just new transform, view is dummy
+
+            // If only one file is a link
+            if (CheckOneLink)
+            {
+                Reference linkReference = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select Link");
+                RevitLinkInstance link1 = _doc.GetElement(linkReference.ElementId) as RevitLinkInstance;
+
+                walls1 = GetWalls(link1.GetLinkDocument(), elevation, materialName);
+                walls2 = GetWalls(_doc, elevation, materialName);
+
+                transform1 = link1.GetTotalTransform();
+                transform2 = transform1; // Don't need this because its doc file itself
+            }
+            else
+            {
+                IList<Reference> linkReferences = _uidoc.Selection.PickObjects(ObjectType.Element, new SelectionFilterByCategory("RVT Links"), "Select 2 Links");
+                Reference linkReference1 = linkReferences.First();
+                Reference linkReference2 = linkReferences.Last();
+                RevitLinkInstance link1 = _doc.GetElement(linkReference1.ElementId) as RevitLinkInstance;
+                RevitLinkInstance link2 = _doc.GetElement(linkReference2.ElementId) as RevitLinkInstance;
+
+                walls1 = GetWalls(link1.GetLinkDocument(), elevation, materialName);
+                walls2 = GetWalls(link2.GetLinkDocument(), elevation, materialName);
+
+                transform1 = link1.GetTotalTransform();
+                transform2 = link2.GetTotalTransform();
+            }
+
+            // Getting plan loops of walls
+            List<CurveLoop> loops1 = GetWallsLoops(walls1);
+            List<CurveLoop> loops2 = GetWallsLoops(walls2);
+
+            // Getting total plan loop of wall set
+            Solid solid1 = GetWallsLoop(loops1);
+            Solid solid2 = GetWallsLoop(loops2);
+
+            // Transform solids
+            Solid solid1Transformed = SolidUtils.CreateTransformed(solid1, transform1);
+            Solid solid2Transformed = solid2;
+            if (!CheckOneLink)
+                solid2Transformed = SolidUtils.CreateTransformed(solid2, transform2);
+
+            if (solid1Transformed.Volume == 0 || solid2Transformed.Volume == 0)
+            {
+                _result.Result = "No intersections found.";
+                return;
+            }
+
+            // Get list of curveloops by intersecting two solids.
+            List<CurveLoop> loopList = GetCurveLoops(solid1Transformed, solid2Transformed);
+
+            // Drawing filled region
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                FilledRegion region = FilledRegion.Create(_doc, fill.Id, _doc.ActiveView.Id, loopList);
+
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         /// <summary>
         /// Get walls from document, that have level with given elevation and have material with given name.
@@ -306,8 +294,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
     }

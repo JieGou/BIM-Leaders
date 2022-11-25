@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
@@ -16,7 +17,7 @@ namespace BIM_Leaders_Core
 
         public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            RunAsync(commandData); //
+            Run(commandData);
 
             if (!_runStarted)
                 return Result.Cancelled;
@@ -28,7 +29,7 @@ namespace BIM_Leaders_Core
 
         private protected abstract void Run(ExternalCommandData commandData);
 
-        private protected virtual Task<string> RunAsync(ExternalCommandData commandData) { return null; } //
+        //private protected virtual Task<DataSet> RunAsync(ExternalCommandData commandData) { return null; } //
 
         private protected void ShowResult()
         {
@@ -49,6 +50,32 @@ namespace BIM_Leaders_Core
             {
                 // ViewModel
                 ReportVM formReportVM = new ReportVM(_runReport);
+
+                // View
+                ReportForm formReport = new ReportForm() { DataContext = formReportVM };
+                formReport.ShowDialog();
+            }
+        }
+
+        private protected void ShowResult(string transactionName, RunResult runResult)
+        {
+            if (!runResult.Started)
+                return;
+            if (!string.IsNullOrEmpty(runResult.Result))
+            {
+                // ViewModel
+                ResultVM formVM = new ResultVM(transactionName, runResult.Result);
+
+                // View
+                ResultForm form = new ResultForm() { DataContext = formVM };
+                form.ShowDialog();
+
+                return;
+            }
+            if (runResult.Report != null)
+            {
+                // ViewModel
+                ReportVM formReportVM = new ReportVM(runResult.Report);
 
                 // View
                 ReportForm formReport = new ReportForm() { DataContext = formReportVM };

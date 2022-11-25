@@ -8,11 +8,13 @@ using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Logic
 {
-	[Transaction(TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     public abstract class BaseModel : INotifyPropertyChanged, IExternalEventHandler
     {
         private protected UIDocument _uidoc;
         private protected Document _doc;
+        private protected RunResult _result;
+        private protected Action<string, RunResult> _showResult;
 
         #region PROPERTIES
 
@@ -33,56 +35,14 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private bool _runStarted;
-        public bool RunStarted
-        {
-            get { return _runStarted; }
-            set
-            {
-                _runStarted = value;
-                OnPropertyChanged(nameof(RunStarted));
-            }
-        }
-
-        private bool _runFailed;
-        public bool RunFailed
-        {
-            get { return _runFailed; }
-            set
-            {
-                _runFailed = value;
-                OnPropertyChanged(nameof(RunFailed));
-            }
-        }
-
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
-        private DataSet _runReport;
-        public DataSet RunReport
-        {
-            get { return _runReport; }
-            set
-            {
-                _runReport = value;
-                OnPropertyChanged(nameof(RunReport));
-            }
-        }
-
         #endregion
 
-        public BaseModel(ExternalCommandData commandData, string transactionName)
+        public BaseModel(ExternalCommandData commandData, string transactionName, Action<string, RunResult> showResultAction)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+            _result = new RunResult();
+            _showResult = showResultAction;
 
             TransactionName = transactionName;
         }
@@ -99,14 +59,33 @@ namespace BIM_Leaders_Logic
             return TransactionName;
         }
 
-        public abstract void Execute(UIApplication app);
+        public virtual void Execute(UIApplication app)
+        {
+            _result.Started = true;
+
+            try
+            {
+                TryExecute();
+            }
+            catch (Exception e)
+            {
+                _result.Failed = true;
+                _result.Result = ExceptionUtils.GetMessage(e);
+            }
+            finally
+            {
+                _showResult(TransactionName, _result);
+            }
+        }
+
+        private protected abstract void TryExecute();
 
         #endregion
 
         #region METHODS
 
-        private protected abstract string GetRunResult();
-        private protected abstract DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages);
+        private protected virtual string GetRunResult() => "";
+        private protected virtual DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) => null;
 
         #endregion
 

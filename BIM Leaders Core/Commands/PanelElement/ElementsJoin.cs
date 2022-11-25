@@ -15,8 +15,6 @@ namespace BIM_Leaders_Core
         private static Document _doc;
         private static int _countCutted;
         private static int _countJoined;
-        private bool _runFailed;
-        private string _runResult;
 
         public ElementsJoin()
         {

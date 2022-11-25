@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using System.Data;
 
 namespace BIM_Leaders_Logic
 {
@@ -75,82 +74,72 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DimensionsPlanM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
+        public DimensionsPlanM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction)
         {
             _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
         }
 
-        #region IEXTERNALEVENTHANDLER
+        #region METHODS
 
-        public override void Execute(UIApplication app)
+        private protected override void TryExecute()
         {
-            RunStarted = true;
+            ConvertUserInput();
 
-            try
+            // Collecting model elements to dimension
+            List<Wall> wallsAll = GetWalls();
+            List<FamilyInstance> columnsAll = GetColumns();
+
+            // Get lists of walls and columns that are horizontal and vertical
+            (List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(wallsAll);
+            List<FamilyInstance> columnsPer = FilterColumns(columnsAll);
+
+            // Sum columns and walls
+            IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
+            IEnumerable<Element> elementsVer = wallsVer.Cast<Element>().Concat(columnsPer.Cast<Element>());
+
+            // Get all faces that need a dimension
+            // !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
+            List<PlanarFace> facesHorAll = GetFacesHorizontal(elementsHor);
+            List<PlanarFace> facesVerAll = GetFacesVertical(elementsVer);
+
+            // Storing data needed to create all dimensions
+            Dictionary<Line, ReferenceArray> dimensionsDataHor = GetDimensionsData(facesHorAll, true);
+            Dictionary<Line, ReferenceArray> dimensionsDataVer = GetDimensionsData(facesVerAll, false);
+
+            using (Transaction trans = new Transaction(_doc, TransactionName))
             {
-                ConvertUserInput();
+                trans.Start();
 
-                // Collecting model elements to dimension
-                List<Wall> wallsAll = GetWalls();
-                List<FamilyInstance> columnsAll = GetColumns();
-
-                // Get lists of walls and columns that are horizontal and vertical
-                (List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(wallsAll);
-                List<FamilyInstance> columnsPer = FilterColumns(columnsAll);
-
-                // Sum columns and walls
-                IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
-                IEnumerable<Element> elementsVer = wallsVer.Cast<Element>().Concat(columnsPer.Cast<Element>());
-
-                // Get all faces that need a dimension
-                // !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
-                List<PlanarFace> facesHorAll = GetFacesHorizontal(elementsHor);
-                List<PlanarFace> facesVerAll = GetFacesVertical(elementsVer);
-
-                // Storing data needed to create all dimensions
-                Dictionary<Line, ReferenceArray> dimensionsDataHor = GetDimensionsData(facesHorAll, true);
-                Dictionary<Line, ReferenceArray> dimensionsDataVer = GetDimensionsData(facesVerAll, false);
-
-                using (Transaction trans = new Transaction(_doc, TransactionName))
+                foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataHor)
                 {
-                    trans.Start();
-
-                    foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataHor)
-                    {
-                        Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
-                        DimensionUtils.AdjustText(dimension);
+                    Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
+                    DimensionUtils.AdjustText(dimension);
 #if !VERSION2020
-                        dimension.HasLeader = false;
+                    dimension.HasLeader = false;
 #endif
-                        _countDimensions++;
-                        _countSegments += dimensionData.Value.Size - 1;
-                    }
-                    foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
-                    {
-                        Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
-                        DimensionUtils.AdjustText(dimension);
+                    _countDimensions++;
+                    _countSegments += dimensionData.Value.Size - 1;
+                }
+                foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
+                {
+                    Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
+                    DimensionUtils.AdjustText(dimension);
 #if !VERSION2020
-                        dimension.HasLeader = false;
+                    dimension.HasLeader = false;
 #endif
-                        _countDimensions++;
-                        _countSegments += dimensionData.Value.Size - 1;
-                    }
-
-                    trans.Commit();
+                    _countDimensions++;
+                    _countSegments += dimensionData.Value.Size - 1;
                 }
 
-                RunResult = GetRunResult();
+                trans.Commit();
             }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
+
+            _result.Result = GetRunResult();
         }
-
-        #endregion
-
-        #region METHODS
 
         private void ConvertUserInput()
         {
@@ -648,9 +637,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
-
         #endregion
     }
 }

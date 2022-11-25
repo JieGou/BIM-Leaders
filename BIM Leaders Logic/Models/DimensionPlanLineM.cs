@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using System.Data;
 
 namespace BIM_Leaders_Logic
 {
@@ -30,55 +29,45 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DimensionPlanLineM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
+        public DimensionPlanLineM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction)
         {
             _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
         }
 
-        #region IEXTERNALEVENTHANDLER
-
-        public override void Execute(UIApplication app)
-        {
-            RunStarted = true;
-
-            try
-            {
-                DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
-                Line line = detailLine.GeometryCurve as Line;
-
-                ReferenceArray references = GetReferences(line);
-
-                if (references.Size < 2)
-                {
-                    RunFailed = true;
-                    RunResult = "Not enough count of references for dimension.";
-                    return;
-                }
-
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, line, references);
-                    DimensionUtils.AdjustText(dimension);
-#if !VERSION2020
-                    dimension.HasLeader = false;
-#endif
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
-
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
+            Line line = detailLine.GeometryCurve as Line;
+
+            ReferenceArray references = GetReferences(line);
+
+            if (references.Size < 2)
+            {
+                _result.Failed = true;
+                _result.Result = "Not enough count of references for dimension.";
+                return;
+            }
+
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, line, references);
+                DimensionUtils.AdjustText(dimension);
+#if !VERSION2020
+                dimension.HasLeader = false;
+#endif
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         /// <summary>
         /// Get ReferenceArray of elements that intersects the given line.
@@ -289,8 +278,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
-        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) { return null; }
 
         #endregion
     }

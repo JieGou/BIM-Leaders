@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Data;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -16,8 +15,6 @@ namespace BIM_Leaders_Core
     {
         private Document _doc;
         private DataSet _dwgList;
-        private bool _runFailed;
-        private string _runResult;
 
         public DwgViewFound()
         {
@@ -130,10 +127,10 @@ namespace BIM_Leaders_Core
             return dwgDataSet;
         }
 
-        private protected override async void Run(ExternalCommandData commandData)
+        private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            DwgViewFoundM formM = new DwgViewFoundM(commandData, _transactionName);
+            DwgViewFoundM formM = new DwgViewFoundM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -146,15 +143,6 @@ namespace BIM_Leaders_Core
             // View
             DwgViewFoundForm form = new DwgViewFoundForm() { DataContext = formVM };
             form.ShowDialog();
-
-            while(!formVM.Closed)
-                await Task.Delay(1000);
-
-            _runStarted = formM.RunStarted;
-            _runFailed = formM.RunFailed;
-            _runResult = formM.RunResult;
-
-            ShowResult();
         }
 
         public static string GetPath() => typeof(DwgViewFound).Namespace + "." + nameof(DwgViewFound);

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -12,8 +11,6 @@ namespace BIM_Leaders_Core
     public class FamilyParameterSet : BaseCommand
     {
         private List<string> _parametersList;
-        private bool _runFailed;
-        private string _runResult;
 
         public FamilyParameterSet()
         {
@@ -37,26 +34,19 @@ namespace BIM_Leaders_Core
         private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            FamilyParameterSetM formM = new FamilyParameterSetM(commandData, _transactionName);
+            FamilyParameterSetM formM = new FamilyParameterSetM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            FamilyParameterSetVM formVM = new FamilyParameterSetVM(formM);
-            formVM.ParametersList = _parametersList;
+            FamilyParameterSetVM formVM = new FamilyParameterSetVM(formM)
+            {
+                ParametersList = _parametersList
+            };
 
             // View
             FamilyParameterSetForm form = new FamilyParameterSetForm() { DataContext = formVM };
             form.ShowDialog();
-
-            while(!formVM.Closed)
-                await Task.Delay(1000);
-
-            _runStarted = formM.RunStarted;
-            _runFailed = formM.RunFailed;
-            _runResult = formM.RunResult;
-
-            ShowResult();
         }
 
         private List<string> GetParametersList(ExternalCommandData commandData)

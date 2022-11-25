@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RunResult.cs" />
     <Compile Include="Models\PurgeM.cs" />
     <Compile Include="Models\WallsParallelM.cs" />
     <Compile Include="Models\WallsArrangedM.cs" />
@@ -101,7 +102,6 @@
     <Compile Include="Models\CheckerM.cs" />
     <Compile Include="Models\NamesChangeM.cs" />
     <Compile Include="Models\WarningsSolveM.cs" />
-    <Compile Include="Models\_TEMPLATE.cs" />
     <Compile Include="Models\DimensionsPlanM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BaseModel.cs" />

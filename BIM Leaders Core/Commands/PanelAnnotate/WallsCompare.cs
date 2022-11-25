@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -15,8 +14,6 @@ namespace BIM_Leaders_Core
         private Document _doc;
         private SortedDictionary<string, int> _materials;
         private SortedDictionary<string, int> _fillTypes;
-        private bool _runFailed;
-        private string _runResult;
 
         public WallsCompare()
         {
@@ -101,7 +98,7 @@ namespace BIM_Leaders_Core
         private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            WallsCompareM formM = new WallsCompareM(commandData, _transactionName);
+            WallsCompareM formM = new WallsCompareM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -117,15 +114,6 @@ namespace BIM_Leaders_Core
             // View
             WallsCompareForm form = new WallsCompareForm() { DataContext = formVM };
             form.ShowDialog();
-
-            while(!formVM.Closed)
-                await Task.Delay(1000);
-
-            _runStarted = formM.RunStarted;
-            _runFailed = formM.RunFailed;
-            _runResult = formM.RunResult;
-
-            ShowResult();
         }
 
         public static string GetPath() => typeof(WallsCompare).Namespace + "." + nameof(WallsCompare);

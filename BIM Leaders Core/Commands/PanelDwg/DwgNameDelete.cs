@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -14,8 +13,6 @@ namespace BIM_Leaders_Core
     {
         private Document _doc;
         private SortedDictionary<string, int> _dwgList;
-        private bool _runFailed;
-        private string _runResult;
 
         public DwgNameDelete()
         {
@@ -74,10 +71,10 @@ namespace BIM_Leaders_Core
             return dwgTypesList;
         }
 
-        private protected override async void Run(ExternalCommandData commandData)
+        private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            DwgNameDeleteM formM = new DwgNameDeleteM(commandData, _transactionName);
+            DwgNameDeleteM formM = new DwgNameDeleteM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -91,15 +88,6 @@ namespace BIM_Leaders_Core
             // View
             DwgNameDeleteForm form = new DwgNameDeleteForm() { DataContext = formVM };
             form.ShowDialog();
-
-            while(!formVM.Closed)
-                await Task.Delay(1000);
-
-            _runStarted = formM.RunStarted;
-            _runFailed = formM.RunFailed;
-            _runResult = formM.RunResult;
-
-            ShowResult();
         }
 
         public static string GetPath() => typeof(DwgNameDelete).Namespace + "." + nameof(DwgNameDelete);
