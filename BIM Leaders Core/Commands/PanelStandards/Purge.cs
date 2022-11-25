@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Autodesk.Revit.Attributes;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
@@ -18,7 +17,7 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            PurgeM formM = new PurgeM(commandData, _transactionName);
+            PurgeM formM = new PurgeM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 

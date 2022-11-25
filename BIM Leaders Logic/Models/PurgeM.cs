@@ -104,37 +104,25 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public PurgeM(ExternalCommandData commandData, string transactionName) : base(commandData, transactionName)
-        {
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public override void Execute(UIApplication app)
-        {
-            RunStarted = true;
-
-            try
-            {
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    RunReport = RunPurges();
-
-                    trans.Commit();
-                }
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public PurgeM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                _result.Report = RunPurges();
+
+                trans.Commit();
+            }
+        }
 
         private DataSet RunPurges()
         {
@@ -398,8 +386,6 @@ namespace BIM_Leaders_Logic
 
             return reportDataSet;
         }
-
-        private protected override string GetRunResult() { return ""; }
 
         #endregion
     }
