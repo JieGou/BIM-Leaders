@@ -1,24 +1,26 @@
-﻿using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class WallsCompare : IExternalCommand
+    public class WallsCompare : BaseCommand
     {
         private Document _doc;
         private SortedDictionary<string, int> _materials;
         private SortedDictionary<string, int> _fillTypes;
 
-        private const string TRANSACTION_NAME = "Compare Walls";
+        public WallsCompare()
+        {
+            _transactionName = "Compare Walls";
+        }
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
             _materials = GetListMaterials();
@@ -26,7 +28,12 @@ namespace BIM_Leaders_Core
 
             Run(commandData);
 
-            return Result.Succeeded;
+            if (!_runStarted)
+                return Result.Cancelled;
+            if (_runFailed)
+                return Result.Failed;
+            else
+                return Result.Succeeded;
         }
 
         private SortedDictionary<string, int> GetListMaterials()
@@ -88,10 +95,10 @@ namespace BIM_Leaders_Core
             return fillTypesList;
         }
 
-        private async void Run(ExternalCommandData commandData)
+        private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            WallsCompareM formM = new WallsCompareM(commandData, TRANSACTION_NAME);
+            WallsCompareM formM = new WallsCompareM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -107,29 +114,8 @@ namespace BIM_Leaders_Core
             // View
             WallsCompareForm form = new WallsCompareForm() { DataContext = formVM };
             form.ShowDialog();
-
-            await Task.Delay(1000);
-
-            ShowResult(formM.RunResult);
         }
 
-        private void ShowResult(string resultText)
-        {
-            if (resultText == null)
-                return;
-
-            // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
-
-            // View
-            ReportForm form = new ReportForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
-
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(WallsCompare).Namespace + "." + nameof(WallsCompare);
-        }
+        public static string GetPath() => typeof(WallsCompare).Namespace + "." + nameof(WallsCompare);
     }
 }

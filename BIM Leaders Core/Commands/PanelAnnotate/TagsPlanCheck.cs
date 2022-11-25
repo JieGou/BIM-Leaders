@@ -1,28 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class TagsPlanCheck : IExternalCommand
+    public class TagsPlanCheck : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Tags Plan Check";
-
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public TagsPlanCheck()
         {
-            Run(commandData);
-
-            return Result.Succeeded;
+            _transactionName = "Tags Plan Check";
         }
 
-        private async void Run(ExternalCommandData commandData)
+        private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            TagsPlanCheckM formM = new TagsPlanCheckM(commandData, TRANSACTION_NAME);
+            TagsPlanCheckM formM = new TagsPlanCheckM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
@@ -32,29 +27,8 @@ namespace BIM_Leaders_Core
             // View
             TagsPlanCheckForm form = new TagsPlanCheckForm() { DataContext = formVM };
             form.ShowDialog();
-
-            await Task.Delay(1000);
-
-            ShowResult(formM.RunResult);
         }
 
-        private void ShowResult(string resultText)
-        {
-            if (resultText == null)
-                return;
-
-            // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
-
-            // View
-            ReportForm form = new ReportForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
-
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(TagsPlanCheck).Namespace + "." + nameof(TagsPlanCheck);
-        }
+        public static string GetPath() => typeof(TagsPlanCheck).Namespace + "." + nameof(TagsPlanCheck);
     }
 }

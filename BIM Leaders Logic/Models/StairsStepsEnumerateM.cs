@@ -1,42 +1,23 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
+using System.Data;
+using System.Linq;
 using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class StairsStepsEnumerateM : INotifyPropertyChanged, IExternalEventHandler
+    public class StairsStepsEnumerateM : BaseModel
     {
-        private UIDocument _uidoc;
-        private Document _doc;
         private int _countStairsGrouped;
         private int _countStairsUnpinned;
         private int _countRisersNumbers;
         private int _countRunsNumbersPlaced;
 
         #region PROPERTIES
-
-        /// <summary>
-        /// ExternalEvent needed for Revit to run transaction in API context.
-        /// So we must call not the main method but raise the event.
-        /// </summary>
-        public ExternalEvent ExternalEvent { get; set; }
-
-        private string _transactionName;
-        public string TransactionName
-        {
-            get { return _transactionName; }
-            set
-            {
-                _transactionName = value;
-                OnPropertyChanged(nameof(TransactionName));
-            }
-        }
 
         private int _startNumber;
         public int StartNumber
@@ -60,77 +41,31 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private bool _runFailed;
-        public bool RunFailed
-        {
-            get { return _runFailed; }
-            set
-            {
-                _runFailed = value;
-                OnPropertyChanged(nameof(RunFailed));
-            }
-        }
-
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
         #endregion
 
-        public StairsStepsEnumerateM(ExternalCommandData commandData, string transactionName)
-        {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
-
-            TransactionName = transactionName;
-        }
-
-        public void Run()
-        {
-            ExternalEvent.Raise();
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        public void Execute(UIApplication app)
-        {
-            try
-            {
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    IOrderedEnumerable<Stairs> stairsSorted = GetStairs();
-                    ChangeTreadNumbers(stairsSorted);
-                    CreateNumbers();
-
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public StairsStepsEnumerateM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                IOrderedEnumerable<Stairs> stairsSorted = GetStairs();
+                ChangeTreadNumbers(stairsSorted);
+                CreateNumbers();
+
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         /// <summary>
         /// Get all unpinned and ungrouped stairs on the current view.
@@ -235,7 +170,7 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private string GetRunResult()
+        private protected override string GetRunResult()
         {
             string text = "";
 
@@ -254,18 +189,5 @@ namespace BIM_Leaders_Logic
         }
 
         #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion
-
     }
 }

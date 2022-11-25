@@ -111,11 +111,6 @@
     <Compile Include="CommandsAvailability\ViewIsSection.cs" />
     <Compile Include="CommandsAvailability\ViewIsSectionOrElevation.cs" />
     <Compile Include="CommandsAvailability\ViewIsStandard.cs" />
-    <Compile Include="Commands\BaseCommand.cs" />
-    <Compile Include="Commands\Helpers\ViewUtils.cs" />
-    <Compile Include="Commands\Helpers\DatumPlaneUtils.cs" />
-    <Compile Include="Commands\Helpers\DimensionUtils.cs" />
-    <Compile Include="Commands\Helpers\ViewFilterUtils.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlan.cs" />
     <Compile Include="Commands\PanelAnnotate\TagsPlanCheck.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionPlanLine.cs" />
@@ -129,7 +124,7 @@
     <Compile Include="Commands\PanelStandards\WarningsSolve.cs" />
     <Compile Include="Commands\PanelStandards\WallsArranged.cs" />
     <Compile Include="Commands\PanelStandards\HelpStandards.cs" />
-    <Compile Include="Commands\Helpers\SelectionFilterByCategory.cs" />
+    <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="CoreAssembly.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionSectionFloors.cs" />
     <Compile Include="Commands\PanelDwg\DwgNameDelete.cs" />

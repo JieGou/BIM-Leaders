@@ -20,6 +20,8 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
+        public bool Closed { get; private set; }
+
         private SortedDictionary<string, int> _dwgList = new SortedDictionary<string, int>();
         public SortedDictionary<string, int> DwgList
         {
@@ -40,10 +42,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="DwgNameDeleteVM"/> class.
-        /// </summary>
         public DwgNameDeleteVM(DwgNameDeleteM model)
         {
             Model = model;
@@ -81,10 +79,12 @@ namespace BIM_Leaders_Windows
         private void CloseAction(Window window)
         {
             if (window != null)
+            {
+                Closed = true;
                 window.Close();
+            }
         }
 
         #endregion
-
     }
 }

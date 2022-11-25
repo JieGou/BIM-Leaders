@@ -20,6 +20,8 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
+        public bool Closed { get; private set; }
+
         private bool _checkOneLink;
         public bool CheckOneLink
         {
@@ -110,7 +112,10 @@ namespace BIM_Leaders_Windows
         private void CloseAction(Window window)
         {
             if (window != null)
+            {
+                Closed = true;
                 window.Close();
+            }
         }
 
         #endregion

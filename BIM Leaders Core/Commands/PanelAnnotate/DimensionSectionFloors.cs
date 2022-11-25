@@ -1,24 +1,31 @@
-﻿using System.Threading.Tasks;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class DimensionSectionFloors : IExternalCommand
+    public class DimensionSectionFloors : BaseCommand
     {
-        private const string TRANSACTION_NAME = "Annotate Section";
+        public DimensionSectionFloors()
+        {
+            _transactionName = "Annotate Section";
+        }
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             CheckIfSectionIsSplit(commandData);
 
             Run(commandData);
 
-            return Result.Succeeded;
+            if (!_runStarted)
+                return Result.Cancelled;
+            if (_runFailed)
+                return Result.Failed;
+            else
+                return Result.Succeeded;
         }
 
         private void CheckIfSectionIsSplit(ExternalCommandData commandData)
@@ -26,14 +33,17 @@ namespace BIM_Leaders_Core
 #if !VERSION2020
             ViewSection view = commandData.Application.ActiveUIDocument.Document.ActiveView as ViewSection;
             if (view.IsSplitSection())
-                ShowResult("Current view is a split section. This may cause issues when finding geometry intersections.");
+            {
+                _runResult = "Current view is a split section. This may cause issues when finding geometry intersections.";
+                ShowResult();
+            }
 #endif
         }
 
-        private async void Run(ExternalCommandData commandData)
+        private protected override void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData, TRANSACTION_NAME);
+            DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
             SelectLineM formSelectionM = new SelectLineM(commandData);
@@ -44,29 +54,8 @@ namespace BIM_Leaders_Core
             // View
             DimensionSectionFloorsForm form = new DimensionSectionFloorsForm() { DataContext = formVM };
             form.ShowDialog();
-
-            await Task.Delay(1000);
-
-            ShowResult(formM.RunResult);
         }
 
-        private void ShowResult(string resultText)
-        {
-            if (resultText == null)
-                return;
-
-            // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
-
-            // View
-            ReportForm form = new ReportForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
-
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(DimensionSectionFloors).Namespace + "." + nameof(DimensionSectionFloors);
-        }
+        public static string GetPath() => typeof(DimensionSectionFloors).Namespace + "." + nameof(DimensionSectionFloors);
     }
 }

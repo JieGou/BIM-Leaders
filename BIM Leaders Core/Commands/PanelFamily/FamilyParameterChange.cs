@@ -1,28 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class FamilyParameterChange : IExternalCommand
+    public class FamilyParameterChange : BaseCommand
     {
         private static Document _doc;
         private static int _countParametersChanged = 0;
 
-        private const string TRANSACTION_NAME = "Change Parameter";
+        public FamilyParameterChange()
+        {
+            _transactionName = "Change Parameter";
+        }
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
+            _runStarted = true;
+
             try
             {
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -30,17 +34,17 @@ namespace BIM_Leaders_Core
 
                     trans.Commit();
                 }
-                string text = (_countParametersChanged == 0)
-                    ? "No parameters changed."
-                    : $"{_countParametersChanged} parameters changed.";
 
-                ShowResult(text);
+                _runResult = GetRunResult();
+
+                ShowResult();
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
                 return Result.Failed;
             }
         }
@@ -66,23 +70,17 @@ namespace BIM_Leaders_Core
             _countParametersChanged = parameters.Count();
         }
 
-        private static void ShowResult(string resultText)
+        private string GetRunResult()
         {
-            if (resultText == null)
-                return;
+            string text = (_countParametersChanged == 0)
+                    ? "No parameters changed."
+                    : $"{_countParametersChanged} parameters changed.";
 
-            // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
-
-            // View
-            ReportForm form = new ReportForm() { DataContext = formVM };
-            form.ShowDialog();
+            return text;
         }
 
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(FamilyParameterChange).Namespace + "." + nameof(FamilyParameterChange);
-        }
+        private protected override async void Run(ExternalCommandData commandData) { return; }
+
+        public static string GetPath() => typeof(FamilyParameterChange).Namespace + "." + nameof(FamilyParameterChange);
     }
 }

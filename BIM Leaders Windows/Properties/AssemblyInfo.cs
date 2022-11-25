@@ -25,6 +25,6 @@ using System.Windows;
 
 // MainVersion.Version.Build.Edition
 // For updating the installation, new Build number needed.
-[assembly: AssemblyVersion("1.0.7.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
 // MainVersion.Year.Month.Day
-[assembly: AssemblyFileVersion("1.22.11.3")]
+[assembly: AssemblyFileVersion("1.22.11.25")]

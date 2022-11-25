@@ -30,6 +30,8 @@ namespace BIM_Leaders_Windows
             set { _selectLineModel = value; }
         }
 
+        public bool Closed { get; private set; }
+
         private bool _isVisible;
         public bool IsVisible
         {
@@ -142,10 +144,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref=DimensionSectionFloorsVM"/> class.
-        /// </summary>
         public DimensionSectionFloorsVM(DimensionSectionFloorsM model, SelectLineM selectLineModel)
         {
             Model = model;
@@ -293,7 +291,10 @@ namespace BIM_Leaders_Windows
         private void CloseAction(Window window)
         {
             if (window != null)
+            {
+                Closed = true;
                 window.Close();
+            }
         }
 
         #endregion

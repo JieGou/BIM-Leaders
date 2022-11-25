@@ -13,72 +13,76 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public abstract class BaseCommand : IExternalCommand
     {
-        private Type _modelType;
-        private Type _viewModelType;
-        private Type _viewType;
+        private protected string _transactionName;
+        private protected bool _runStarted;
+        private protected bool _runFailed;
+        private protected string _runResult;
+        private protected DataSet _runReport;
 
-        private static DataSet _reportDataSet;
-        private bool _runFailed;
-        private string _runResult;
-
-        private const string TRANSACTION_NAME = "Check";
-
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            //_modelType = typeof(CheckerM);
-            //_viewModelType = typeof(CheckerVM);
-            //_viewType = typeof(CheckerForm);
+            Run(commandData);
 
-            GetInput(commandData);
-
+            if (!_runStarted)
+                return Result.Cancelled;
             if (_runFailed)
                 return Result.Failed;
             else
                 return Result.Succeeded;
         }
 
-        private async void GetInput(ExternalCommandData commandData)
+        private protected abstract void Run(ExternalCommandData commandData);
+
+        //private protected virtual Task<DataSet> RunAsync(ExternalCommandData commandData) { return null; } //
+
+        private protected void ShowResult()
         {
-            // Model
-            BaseModel model = Activator.CreateInstance(_modelType) as BaseModel;
-            ExternalEvent externalEvent = ExternalEvent.Create(model);
-            model.ExternalEvent = externalEvent;
-            model.CommandData = commandData;
-            model.TransactionName = TRANSACTION_NAME;
+            if (!_runStarted)
+                return;
+            if (!string.IsNullOrEmpty(_runResult))
+            {
+                // ViewModel
+                ResultVM formVM = new ResultVM(_transactionName, _runResult);
 
-            // ViewModel
-            BaseViewModel formVM = new BaseViewModel(model);
+                // View
+                ResultForm form = new ResultForm() { DataContext = formVM };
+                form.ShowDialog();
 
-            // View
-            BaseView form = new BaseView() { DataContext = formVM };
-            form.ShowDialog();
+                return;
+            }
+            if (_runReport != null)
+            {
+                // ViewModel
+                ReportVM formReportVM = new ReportVM(_runReport);
 
-            await Task.Delay(1000);
-
-            _runFailed = model.RunFailed;
-            _runResult = model.RunResult;
-
-            ShowResult();
+                // View
+                ReportForm formReport = new ReportForm() { DataContext = formReportVM };
+                formReport.ShowDialog();
+            }
         }
 
-        private void ShowResult()
+        private protected void ShowResult(string transactionName, RunResult runResult)
         {
-            if (_runResult.Length > 0)
+            if (!runResult.Started)
+                return;
+            if (!string.IsNullOrEmpty(runResult.Result))
             {
                 // ViewModel
-                ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
+                ResultVM formVM = new ResultVM(transactionName, runResult.Result);
 
                 // View
-                ReportForm form = new ReportForm() { DataContext = formVM };
+                ResultForm form = new ResultForm() { DataContext = formVM };
                 form.ShowDialog();
+
+                return;
             }
-            else
+            if (runResult.Report != null)
             {
                 // ViewModel
-                BaseReportViewModel formReportVM = new BaseReportViewModel(_reportDataSet);
+                ReportVM formReportVM = new ReportVM(runResult.Report);
 
                 // View
-                BaseReportView formReport = new BaseReportView() { DataContext = formReportVM };
+                ReportForm formReport = new ReportForm() { DataContext = formReportVM };
                 formReport.ShowDialog();
             }
         }

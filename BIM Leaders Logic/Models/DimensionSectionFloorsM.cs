@@ -1,39 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Logic
 {
     [Transaction(TransactionMode.Manual)]
-    public class DimensionSectionFloorsM : INotifyPropertyChanged, IExternalEventHandler
+    public class DimensionSectionFloorsM : BaseModel
     {
-        private UIDocument _uidoc;
-        private Document _doc;
-
         private int _countSpots;
         private int _countSegments;
 
         #region PROPERTIES
-
-        /// <summary>
-        /// ExternalEvent needed for Revit to run transaction in API context.
-        /// So we must call not the main method but raise the event.
-        /// </summary>
-        public ExternalEvent ExternalEvent { get; set; }
-
-        private string _transactionName;
-        public string TransactionName
-        {
-            get { return _transactionName; }
-            set
-            {
-                _transactionName = value;
-                OnPropertyChanged(nameof(TransactionName));
-            }
-        }
 
         private double _minThickThicknessCm;
         public double MinThickThicknessCm
@@ -90,13 +69,13 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private bool _inputPlaceSpots;
+        private bool _placeSpots;
         public bool PlaceSpots
         {
-            get { return _inputPlaceSpots; }
+            get { return _placeSpots; }
             set
             {
-                _inputPlaceSpots = value;
+                _placeSpots = value;
                 OnPropertyChanged(nameof(PlaceSpots));
             }
         }
@@ -112,90 +91,44 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private bool _runFailed;
-        public bool RunFailed
-        {
-            get { return _runFailed; }
-            set
-            {
-                _runFailed = value;
-                OnPropertyChanged(nameof(RunFailed));
-            }
-        }
-
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            { 
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
         #endregion
 
-        public DimensionSectionFloorsM(ExternalCommandData commandData, string transactionName)
-        {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
-
-            TransactionName = transactionName;
-        }
-
-        public void Run()
-        {
-            ExternalEvent.Raise();
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        public void Execute(UIApplication app)
-        {
-            try
-            {
-                ConvertUserInput();
-
-                GetDividedFloors(out List<Floor> floorsThin, out List<Floor> floorsThick);
-                DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
-                Line line = detailLine.GeometryCurve as Line;
-                List<Face> intersectionFacesAll = GetIntersectionFaces(line, floorsThin, floorsThick);
-
-                // Check if no intersections
-                if (intersectionFacesAll.Count == 0)
-                    RunResult = "No intersections were found";
-
-                // Create annotations
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-                    
-                    if (PlaceSpots)
-                        CreateSpots(line, intersectionFacesAll);
-                    else
-                        CreateDimensions(line, intersectionFacesAll);
-                    
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public DimensionSectionFloorsM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            ConvertUserInput();
+
+            GetDividedFloors(out List<Floor> floorsThin, out List<Floor> floorsThick);
+            DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
+            Line line = detailLine.GeometryCurve as Line;
+            List<Face> intersectionFacesAll = GetIntersectionFaces(line, floorsThin, floorsThick);
+
+            // Check if no intersections
+            if (intersectionFacesAll.Count == 0)
+                _result.Result = "No intersections were found";
+
+            // Create annotations
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                if (PlaceSpots)
+                    CreateSpots(line, intersectionFacesAll);
+                else
+                    CreateDimensions(line, intersectionFacesAll);
+
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         private void ConvertUserInput()
         {
@@ -341,6 +274,8 @@ namespace BIM_Leaders_Logic
         /// </summary>
         private void CreateSpots(Line line, List<Face> intersectionFaces)
         {
+
+
             View view = _doc.ActiveView; 
             XYZ zero = new XYZ(0, 0, 0);
 
@@ -380,7 +315,7 @@ namespace BIM_Leaders_Logic
             _countSegments += references.Size - 1;
         }
 
-        private string GetRunResult()
+        private protected override string GetRunResult()
         {
             string text = "";
 
@@ -396,18 +331,6 @@ namespace BIM_Leaders_Logic
             }
 
             return text;
-        }
-
-        #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

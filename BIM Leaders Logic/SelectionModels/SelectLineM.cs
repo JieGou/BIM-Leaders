@@ -54,27 +54,40 @@ namespace BIM_Leaders_Logic
         {
             Error = "";
 
-            // Get the line from user selection
-            Reference referenceLine = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
-            DetailCurve detailCurve = _doc.GetElement(referenceLine) as DetailCurve;
-            if (detailCurve == null)
-                Error = "Wrong selection";
-
-            if (detailCurve.GeometryCurve is Line line)
+            try
             {
-                if (AllowOnlyVertical)
-                {
-                    double direction = line.Direction.Z;
-                    if (direction != 1 && direction != -1)
-                        Error = "Selected line is not vertical";
-                }
-            }   
-            else
-                Error = "Selected line is not straight";
+                // Get the line from user selection
+                Reference referenceLine = _uidoc.Selection.PickObject(ObjectType.Element, new SelectionFilterByCategory("Lines"), "Select Line");
+                DetailCurve detailCurve = _doc.GetElement(referenceLine) as DetailCurve;
+                if (detailCurve == null)
+                    Error = "Wrong selection";
 
-            SelectedElement = (Error.Length == 0)
-                ? detailCurve.Id.IntegerValue
-                : 0;
+                if (detailCurve.GeometryCurve is Line line)
+                {
+                    if (AllowOnlyVertical)
+                    {
+                        double direction = line.Direction.Z;
+                        if (direction != 1 && direction != -1)
+                            Error = "Selected line is not vertical";
+                    }
+                }
+                else
+                    Error = "Selected line is not straight";
+
+                SelectedElement = (Error.Length == 0)
+                    ? detailCurve.Id.IntegerValue
+                    : 0;
+            }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException oce)
+            {
+                Error = "Selection cancelled";
+                SelectedElement = 0;
+            }
+            catch (Exception e)
+            {
+                Error = e.Message;
+                SelectedElement = 0;
+            }
         }
 
         #region INOTIFYPROPERTYCHANGED

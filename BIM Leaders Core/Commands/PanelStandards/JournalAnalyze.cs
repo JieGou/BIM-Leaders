@@ -1,32 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data;
 using System.IO;
+using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
-using System.Windows.Shapes;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class JournalAnalyze : IExternalCommand
+    public class JournalAnalyze : BaseCommand
     {
         private static Document _doc;
         private string[] _journalContent;
         private DataSet _commandsDataSet;
 
-        private const string TRANSACTION_NAME = "Analyze Journal";
+        public JournalAnalyze()
+        {
+            _transactionName = "Analyze Journal";
+        }
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _doc = commandData.Application.ActiveUIDocument.Document;
 
+            _runStarted = true;
+
             try
             {
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -38,14 +41,19 @@ namespace BIM_Leaders_Core
                 List<string> commands = FindCommands();
                 Dictionary<string, int> commandsSorted = commands.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
                 _commandsDataSet = CreateDataSet(commandsSorted);
-                
+
+                if (_commandsDataSet.Tables[0].Rows.Count == 0)
+                    _runResult = "No commands found in the journal file.";
+
                 ShowResult();
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
+                ShowResult();
                 return Result.Failed;
             }
         }
@@ -348,30 +356,8 @@ namespace BIM_Leaders_Core
             return dataSet;
         }
 
-        private void ShowResult()
-        {
-            if (_commandsDataSet.Tables[0].Rows.Count == 0)
-            {
-                // ViewModel
-                ReportVM formVM = new ReportVM(TRANSACTION_NAME, "No commands found in the journal file.");
+        private protected override async void Run(ExternalCommandData commandData) { return; }
 
-                // View
-                ReportForm form = new ReportForm() { DataContext = formVM };
-                form.ShowDialog();
-            }
-            else
-            {
-                JournalAnalyzeVM formReportVM = new JournalAnalyzeVM(_commandsDataSet);
-
-                JournalAnalyzeForm formReport = new JournalAnalyzeForm() { DataContext = formReportVM };
-                formReport.ShowDialog();
-            }
-        }
-
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(JournalAnalyze).Namespace + "." + nameof(JournalAnalyze);
-        }
+        public static string GetPath() => typeof(JournalAnalyze).Namespace + "." + nameof(JournalAnalyze);
     }
 }

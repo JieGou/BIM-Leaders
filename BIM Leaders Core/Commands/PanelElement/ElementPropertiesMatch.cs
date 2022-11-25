@@ -1,26 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class ElementPropertiesMatch : IExternalCommand
+    public class ElementPropertiesMatch : BaseCommand
     {
         private static UIDocument _uidoc;
         private static Document _doc;
         private static int _countPropertiesMatched;
 
-        private const string TRANSACTION_NAME = "Match instance properties";
+        public ElementPropertiesMatch()
+        {
+            _transactionName = "Match instance properties";
+        }
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            _runStarted = true;
 
             try
             {
@@ -34,7 +39,7 @@ namespace BIM_Leaders_Core
                 Reference reference1 = _uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element, category);
                 Element elementTo = _doc.GetElement(reference1.ElementId);
 
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -43,17 +48,16 @@ namespace BIM_Leaders_Core
                     trans.Commit();
                 }
 
-                string text = (_countPropertiesMatched == 0)
-                    ? "No properties set."
-                    : $"{_countPropertiesMatched} properties have been matched.";
+                _runResult = GetRunResult();
 
-                ShowResult(text);
+                ShowResult();
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runResult = e.Message;
+                ShowResult();
                 return Result.Failed;
             }
         }
@@ -132,23 +136,17 @@ namespace BIM_Leaders_Core
             return parametersList;
         }
 
-        private static void ShowResult(string resultText)
+        private string GetRunResult()
         {
-            if (resultText == null)
-                return;
+            string text = (_countPropertiesMatched == 0)
+                ? "No properties set."
+                : $"{_countPropertiesMatched} properties have been matched.";
 
-            // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
-
-            // View
-            ReportForm form = new ReportForm() { DataContext = formVM };
-            form.ShowDialog();
+            return text;
         }
 
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(ElementPropertiesMatch).Namespace + "." + nameof(ElementPropertiesMatch);
-        }
+        private protected override void Run(ExternalCommandData commandData) { return; }
+
+        public static string GetPath() => typeof(ElementPropertiesMatch).Namespace + "." + nameof(ElementPropertiesMatch);
     }
 }

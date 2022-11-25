@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Data;
-using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
@@ -9,10 +10,12 @@ using Autodesk.Revit.Attributes;
 namespace BIM_Leaders_Logic
 {
     [Transaction(TransactionMode.Manual)]
-    public class BaseModel : INotifyPropertyChanged, IExternalEventHandler
+    public abstract class BaseModel : INotifyPropertyChanged, IExternalEventHandler
     {
-        private UIDocument _uidoc;
-        private Document _doc;
+        private protected UIDocument _uidoc;
+        private protected Document _doc;
+        private protected RunResult _result;
+        private protected Action<string, RunResult> _showResult;
 
         #region PROPERTIES
 
@@ -68,10 +71,12 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public BaseModel(ExternalCommandData commandData, string transactionName)
+        public BaseModel(ExternalCommandData commandData, string transactionName, Action<string, RunResult> showResultAction)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+            _result = new RunResult();
+            _showResult = showResultAction;
 
             TransactionName = transactionName;
         }
@@ -88,25 +93,34 @@ namespace BIM_Leaders_Logic
             return TransactionName;
         }
 
-        public void Execute(UIApplication app)
+        public virtual void Execute(UIApplication app)
         {
+            _result.Started = true;
+
             try
             {
-                ReportDataSet = CheckAll();
+                TryExecute();
             }
             catch (Exception e)
             {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
+                _result.Failed = true;
+                _result.Result = ExceptionUtils.GetMessage(e);
+            }
+            finally
+            {
+                _showResult(TransactionName, _result);
             }
             //EventCompleted?.Invoke(this, RunResult);
         }
+
+        private protected abstract void TryExecute();
 
         #endregion
 
         #region METHODS
 
-        
+        private protected virtual string GetRunResult() => "";
+        private protected virtual DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) => null;
 
         #endregion
 

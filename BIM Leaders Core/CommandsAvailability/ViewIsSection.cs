@@ -12,10 +12,16 @@ namespace BIM_Leaders_Core
         {
             try
             {
-                ViewType viewType = applicationData.ActiveUIDocument.Document.ActiveView.ViewType;
+                Document doc = applicationData?.ActiveUIDocument?.Document;
+
+                if (doc == null)
+                    return false;
+
+                ViewType viewType = doc.ActiveView.ViewType;
 
                 if (viewType == ViewType.Section)
                     return true;
+
                 return false;
             }
             catch

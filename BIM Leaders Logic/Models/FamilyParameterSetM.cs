@@ -1,37 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class FamilyParameterSetM : INotifyPropertyChanged, IExternalEventHandler
+    public class FamilyParameterSetM : BaseModel
     {
-        private UIDocument _uidoc;
-        private Document _doc;
         private int _countParametersSet = 0;
 
         #region PROPERTIES
-
-        /// <summary>
-        /// ExternalEvent needed for Revit to run transaction in API context.
-        /// So we must call not the main method but raise the event.
-        /// </summary>
-        public ExternalEvent ExternalEvent { get; set; }
-
-        private string _transactionName;
-        public string TransactionName
-        {
-            get { return _transactionName; }
-            set
-            {
-                _transactionName = value;
-                OnPropertyChanged(nameof(TransactionName));
-            }
-        }
 
         private string _selectedParameterName;
         public string SelectedParameterName
@@ -55,75 +35,29 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private bool _runFailed;
-        public bool RunFailed
-        {
-            get { return _runFailed; }
-            set
-            {
-                _runFailed = value;
-                OnPropertyChanged(nameof(RunFailed));
-            }
-        }
-
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
         #endregion
 
-        public FamilyParameterSetM(ExternalCommandData commandData, string transactionName)
-        {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
-
-            TransactionName = transactionName;
-        }
-
-        public void Run()
-        {
-            ExternalEvent.Raise();
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        public void Execute(UIApplication app)
-        {
-            try
-            {
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    ChangeParameter();
-
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
+        public FamilyParameterSetM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                ChangeParameter();
+
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         /// <summary>
         /// Change the given parameter to given value in all family types.
@@ -193,8 +127,8 @@ namespace BIM_Leaders_Logic
             if (parameter.StorageType == StorageType.ElementId)
             {
                 ElementId id = new ElementId(0);
-
-                switch (parameter.Definition.ParameterType)
+#if VERSION2023
+                switch (parameter.Definition.GetDataType())
                 {
                     case ParameterType.Invalid:
                         break;
@@ -242,33 +176,68 @@ namespace BIM_Leaders_Logic
                     default:
                         break;
                 }
+#else
+switch (parameter.Definition.ParameterType)
+                {
+                    case ParameterType.Invalid:
+                        break;
+                    case ParameterType.Text:
+                        break;
+                    case ParameterType.Material:
+                        ICollection<ElementId> materialIds = new FilteredElementCollector(_doc)
+                            .OfClass(typeof(Material))
+                            .WhereElementIsNotElementType()
+                            .ToElementIds();
+                        foreach (ElementId materialId in materialIds)
+                            if (_doc.GetElement(materialId).Name == Value)
+                                id = materialId;
+
+                        _doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF MATERIAL WITH GIVEN NAME NOT FOUND !!!
+                        _countParametersSet++;
+                        break;
+
+                    case ParameterType.FamilyType:
+                        ICollection<ElementId> familyTypeIds = new FilteredElementCollector(_doc)
+                            .OfClass(typeof(FamilyType))
+                            .WhereElementIsNotElementType()
+                            .ToElementIds();
+                        foreach (ElementId familyTypeId in familyTypeIds)
+                            if (_doc.GetElement(familyTypeId).Name == Value)
+                                id = familyTypeId;
+
+                        _doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF FAMILY TYPE WITH GIVEN NAME NOT FOUND !!!
+                        _countParametersSet++;
+                        break;
+
+                    case ParameterType.Image:
+                        ICollection<ElementId> imageIds = new FilteredElementCollector(_doc)
+                            .OfClass(typeof(ImageType))
+                            .WhereElementIsNotElementType()
+                            .ToElementIds();
+                        foreach (ElementId imageId in imageIds)
+                            if (_doc.GetElement(imageId).Name == Value)
+                                id = imageId;
+
+                        _doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF IMAGE WITH GIVEN NAME NOT FOUND !!!
+                        _countParametersSet++;
+                        break;
+
+                    default:
+                        break;
+                }
+#endif
             }
         }
 
-        private string GetRunResult()
+        private protected override string GetRunResult()
         {
-            string text = "";
-
-            text = (_countParametersSet == 0)
+            string text = (_countParametersSet == 0)
                 ? "No parameters set."
                 : $"{_countParametersSet} parameters set.";
 
             return text;
         }
 
-        #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion
-
+#endregion
     }
 }

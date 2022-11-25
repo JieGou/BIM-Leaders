@@ -24,6 +24,8 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
+        public bool Closed { get; private set; }
+
         private string _prefix;
         public string Prefix
         {
@@ -88,10 +90,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="CheckerVM"/> class.
-        /// </summary>
         public CheckerVM(CheckerM model)
         {
             Model = model;
@@ -216,7 +214,10 @@ namespace BIM_Leaders_Windows
         private void CloseAction(Window window)
         {
             if (window != null)
+            {
+                Closed = true;
                 window.Close();
+            }
         }
 
         #endregion

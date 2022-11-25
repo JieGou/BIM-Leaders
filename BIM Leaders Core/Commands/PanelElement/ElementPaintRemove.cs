@@ -1,25 +1,29 @@
 ﻿using System;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
     [Transaction(TransactionMode.Manual)]
-    public class ElementPaintRemove : IExternalCommand
+    public class ElementPaintRemove : BaseCommand
     {
         private static UIDocument _uidoc;
         private static Document _doc;
         private static int _countFacesAll;
         private static int _countFacesCleared;
 
-        private const string TRANSACTION_NAME = "Remove Paint from Element";
+        public ElementPaintRemove()
+        {
+            _transactionName = "Remove Paint from Element";
+        }
 
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
+
+            _runStarted = true;
 
             try
             {
@@ -27,7 +31,7 @@ namespace BIM_Leaders_Core
                 Reference reference = _uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
                 Element element = _doc.GetElement(reference.ElementId);
 
-                using (Transaction trans = new Transaction(_doc, TRANSACTION_NAME))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
@@ -36,17 +40,16 @@ namespace BIM_Leaders_Core
                     trans.Commit();
                 }
 
-                string text = (_countFacesCleared == 0)
-                    ? "Painted faces not found."
-                    : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
+                _runResult = GetRunResult();
 
-                ShowResult(text);
+                ShowResult();
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
                 return Result.Failed;
             }
         }
@@ -76,23 +79,17 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private static void ShowResult(string resultText)
+        private string GetRunResult()
         {
-            if (resultText == null)
-                return;
+            string text = (_countFacesCleared == 0)
+                ? "Painted faces not found."
+                : $"{_countFacesCleared} of {_countFacesAll} faces have been cleared from paint.";
 
-            // ViewModel
-            ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
-
-            // View
-            ReportForm form = new ReportForm() { DataContext = formVM };
-            form.ShowDialog();
+            return text;
         }
 
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(ElementPaintRemove).Namespace + "." + nameof(ElementPaintRemove);
-        }
+        private protected override void Run(ExternalCommandData commandData) { return; }
+
+        public static string GetPath() => typeof(ElementPaintRemove).Namespace + "." + nameof(ElementPaintRemove);
     }
 }

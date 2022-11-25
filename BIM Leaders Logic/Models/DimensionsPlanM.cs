@@ -1,40 +1,21 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class DimensionsPlanM : INotifyPropertyChanged, IExternalEventHandler
+    public class DimensionsPlanM : BaseModel
     {
-        private UIDocument _uidoc;
-        private Document _doc;
         private double _toleranceAngle;
         private int _countDimensions;
         private int _countSegments;
 
         #region PROPERTIES
-
-        /// <summary>
-        /// ExternalEvent needed for Revit to run transaction in API context.
-        /// So we must call not the main method but raise the event.
-        /// </summary>
-        public ExternalEvent ExternalEvent { get; set; }
-
-        private string _transactionName;
-        public string TransactionName
-        {
-            get { return _transactionName; }
-            set
-            {
-                _transactionName = value;
-                OnPropertyChanged(nameof(TransactionName));
-            }
-        }
 
         private double _searchStepCm;
         public double SearchStepCm
@@ -91,118 +72,74 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        private bool _runFailed;
-        public bool RunFailed
-        {
-            get { return _runFailed; }
-            set
-            {
-                _runFailed = value;
-                OnPropertyChanged(nameof(RunFailed));
-            }
-        }
-
-        private string _runResult;
-        public string RunResult
-        {
-            get { return _runResult; }
-            set
-            {
-                _runResult = value;
-                OnPropertyChanged(nameof(RunResult));
-            }
-        }
-
         #endregion
 
-        public DimensionsPlanM(ExternalCommandData commandData, string transactionName)
+        public DimensionsPlanM(
+            ExternalCommandData commandData,
+            string transactionName,
+            Action<string, RunResult> showResultAction
+            ) : base(commandData, transactionName, showResultAction)
         {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
             _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
-
-            TransactionName = transactionName;
         }
-
-        public void Run()
-        {
-            ExternalEvent.Raise();
-        }
-
-        #region IEXTERNALEVENTHANDLER
-
-        public string GetName()
-        {
-            return TransactionName;
-        }
-
-        public void Execute(UIApplication app)
-        {
-            try
-            {
-                ConvertUserInput();
-
-                // Collecting model elements to dimension
-                List<Wall> wallsAll = GetWalls();
-                List<FamilyInstance> columnsAll = GetColumns();
-
-                // Get lists of walls and columns that are horizontal and vertical
-                (List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(wallsAll);
-                List<FamilyInstance> columnsPer = FilterColumns(columnsAll);
-
-                // Sum columns and walls
-                IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
-                IEnumerable<Element> elementsVer = wallsVer.Cast<Element>().Concat(columnsPer.Cast<Element>());
-
-                // Get all faces that need a dimension
-                // !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
-                List<PlanarFace> facesHorAll = GetFacesHorizontal(elementsHor);
-                List<PlanarFace> facesVerAll = GetFacesVertical(elementsVer);
-
-                // Storing data needed to create all dimensions
-                Dictionary<Line, ReferenceArray> dimensionsDataHor = GetDimensionsData(facesHorAll, true);
-                Dictionary<Line, ReferenceArray> dimensionsDataVer = GetDimensionsData(facesVerAll, false);
-
-                using (Transaction trans = new Transaction(_doc, TransactionName))
-                {
-                    trans.Start();
-
-                    foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataHor)
-                    {
-                        Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
-                        DimensionUtils.AdjustText(dimension);
-#if !VERSION2020
-                        dimension.HasLeader = false;
-#endif
-                        _countDimensions++;
-                        _countSegments += dimensionData.Value.Size - 1;
-                    }
-                    foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
-                    {
-                        Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
-                        DimensionUtils.AdjustText(dimension);
-#if !VERSION2020
-                        dimension.HasLeader = false;
-#endif
-                        _countDimensions++;
-                        _countSegments += dimensionData.Value.Size - 1;
-                    }
-
-                    trans.Commit();
-                }
-
-                RunResult = GetRunResult();
-            }
-            catch (Exception e)
-            {
-                RunFailed = true;
-                RunResult = ExceptionUtils.GetMessage(e);
-            }
-        }
-
-        #endregion
 
         #region METHODS
+
+        private protected override void TryExecute()
+        {
+            ConvertUserInput();
+
+            // Collecting model elements to dimension
+            List<Wall> wallsAll = GetWalls();
+            List<FamilyInstance> columnsAll = GetColumns();
+
+            // Get lists of walls and columns that are horizontal and vertical
+            (List<Wall> wallsHor, List<Wall> wallsVer) = FilterWalls(wallsAll);
+            List<FamilyInstance> columnsPer = FilterColumns(columnsAll);
+
+            // Sum columns and walls
+            IEnumerable<Element> elementsHor = wallsHor.Cast<Element>().Concat(columnsPer.Cast<Element>());
+            IEnumerable<Element> elementsVer = wallsVer.Cast<Element>().Concat(columnsPer.Cast<Element>());
+
+            // Get all faces that need a dimension
+            // !!!  NEED ADJUSTMENT (LITTLE FACES FILTERING)
+            List<PlanarFace> facesHorAll = GetFacesHorizontal(elementsHor);
+            List<PlanarFace> facesVerAll = GetFacesVertical(elementsVer);
+
+            // Storing data needed to create all dimensions
+            Dictionary<Line, ReferenceArray> dimensionsDataHor = GetDimensionsData(facesHorAll, true);
+            Dictionary<Line, ReferenceArray> dimensionsDataVer = GetDimensionsData(facesVerAll, false);
+
+            using (Transaction trans = new Transaction(_doc, TransactionName))
+            {
+                trans.Start();
+
+                foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataHor)
+                {
+                    Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
+                    DimensionUtils.AdjustText(dimension);
+#if !VERSION2020
+                    dimension.HasLeader = false;
+#endif
+                    _countDimensions++;
+                    _countSegments += dimensionData.Value.Size - 1;
+                }
+                foreach (KeyValuePair<Line, ReferenceArray> dimensionData in dimensionsDataVer)
+                {
+                    Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, dimensionData.Key, dimensionData.Value);
+                    DimensionUtils.AdjustText(dimension);
+#if !VERSION2020
+                    dimension.HasLeader = false;
+#endif
+                    _countDimensions++;
+                    _countSegments += dimensionData.Value.Size - 1;
+                }
+
+                trans.Commit();
+            }
+
+            _result.Result = GetRunResult();
+        }
 
         private void ConvertUserInput()
         {
@@ -690,7 +627,7 @@ namespace BIM_Leaders_Logic
             return facesNewPurged;
         }
 
-        private string GetRunResult()
+        private protected override string GetRunResult()
         {
             string text = "";
 
@@ -700,20 +637,6 @@ namespace BIM_Leaders_Logic
 
             return text;
         }
-
         #endregion
-
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler CanExecuteChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion
-
     }
 }
