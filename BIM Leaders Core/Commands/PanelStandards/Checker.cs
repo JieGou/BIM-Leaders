@@ -5,8 +5,6 @@ using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
-using System.Windows.Media;
-using System.Windows.Forms;
 
 namespace BIM_Leaders_Core
 {
@@ -14,21 +12,29 @@ namespace BIM_Leaders_Core
     public class Checker : IExternalCommand
     {
         private static DataSet _reportDataSet;
+        private bool _runFailed;
+        private string _runResult;
 
         private const string TRANSACTION_NAME = "Check";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            Task<DataSet> runTask = new Task<DataSet>(() => Run(commandData));
-            Task resultTask = runTask.ContinueWith(t => ShowResult());
+            Run(commandData).Wait();
 
-            runTask.Start();
-            resultTask.Wait();
+            CheckerM m = Run(commandData).Result;
 
-            return Result.Succeeded;
+            _runFailed = m.RunFailed;
+            _runResult = m.RunResult;
+
+            ShowResult();
+
+            if (_runFailed)
+                return Result.Failed;
+            else
+                return Result.Succeeded;
         }
 
-        private DataSet Run(ExternalCommandData commandData)
+        private async Task<CheckerM> Run(ExternalCommandData commandData)
         {
             // Model
             CheckerM formM = new CheckerM(commandData, TRANSACTION_NAME);
@@ -42,22 +48,19 @@ namespace BIM_Leaders_Core
             CheckerForm form = new CheckerForm() { DataContext = formVM };
             form.ShowDialog();
 
-            //await Task.Delay(1000);
+            await Task.Delay(1000);
 
-            _reportDataSet = formM.ReportDataSet;
-            return formM.ReportDataSet;
+            return formM;
 
-            ShowResult(formM.RunResult);
+            
         }
 
-        private void ShowResult(string resultText)
+        private void ShowResult()
         {
-            if (resultText == null)
-                return;
-            if (resultText.Length > 0)
+            if (_runResult.Length > 0)
             {
                 // ViewModel
-                ReportVM formVM = new ReportVM(TRANSACTION_NAME, resultText);
+                ReportVM formVM = new ReportVM(TRANSACTION_NAME, _runResult);
 
                 // View
                 ReportForm form = new ReportForm() { DataContext = formVM };

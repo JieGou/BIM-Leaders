@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseModel.cs" />
     <Compile Include="Models\WallsArrangedM.cs" />
     <Compile Include="Models\DimensionSectionFloorsM.cs" />
     <Compile Include="Models\DimensionsPlanCheckM.cs" />

@@ -10,9 +10,10 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class Purge : IExternalCommand
     {
-        private const string TRANSACTION_NAME = "Purge";
         private bool _runFailed;
         private string _runResult;
+
+        private const string TRANSACTION_NAME = "Purge";
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
