@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.Attributes;
 
 namespace BIM_Leaders_Logic
 {
@@ -14,7 +15,7 @@ namespace BIM_Leaders_Logic
         private protected UIDocument _uidoc;
         private protected Document _doc;
         private protected RunResult _result;
-        private protected Action<RunResult> _showResult;
+        private protected Action<string, RunResult> _showResult;
 
         #region PROPERTIES
 
@@ -70,7 +71,7 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public BaseModel(ExternalCommandData commandData, string transactionName, Action<RunResult> showResultAction)
+        public BaseModel(ExternalCommandData commandData, string transactionName, Action<string, RunResult> showResultAction)
         {
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
@@ -107,8 +108,9 @@ namespace BIM_Leaders_Logic
             }
             finally
             {
-                _showResult(_result);
+                _showResult(TransactionName, _result);
             }
+            //EventCompleted?.Invoke(this, RunResult);
         }
 
         private protected abstract void TryExecute();

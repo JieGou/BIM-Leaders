@@ -32,7 +32,7 @@ namespace BIM_Leaders_Logic
         public DimensionPlanLineM(
             ExternalCommandData commandData,
             string transactionName,
-            Action<string, RunResult> showResultAction
+            Action<RunResult> showResultAction
             ) : base(commandData, transactionName, showResultAction)
         {
             _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad

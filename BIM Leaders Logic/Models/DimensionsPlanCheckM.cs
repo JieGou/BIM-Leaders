@@ -43,7 +43,7 @@ namespace BIM_Leaders_Logic
         public DimensionsPlanCheckM(
             ExternalCommandData commandData,
             string transactionName,
-            Action<string, RunResult> showResultAction
+            Action<RunResult> showResultAction
             ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS

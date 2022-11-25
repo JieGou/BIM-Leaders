@@ -1,12 +1,8 @@
-﻿using System.Data;
-using System.Threading.Tasks;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
-using Autodesk.Revit.UI.Selection;
-using System;
 
 namespace BIM_Leaders_Core
 {
@@ -14,18 +10,15 @@ namespace BIM_Leaders_Core
     public abstract class BaseCommand : IExternalCommand
     {
         private protected string _transactionName;
-        private protected bool _runStarted;
-        private protected bool _runFailed;
-        private protected string _runResult;
-        private protected DataSet _runReport;
+        private protected RunResult _result;
 
         public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             Run(commandData);
 
-            if (!_runStarted)
+            if (!_result.Started)
                 return Result.Cancelled;
-            if (_runFailed)
+            if (_result.Failed)
                 return Result.Failed;
             else
                 return Result.Succeeded;
@@ -33,66 +26,39 @@ namespace BIM_Leaders_Core
 
         private protected abstract void Run(ExternalCommandData commandData);
 
-        //private protected virtual Task<DataSet> RunAsync(ExternalCommandData commandData) { return null; } //
-
-        private protected void ShowResult()
+        private protected void ShowResult(RunResult runResult)
         {
-            if (!_runStarted)
+            _result = runResult;
+
+            if (!_result.Started)
                 return;
-            if (!string.IsNullOrEmpty(_runResult))
+            if (!string.IsNullOrEmpty(_result.Result))
             {
-                // ViewModel
-                ResultVM formVM = new ResultVM(_transactionName, _runResult);
-
-                // View
-                ResultForm form = new ResultForm() { DataContext = formVM };
-                form.ShowDialog();
-
+                ShowResultDialog();
                 return;
             }
-            if (_runReport != null)
-            {
-                // ViewModel
-                ReportVM formReportVM = new ReportVM(_runReport);
-
-                // View
-                ReportForm formReport = new ReportForm() { DataContext = formReportVM };
-                formReport.ShowDialog();
-            }
+            if (_result.Report != null)
+                ShowResultReport();
         }
 
-        private protected void ShowResult(string transactionName, RunResult runResult)
+        private void ShowResultDialog()
         {
-            if (!runResult.Started)
-                return;
-            if (!string.IsNullOrEmpty(runResult.Result))
-            {
-                // ViewModel
-                ResultVM formVM = new ResultVM(transactionName, runResult.Result);
+            // ViewModel
+            ResultVM formVM = new ResultVM(_transactionName, _result.Result);
 
-                // View
-                ResultForm form = new ResultForm() { DataContext = formVM };
-                form.ShowDialog();
-
-                return;
-            }
-            if (runResult.Report != null)
-            {
-                // ViewModel
-                ReportVM formReportVM = new ReportVM(runResult.Report);
-
-                // View
-                ReportForm formReport = new ReportForm() { DataContext = formReportVM };
-                formReport.ShowDialog();
-            }
+            // View
+            ResultForm form = new ResultForm() { DataContext = formVM };
+            form.ShowDialog();
         }
 
-        /// <summary>
-        /// Return constructed namespace path
-        /// </summary>
-        public virtual string GetPath()
+        private void ShowResultReport()
         {
-            return typeof(BaseCommand).Namespace + "." + nameof(BaseCommand);
+            // ViewModel
+            ReportVM formReportVM = new ReportVM(_result.Report);
+
+            // View
+            ReportForm formReport = new ReportForm() { DataContext = formReportVM };
+            formReport.ShowDialog();
         }
     }
 }

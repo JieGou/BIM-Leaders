@@ -61,7 +61,7 @@ namespace BIM_Leaders_Logic
         public LevelsAlignM(
             ExternalCommandData commandData,
             string transactionName,
-            Action<string, RunResult> showResultAction
+            Action<RunResult> showResultAction
             ) : base(commandData, transactionName, showResultAction) { }
 
         #region METHODS
