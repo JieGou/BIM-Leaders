@@ -2,6 +2,7 @@
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Core
 {
@@ -17,7 +18,8 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _runStarted = true;
+            _result = new RunResult();
+            _result.Started = true;
 
             try
             {
@@ -27,9 +29,9 @@ namespace BIM_Leaders_Core
             }
             catch (Exception e)
             {
-                _runFailed = true;
-                _runResult = e.Message;
-                ShowResult();
+                _result.Failed = true;
+                _result.Result = e.Message;
+                ShowResult(_result);
                 return Result.Failed;
             }
         }

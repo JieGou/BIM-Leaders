@@ -6,6 +6,7 @@ using System.Linq;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Core
 {
@@ -23,9 +24,10 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _result = new RunResult();
             _doc = commandData.Application.ActiveUIDocument.Document;
 
-            _runStarted = true;
+            _result.Started = true;
 
             try
             {
@@ -43,17 +45,17 @@ namespace BIM_Leaders_Core
                 _commandsDataSet = CreateDataSet(commandsSorted);
 
                 if (_commandsDataSet.Tables[0].Rows.Count == 0)
-                    _runResult = "No commands found in the journal file.";
+                    _result.Result = "No commands found in the journal file.";
 
-                ShowResult();
+                ShowResult(_result);
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                _runFailed = true;
-                _runResult = e.Message;
-                ShowResult();
+                _result.Failed = true;
+                _result.Result = e.Message;
+                ShowResult(_result);
                 return Result.Failed;
             }
         }

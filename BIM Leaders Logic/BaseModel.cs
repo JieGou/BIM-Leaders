@@ -9,13 +9,8 @@ using Autodesk.Revit.UI;
 namespace BIM_Leaders_Logic
 {
     [Transaction(TransactionMode.Manual)]
-    public abstract class BaseModel : INotifyPropertyChanged, IExternalEventHandler
+    public abstract class BaseModelNew : INotifyPropertyChanged, IExternalEventHandler
     {
-        private protected UIDocument _uidoc;
-        private protected Document _doc;
-        private protected RunResult _result;
-        private protected Action<RunResult> _showResult;
-
         #region PROPERTIES
 
         /// <summary>
@@ -24,16 +19,12 @@ namespace BIM_Leaders_Logic
         /// </summary>
         public ExternalEvent ExternalEvent { get; set; }
 
-        private ExternalCommandData _commandData;
-        public ExternalCommandData CommandData
-        {
-            get { return _commandData; }
-            set
-            {
-                _commandData = value;
-                OnPropertyChanged(nameof(CommandData));
-            }
-        }
+        public UIDocument Uidoc { get; set; }
+        public Document Doc { get; set; }
+
+        public Action<RunResult> ShowResult { get; set; }
+
+        public RunResult Result { get; set; }
 
         private string _transactionName;
         public string TransactionName
@@ -70,19 +61,15 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public BaseModel(ExternalCommandData commandData, string transactionName, Action<RunResult> showResultAction)
-        {
-            _uidoc = commandData.Application.ActiveUIDocument;
-            _doc = _uidoc.Document;
-            _result = new RunResult();
-            _showResult = showResultAction;
-
-            TransactionName = transactionName;
-        }
-
         public void Run()
         {
             ExternalEvent.Raise();
+        }
+
+        public void SetCommandData(ExternalCommandData commandData)
+        {
+            Uidoc = commandData.Application.ActiveUIDocument;
+            Doc = Uidoc.Document;
         }
 
         #region IEXTERNALEVENTHANDLER
@@ -94,7 +81,7 @@ namespace BIM_Leaders_Logic
 
         public virtual void Execute(UIApplication app)
         {
-            _result.Started = true;
+            Result.Started = true;
 
             try
             {
@@ -102,12 +89,12 @@ namespace BIM_Leaders_Logic
             }
             catch (Exception e)
             {
-                _result.Failed = true;
-                _result.Result = ExceptionUtils.GetMessage(e);
+                Result.Failed = true;
+                Result.Result = ExceptionUtils.GetMessage(e);
             }
             finally
             {
-                _showResult(_result);
+                ShowResult(Result);
             }
         }
 

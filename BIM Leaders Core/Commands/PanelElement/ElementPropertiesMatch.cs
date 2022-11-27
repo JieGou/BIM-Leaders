@@ -22,10 +22,11 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _result = new RunResult();
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
 
-            _runStarted = true;
+            _result.Started = true;
 
             try
             {
@@ -48,16 +49,17 @@ namespace BIM_Leaders_Core
                     trans.Commit();
                 }
 
-                _runResult = GetRunResult();
+                _result.Result = GetRunResult();
 
-                ShowResult();
+                ShowResult(_result);
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                _runResult = e.Message;
-                ShowResult();
+                _result.Failed = true;
+                _result.Result = e.Message;
+                ShowResult(_result);
                 return Result.Failed;
             }
         }

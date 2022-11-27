@@ -19,13 +19,14 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _result = new RunResult();
             _parametersList = GetParametersList(commandData);
 
             Run(commandData);
 
-            if (!_runStarted)
+            if (!_result.Started)
                 return Result.Cancelled;
-            if (_runFailed)
+            if (_result.Failed)
                 return Result.Failed;
             else
                 return Result.Succeeded;

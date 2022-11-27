@@ -16,13 +16,14 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _result = new RunResult();
             CheckViewDepth(commandData);
 
             Run(commandData);
 
-            if (!_runStarted)
+            if (!_result.Started)
                 return Result.Cancelled;
-            if (_runFailed)
+            if (_result.Failed)
                 return Result.Failed;
             else
                 return Result.Succeeded;
@@ -37,8 +38,8 @@ namespace BIM_Leaders_Core
 
             if (viewDepth > allowableViewDepth)
             {
-                _runResult = "View depth is too high. This may cause errors. Set far clip offset at most 30 cm.";
-                ShowResult();
+                _result.Result = "View depth is too high. This may cause errors. Set far clip offset at most 30 cm.";
+                ShowResult(_result);
             }
         }
 

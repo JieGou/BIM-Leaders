@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseModel - Copy %282%29.cs" />
     <Compile Include="RunResult.cs" />
     <Compile Include="Models\PurgeM.cs" />
     <Compile Include="Models\WallsParallelM.cs" />

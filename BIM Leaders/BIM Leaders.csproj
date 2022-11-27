@@ -65,6 +65,10 @@
     <Compile Include="Main.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BIM Leaders Core\BIM Leaders Core.csproj">
+      <Project>{cc132aca-21dd-4e90-b767-f7fc7b339fca}</Project>
+      <Name>BIM Leaders Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BIM Leaders UI\BIM Leaders UI.csproj">
       <Project>{ee61c151-bf4c-41a7-b29c-45d042e6ea0f}</Project>
       <Name>BIM Leaders UI</Name>

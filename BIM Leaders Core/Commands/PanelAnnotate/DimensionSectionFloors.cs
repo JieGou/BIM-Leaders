@@ -20,9 +20,9 @@ namespace BIM_Leaders_Core
 
             Run(commandData);
 
-            if (!_runStarted)
+            if (!_result.Started)
                 return Result.Cancelled;
-            if (_runFailed)
+            if (_result.Failed)
                 return Result.Failed;
             else
                 return Result.Succeeded;
@@ -34,8 +34,8 @@ namespace BIM_Leaders_Core
             ViewSection view = commandData.Application.ActiveUIDocument.Document.ActiveView as ViewSection;
             if (view.IsSplitSection())
             {
-                _runResult = "Current view is a split section. This may cause issues when finding geometry intersections.";
-                ShowResult();
+                _result.Result = "Current view is a split section. This may cause issues when finding geometry intersections.";
+                ShowResult(_result);
             }
 #endif
         }

@@ -27,11 +27,7 @@ namespace BIM_Leaders_Core
             // View
             CheckerForm form = new CheckerForm() { DataContext = formVM };
             form.ShowDialog();
-            ShowResult(formM.RunResult);
         }
         public static string GetPath() => typeof(Checker).Namespace + "." + nameof(Checker);
-            // Return constructed namespace path
-            return typeof(Checker).Namespace + "." + nameof(Checker);
-        }
     }
 }

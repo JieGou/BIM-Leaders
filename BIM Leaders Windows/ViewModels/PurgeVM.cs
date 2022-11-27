@@ -9,19 +9,17 @@ namespace BIM_Leaders_Windows
     /// <summary>
     /// View model for command "Purge"
     /// </summary>
-    public class PurgeVM : INotifyPropertyChanged, IDataErrorInfo
+    public class PurgeVM : BaseViewModel
     {
         #region PROPERTIES
-
+        
         private PurgeM _model;
         public PurgeM Model
         {
             get { return _model; }
             set { _model = value; }
         }
-
-        public bool Closed { get; private set; }
-
+        
         private bool _purgeRooms;
         public bool PurgeRooms
         {
@@ -158,10 +156,8 @@ namespace BIM_Leaders_Windows
         /// Default constructor
         /// Initializing a new instance of the <see cref="PurgeVM"/> class.
         /// </summary>
-        public PurgeVM(PurgeM model)
+        public PurgeVM()
         {
-            Model = model;
-
             PurgeRooms = true;
             PurgeTags = true;
             PurgeFilters = true;
@@ -253,10 +249,10 @@ namespace BIM_Leaders_Windows
 
         #region COMMANDS
 
-        public ICommand RunCommand { get; set; }
-
-        private void RunAction(Window window)
+        private protected override void RunAction(Window window)
         {
+            Model = BaseModel as PurgeM;
+
             Model.PurgeRooms = PurgeRooms;
             Model.PurgeTags = PurgeTags;
             Model.PurgeFilters = PurgeFilters;
@@ -271,9 +267,7 @@ namespace BIM_Leaders_Windows
             CloseAction(window);
         }
 
-        public ICommand CloseCommand { get; set; }
-
-        private void CloseAction(Window window)
+        private protected override void CloseAction(Window window)
         {
             if (window != null)
             {

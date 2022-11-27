@@ -131,6 +131,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BIM Leaders Core\BIM Leaders Core.csproj">
+      <Project>{cc132aca-21dd-4e90-b767-f7fc7b339fca}</Project>
+      <Name>BIM Leaders Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BIM Leaders Resources\BIM Leaders Resources.csproj">
       <Project>{2f6cf1c2-84b4-4342-895d-277c481dcdd1}</Project>
       <Name>BIM Leaders Resources</Name>

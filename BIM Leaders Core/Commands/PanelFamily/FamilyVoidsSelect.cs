@@ -4,6 +4,7 @@ using System.Linq;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Core
 {
@@ -22,10 +23,11 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _result = new RunResult();
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
 
-            _runStarted = true;
+            _result.Started = true;
 
             try
             {
@@ -49,7 +51,7 @@ namespace BIM_Leaders_Core
                 if (voids.Count == 0)
                 {
                     _runResult = "No voids found in this family";
-                    ShowResult();
+                    ShowResult(_result);
                     return Result.Succeeded;
                 }
 
@@ -61,7 +63,7 @@ namespace BIM_Leaders_Core
             {
                 _runFailed = true;
                 _runResult = e.Message;
-                ShowResult();
+                ShowResult(_result);
                 return Result.Failed;
             }
         }

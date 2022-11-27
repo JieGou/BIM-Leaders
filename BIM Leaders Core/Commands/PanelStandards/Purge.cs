@@ -1,6 +1,5 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
@@ -12,9 +11,13 @@ namespace BIM_Leaders_Core
         public Purge()
         {
             _transactionName = "Purge";
-        }
 
-        private protected override void Run(ExternalCommandData commandData)
+            _model = new PurgeM();
+            _viewModel = new PurgeVM();
+            _view = new PurgeForm();
+        }
+        /*
+        private protected override void RunOld(ExternalCommandData commandData)
         {
             // Model
             PurgeM formM = new PurgeM(commandData, _transactionName, ShowResult);
@@ -28,7 +31,7 @@ namespace BIM_Leaders_Core
             PurgeForm form = new PurgeForm() { DataContext = formVM };
             form.ShowDialog();
         }
-
+        */
         public static string GetPath() => typeof(Purge).Namespace + "." + nameof(Purge);
     }
 }

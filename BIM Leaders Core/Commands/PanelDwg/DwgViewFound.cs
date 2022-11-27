@@ -23,7 +23,8 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _runStarted = true;
+            _result = new RunResult();
+            _result.Started = true;
 
             _doc = commandData.Application.ActiveUIDocument.Document;
             _dwgList = GetDwgList(commandData);
@@ -31,9 +32,9 @@ namespace BIM_Leaders_Core
             if (_dwgList != null)
                 Run(commandData);
 
-            if (!_runStarted)
+            if (!_result.Started)
                 return Result.Cancelled;
-            if (_runFailed)
+            if (_result.Failed)
                 return Result.Failed;
             else
                 return Result.Succeeded;
@@ -51,8 +52,8 @@ namespace BIM_Leaders_Core
 
                 if (imports.Count() == 0)
                 {
-                    _runResult = "Document has no DWG.";
-                    ShowResult();
+                    _result.Result = "Document has no DWG.";
+                    ShowResult(_result);
                     return null;
                 }   
                 else
@@ -63,9 +64,9 @@ namespace BIM_Leaders_Core
             }
             catch (Exception e)
             {
-                _runFailed = true;
-                _runResult = e.Message;
-                ShowResult();
+                _result.Failed = true;
+                _result.Result = e.Message;
+                ShowResult(_result);
                 return null;
             }
         }

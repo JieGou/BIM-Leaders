@@ -9,11 +9,17 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public abstract class BaseCommand : IExternalCommand
     {
+        private protected BaseModelNew _model;
+        private protected BaseViewModel _viewModel;
+        private protected BaseView _view;
+
         private protected string _transactionName;
         private protected RunResult _result;
 
         public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _result = new RunResult();
+
             Run(commandData);
 
             if (!_result.Started)
@@ -24,7 +30,25 @@ namespace BIM_Leaders_Core
                 return Result.Succeeded;
         }
 
-        private protected abstract void Run(ExternalCommandData commandData);
+        //private protected abstract void Run(ExternalCommandData commandData);
+
+        private protected virtual void Run(ExternalCommandData commandData)
+        {
+            // Model
+            _model.SetCommandData(commandData);
+            _model.TransactionName = _transactionName;
+            _model.Result = _result;
+            _model.ShowResult = new System.Action<RunResult>(ShowResult);
+            ExternalEvent externalEvent = ExternalEvent.Create(_model);
+            _model.ExternalEvent = externalEvent;
+
+            // ViewModel
+            _viewModel.BaseModel = _model;
+
+            // View
+            _view.DataContext = _viewModel;
+            _view.ShowDialog();
+        }
 
         private protected void ShowResult(RunResult runResult)
         {

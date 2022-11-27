@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
-using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class PurgeM : BaseModel
+    public class PurgeM : BaseModelNew
     {
         #region PROPERTIES
 
@@ -104,21 +102,15 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public PurgeM(
-            ExternalCommandData commandData,
-            string transactionName,
-            Action<RunResult> showResultAction
-            ) : base(commandData, transactionName, showResultAction) { }
-
         #region METHODS
 
         private protected override void TryExecute()
         {
-            using (Transaction trans = new Transaction(_doc, TransactionName))
+            using (Transaction trans = new Transaction(Doc, TransactionName))
             {
                 trans.Start();
 
-                _result.Report = RunPurges();
+                Result.Report = RunPurges();
 
                 trans.Commit();
             }
@@ -153,7 +145,7 @@ namespace BIM_Leaders_Logic
         {
             ReportMessage reportMessage = new ReportMessage("Rooms not placed");
 
-            ICollection<ElementId> rooms = new FilteredElementCollector(_doc)
+            ICollection<ElementId> rooms = new FilteredElementCollector(Doc)
                 .OfClass(typeof(SpatialElement))
                 .WherePasses(new RoomFilter())
                 .ToElements()
@@ -162,7 +154,7 @@ namespace BIM_Leaders_Logic
                 .Select(x => x.Id)
                 .ToList();
 
-            _doc.Delete(rooms);
+            Doc.Delete(rooms);
 
             reportMessage.MessageText = $"{rooms.Count} rooms deleted.";
 
@@ -176,7 +168,7 @@ namespace BIM_Leaders_Logic
         {
             ReportMessage reportMessage = new ReportMessage("Empty tags");
 
-            ICollection<ElementId> tags = new FilteredElementCollector(_doc)
+            ICollection<ElementId> tags = new FilteredElementCollector(Doc)
                 .OfClass(typeof(IndependentTag))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -185,7 +177,7 @@ namespace BIM_Leaders_Logic
                 .Select(x => x.Id)
                 .ToList();
 
-            _doc.Delete(tags);
+            Doc.Delete(tags);
 
             reportMessage.MessageText = $"{tags.Count} tags deleted.";
 
@@ -199,12 +191,12 @@ namespace BIM_Leaders_Logic
         {
             ReportMessage reportMessage = new ReportMessage("Unused filters");
 
-            IEnumerable<View> views = new FilteredElementCollector(_doc)
+            IEnumerable<View> views = new FilteredElementCollector(Doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
                 .ToElements()
                 .Cast<View>();
-            ICollection<ElementId> filtersAll = new FilteredElementCollector(_doc)
+            ICollection<ElementId> filtersAll = new FilteredElementCollector(Doc)
                 .OfClass(typeof(FilterElement))
                 .WhereElementIsNotElementType()
                 .ToElementIds();
@@ -227,7 +219,7 @@ namespace BIM_Leaders_Logic
             }
             ICollection<ElementId> filtersUnused = filtersAll.Where(x => !filtersUsed.Contains(x)).ToList();
 
-            _doc.Delete(filtersUnused);
+            Doc.Delete(filtersUnused);
 
             reportMessage.MessageText = $"{filtersUnused.Count} filters deleted.";
 
@@ -241,7 +233,7 @@ namespace BIM_Leaders_Logic
         {
             ReportMessage reportMessage = new ReportMessage("Unused view templates");
 
-            IEnumerable<View> viewsAll = new FilteredElementCollector(_doc)
+            IEnumerable<View> viewsAll = new FilteredElementCollector(Doc)
                 .OfClass(typeof(View))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -259,7 +251,7 @@ namespace BIM_Leaders_Logic
                     templateIds = templateIds.Where(x => x != view.ViewTemplateId).ToList();
             }
 
-            _doc.Delete(templateIds);
+            Doc.Delete(templateIds);
 
             reportMessage.MessageText = $"{templateIds.Count} view templates deleted.";
 
@@ -273,7 +265,7 @@ namespace BIM_Leaders_Logic
         {
             ReportMessage reportMessage = new ReportMessage("Empty sheets");
 
-            IEnumerable<ViewSheet> sheets = new FilteredElementCollector(_doc)
+            IEnumerable<ViewSheet> sheets = new FilteredElementCollector(Doc)
                 .OfClass(typeof(ViewSheet))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -282,7 +274,7 @@ namespace BIM_Leaders_Logic
                 .Where(x => x.IsPlaceholder == false);
 
             // "Empty" sheets can contain schedules still, so filter sheets without schedules.
-            IEnumerable<ElementId> schedulesSheets = new FilteredElementCollector(_doc)
+            IEnumerable<ElementId> schedulesSheets = new FilteredElementCollector(Doc)
                 .OfClass(typeof(ScheduleSheetInstance))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -294,7 +286,7 @@ namespace BIM_Leaders_Logic
                 .Where(x => !schedulesSheets.Contains(x))
                 .ToList();
 
-            _doc.Delete(sheetsEmpty);
+            Doc.Delete(sheetsEmpty);
 
             reportMessage.MessageText = $"{sheetsEmpty.Count} sheets deleted.";
 
@@ -311,7 +303,7 @@ namespace BIM_Leaders_Logic
             ICollection<ElementId> lineStylesUnused = new List<ElementId>();
 
             // Get all used linestyles in the project.
-            IEnumerable<ElementId> lineStylesUsed = new FilteredElementCollector(_doc)
+            IEnumerable<ElementId> lineStylesUsed = new FilteredElementCollector(Doc)
                 .OfClass(typeof(CurveElement))
                 .WhereElementIsNotElementType()
                 .ToElements()
@@ -320,7 +312,7 @@ namespace BIM_Leaders_Logic
                 .Distinct();
 
             // Get all line styles in the project (but not built-in).
-            CategoryNameMap lineStylesAllCnm = _doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
+            CategoryNameMap lineStylesAllCnm = Doc.Settings.Categories.get_Item(BuiltInCategory.OST_Lines).SubCategories;
             ICollection<ElementId> lineStylesAll = new List<ElementId>();
             foreach (Category category in lineStylesAllCnm)
                 if (category.Id.IntegerValue > 0)
@@ -330,7 +322,7 @@ namespace BIM_Leaders_Logic
                 .Where(x => !lineStylesUsed.Contains(x))
                 .ToList();
 
-            _doc.Delete(lineStylesUnused);
+            Doc.Delete(lineStylesUnused);
 
             reportMessage.MessageText = $"{lineStylesUnused.Count} linestyles deleted.";
 
@@ -345,14 +337,14 @@ namespace BIM_Leaders_Logic
         {
             ReportMessage reportMessage = new ReportMessage("Line patterns");
 
-            ICollection<ElementId> linePatterns = new FilteredElementCollector(_doc)
+            ICollection<ElementId> linePatterns = new FilteredElementCollector(Doc)
                     .OfClass(typeof(LinePatternElement))
                     .WhereElementIsNotElementType()
                     .Where(x => x.Name.Contains(LinePatternName))
                     .Select(x => x.Id)
                     .ToList();
 
-            _doc.Delete(linePatterns);
+            Doc.Delete(linePatterns);
 
             reportMessage.MessageText = $"{linePatterns.Count} line patterns with names containing \"{LinePatternName}\" deleted.";
 
