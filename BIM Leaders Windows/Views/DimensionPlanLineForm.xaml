@@ -15,7 +15,7 @@
         Width="306"
         Height="396"
         
-        d:DataContext="{d:DesignInstance Type=local:DimensionPlanLineVM}"
+        d:DataContext="{d:DesignInstance Type=local:DimensionPlanLineViewModel}"
         MouseLeftButtonDown="FormMouseMove">
 
     <Window.Resources>

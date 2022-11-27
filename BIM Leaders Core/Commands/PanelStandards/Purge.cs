@@ -12,26 +12,11 @@ namespace BIM_Leaders_Core
         {
             _transactionName = "Purge";
 
-            _model = new PurgeM();
-            _viewModel = new PurgeVM();
+            _model = new PurgeModel();
+            _viewModel = new PurgeViewModel();
             _view = new PurgeForm();
         }
-        /*
-        private protected override void RunOld(ExternalCommandData commandData)
-        {
-            // Model
-            PurgeM formM = new PurgeM(commandData, _transactionName, ShowResult);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
 
-            // ViewModel
-            PurgeVM formVM = new PurgeVM(formM);
-
-            // View
-            PurgeForm form = new PurgeForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
-        */
         public static string GetPath() => typeof(Purge).Namespace + "." + nameof(Purge);
     }
 }

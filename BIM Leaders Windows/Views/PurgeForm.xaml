@@ -15,7 +15,7 @@
         Width="306"
         Height="396"
         
-        d:DataContext="{d:DesignInstance Type=local:PurgeVM}"
+        d:DataContext="{d:DesignInstance Type=local:PurgeViewModel}"
         MouseLeftButtonDown="FormMouseMove">
 
     <local:BaseView.Resources>

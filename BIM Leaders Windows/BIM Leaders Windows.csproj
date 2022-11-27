@@ -138,7 +138,7 @@
       <DependentUpon>ReportForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\NamesChangeVM.cs" />
-    <Compile Include="ViewModels\PurgeVM.cs" />
+    <Compile Include="ViewModels\PurgeViewModel.cs" />
     <Compile Include="Views\DwgViewFoundForm.xaml.cs">
       <DependentUpon>DwgViewFoundForm.xaml</DependentUpon>
     </Compile>

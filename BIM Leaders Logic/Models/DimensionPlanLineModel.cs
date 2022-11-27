@@ -4,12 +4,11 @@ using System.Data;
 using System.Linq;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class DimensionPlanLineM : BaseModel
+    public class DimensionPlanLineModel : BaseModelNew
     {
         private double _toleranceAngle;
         private int _countSegments;
@@ -29,36 +28,32 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DimensionPlanLineM(
-            ExternalCommandData commandData,
-            string transactionName,
-            Action<RunResult> showResultAction
-            ) : base(commandData, transactionName, showResultAction)
+        public DimensionPlanLineModel()
         {
-            _toleranceAngle = _doc.Application.AngleTolerance / 100; // 0.001 grad
+            _toleranceAngle = Doc.Application.AngleTolerance / 100; // 0.001 grad
         }
 
         #region METHODS
 
         private protected override void TryExecute()
         {
-            DetailLine detailLine = _doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
+            DetailLine detailLine = Doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
             Line line = detailLine.GeometryCurve as Line;
 
             ReferenceArray references = GetReferences(line);
 
             if (references.Size < 2)
             {
-                _result.Failed = true;
-                _result.Result = "Not enough count of references for dimension.";
+                Result.Failed = true;
+                Result.Result = "Not enough count of references for dimension.";
                 return;
             }
 
-            using (Transaction trans = new Transaction(_doc, TransactionName))
+            using (Transaction trans = new Transaction(Doc, TransactionName))
             {
                 trans.Start();
 
-                Dimension dimension = _doc.Create.NewDimension(_doc.ActiveView, line, references);
+                Dimension dimension = Doc.Create.NewDimension(Doc.ActiveView, line, references);
                 DimensionUtils.AdjustText(dimension);
 #if !VERSION2020
                 dimension.HasLeader = false;
@@ -66,7 +61,7 @@ namespace BIM_Leaders_Logic
                 trans.Commit();
             }
 
-            _result.Result = GetRunResult();
+            Result.Result = GetRunResult();
         }
 
         /// <summary>
@@ -104,7 +99,7 @@ namespace BIM_Leaders_Logic
         /// <returns>List of straight walls visible on active view.</returns>
         private List<Wall> GetWallsStraight()
         {
-            IEnumerable<Wall> wallsAll = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
+            IEnumerable<Wall> wallsAll = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                     .OfClass(typeof(Wall))
                     .WhereElementIsNotElementType()
                     .ToElements()
@@ -153,13 +148,13 @@ namespace BIM_Leaders_Logic
             List<FamilyInstance> columns = new List<FamilyInstance>();
 
             // Get all structural columns on the view
-            List<FamilyInstance> columns_str = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
+            List<FamilyInstance> columns_str = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                 .OfCategory(BuiltInCategory.OST_StructuralColumns)
                 .ToElements()
                 .Cast<FamilyInstance>()
                 .ToList();
             // Get all columns on the view
-            List<FamilyInstance> columns_arc = new FilteredElementCollector(_doc, _doc.ActiveView.Id)
+            List<FamilyInstance> columns_arc = new FilteredElementCollector(Doc, Doc.ActiveView.Id)
                 .OfCategory(BuiltInCategory.OST_Columns)
                 .ToElements()
                 .Cast<FamilyInstance>()

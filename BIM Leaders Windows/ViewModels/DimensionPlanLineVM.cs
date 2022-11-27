@@ -8,16 +8,9 @@ namespace BIM_Leaders_Windows
     /// <summary>
     /// View model for command "DimensionPlanLine"
     /// </summary>
-    public class DimensionPlanLineVM : INotifyPropertyChanged, IDataErrorInfo
+    public class DimensionPlanLineViewModel : BaseViewModel
     {
         #region PROPERTIES
-
-        private DimensionPlanLineM _model;
-        public DimensionPlanLineM Model
-        {
-            get { return _model; }
-            set { _model = value; }
-        }
 
         private SelectLineM _selectLineModel;
         public SelectLineM SelectLineModel
@@ -25,8 +18,6 @@ namespace BIM_Leaders_Windows
             get { return _selectLineModel; }
             set { _selectLineModel = value; }
         }
-
-        public bool Closed { get; private set; }
 
         private bool _isVisible;
         public bool IsVisible
@@ -74,11 +65,8 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        public DimensionPlanLineVM(DimensionPlanLineM model, SelectLineM selectLineModel)
+        public DimensionPlanLineViewModel()
         {
-            Model = model;
-            SelectLineModel = selectLineModel;
-
             IsVisible = true;
 
             SelectedElement = 0;
@@ -135,6 +123,8 @@ namespace BIM_Leaders_Windows
 
         private void RunAction(Window window)
         {
+            
+
             Model.SelectedElement = SelectedElement;
 
             Model.Run();

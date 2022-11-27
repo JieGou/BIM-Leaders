@@ -9,11 +9,12 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public abstract class BaseCommand : IExternalCommand
     {
+        private protected string _transactionName;
+
         private protected BaseModelNew _model;
         private protected BaseViewModel _viewModel;
         private protected BaseView _view;
 
-        private protected string _transactionName;
         private protected RunResult _result;
 
         public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)

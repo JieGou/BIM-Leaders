@@ -9,12 +9,12 @@ namespace BIM_Leaders_Windows
     /// <summary>
     /// View model for command "Purge"
     /// </summary>
-    public class PurgeVM : BaseViewModel
+    public class PurgeViewModel : BaseViewModel
     {
         #region PROPERTIES
         
-        private PurgeM _model;
-        public PurgeM Model
+        private PurgeModel _model;
+        public PurgeModel Model
         {
             get { return _model; }
             set { _model = value; }
@@ -154,9 +154,9 @@ namespace BIM_Leaders_Windows
 
         /// <summary>
         /// Default constructor
-        /// Initializing a new instance of the <see cref="PurgeVM"/> class.
+        /// Initializing a new instance of the <see cref="PurgeViewModel"/> class.
         /// </summary>
-        public PurgeVM()
+        public PurgeViewModel()
         {
             PurgeRooms = true;
             PurgeTags = true;
@@ -251,7 +251,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as PurgeM;
+            Model = BaseModel as PurgeModel;
 
             Model.PurgeRooms = PurgeRooms;
             Model.PurgeTags = PurgeTags;
