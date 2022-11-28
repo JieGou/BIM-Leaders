@@ -35,12 +35,12 @@ namespace BIM_Leaders_Core
         private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            FamilyParameterSetM formM = new FamilyParameterSetM(commandData, _transactionName, ShowResult);
+            FamilyParameterSetModel formM = new FamilyParameterSetModel(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            FamilyParameterSetVM formVM = new FamilyParameterSetVM(formM)
+            FamilyParameterSetViewModel formVM = new FamilyParameterSetVM(formM)
             {
                 ParametersList = _parametersList
             };

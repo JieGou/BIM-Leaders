@@ -17,12 +17,12 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            LevelsAlignM formM = new LevelsAlignM(commandData, _transactionName, ShowResult);
+            LevelsAlignModel formM = new LevelsAlignM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            LevelsAlignVM formVM = new LevelsAlignVM(formM);
+            LevelsAlignViewModel formVM = new LevelsAlignViewModel(formM);
 
             // View
             LevelsAlignForm form = new LevelsAlignForm() { DataContext = formVM };

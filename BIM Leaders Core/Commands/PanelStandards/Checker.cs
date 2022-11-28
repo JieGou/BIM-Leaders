@@ -17,12 +17,12 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            CheckerM formM = new CheckerM(commandData, _transactionName, ShowResult);
+            CheckerModel formM = new CheckerModel(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            CheckerVM formVM = new CheckerVM(formM);
+            CheckerViewModel formVM = new CheckerViewModel(formM);
             
             // View
             CheckerForm form = new CheckerForm() { DataContext = formVM };

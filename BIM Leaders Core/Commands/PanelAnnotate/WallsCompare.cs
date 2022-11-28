@@ -99,12 +99,12 @@ namespace BIM_Leaders_Core
         private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            WallsCompareM formM = new WallsCompareM(commandData, _transactionName, ShowResult);
+            WallsCompareModel formM = new WallsCompareM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            WallsCompareVM formVM = new WallsCompareVM(formM)
+            WallsCompareViewModel formVM = new WallsCompareViewModel(formM)
             {
                 Materials = _materials,
                 FillTypes = _fillTypes,

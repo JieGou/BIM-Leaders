@@ -1,4 +1,4 @@
-﻿<Window x:Class="BIM_Leaders_Windows.DwgNameDeleteForm"
+﻿<local:BaseView x:Class="BIM_Leaders_Windows.DwgNameDeleteForm"
         x:Name="DwgNameDeleteWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -15,12 +15,12 @@
         Width="306"
         Height="306"
         
-        d:DataContext="{d:DesignInstance Type=local:DwgNameDeleteVM}"
+        d:DataContext="{d:DesignInstance Type=local:DwgNameDeleteViewModel}"
         MouseLeftButtonDown="FormMouseMove">
 
-    <Window.Resources>
+    <local:BaseView.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
-    </Window.Resources>
+    </local:BaseView.Resources>
 
     <Grid Background="{x:Null}">
         <materialDesign:Card UniformCornerRadius="36">
@@ -74,4 +74,4 @@
 
         </materialDesign:Card>
     </Grid>
-</Window>
+</local:BaseView>

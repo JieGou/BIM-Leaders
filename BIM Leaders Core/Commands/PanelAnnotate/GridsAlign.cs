@@ -17,12 +17,12 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            GridsAlignM formM = new GridsAlignM(commandData, _transactionName, ShowResult);
+            GridsAlignModel formM = new GridsAlignModel(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            GridsAlignVM formVM = new GridsAlignVM(formM);
+            GridsAlignViewModel formVM = new GridsAlignViewModel(formM);
 
             // View
             GridsAlignForm form = new GridsAlignForm() { DataContext = formVM };

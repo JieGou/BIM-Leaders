@@ -12,18 +12,20 @@ namespace BIM_Leaders_Core
         public WallsParallel()
         {
             _transactionName = "Walls Parallel Check";
+
+            //_viewModel.SelectReferencePlaneModel
         }
 
         private protected override void Run(ExternalCommandData commandData)
         {
             // Models
-            WallsParallelM formM = new WallsParallelM(commandData, _transactionName, ShowResult);
+            WallsParallelModel formM = new WallsParallelM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
             SelectReferencePlaneM formSelectionM = new SelectReferencePlaneM(commandData);
 
             // ViewModel
-            WallsParallelVM formVM = new WallsParallelVM(formM, formSelectionM);
+            WallsParallelViewModel formVM = new WallsParallelViewModel(formM, formSelectionM);
 
             // View
             WallsParallelForm form = new WallsParallelForm() { DataContext = formVM };

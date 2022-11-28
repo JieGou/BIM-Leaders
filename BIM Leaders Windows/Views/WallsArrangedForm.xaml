@@ -1,4 +1,4 @@
-﻿<Window x:Class="BIM_Leaders_Windows.WallsArrangedForm"
+﻿<local:BaseView x:Class="BIM_Leaders_Windows.WallsArrangedForm"
         x:Name="WallsArrangedWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -15,12 +15,12 @@
         Width="306"
         Height="540"
         
-        d:DataContext="{d:DesignInstance Type=local:WallsArrangedVM}"
+        d:DataContext="{d:DesignInstance Type=local:WallsArrangedViewModel}"
         MouseLeftButtonDown="FormMouseMove">
 
-    <Window.Resources>
+    <local:BaseView.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
-    </Window.Resources>
+    </local:BaseView.Resources>
 
     <Window.Visibility>
         <Binding Path="IsVisible" Mode="Twoway" Converter="{StaticResource BooleanToVisibilityConverter}" />
@@ -119,4 +119,4 @@
 
         </materialDesign:Card>
     </Grid>
-</Window>
+</local:BaseView>

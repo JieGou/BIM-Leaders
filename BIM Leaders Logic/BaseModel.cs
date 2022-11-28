@@ -9,7 +9,7 @@ using Autodesk.Revit.UI;
 namespace BIM_Leaders_Logic
 {
     [Transaction(TransactionMode.Manual)]
-    public abstract class BaseModelNew : INotifyPropertyChanged, IExternalEventHandler
+    public abstract class BaseModel : INotifyPropertyChanged, IExternalEventHandler
     {
         #region PROPERTIES
 

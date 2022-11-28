@@ -75,12 +75,12 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            DwgNameDeleteM formM = new DwgNameDeleteM(commandData, _transactionName, ShowResult);
+            DwgNameDeleteModel formM = new DwgNameDeleteModel(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            DwgNameDeleteVM formVM = new DwgNameDeleteVM(formM)
+            DwgNameDeleteViewModel formVM = new DwgNameDeleteVM(formM)
             {
                 DwgList = _dwgList,
                 DwgListSelected = _dwgList.First().Value

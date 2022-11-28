@@ -12,18 +12,20 @@ namespace BIM_Leaders_Core
         public WallsArranged()
         {
             _transactionName = "Annotate Section";
+
+            //_viewModel.SelectReferencePlanesModel;
         }
 
         private protected override void Run(ExternalCommandData commandData)
         {
             // Models
-            WallsArrangedM formM = new WallsArrangedM(commandData, _transactionName, ShowResult);
+            WallsArrangedModel formM = new WallsArrangedM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
             SelectReferencePlanesM formSelectionM = new SelectReferencePlanesM(commandData);
 
             // ViewModel
-            WallsArrangedVM formVM = new WallsArrangedVM(formM, formSelectionM);
+            WallsArrangedViewModel formVM = new WallsArrangedViewModel(formM, formSelectionM);
 
             // View
             WallsArrangedForm form = new WallsArrangedForm() { DataContext = formVM };

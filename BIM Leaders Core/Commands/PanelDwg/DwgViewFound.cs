@@ -131,12 +131,12 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            DwgViewFoundM formM = new DwgViewFoundM(commandData, _transactionName, ShowResult);
+            DwgViewFoundModel formM = new DwgViewFoundModel(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            DwgViewFoundVM formVM = new DwgViewFoundVM(formM)
+            DwgViewFoundViewModel formVM = new DwgViewFoundVM(formM)
             {
                 DwgList = _dwgList
             };

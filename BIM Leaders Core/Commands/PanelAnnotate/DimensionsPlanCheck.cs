@@ -17,12 +17,12 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            DimensionsPlanCheckM formM = new DimensionsPlanCheckM(commandData, _transactionName, ShowResult);
+            DimensionsPlanCheckModel formM = new DimensionsPlanCheckM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            DimensionsPlanCheckVM formVM = new DimensionsPlanCheckVM(formM);
+            DimensionsPlanCheckViewModel formVM = new DimensionsPlanCheckVM(formM);
 
             // View
             DimensionsPlanCheckForm form = new DimensionsPlanCheckForm() { DataContext = formVM };

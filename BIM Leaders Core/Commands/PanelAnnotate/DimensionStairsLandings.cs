@@ -46,12 +46,12 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionStairsLandingsM formM = new DimensionStairsLandingsM(commandData, _transactionName, ShowResult);
+            DimensionStairsLandingsModel formM = new DimensionStairsLandingsModel(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            DimensionStairsLandingsVM formVM = new DimensionStairsLandingsVM(formM);
+            DimensionStairsLandingsViewModel formVM = new DimensionStairsLandingsVM(formM);
 
             // View
             DimensionStairsLandingsForm form = new DimensionStairsLandingsForm() { DataContext = formVM };

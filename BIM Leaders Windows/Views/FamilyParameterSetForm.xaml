@@ -1,4 +1,4 @@
-﻿<Window x:Class="BIM_Leaders_Windows.FamilyParameterSetForm"
+﻿<local:BaseView x:Class="BIM_Leaders_Windows.FamilyParameterSetForm"
         x:Name="FamilyParameterSetWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -15,12 +15,12 @@
         Width="306"
         Height="306"
         
-        d:DataContext="{d:DesignInstance Type=local:FamilyParameterSetVM}"
+        d:DataContext="{d:DesignInstance Type=local:FamilyParameterSetViewModel}"
         MouseLeftButtonDown="FormMouseMove">
 
-    <Window.Resources>
+    <local:BaseView.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
-    </Window.Resources>
+    </local:BaseView.Resources>
 
     <Grid Background="{x:Null}">
         <materialDesign:Card UniformCornerRadius="36">
@@ -83,4 +83,4 @@
         </Grid>
 
     </Grid>
-</Window>
+</local:BaseView>

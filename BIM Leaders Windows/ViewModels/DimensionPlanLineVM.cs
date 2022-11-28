@@ -12,6 +12,13 @@ namespace BIM_Leaders_Windows
     {
         #region PROPERTIES
 
+        private DimensionPlanLineModel _model;
+        public DimensionPlanLineModel Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
         private SelectLineM _selectLineModel;
         public SelectLineM SelectLineModel
         {
@@ -77,17 +84,6 @@ namespace BIM_Leaders_Windows
             CloseCommand = new CommandWindow(CloseAction);
         }
 
-        #region INOTIFYPROPERTYCHANGED
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion
-
         #region VALIDATION
 
         public string Error { get { return null; } }
@@ -119,11 +115,9 @@ namespace BIM_Leaders_Windows
 
         #region COMMANDS
 
-        public ICommand RunCommand { get; set; }
-
-        private void RunAction(Window window)
+        private protected override void RunAction(Window window)
         {
-            
+            Model = BaseModel as DimensionPlanLineModel;
 
             Model.SelectedElement = SelectedElement;
 
@@ -149,9 +143,7 @@ namespace BIM_Leaders_Windows
             IsVisible = true;
         }
 
-        public ICommand CloseCommand { get; set; }
-
-        private void CloseAction(Window window)
+        private protected override void CloseAction(Window window)
         {
             if (window != null)
             {

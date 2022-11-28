@@ -17,12 +17,12 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Model
-            NamesChangeM formM = new NamesChangeM(commandData, _transactionName, ShowResult);
+            NamesChangeModel formM = new NamesChangeM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            NamesChangeVM formVM = new NamesChangeVM(formM);
+            NamesChangeViewModel formVM = new NamesChangeViewModel(formM);
 
             // View
             NamesChangeForm form = new NamesChangeForm() { DataContext = formVM };

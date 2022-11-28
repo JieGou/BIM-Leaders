@@ -17,12 +17,12 @@ namespace BIM_Leaders_Core
         private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            TagsPlanCheckM formM = new TagsPlanCheckM(commandData, _transactionName, ShowResult);
+            TagsPlanCheckModel formM = new TagsPlanCheckM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            TagsPlanCheckVM formVM = new TagsPlanCheckVM(formM);
+            TagsPlanCheckViewModel formVM = new TagsPlanCheckVM(formM);
 
             // View
             TagsPlanCheckForm form = new TagsPlanCheckForm() { DataContext = formVM };

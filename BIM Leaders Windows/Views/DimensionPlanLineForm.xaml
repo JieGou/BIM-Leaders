@@ -1,4 +1,4 @@
-﻿<Window x:Class="BIM_Leaders_Windows.DimensionPlanLineForm"
+﻿<local:BaseView x:Class="BIM_Leaders_Windows.DimensionPlanLineForm"
         x:Name="DimensionPlanLineWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -18,13 +18,13 @@
         d:DataContext="{d:DesignInstance Type=local:DimensionPlanLineViewModel}"
         MouseLeftButtonDown="FormMouseMove">
 
-    <Window.Resources>
+    <local:BaseView.Resources>
         <ResourceDictionary Source="../Resources.xaml" />
-    </Window.Resources>
+    </local:BaseView.Resources>
 
-    <Window.Visibility>
+    <local:BaseView.Visibility>
         <Binding Path="IsVisible" Mode="Twoway" Converter="{StaticResource BooleanToVisibilityConverter}" />
-    </Window.Visibility>
+    </local:BaseView.Visibility>
 
     <Grid Background="{x:Null}">
         <materialDesign:Card UniformCornerRadius="36">
@@ -86,4 +86,4 @@
 
         </materialDesign:Card>
     </Grid>
-</Window>
+</local:BaseView>

@@ -85,10 +85,10 @@
     <Compile Include="Commands\CommandWindow.cs" />
     <Compile Include="Converters\MultivalueTextBoxesConverter.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
-    <Compile Include="ViewModels\ReportVM.cs" />
+    <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="ViewModels\DimensionPlanLineVM.cs" />
-    <Compile Include="ViewModels\ResultVM.cs" />
-    <Compile Include="ViewModels\WallsParallelVM.cs" />
+    <Compile Include="ViewModels\ResultViewModel.cs" />
+    <Compile Include="ViewModels\WallsParallelViewModel.cs" />
     <Compile Include="Views\BaseView.cs" />
     <Compile Include="Views\DimensionPlanLineForm.xaml.cs">
       <DependentUpon>DimensionPlanLineForm.xaml</DependentUpon>
@@ -96,22 +96,22 @@
     <Compile Include="Views\TagsPlanCheckForm.xaml.cs">
       <DependentUpon>TagsPlanCheckForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\TagsPlanCheckVM.cs" />
-    <Compile Include="ViewModels\DimensionsPlanVM.cs" />
+    <Compile Include="ViewModels\TagsPlanCheckViewModel.cs" />
+    <Compile Include="ViewModels\DimensionsPlanViewModel.cs" />
     <Compile Include="Views\DimensionsPlanForm.xaml.cs">
       <DependentUpon>DimensionsPlanForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DimensionStairsLandingsForm.xaml.cs">
       <DependentUpon>DimensionStairsLandingsForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\DimensionStairsLandingsVM.cs" />
-    <Compile Include="ViewModels\DimensionsPlanCheckVM.cs" />
-    <Compile Include="ViewModels\JournalAnalyzeVM.cs" />
+    <Compile Include="ViewModels\DimensionStairsLandingsViewModel.cs" />
+    <Compile Include="ViewModels\DimensionsPlanCheckViewModel.cs" />
+    <Compile Include="ViewModels\JournalAnalyzeViewModel.cs" />
     <Compile Include="Views\JournalAnalyzeForm.xaml.cs">
       <DependentUpon>JournalAnalyzeForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\MultivalueBoolConverter.cs" />
-    <Compile Include="ViewModels\WarningsSolveVM.cs" />
+    <Compile Include="ViewModels\WarningsSolveViewModel.cs" />
     <Compile Include="Views\ResultForm.xaml.cs">
       <DependentUpon>ResultForm.xaml</DependentUpon>
     </Compile>
@@ -121,23 +121,23 @@
     <Compile Include="Views\WarningsSolveForm.xaml.cs">
       <DependentUpon>WarningsSolveForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\WallsArrangedVM.cs" />
+    <Compile Include="ViewModels\WallsArrangedViewModel.cs" />
     <Compile Include="Views\DimensionsPlanCheckForm.xaml.cs">
       <DependentUpon>DimensionsPlanCheckForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WallsArrangedForm.xaml.cs">
       <DependentUpon>WallsArrangedForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\FamilyParameterSetVM.cs" />
+    <Compile Include="ViewModels\FamilyParameterSetViewModel.cs" />
     <Compile Include="Views\FamilyParameterSetForm.xaml.cs">
       <DependentUpon>FamilyParameterSetForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\DwgViewFoundVM.cs" />
-    <Compile Include="ViewModels\CheckerVM.cs" />
+    <Compile Include="ViewModels\DwgViewFoundViewModel.cs" />
+    <Compile Include="ViewModels\CheckerViewModel.cs" />
     <Compile Include="Views\ReportForm.xaml.cs">
       <DependentUpon>ReportForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\NamesChangeVM.cs" />
+    <Compile Include="ViewModels\NamesChangeViewModel.cs" />
     <Compile Include="ViewModels\PurgeViewModel.cs" />
     <Compile Include="Views\DwgViewFoundForm.xaml.cs">
       <DependentUpon>DwgViewFoundForm.xaml</DependentUpon>
@@ -151,8 +151,8 @@
     <Compile Include="Views\PurgeForm.xaml.cs">
       <DependentUpon>PurgeForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\DwgNameDeleteVM.cs" />
-    <Compile Include="ViewModels\WallsCompareVM.cs" />
+    <Compile Include="ViewModels\DwgNameDeleteViewModel.cs" />
+    <Compile Include="ViewModels\WallsCompareViewModel.cs" />
     <Compile Include="Views\DwgNameDeleteForm.xaml.cs">
       <DependentUpon>DwgNameDeleteForm.xaml</DependentUpon>
     </Compile>
@@ -162,16 +162,16 @@
     <Compile Include="Views\StairsStepsEnumerateForm.xaml.cs">
       <DependentUpon>StairsStepsEnumerateForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\StairsStepsEnumerateVM.cs" />
-    <Compile Include="ViewModels\DimensionSectionFloorsVM.cs" />
+    <Compile Include="ViewModels\StairsStepsEnumerateViewModel.cs" />
+    <Compile Include="ViewModels\DimensionSectionFloorsViewModel.cs" />
     <Compile Include="Views\DimensionSectionFloorsForm.xaml.cs">
       <DependentUpon>DimensionSectionFloorsForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LevelsAlignForm.xaml.cs">
       <DependentUpon>LevelsAlignForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\LevelsAlignVM.cs" />
-    <Compile Include="ViewModels\GridsAlignVM.cs" />
+    <Compile Include="ViewModels\LevelsAlignViewModel.cs" />
+    <Compile Include="ViewModels\GridsAlignViewModel.cs" />
     <Compile Include="Views\GridsAlignForm.xaml.cs">
       <DependentUpon>GridsAlignForm.xaml</DependentUpon>
     </Compile>

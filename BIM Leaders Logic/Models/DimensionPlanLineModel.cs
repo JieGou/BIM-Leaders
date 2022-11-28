@@ -8,7 +8,7 @@ using Autodesk.Revit.DB;
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class DimensionPlanLineModel : BaseModelNew
+    public class DimensionPlanLineModel : BaseModel
     {
         private double _toleranceAngle;
         private int _countSegments;

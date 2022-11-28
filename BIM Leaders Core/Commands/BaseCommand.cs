@@ -11,7 +11,7 @@ namespace BIM_Leaders_Core
     {
         private protected string _transactionName;
 
-        private protected BaseModelNew _model;
+        private protected BaseModel _model;
         private protected BaseViewModel _viewModel;
         private protected BaseView _view;
 
@@ -69,7 +69,7 @@ namespace BIM_Leaders_Core
         private void ShowResultDialog()
         {
             // ViewModel
-            ResultVM formVM = new ResultVM(_transactionName, _result.Result);
+            ResultViewModel formVM = new ResultViewModel(_transactionName, _result.Result);
 
             // View
             ResultForm form = new ResultForm() { DataContext = formVM };
@@ -79,7 +79,7 @@ namespace BIM_Leaders_Core
         private void ShowResultReport()
         {
             // ViewModel
-            ReportVM formReportVM = new ReportVM(_result.Report);
+            ReportViewModel formReportVM = new ReportViewModel(_result.Report);
 
             // View
             ReportForm formReport = new ReportForm() { DataContext = formReportVM };

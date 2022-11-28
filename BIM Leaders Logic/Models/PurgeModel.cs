@@ -8,7 +8,7 @@ using Autodesk.Revit.DB.Architecture;
 namespace BIM_Leaders_Logic
 {
 	[Transaction(TransactionMode.Manual)]
-    public class PurgeModel : BaseModelNew
+    public class PurgeModel : BaseModel
     {
         #region PROPERTIES
 

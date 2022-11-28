@@ -75,12 +75,12 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionsPlanM formM = new DimensionsPlanM(commandData, _transactionName, ShowResult);
+            DimensionsPlanModel formM = new DimensionsPlanM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            DimensionsPlanVM formVM = new DimensionsPlanVM(formM);
+            DimensionsPlanViewModel formVM = new DimensionsPlanViewModel(formM);
 
             // View
             DimensionsPlanForm form = new DimensionsPlanForm() { DataContext = formVM };

@@ -9,8 +9,8 @@ namespace BIM_Leaders_Windows
     {
         #region PROPERTIES
 
-        private BaseModelNew _baseModel;
-        public BaseModelNew BaseModel
+        private BaseModel _baseModel;
+        public BaseModel BaseModel
         {
             get { return _baseModel; }
             set { _baseModel = value; }
@@ -19,12 +19,6 @@ namespace BIM_Leaders_Windows
         public bool Closed { get; private protected set; }
 
         #endregion
-
-        public BaseViewModel()
-        {
-            RunCommand = new CommandWindow(RunAction);
-            CloseCommand = new CommandWindow(CloseAction);
-        }
 
         #region INOTIFYPROPERTYCHANGED
 

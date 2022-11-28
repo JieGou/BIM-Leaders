@@ -17,12 +17,12 @@ namespace BIM_Leaders_Core
         private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            StairsStepsEnumerateM formM = new StairsStepsEnumerateM(commandData, _transactionName, ShowResult);
+            StairsStepsEnumerateModel formM = new StairsStepsEnumerateModel(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            StairsStepsEnumerateVM formVM = new StairsStepsEnumerateVM(formM);
+            StairsStepsEnumerateViewModel formVM = new StairsStepsEnumerateViewModel(formM);
 
             // View
             StairsStepsEnumerateForm form = new StairsStepsEnumerateForm() { DataContext = formVM };

@@ -17,12 +17,12 @@ namespace BIM_Leaders_Core
         private protected override async void Run(ExternalCommandData commandData)
         {
             // Model
-            WarningsSolveM formM = new WarningsSolveM(commandData, _transactionName, ShowResult);
+            WarningsSolveModel formM = new WarningsSolveM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
 
             // ViewModel
-            WarningsSolveVM formVM = new WarningsSolveVM(formM);
+            WarningsSolveViewModel formVM = new WarningsSolveViewModel(formM);
 
             // View
             WarningsSolveForm form = new WarningsSolveForm() { DataContext = formVM };

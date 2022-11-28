@@ -12,6 +12,8 @@ namespace BIM_Leaders_Core
         public DimensionSectionFloors()
         {
             _transactionName = "Annotate Section";
+
+            //_viewModel.SelectLineModel
         }
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
@@ -43,13 +45,13 @@ namespace BIM_Leaders_Core
         private protected override void Run(ExternalCommandData commandData)
         {
             // Models
-            DimensionSectionFloorsM formM = new DimensionSectionFloorsM(commandData, _transactionName, ShowResult);
+            DimensionSectionFloorsModel formM = new DimensionSectionFloorsM(commandData, _transactionName, ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(formM);
             formM.ExternalEvent = externalEvent;
             SelectLineM formSelectionM = new SelectLineM(commandData);
 
             // ViewModel
-            DimensionSectionFloorsVM formVM = new DimensionSectionFloorsVM(formM, formSelectionM);
+            DimensionSectionFloorsViewModel formVM = new DimensionSectionFloorsViewModel(formM, formSelectionM);
 
             // View
             DimensionSectionFloorsForm form = new DimensionSectionFloorsForm() { DataContext = formVM };
