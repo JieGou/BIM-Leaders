@@ -1,6 +1,5 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
@@ -12,21 +11,10 @@ namespace BIM_Leaders_Core
         public LevelsAlign()
         {
             _transactionName = "Align Levels";
-        }
 
-        private protected override void Run(ExternalCommandData commandData)
-        {
-            // Model
-            LevelsAlignModel formM = new LevelsAlignM(commandData, _transactionName, ShowResult);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            LevelsAlignViewModel formVM = new LevelsAlignViewModel(formM);
-
-            // View
-            LevelsAlignForm form = new LevelsAlignForm() { DataContext = formVM };
-            form.ShowDialog();
+            _model = new LevelsAlignModel();
+            _viewModel = new LevelsAlignViewModel();
+            _view = new LevelsAlignForm();
         }
 
         public static string GetPath() => typeof(LevelsAlign).Namespace + "." + nameof(LevelsAlign);

@@ -26,8 +26,8 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
-        private SelectReferencePlanesM _selectReferencePlanesModel;
-        public SelectReferencePlanesM SelectReferencePlanesModel
+        private SelectReferencePlanesModel _selectReferencePlanesModel;
+        public SelectReferencePlanesModel SelectReferencePlanesModel
         {
             get { return _selectReferencePlanesModel; }
             set { _selectReferencePlanesModel = value; }
@@ -139,6 +139,8 @@ namespace BIM_Leaders_Windows
 
         public WallsArrangedViewModel()
         {
+            SelectReferencePlanesModel = new SelectReferencePlanesModel(Model);
+
             IsVisible = true;
 
             DistanceStep = 1;
@@ -268,7 +270,7 @@ namespace BIM_Leaders_Windows
         private void SelectReferencePlanesAction()
         {
             IsVisible = false;
-
+            
             SelectReferencePlanesModel.Run();
 
             SelectedElements = SelectReferencePlanesModel.SelectedElements;

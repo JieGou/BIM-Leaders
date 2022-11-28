@@ -1,6 +1,5 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
@@ -12,21 +11,10 @@ namespace BIM_Leaders_Core
         public GridsAlign()
         {
             _transactionName = "Align Grids";
-        }
 
-        private protected override void Run(ExternalCommandData commandData)
-        {
-            // Model
-            GridsAlignModel formM = new GridsAlignModel(commandData, _transactionName, ShowResult);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            GridsAlignViewModel formVM = new GridsAlignViewModel(formM);
-
-            // View
-            GridsAlignForm form = new GridsAlignForm() { DataContext = formVM };
-            form.ShowDialog();
+            _model = new GridsAlignModel();
+            _viewModel = new GridsAlignViewModel();
+            _view = new GridsAlignForm();
         }
 
         public static string GetPath() => typeof(GridsAlign).Namespace + "." + nameof(GridsAlign);

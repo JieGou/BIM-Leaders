@@ -13,11 +13,15 @@ namespace BIM_Leaders_Core
         {
             _transactionName = "Annotate Section";
 
-            //_viewModel.SelectLineModel
+            _model = new DimensionSectionFloorsModel();
+            _viewModel = new DimensionPlanLineViewModel();
+            _view = new DimensionPlanLineForm();
         }
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _result = new RunResult();
+
             CheckIfSectionIsSplit(commandData);
 
             Run(commandData);
@@ -40,22 +44,6 @@ namespace BIM_Leaders_Core
                 ShowResult(_result);
             }
 #endif
-        }
-
-        private protected override void Run(ExternalCommandData commandData)
-        {
-            // Models
-            DimensionSectionFloorsModel formM = new DimensionSectionFloorsM(commandData, _transactionName, ShowResult);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-            SelectLineM formSelectionM = new SelectLineM(commandData);
-
-            // ViewModel
-            DimensionSectionFloorsViewModel formVM = new DimensionSectionFloorsViewModel(formM, formSelectionM);
-
-            // View
-            DimensionSectionFloorsForm form = new DimensionSectionFloorsForm() { DataContext = formVM };
-            form.ShowDialog();
         }
 
         public static string GetPath() => typeof(DimensionSectionFloors).Namespace + "." + nameof(DimensionSectionFloors);

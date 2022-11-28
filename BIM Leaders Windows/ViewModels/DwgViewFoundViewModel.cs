@@ -40,6 +40,10 @@ namespace BIM_Leaders_Windows
 
         public DwgViewFoundViewModel()
         {
+            Model = BaseModel as DwgViewFoundModel;
+
+            DwgList = Model.DwgTable;
+
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
@@ -48,8 +52,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as DwgViewFoundModel;
-
             Model.SelectedDwg = SelectedDwg.Row[2].ToString();
 
             Model.Run();

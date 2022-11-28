@@ -105,11 +105,10 @@
     <Compile Include="Models\DimensionsPlanModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BaseModel.cs" />
-    <Compile Include="SelectionModels\SelectReferencePlaneM.cs" />
+    <Compile Include="SelectionModels\SelectReferencePlaneModel.cs" />
     <Compile Include="Utils\ViewUtils.cs" />
-    <None Include="RevitTask.cs" />
-    <Compile Include="SelectionModels\SelectReferencePlanesM.cs" />
-    <Compile Include="SelectionModels\SelectLineM.cs" />
+    <Compile Include="SelectionModels\SelectReferencePlanesModel.cs" />
+    <Compile Include="SelectionModels\SelectLineModel.cs" />
     <Compile Include="Utils\Categories.cs" />
     <Compile Include="Utils\DatumPlaneUtils.cs" />
     <Compile Include="Utils\ExceptionUtils.cs" />

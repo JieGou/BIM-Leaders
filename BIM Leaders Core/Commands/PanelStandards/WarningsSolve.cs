@@ -1,6 +1,5 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
@@ -12,21 +11,10 @@ namespace BIM_Leaders_Core
         public WarningsSolve()
         {
             _transactionName = "Solve Warnings";
-        }
 
-        private protected override async void Run(ExternalCommandData commandData)
-        {
-            // Model
-            WarningsSolveModel formM = new WarningsSolveM(commandData, _transactionName, ShowResult);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            WarningsSolveViewModel formVM = new WarningsSolveViewModel(formM);
-
-            // View
-            WarningsSolveForm form = new WarningsSolveForm() { DataContext = formVM };
-            form.ShowDialog();
+            _model = new WarningsSolveModel();
+            _viewModel = new WarningsSolveViewModel();
+            _view = new WarningsSolveForm();
         }
 
         public static string GetPath()=> typeof(WarningsSolve).Namespace + "." + nameof(WarningsSolve);

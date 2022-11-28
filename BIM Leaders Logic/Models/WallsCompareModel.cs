@@ -15,6 +15,9 @@ namespace BIM_Leaders_Logic
 
         #region PROPERTIES
 
+        public SortedDictionary<string, int> MaterialsList { get; private set; }
+        public SortedDictionary<string, int> FillTypesList { get; private set; }
+
         private bool _checkOneLink;
         public bool CheckOneLink
         {
@@ -50,7 +53,72 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
+        public WallsCompareModel()
+        {
+            MaterialsList = GetMaterialsList();
+            FillTypesList = GetFillTypesList();
+        }
+
         #region METHODS
+
+        private SortedDictionary<string, int> GetMaterialsList()
+        {
+            // Get Fills
+            FilteredElementCollector collector = new FilteredElementCollector(Doc);
+            IEnumerable<Material> materialsAll = collector.OfClass(typeof(Material)).OrderBy(a => a.Name)
+                .Cast<Material>(); //LINQ function;
+
+            // Get unique fills names list
+            List<Material> materials = new List<Material>();
+            List<string> materialsNames = new List<string>();
+            foreach (Material i in materialsAll)
+            {
+                string materialName = i.Name;
+                if (!materialsNames.Contains(materialName))
+                {
+                    materials.Add(i);
+                    materialsNames.Add(materialName);
+                }
+            }
+
+            SortedDictionary<string, int> materialsList = new SortedDictionary<string, int>();
+            foreach (Material i in materials)
+            {
+                materialsList.Add(i.Name, i.Id.IntegerValue);
+            }
+
+            return materialsList;
+        }
+
+        private SortedDictionary<string, int> GetFillTypesList()
+        {
+            // Get Fills
+            FilteredElementCollector collector = new FilteredElementCollector(Doc);
+            IEnumerable<FilledRegionType> fillTypesAll = collector.OfClass(typeof(FilledRegionType)).OrderBy(a => a.Name)
+                .Cast<FilledRegionType>(); //LINQ function;
+
+            // Get unique fills names list
+            List<FilledRegionType> fillTypes = new List<FilledRegionType>();
+            List<string> fillTypesNames = new List<string>();
+            foreach (FilledRegionType i in fillTypesAll)
+            {
+                string fillTypeName = i.Name;
+                if (!fillTypesNames.Contains(fillTypeName))
+                {
+                    fillTypes.Add(i);
+                    fillTypesNames.Add(fillTypeName);
+                }
+            }
+
+            //List<KeyValuePair<string, ElementId>> list = new List<KeyValuePair<string, ElementId>>();
+            SortedDictionary<string, int> fillTypesList = new SortedDictionary<string, int>();
+            foreach (FilledRegionType i in fillTypes)
+            {
+                fillTypesList.Add(i.Name, i.Id.IntegerValue);
+            }
+
+            return fillTypesList;
+        }
 
         private protected override void TryExecute()
         {

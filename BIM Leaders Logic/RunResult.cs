@@ -5,14 +5,14 @@ namespace BIM_Leaders_Logic
     public class RunResult
     {
         #region PROPERTIES
-
+        /*
         private string _transactionName;
         public string TransactionName
         {
             get { return _transactionName; }
             set { _transactionName = value; }
         }
-
+        */
         private bool _started;
         public bool Started
         {

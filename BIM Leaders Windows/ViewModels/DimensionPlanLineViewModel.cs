@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using BIM_Leaders_Logic;
 
@@ -19,8 +18,8 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
-        private SelectLineM _selectLineModel;
-        public SelectLineM SelectLineModel
+        private SelectLineModel _selectLineModel;
+        public SelectLineModel SelectLineModel
         {
             get { return _selectLineModel; }
             set { _selectLineModel = value; }
@@ -74,6 +73,8 @@ namespace BIM_Leaders_Windows
 
         public DimensionPlanLineViewModel()
         {
+            SelectLineModel = new SelectLineModel(Model);
+
             IsVisible = true;
 
             SelectedElement = 0;

@@ -13,10 +13,16 @@ namespace BIM_Leaders_Core
         public DimensionsPlan()
         {
             _transactionName = "Dimension Plan Walls";
+
+            _model = new DimensionsPlanModel();
+            _viewModel = new DimensionsPlanViewModel();
+            _view = new DimensionsPlanForm();
         }
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            _result = new RunResult();
+
             if (ShowDialogAboutPlanRegions(commandData) == TaskDialogResult.No)
                 return Result.Cancelled;
 
@@ -71,21 +77,6 @@ namespace BIM_Leaders_Core
 
 			return planContainsRegions;
 		}
-
-        private protected override void Run(ExternalCommandData commandData)
-        {
-            // Models
-            DimensionsPlanModel formM = new DimensionsPlanM(commandData, _transactionName, ShowResult);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            DimensionsPlanViewModel formVM = new DimensionsPlanViewModel(formM);
-
-            // View
-            DimensionsPlanForm form = new DimensionsPlanForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
 
         public static string GetPath() => typeof(DimensionsPlan).Namespace + "." + nameof(DimensionsPlan);
     }

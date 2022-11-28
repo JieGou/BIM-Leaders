@@ -19,8 +19,8 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
-        private SelectReferencePlaneM _selectReferencePlaneModel;
-        public SelectReferencePlaneM SelectReferencePlaneModel
+        private SelectReferencePlaneModel _selectReferencePlaneModel;
+        public SelectReferencePlaneModel SelectReferencePlaneModel
         {
             get { return _selectReferencePlaneModel; }
             set { _selectReferencePlaneModel = value; }
@@ -85,6 +85,8 @@ namespace BIM_Leaders_Windows
 
         public WallsParallelViewModel()
         {
+            SelectReferencePlaneModel = new SelectReferencePlaneModel(Model);
+
             IsVisible = true;
 
             FilterColor = new Color

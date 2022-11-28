@@ -80,13 +80,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CheckerVM.cs" />
     <Compile Include="Commands\CommandGeneric.cs" />
     <Compile Include="Commands\CommandWindow.cs" />
     <Compile Include="Converters\MultivalueTextBoxesConverter.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
-    <Compile Include="ViewModels\DimensionPlanLineVM.cs" />
+    <Compile Include="ViewModels\DimensionPlanLineViewModel.cs" />
     <Compile Include="ViewModels\ResultViewModel.cs" />
     <Compile Include="ViewModels\WallsParallelViewModel.cs" />
     <Compile Include="Views\BaseView.cs" />

@@ -1,6 +1,5 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
@@ -13,23 +12,9 @@ namespace BIM_Leaders_Core
         {
             _transactionName = "Annotate Section";
 
-            //_viewModel.SelectReferencePlanesModel;
-        }
-
-        private protected override void Run(ExternalCommandData commandData)
-        {
-            // Models
-            WallsArrangedModel formM = new WallsArrangedM(commandData, _transactionName, ShowResult);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-            SelectReferencePlanesM formSelectionM = new SelectReferencePlanesM(commandData);
-
-            // ViewModel
-            WallsArrangedViewModel formVM = new WallsArrangedViewModel(formM, formSelectionM);
-
-            // View
-            WallsArrangedForm form = new WallsArrangedForm() { DataContext = formVM };
-            form.ShowDialog();
+            _model = new WallsArrangedModel();
+            _viewModel = new WallsArrangedViewModel();
+            _view = new WallsArrangedForm();
         }
 
         public static string GetPath() => typeof(WallsArranged).Namespace + "." + nameof(WallsArranged);

@@ -100,6 +100,8 @@ namespace BIM_Leaders_Windows
         {
             Model = BaseModel as FamilyParameterSetModel;
 
+            ParametersList = Model.ParametersList;
+
             Model.SelectedParameterName = ParametersListSelected;
             Model.Value = ParameterValue;
 

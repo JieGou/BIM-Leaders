@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 
 namespace BIM_Leaders_Logic
 {
@@ -11,6 +12,8 @@ namespace BIM_Leaders_Logic
         private int _countParametersSet = 0;
 
         #region PROPERTIES
+
+        public List<string> ParametersList { get; private set; }
 
         private string _selectedParameterName;
         public string SelectedParameterName
@@ -36,7 +39,30 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
+        public FamilyParameterSetModel()
+        {
+            ParametersList = GetParametersList();
+        }
+
         #region METHODS
+
+        private List<string> GetParametersList()
+        {
+            // Get unique parameters
+            IList<FamilyParameter> parametersNamesAll = Doc.FamilyManager.GetParameters();
+            List<FamilyParameter> parameters = new List<FamilyParameter>();
+            List<string> parametersNames = new List<string>();
+            foreach (FamilyParameter i in parametersNamesAll)
+            {
+                string parameterName = i.Definition.Name;
+                if (!parametersNames.Contains(parameterName))
+                {
+                    parameters.Add(i);
+                    parametersNames.Add(parameterName);
+                }
+            }
+            return parametersNames;
+        }
 
         private protected override void TryExecute()
         {

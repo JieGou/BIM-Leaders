@@ -14,6 +14,8 @@ namespace BIM_Leaders_Logic
 
         #region PROPERTIES
 
+        public SortedDictionary<string, int> DwgList { get; set; }
+
         private int _dwgListSelected;
         public int DwgListSelected
         {
@@ -27,7 +29,41 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
+        public DwgNameDeleteModel()
+        {
+            DwgList = GetDwgList();
+        }
+
         #region METHODS
+
+        private SortedDictionary<string, int> GetDwgList()
+        {
+            IEnumerable<ImportInstance> dwgTypesAll = new FilteredElementCollector(Doc)
+                .OfClass(typeof(ImportInstance))
+                .OrderBy(a => a.Name)
+                .Cast<ImportInstance>();
+
+            // Get unique imports names list
+            List<ImportInstance> dwgTypes = new List<ImportInstance>();
+            List<string> dwgTypesNames = new List<string>();
+            foreach (ImportInstance i in dwgTypesAll)
+            {
+                string dwgTypeName = i.Category.Name;
+                if (!dwgTypesNames.Contains(dwgTypeName))
+                {
+                    dwgTypes.Add(i);
+                    dwgTypesNames.Add(dwgTypeName);
+                }
+            }
+
+            SortedDictionary<string, int> dwgTypesList = new SortedDictionary<string, int>();
+            foreach (ImportInstance i in dwgTypes)
+            {
+                dwgTypesList.Add(i.Category.Name, i.Id.IntegerValue);
+            }
+
+            return dwgTypesList;
+        }
 
         private protected override void TryExecute()
         {

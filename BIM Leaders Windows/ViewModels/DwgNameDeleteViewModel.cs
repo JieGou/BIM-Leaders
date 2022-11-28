@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using BIM_Leaders_Logic;
 
@@ -17,8 +18,6 @@ namespace BIM_Leaders_Windows
             get { return _model; }
             set { _model = value; }
         }
-
-        public bool Closed { get; private set; }
 
         private SortedDictionary<string, int> _dwgList = new SortedDictionary<string, int>();
         public SortedDictionary<string, int> DwgList
@@ -42,6 +41,11 @@ namespace BIM_Leaders_Windows
 
         public DwgNameDeleteViewModel()
         {
+            Model = BaseModel as DwgNameDeleteModel;
+
+            DwgList = Model.DwgList;
+            DwgListSelected = DwgList.First().Value;
+
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
@@ -50,8 +54,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as DwgNameDeleteModel;
-
             Model.DwgListSelected = DwgListSelected;
 
             Model.Run();

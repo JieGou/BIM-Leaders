@@ -7,7 +7,7 @@ using Autodesk.Revit.UI.Selection;
 
 namespace BIM_Leaders_Logic
 {
-    public class SelectReferencePlaneM : INotifyPropertyChanged
+    public class SelectReferencePlaneModel : INotifyPropertyChanged
     {
         private UIDocument _uidoc;
         private Document _doc;
@@ -38,9 +38,9 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public SelectReferencePlaneM(ExternalCommandData commandData)
+        public SelectReferencePlaneModel(BaseModel model)
         {
-            _uidoc = commandData.Application.ActiveUIDocument;
+            _uidoc = model.Uidoc;
             _doc = _uidoc.Document;
         }
 

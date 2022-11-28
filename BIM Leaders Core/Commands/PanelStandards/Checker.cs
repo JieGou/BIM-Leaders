@@ -1,6 +1,5 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
@@ -12,22 +11,12 @@ namespace BIM_Leaders_Core
         public Checker()
         {
             _transactionName = "Check";
+
+            _model = new CheckerModel();
+            _viewModel = new CheckerViewModel();
+            _view = new CheckerForm();
         }
 
-        private protected override void Run(ExternalCommandData commandData)
-        {
-            // Model
-            CheckerModel formM = new CheckerModel(commandData, _transactionName, ShowResult);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            CheckerViewModel formVM = new CheckerViewModel(formM);
-            
-            // View
-            CheckerForm form = new CheckerForm() { DataContext = formVM };
-            form.ShowDialog();
-        }
         public static string GetPath() => typeof(Checker).Namespace + "." + nameof(Checker);
     }
 }

@@ -14,7 +14,6 @@ namespace BIM_Leaders_Core
 
             _model = new DimensionPlanLineModel();
             _viewModel = new DimensionPlanLineViewModel();
-            _viewModel.SelectLineModel = new ;
             _view = new DimensionPlanLineForm();
         }
 

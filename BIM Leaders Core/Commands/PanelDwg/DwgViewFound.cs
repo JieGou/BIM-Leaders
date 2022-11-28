@@ -19,18 +19,24 @@ namespace BIM_Leaders_Core
         public DwgViewFound()
         {
             _transactionName = "Imports";
+
+            _model = new DwgViewFoundModel();
+            _viewModel = new DwgViewFoundViewModel();
+            _view = new DwgViewFoundForm();
         }
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             _result = new RunResult();
-            _result.Started = true;
 
-            _doc = commandData.Application.ActiveUIDocument.Document;
-            _dwgList = GetDwgList(commandData);
+            if (!CheckIfDocumentContainsDwg(commandData))
+            {
+                _result.Result = "Document has no DWG.";
+                ShowResult(_result);
+                return Result.Succeeded;
+            }
 
-            if (_dwgList != null)
-                Run(commandData);
+            Run(commandData);
 
             if (!_result.Started)
                 return Result.Cancelled;
@@ -38,6 +44,18 @@ namespace BIM_Leaders_Core
                 return Result.Failed;
             else
                 return Result.Succeeded;
+        }
+
+        private bool CheckIfDocumentContainsDwg(ExternalCommandData commandData)
+        {
+            Document doc = commandData.Application.ActiveUIDocument.Document;
+
+            int count = new FilteredElementCollector(doc)
+                .OfClass(typeof(ImportInstance))
+                .ToElementIds()
+                .Count;
+
+            return count > 0;
         }
 
         private DataSet GetDwgList(ExternalCommandData commandData)
@@ -55,7 +73,7 @@ namespace BIM_Leaders_Core
                     _result.Result = "Document has no DWG.";
                     ShowResult(_result);
                     return null;
-                }   
+                }
                 else
                 {
                     DataSet dwgDataSet = CreateDwgDataSet(imports);
@@ -126,24 +144,6 @@ namespace BIM_Leaders_Core
             }
 
             return dwgDataSet;
-        }
-
-        private protected override void Run(ExternalCommandData commandData)
-        {
-            // Model
-            DwgViewFoundModel formM = new DwgViewFoundModel(commandData, _transactionName, ShowResult);
-            ExternalEvent externalEvent = ExternalEvent.Create(formM);
-            formM.ExternalEvent = externalEvent;
-
-            // ViewModel
-            DwgViewFoundViewModel formVM = new DwgViewFoundVM(formM)
-            {
-                DwgList = _dwgList
-            };
-
-            // View
-            DwgViewFoundForm form = new DwgViewFoundForm() { DataContext = formVM };
-            form.ShowDialog();
         }
 
         public static string GetPath() => typeof(DwgViewFound).Namespace + "." + nameof(DwgViewFound);
