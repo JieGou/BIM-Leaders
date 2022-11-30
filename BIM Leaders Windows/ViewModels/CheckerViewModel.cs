@@ -88,6 +88,16 @@ namespace BIM_Leaders_Windows
 
         public CheckerViewModel()
         {
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (CheckerModel)BaseModel;
+
             Prefix = "PRE_";
             CheckCategories = Enumerable.Repeat(false, 24).ToList();
             CheckCategories[6] = true;
@@ -95,10 +105,9 @@ namespace BIM_Leaders_Windows
             CheckCodes = Enumerable.Repeat(false, 2).ToList();
             StairsHeadHeight = 210;
             StairsHeadHeightString = StairsHeadHeight.ToString();
-
-            RunCommand = new CommandWindow(RunAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region VALIDATION
 
@@ -179,8 +188,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = (CheckerModel)BaseModel;
-
             Model.CheckCategories = CheckCategories;
             Model.Prefix = Prefix;
             Model.CheckModel = CheckModel;

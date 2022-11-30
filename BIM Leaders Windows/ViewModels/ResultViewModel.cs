@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 
 namespace BIM_Leaders_Windows
 {
@@ -41,6 +40,12 @@ namespace BIM_Leaders_Windows
 
             CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #region METHODS
+
+        public override void SetInitialData() { }
+
+        #endregion
 
         #region COMMANDS
 

@@ -14,17 +14,6 @@ namespace BIM_Leaders_Logic
 
         #region PROPERTIES
 
-        private SortedDictionary<string, int> _dwgList;
-        public SortedDictionary<string, int> DwgList
-        {
-            get { return _dwgList; }
-            set
-            {
-                _dwgList = value;
-                OnPropertyChanged(nameof(DwgList));
-            }
-        }
-
         private int _dwgListSelected;
         public int DwgListSelected
         {
@@ -40,13 +29,7 @@ namespace BIM_Leaders_Logic
 
         #region METHODS
 
-        public override void SetInitialData()
-        {
-            DwgList = GetDwgList();
-            DwgListSelected = DwgList.First().Value;
-        }
-
-        private SortedDictionary<string, int> GetDwgList()
+        public SortedDictionary<string, int> GetDwgList()
         {
             IEnumerable<ImportInstance> dwgTypesAll = new FilteredElementCollector(Doc)
                 .OfClass(typeof(ImportInstance))

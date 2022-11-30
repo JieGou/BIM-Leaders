@@ -60,13 +60,22 @@ namespace BIM_Leaders_Windows
 
         public WarningsSolveViewModel()
         {
-            FixWarningsJoin = true;
-            FixWarningsWallsAttached = false;
-            FixWarningsRoomNotEnclosed = true;
-
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (WarningsSolveModel)BaseModel;
+
+            FixWarningsJoin = true;
+            FixWarningsWallsAttached = false;
+            FixWarningsRoomNotEnclosed = true;
+        }
+
+        #endregion
 
         #region VALIDATION
 
@@ -113,8 +122,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = (WarningsSolveModel)BaseModel;
-
             Model.FixWarningsJoin = FixWarningsJoin;
             Model.FixWarningsWallsAttached = FixWarningsWallsAttached;
             Model.FixWarningsRoomNotEnclosed = FixWarningsRoomNotEnclosed;

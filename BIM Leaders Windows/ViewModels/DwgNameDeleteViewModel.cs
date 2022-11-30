@@ -19,14 +19,14 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
-        private SortedDictionary<string, int> _dwgList = new SortedDictionary<string, int>();
+        private SortedDictionary<string, int> _dwgList;
         public SortedDictionary<string, int> DwgList
         {
-            get
+            get { return _dwgList; }
+            set
             {
-                if (_dwgList == null)
-                    _dwgList = Model?.DwgList;
-                return _dwgList;
+                _dwgList = value;
+                OnPropertyChanged(nameof(DwgList));
             }
         }
 
@@ -45,19 +45,26 @@ namespace BIM_Leaders_Windows
 
         public DwgNameDeleteViewModel()
         {
-            //DwgList = Model.DwgList;
-            //DwgListSelected = DwgList.First().Value;
-
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (DwgNameDeleteModel)BaseModel;
+
+            DwgList = Model.GetDwgList();
+            DwgListSelected = DwgList.First().Value;
+        }
+
+        #endregion
 
         #region COMMANDS
 
         private protected override void RunAction(Window window)
         {
-            Model = (DwgNameDeleteModel)BaseModel;
-
             Model.DwgListSelected = DwgListSelected;
 
             Model.Run();

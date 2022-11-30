@@ -26,6 +26,12 @@ namespace BIM_Leaders_Windows
             CloseCommand = new CommandWindow(CloseAction);
         }
 
+        #region METHODS
+
+        public override void SetInitialData() { }
+
+        #endregion
+
         #region COMMANDS
 
         private protected override void RunAction(Window window) { }

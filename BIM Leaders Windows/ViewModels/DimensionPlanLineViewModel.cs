@@ -73,15 +73,24 @@ namespace BIM_Leaders_Windows
 
         public DimensionPlanLineViewModel()
         {
-            IsVisible = true;
-
-            SelectedElement = 0;
-            SelectedElementString = "No selection";
-
             RunCommand = new CommandWindow(RunAction);
             SelectLineCommand = new CommandGeneric(SelectLineAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (DimensionPlanLineModel)BaseModel;
+
+            IsVisible = true;
+
+            SelectedElement = 0;
+            SelectedElementString = "No selection";
+        }
+
+        #endregion
 
         #region VALIDATION
 
@@ -116,8 +125,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = (DimensionPlanLineModel)BaseModel;
-
             Model.SelectedElement = SelectedElement;
 
             Model.Run();

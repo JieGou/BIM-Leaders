@@ -56,13 +56,22 @@ namespace BIM_Leaders_Windows
 
         public StairsStepsEnumerateViewModel()
         {
-            SideRight = true;
-            StartNumber = 1;
-            StartNumberString = StartNumber.ToString();
-
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (StairsStepsEnumerateModel)BaseModel;
+
+            SideRight = true;
+            StartNumber = 1;
+            StartNumberString = StartNumber.ToString();
+        }
+
+        #endregion
 
         #region VALIDATION
 
@@ -118,8 +127,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = (StairsStepsEnumerateModel)BaseModel;
-
             Model.StartNumber = StartNumber;
             Model.SideRight = SideRight;
 

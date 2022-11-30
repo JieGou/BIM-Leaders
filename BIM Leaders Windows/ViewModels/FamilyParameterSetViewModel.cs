@@ -55,6 +55,15 @@ namespace BIM_Leaders_Windows
             CloseCommand = new CommandWindow(CloseAction);
         }
 
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (FamilyParameterSetModel)BaseModel;
+        }
+
+        #endregion
+
         #region VALIDATION
 
         public string Error { get { return null; } }
@@ -98,8 +107,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = (FamilyParameterSetModel)BaseModel;
-
             ParametersList = Model.ParametersList;
 
             Model.SelectedParameterName = ParametersListSelected;

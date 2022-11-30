@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media.Media3D;
 using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Windows
@@ -71,23 +70,30 @@ namespace BIM_Leaders_Windows
 
         public WallsCompareViewModel()
         {
-            Materials = Model.MaterialsList;
-            FillTypes = Model.FillTypesList;
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (WallsCompareModel)BaseModel;
+
+            Materials = Model.GetMaterialsList();
+            FillTypes = Model.GetFillTypesList();
             MaterialsSelected = Materials.First().Value;
             FillTypesSelected = FillTypes.First().Value;
 
             CheckOneLink = true;
-
-            RunCommand = new CommandWindow(RunAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region COMMANDS
 
         private protected override void RunAction(Window window)
         {
-            Model = (WallsCompareModel)BaseModel;
-
             Model.CheckOneLink = CheckOneLink;
             Model.MaterialsSelected = MaterialsSelected;
             Model.FillTypesSelected = FillTypesSelected;

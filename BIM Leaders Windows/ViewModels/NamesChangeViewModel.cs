@@ -85,21 +85,26 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="NamesChangeViewModel"/> class.
-        /// </summary>
         public NamesChangeViewModel()
         {
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (NamesChangeModel)BaseModel;
+
             SubstringOld = "OLD";
             SubstringNew = "NEW";
             PartPrefix = true;
             SelectedCategories = Enumerable.Repeat(false, 24).ToList();
             SelectedCategories[6] = true;
-
-            RunCommand = new CommandWindow(RunAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region VALIDATION
 
@@ -169,8 +174,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = (NamesChangeModel)BaseModel;
-
             Model.PartPrefix = PartPrefix;
             Model.PartSuffix = PartSuffix;
             Model.SelectedCategories = SelectedCategories;

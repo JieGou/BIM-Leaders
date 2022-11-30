@@ -139,6 +139,17 @@ namespace BIM_Leaders_Windows
 
         public WallsArrangedViewModel()
         {
+            RunCommand = new CommandWindow(RunAction);
+            SelectReferencePlanesCommand = new CommandGeneric(SelectReferencePlanesAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (WallsArrangedModel)BaseModel;
+
             IsVisible = true;
 
             DistanceStep = 1;
@@ -160,11 +171,9 @@ namespace BIM_Leaders_Windows
 
             SelectedElements = new List<int> { 0, 0 };
             SelectedElementsString = "No selection";
-
-            RunCommand = new CommandWindow(RunAction);
-            SelectReferencePlanesCommand = new CommandGeneric(SelectReferencePlanesAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region VALIDATION
 
@@ -250,8 +259,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = (WallsArrangedModel)BaseModel;
-
             Model.DistanceStepCm = DistanceStep;
             Model.DistanceToleranceCm = DistanceTolerance;
             Model.FilterColorAngleSystem = FilterColorAngle;

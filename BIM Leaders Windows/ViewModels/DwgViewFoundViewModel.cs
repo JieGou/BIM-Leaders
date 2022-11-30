@@ -44,8 +44,6 @@ namespace BIM_Leaders_Windows
 
         public DwgViewFoundViewModel()
         {
-            //DwgList = Model.DwgTable;
-
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
@@ -65,8 +63,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            //Model = (DwgViewFoundModel)BaseModel;
-
             Model.SelectedDwg = SelectedDwg.Row[2].ToString();
 
             Model.Run();

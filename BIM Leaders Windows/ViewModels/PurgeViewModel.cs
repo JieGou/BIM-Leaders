@@ -149,12 +149,18 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        /// <summary>
-        /// Default constructor
-        /// Initializing a new instance of the <see cref="PurgeViewModel"/> class.
-        /// </summary>
         public PurgeViewModel()
         {
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (PurgeModel)BaseModel;
+
             PurgeRooms = true;
             PurgeTags = true;
             PurgeFilters = true;
@@ -163,10 +169,9 @@ namespace BIM_Leaders_Windows
             PurgeLineStyles = true;
             PurgeLinePatterns = true;
             LinePatternName = "IMPORT";
-
-            RunCommand = new CommandWindow(RunAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region VALIDATION
 
@@ -237,8 +242,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = (PurgeModel)BaseModel;
-
             Model.PurgeRooms = PurgeRooms;
             Model.PurgeTags = PurgeTags;
             Model.PurgeFilters = PurgeFilters;

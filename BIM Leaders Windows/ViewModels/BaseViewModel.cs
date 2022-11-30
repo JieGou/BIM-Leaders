@@ -20,7 +20,17 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        public virtual void SetInitialData() { } // abstract!
+        #region METHODS
+
+        /// <summary>
+        /// Set initial data for viewmodel.
+        /// 1. Casting base model to specific type for viewmodel.
+        /// 2. Getting data from model (list of fill types, views list, etc).
+        /// 3. Setting other inputs of the view.
+        /// </summary>
+        public abstract void SetInitialData();
+
+        #endregion
 
         #region INOTIFYPROPERTYCHANGED
 

@@ -33,23 +33,30 @@ namespace BIM_Leaders_Windows
 
         public TagsPlanCheckViewModel()
         {
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (TagsPlanCheckModel)BaseModel;
+
             FilterColor = new Color
             {
                 R = 255,
                 G = 127,
                 B = 39
             };
-
-            RunCommand = new CommandWindow(RunAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region COMMANDS
 
         private protected override void RunAction(Window window)
         {
-            Model = (TagsPlanCheckModel)BaseModel;
-
             Model.FilterColorSystem = FilterColor;
 
             Model.Run();
