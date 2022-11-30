@@ -174,7 +174,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as DimensionsPlanModel;
+            Model = (DimensionsPlanModel)BaseModel;
 
             Model.SearchDistanceCm = SearchDistance;
             Model.SearchStepCm = SearchStep;

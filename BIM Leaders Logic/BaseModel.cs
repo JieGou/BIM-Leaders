@@ -104,6 +104,12 @@ namespace BIM_Leaders_Logic
 
         #region METHODS
 
+        /// <summary>
+        /// Set initial data for model and transfer it to viewmodel and view, and other models (selection, etc.).
+        /// For example - list of fill types, views list, etc.
+        /// </summary>
+        public virtual void SetInitialData() { }
+
         private protected virtual string GetRunResult() => "";
         private protected virtual DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages) => null;
 

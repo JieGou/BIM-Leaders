@@ -74,15 +74,12 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public WallsParallelModel()
-        {
-            _toleranceAngle = Doc.Application.AngleTolerance / 100; // 0.001 grad.
-        }
-
         #region METHODS
 
         private protected override void TryExecute()
         {
+            _toleranceAngle = Doc.Application.AngleTolerance / 100; // 0.001 grad.
+
             ConvertUserInput();
 
             ICollection<Element> wallsToFilter = GetWallsToFilter();

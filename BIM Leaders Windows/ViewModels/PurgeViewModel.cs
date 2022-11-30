@@ -155,8 +155,6 @@ namespace BIM_Leaders_Windows
         /// </summary>
         public PurgeViewModel()
         {
-            Model = BaseModel as PurgeModel;
-
             PurgeRooms = true;
             PurgeTags = true;
             PurgeFilters = true;
@@ -239,6 +237,8 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
+            Model = (PurgeModel)BaseModel;
+
             Model.PurgeRooms = PurgeRooms;
             Model.PurgeTags = PurgeTags;
             Model.PurgeFilters = PurgeFilters;

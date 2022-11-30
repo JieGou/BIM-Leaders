@@ -20,6 +20,8 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
+        public virtual void SetInitialData() { } // abstract!
+
         #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;

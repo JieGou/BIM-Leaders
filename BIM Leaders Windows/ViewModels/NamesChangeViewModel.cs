@@ -169,7 +169,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as NamesChangeModel;
+            Model = (NamesChangeModel)BaseModel;
 
             Model.PartPrefix = PartPrefix;
             Model.PartSuffix = PartSuffix;

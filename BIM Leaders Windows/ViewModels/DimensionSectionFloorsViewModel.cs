@@ -142,8 +142,6 @@ namespace BIM_Leaders_Windows
 
         public DimensionSectionFloorsViewModel()
         {
-            SelectLineModel = new SelectLineModel(Model);
-
             IsVisible = true;
 
             PlaceSpots = true;
@@ -238,7 +236,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as DimensionSectionFloorsModel;
+            Model = (DimensionSectionFloorsModel)BaseModel;
 
             Model.PlaceSpots = PlaceSpots;
 
@@ -259,6 +257,7 @@ namespace BIM_Leaders_Windows
         {
             IsVisible = false;
 
+            SelectLineModel = new SelectLineModel(BaseModel);
             SelectLineModel.Run();
 
             SelectedElement = SelectLineModel.SelectedElement;

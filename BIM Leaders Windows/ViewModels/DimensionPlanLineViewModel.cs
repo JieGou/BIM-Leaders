@@ -73,8 +73,6 @@ namespace BIM_Leaders_Windows
 
         public DimensionPlanLineViewModel()
         {
-            SelectLineModel = new SelectLineModel(Model);
-
             IsVisible = true;
 
             SelectedElement = 0;
@@ -118,7 +116,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as DimensionPlanLineModel;
+            Model = (DimensionPlanLineModel)BaseModel;
 
             Model.SelectedElement = SelectedElement;
 
@@ -133,6 +131,7 @@ namespace BIM_Leaders_Windows
         {
             IsVisible = false;
 
+            SelectLineModel = new SelectLineModel(BaseModel);
             SelectLineModel.Run();
             
             SelectedElement = SelectLineModel.SelectedElement;

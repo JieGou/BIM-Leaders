@@ -98,7 +98,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as FamilyParameterSetModel;
+            Model = (FamilyParameterSetModel)BaseModel;
 
             ParametersList = Model.ParametersList;
 

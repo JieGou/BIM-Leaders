@@ -113,7 +113,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as WarningsSolveModel;
+            Model = (WarningsSolveModel)BaseModel;
 
             Model.FixWarningsJoin = FixWarningsJoin;
             Model.FixWarningsWallsAttached = FixWarningsWallsAttached;

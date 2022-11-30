@@ -179,7 +179,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as CheckerModel;
+            Model = (CheckerModel)BaseModel;
 
             Model.CheckCategories = CheckCategories;
             Model.Prefix = Prefix;

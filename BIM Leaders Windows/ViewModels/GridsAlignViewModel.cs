@@ -76,7 +76,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as GridsAlignModel;
+            Model = (GridsAlignModel)BaseModel;
 
             Model.Side1 = Side1;
             Model.Side2 = Side2;

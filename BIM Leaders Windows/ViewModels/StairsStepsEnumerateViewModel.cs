@@ -118,7 +118,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as StairsStepsEnumerateModel;
+            Model = (StairsStepsEnumerateModel)BaseModel;
 
             Model.StartNumber = StartNumber;
             Model.SideRight = SideRight;

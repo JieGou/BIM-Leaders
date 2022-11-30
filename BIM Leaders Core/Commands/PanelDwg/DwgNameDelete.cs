@@ -10,9 +10,6 @@ namespace BIM_Leaders_Core
     [Transaction(TransactionMode.Manual)]
     public class DwgNameDelete : BaseCommand
     {
-        private Document _doc;
-        private SortedDictionary<string, int> _dwgList;
-
         public DwgNameDelete()
         {
             _transactionName = "Delete DWG by Name";
@@ -24,7 +21,7 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _result = new RunResult();
+            _result = new RunResult() { Started = true };
 
             if (!CheckIfDocumentContainsDwg(commandData))
             {

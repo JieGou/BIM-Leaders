@@ -231,7 +231,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as DimensionStairsLandingsModel;
+            Model = (DimensionStairsLandingsModel)BaseModel;
 
             Model.PlaceDimensionsTop = PlaceDimensionsTop;
             Model.PlaceDimensionsMid = PlaceDimensionsMid;

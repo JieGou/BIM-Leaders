@@ -22,11 +22,10 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _result = new RunResult();
+            _result = new RunResult() { Started = true };
+
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = _uidoc.Document;
-
-            _result.Started = true;
 
             try
             {

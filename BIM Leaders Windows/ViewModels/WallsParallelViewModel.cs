@@ -85,8 +85,6 @@ namespace BIM_Leaders_Windows
 
         public WallsParallelViewModel()
         {
-            SelectReferencePlaneModel = new SelectReferencePlaneModel(Model);
-
             IsVisible = true;
 
             FilterColor = new Color
@@ -138,7 +136,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as WallsParallelModel;
+            Model = (WallsParallelModel)BaseModel;
 
             Model.FilterColorSystem = FilterColor;
             Model.SelectedElement = SelectedElement;
@@ -154,6 +152,7 @@ namespace BIM_Leaders_Windows
         {
             IsVisible = false;
 
+            SelectReferencePlaneModel = new SelectReferencePlaneModel(BaseModel);
             SelectReferencePlaneModel.Run();
 
             SelectedElement = SelectReferencePlaneModel.SelectedElement;

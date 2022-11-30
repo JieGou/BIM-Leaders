@@ -23,7 +23,8 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _result = new RunResult();
+            _result = new RunResult() { Started = true };
+
             _doc = commandData.Application.ActiveUIDocument.Document;
 
             try

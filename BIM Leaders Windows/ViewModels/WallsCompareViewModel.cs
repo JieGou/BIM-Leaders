@@ -71,8 +71,6 @@ namespace BIM_Leaders_Windows
 
         public WallsCompareViewModel()
         {
-            Model = BaseModel as WallsCompareModel;
-
             Materials = Model.MaterialsList;
             FillTypes = Model.FillTypesList;
             MaterialsSelected = Materials.First().Value;
@@ -88,6 +86,8 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
+            Model = (WallsCompareModel)BaseModel;
+
             Model.CheckOneLink = CheckOneLink;
             Model.MaterialsSelected = MaterialsSelected;
             Model.FillTypesSelected = FillTypesSelected;

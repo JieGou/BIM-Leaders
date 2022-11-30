@@ -139,8 +139,6 @@ namespace BIM_Leaders_Windows
 
         public WallsArrangedViewModel()
         {
-            SelectReferencePlanesModel = new SelectReferencePlanesModel(Model);
-
             IsVisible = true;
 
             DistanceStep = 1;
@@ -252,7 +250,7 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as WallsArrangedModel;
+            Model = (WallsArrangedModel)BaseModel;
 
             Model.DistanceStepCm = DistanceStep;
             Model.DistanceToleranceCm = DistanceTolerance;
@@ -270,7 +268,8 @@ namespace BIM_Leaders_Windows
         private void SelectReferencePlanesAction()
         {
             IsVisible = false;
-            
+
+            SelectReferencePlanesModel = new SelectReferencePlanesModel(BaseModel);
             SelectReferencePlanesModel.Run();
 
             SelectedElements = SelectReferencePlanesModel.SelectedElements;
