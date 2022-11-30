@@ -75,16 +75,7 @@ namespace BIM_Leaders_Windows
 
         #region VALIDATION
 
-        public string Error { get { return null; } }
-        public string this[string propertyName]
-        {
-            get
-            {
-                return GetValidationError(propertyName);
-            }
-        }
-
-        string GetValidationError(string propertyName)
+        private protected override string GetValidationError(string propertyName)
         {
             string error = null;
             

@@ -55,7 +55,7 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        string GetValidationError(string propertyName)
+        private protected virtual string GetValidationError(string propertyName)
         {
             string error = null;
             return error;
