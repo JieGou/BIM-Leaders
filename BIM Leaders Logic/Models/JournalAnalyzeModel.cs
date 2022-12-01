@@ -5,58 +5,55 @@ using System.IO;
 using System.Linq;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
-using BIM_Leaders_Logic;
 
-namespace BIM_Leaders_Core
+namespace BIM_Leaders_Logic
 {
-    [Transaction(TransactionMode.Manual)]
-    public class JournalAnalyze : BaseCommand
+	[Transaction(TransactionMode.Manual)]
+    public class JournalAnalyzeModel : BaseModel
     {
-        private static Document _doc;
-        private string[] _journalContent;
-        private DataSet _commandsDataSet;
+        #region PROPERTIES
 
-        public JournalAnalyze()
+        private string[] _journalContent;
+        public string[] JournalContent
         {
-            _transactionName = "Analyze Journal";
+            get { return _journalContent; }
+            set
+            {
+                _journalContent = value;
+                OnPropertyChanged(nameof(JournalContent));
+            }
         }
 
-        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        private List<string> _commands;
+        public List<string> Commands
         {
-            _result = new RunResult() { Started = true };
-
-            _doc = commandData.Application.ActiveUIDocument.Document;
-
-            try
+            get { return _commands; }
+            set
             {
-                using (Transaction trans = new Transaction(_doc, _transactionName))
-                {
-                    trans.Start();
-
-                    _journalContent = GetJournalContent();
-
-                    trans.Commit();
-                }
-
-                List<string> commands = FindCommands();
-                Dictionary<string, int> commandsSorted = commands.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
-                _commandsDataSet = CreateDataSet(commandsSorted);
-
-                if (_commandsDataSet.Tables[0].Rows.Count == 0)
-                    _result.Result = "No commands found in the journal file.";
-
-                ShowResult(_result);
-
-                return Result.Succeeded;
+                _commands = value;
+                OnPropertyChanged(nameof(Commands));
             }
-            catch (Exception e)
-            {
-                _result.Failed = true;
-                _result.Result = e.Message;
-                ShowResult(_result);
-                return Result.Failed;
-            }
+        }
+
+        #endregion
+
+        #region METHODS
+
+        private protected override void TryExecute()
+        {
+            JournalContent = GetJournalContent();
+            Commands = FindCommands();
+
+            IEnumerable<ReportMessage> reportMessages = SortCommands();
+            Result.Report = GetRunReport(reportMessages);
+
+            if (Result.Report.Tables[0].Rows.Count == 0)
+                Result.Result = "No commands found in the journal file.";
+        }
+
+        public DataSet AnalyzeJournal()
+        {
+
         }
 
         private string[] GetJournalContent()
@@ -64,7 +61,7 @@ namespace BIM_Leaders_Core
             string[] content;
 
             // Journal Path
-            string path = _doc.Application.RecordingJournalFilename;
+            string path = Doc.Application.RecordingJournalFilename;
             string pathNew = path.Substring(0, path.Length - 4) + "TEMP.txt";
 
             if (File.Exists(pathNew))
@@ -88,7 +85,7 @@ namespace BIM_Leaders_Core
         {
             List<string> commands = new List<string>();
 
-            foreach (string line in _journalContent)
+            foreach (string line in JournalContent)
             {
                 if (!line.Contains("'") && line.Contains("Jrn."))
                 {
@@ -297,7 +294,7 @@ namespace BIM_Leaders_Core
             Grid,
             Close
         }
-        /*
+
         /// <summary>
         /// Find all revit commands in a given string array.
         /// </summary>
@@ -317,48 +314,55 @@ namespace BIM_Leaders_Core
 
             return commands;
         }
-        */
+
+        private IEnumerable<ReportMessage> SortCommands()
+        {
+            List<ReportMessage> commandsSorted = new List<ReportMessage>();
+
+            Dictionary<string, int> commands = Commands.GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count());
+
+            foreach (KeyValuePair<string, int> command in commands)
+            {
+                ReportMessage message = new ReportMessage(command.Key, command.Value);
+                commandsSorted.Add(message);
+            }
+
+            return commandsSorted;
+        }
+
         /// <summary>
         /// Create a DataSet for using in tables.
         /// </summary>
         /// <returns>Dataset object.</returns>
-        private static DataSet CreateDataSet(Dictionary<string, int> commandsSorted)
+        private protected override DataSet GetRunReport(IEnumerable<ReportMessage> reportMessages)
         {
             // Create a DataSet
-            DataSet dataSet = new DataSet("CommandsDataSet");
+            DataSet dataSet = new DataSet("reportDataSet");
             // Create DataTable
             DataTable dataTable = new DataTable("Commands");
 
             // Create 4 columns, and add them to the table
-            DataColumn dataColumn0 = new DataColumn("Command", typeof(string));
-            DataColumn dataColumn1 = new DataColumn("Count", typeof(int));
+            DataColumn dataColumnCommand = new DataColumn("Command", typeof(string));
+            DataColumn dataColumnCount = new DataColumn("Count", typeof(int));
 
-            dataTable.Columns.Add(dataColumn0);
-            dataTable.Columns.Add(dataColumn1);
+            dataTable.Columns.Add(dataColumnCommand);
+            dataTable.Columns.Add(dataColumnCount);
 
             // Add the table to the DataSet
             dataSet.Tables.Add(dataTable);
 
             // Fill the table
-            foreach (KeyValuePair<string, int> i in commandsSorted)
+            foreach (ReportMessage reportMessage in reportMessages)
             {
-                // Name
-                string iCommand = i.Key;
-                int iCount = i.Value;
-
                 DataRow dataRow = dataTable.NewRow();
-
-                dataRow["Command"] = iCommand;
-                dataRow["Count"] = iCount;
-
-                // Add the row to the table.  
+                dataRow["Command"] = reportMessage.MessageName;
+                dataRow["Count"] = reportMessage.MessageText;
                 dataTable.Rows.Add(dataRow);
             }
+
             return dataSet;
         }
 
-        private protected override async void Run(ExternalCommandData commandData) { return; }
-
-        public static string GetPath() => typeof(JournalAnalyze).Namespace + "." + nameof(JournalAnalyze);
+        #endregion
     }
 }

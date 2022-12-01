@@ -61,8 +61,6 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        #endregion
-
         #region COMMANDS
 
         private protected override void RunAction(Window window)
