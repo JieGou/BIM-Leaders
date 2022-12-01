@@ -41,14 +41,22 @@ namespace BIM_Leaders_Windows
 
         public DwgNameDeleteViewModel()
         {
-            Model = BaseModel as DwgNameDeleteModel;
+            Model = (DwgNameDeleteModel)BaseModel;
 
-            DwgList = Model.DwgList;
             DwgListSelected = DwgList.First().Value;
 
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #region METHODS
+
+        public override void GetInitialData()
+        {
+            DwgList = Model.GetDwgList();
+        }
+
+        #endregion
 
         #region COMMANDS
 

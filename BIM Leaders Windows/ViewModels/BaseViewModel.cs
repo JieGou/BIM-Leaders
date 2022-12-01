@@ -20,6 +20,12 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
+        #region METHODS
+
+        public abstract void GetInitialData();
+
+        #endregion
+
         #region INOTIFYPROPERTYCHANGED
 
         public event PropertyChangedEventHandler PropertyChanged;

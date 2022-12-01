@@ -45,6 +45,7 @@ namespace BIM_Leaders_Core
 
             // ViewModel
             _viewModel.BaseModel = _model;
+            _viewModel.GetInitialData();
 
             // View
             _view.DataContext = _viewModel;
