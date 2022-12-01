@@ -137,6 +137,16 @@ namespace BIM_Leaders_Windows
 
         public DimensionStairsLandingsViewModel()
         {
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (DimensionStairsLandingsModel)BaseModel;
+
             PlaceDimensionsTop = true;
             PlaceDimensionsMid = true;
             PlaceDimensionsBot = true;
@@ -145,23 +155,13 @@ namespace BIM_Leaders_Windows
             PlaceElevationsBot = true;
             Distance = 150;
             DistanceString = Distance.ToString();
-
-            RunCommand = new CommandWindow(RunAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region VALIDATION
 
-        public string Error { get { return null; } }
-        public string this[string propertyName]
-        {
-            get
-            {
-                return GetValidationError(propertyName);
-            }
-        }
-
-        string GetValidationError(string propertyName)
+        private protected override string GetValidationError(string propertyName)
         {
             string error = null;
             
@@ -231,8 +231,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as DimensionStairsLandingsModel;
-
             Model.PlaceDimensionsTop = PlaceDimensionsTop;
             Model.PlaceDimensionsMid = PlaceDimensionsMid;
             Model.PlaceDimensionsBot = PlaceDimensionsBot;

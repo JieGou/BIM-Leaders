@@ -13,29 +13,13 @@ namespace BIM_Leaders_Logic
     {
         #region PROPERTIES
 
-        public DataSet DwgTable { get; private set; }
-
-        private string _selectedDwg;
-        public string SelectedDwg
-        {
-            get { return _selectedDwg; }
-            set
-            {
-                _selectedDwg = value;
-                OnPropertyChanged(nameof(SelectedDwg));
-            }
-        }
+        public string SelectedDwg { get; set; }
 
         #endregion
 
-        public DwgViewFoundModel()
-        {
-            DwgTable = CreateDwgDataSet();
-        }
-
         #region METHODS
 
-        private DataSet CreateDwgDataSet()
+        public DataSet GetDwgTable()
         {
             // Create a DataSet
             DataSet dwgDataSet = new DataSet("reportDataSet");

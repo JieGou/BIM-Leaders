@@ -142,7 +142,16 @@ namespace BIM_Leaders_Windows
 
         public DimensionSectionFloorsViewModel()
         {
-            SelectLineModel = new SelectLineModel(Model);
+            RunCommand = new CommandWindow(RunAction);
+            SelectLineCommand = new CommandGeneric(SelectLineAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (DimensionSectionFloorsModel)BaseModel;
 
             IsVisible = true;
 
@@ -155,24 +164,13 @@ namespace BIM_Leaders_Windows
 
             SelectedElement = 0;
             SelectedElementString = "No selection";
-
-            RunCommand = new CommandWindow(RunAction);
-            SelectLineCommand = new CommandGeneric(SelectLineAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region VALIDATION
 
-        public string Error { get { return null; } }
-        public string this[string propertyName]
-        {
-            get
-            {
-                return GetValidationError(propertyName);
-            }
-        }
-
-        string GetValidationError(string propertyName)
+        private protected override string GetValidationError(string propertyName)
         {
             string error = null;
 
@@ -238,8 +236,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as DimensionSectionFloorsModel;
-
             Model.PlaceSpots = PlaceSpots;
 
             Model.PlacementThinTop = PlaceOnThinTop;
@@ -259,6 +255,7 @@ namespace BIM_Leaders_Windows
         {
             IsVisible = false;
 
+            SelectLineModel = new SelectLineModel(BaseModel);
             SelectLineModel.Run();
 
             SelectedElement = SelectLineModel.SelectedElement;

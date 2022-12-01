@@ -79,29 +79,29 @@ namespace BIM_Leaders_Windows
 
         public DimensionsPlanViewModel()
         {
+            RunCommand = new CommandWindow(RunAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (DimensionsPlanModel)BaseModel;
+
             SearchStep = 15;
             SearchStepString = SearchStep.ToString();
             SearchDistance = 1500;
             SearchDistanceString = SearchDistance.ToString();
             MinReferences = 5;
             MinReferencesString = MinReferences.ToString();
-
-            RunCommand = new CommandWindow(RunAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region VALIDATION
 
-        public string Error { get { return null; } }
-        public string this[string propertyName]
-        {
-            get
-            {
-                return GetValidationError(propertyName);
-            }
-        }
-
-        string GetValidationError(string propertyName)
+        private protected override string GetValidationError(string propertyName)
         {
             string error = null;
 
@@ -174,8 +174,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as DimensionsPlanModel;
-
             Model.SearchDistanceCm = SearchDistance;
             Model.SearchStepCm = SearchStep;
             Model.MinReferences = MinReferences;

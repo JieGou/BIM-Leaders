@@ -85,7 +85,16 @@ namespace BIM_Leaders_Windows
 
         public WallsParallelViewModel()
         {
-            SelectReferencePlaneModel = new SelectReferencePlaneModel(Model);
+            RunCommand = new CommandWindow(RunAction);
+            SelectReferencePlaneCommand = new CommandGeneric(SelectReferencePlaneAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (WallsParallelModel)BaseModel;
 
             IsVisible = true;
 
@@ -98,25 +107,13 @@ namespace BIM_Leaders_Windows
 
             SelectedElement = 0;
             SelectedElementString = "No selection";
-
-            RunCommand = new CommandWindow(RunAction);
-            SelectReferencePlaneCommand = new CommandGeneric(SelectReferencePlaneAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region VALIDATION
 
-        public string Error { get { return null; } }
-
-        public string this[string propertyName]
-        {
-            get
-            {
-                return GetValidationError(propertyName);
-            }
-        }
-
-        string GetValidationError(string propertyName)
+        private protected override string GetValidationError(string propertyName)
         {
             string error = null;
             
@@ -138,8 +135,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as WallsParallelModel;
-
             Model.FilterColorSystem = FilterColor;
             Model.SelectedElement = SelectedElement;
 
@@ -154,6 +149,7 @@ namespace BIM_Leaders_Windows
         {
             IsVisible = false;
 
+            SelectReferencePlaneModel = new SelectReferencePlaneModel(BaseModel);
             SelectReferencePlaneModel.Run();
 
             SelectedElement = SelectReferencePlaneModel.SelectedElement;

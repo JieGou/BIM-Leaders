@@ -28,15 +28,12 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public DimensionPlanLineModel()
-        {
-            _toleranceAngle = Doc.Application.AngleTolerance / 100; // 0.001 grad
-        }
-
         #region METHODS
 
         private protected override void TryExecute()
         {
+            _toleranceAngle = Doc.Application.AngleTolerance / 100; // 0.001 grad
+
             DetailLine detailLine = Doc.GetElement(new ElementId(SelectedElement)) as DetailLine;
             Line line = detailLine.GeometryCurve as Line;
 

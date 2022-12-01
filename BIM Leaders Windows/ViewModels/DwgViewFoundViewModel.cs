@@ -22,7 +22,11 @@ namespace BIM_Leaders_Windows
         public DataSet DwgList
         {
             get { return _dwgList; }
-            set { _dwgList = value; }
+            set
+            {
+                _dwgList = value;
+                OnPropertyChanged(nameof(DwgList));
+            }
         }
 
         private DataRowView _selectedDwg;
@@ -40,13 +44,20 @@ namespace BIM_Leaders_Windows
 
         public DwgViewFoundViewModel()
         {
-            Model = BaseModel as DwgViewFoundModel;
-
-            DwgList = Model.DwgTable;
-
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (DwgViewFoundModel)BaseModel;
+
+            DwgList = Model.GetDwgTable();
+        }
+
+        #endregion
 
         #region COMMANDS
 

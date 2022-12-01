@@ -15,9 +15,6 @@ namespace BIM_Leaders_Logic
 
         #region PROPERTIES
 
-        public SortedDictionary<string, int> MaterialsList { get; private set; }
-        public SortedDictionary<string, int> FillTypesList { get; private set; }
-
         private bool _checkOneLink;
         public bool CheckOneLink
         {
@@ -53,15 +50,9 @@ namespace BIM_Leaders_Logic
 
         #endregion
 
-        public WallsCompareModel()
-        {
-            MaterialsList = GetMaterialsList();
-            FillTypesList = GetFillTypesList();
-        }
-
         #region METHODS
 
-        private SortedDictionary<string, int> GetMaterialsList()
+        public SortedDictionary<string, int> GetMaterialsList()
         {
             // Get Fills
             FilteredElementCollector collector = new FilteredElementCollector(Doc);
@@ -90,7 +81,7 @@ namespace BIM_Leaders_Logic
             return materialsList;
         }
 
-        private SortedDictionary<string, int> GetFillTypesList()
+        public SortedDictionary<string, int> GetFillTypesList()
         {
             // Get Fills
             FilteredElementCollector collector = new FilteredElementCollector(Doc);

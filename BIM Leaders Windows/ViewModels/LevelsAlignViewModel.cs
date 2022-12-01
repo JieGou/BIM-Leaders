@@ -64,20 +64,27 @@ namespace BIM_Leaders_Windows
 
         public LevelsAlignViewModel()
         {
-            Side1 = true;
-            Side2 = true;
-            Switch2D = true;
-
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (LevelsAlignModel)BaseModel;
+
+            Side1 = true;
+            Side2 = true;
+            Switch2D = true;
+        }
+
+        #endregion
 
         #region COMMANDS
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as LevelsAlignModel;
-
             Model.Side1 = Side1;
             Model.Side2 = Side2;
             Model.Switch2D = Switch2D;

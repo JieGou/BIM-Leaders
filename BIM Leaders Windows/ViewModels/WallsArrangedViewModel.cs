@@ -139,7 +139,16 @@ namespace BIM_Leaders_Windows
 
         public WallsArrangedViewModel()
         {
-            SelectReferencePlanesModel = new SelectReferencePlanesModel(Model);
+            RunCommand = new CommandWindow(RunAction);
+            SelectReferencePlanesCommand = new CommandGeneric(SelectReferencePlanesAction);
+            CloseCommand = new CommandWindow(CloseAction);
+        }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (WallsArrangedModel)BaseModel;
 
             IsVisible = true;
 
@@ -162,25 +171,13 @@ namespace BIM_Leaders_Windows
 
             SelectedElements = new List<int> { 0, 0 };
             SelectedElementsString = "No selection";
-
-            RunCommand = new CommandWindow(RunAction);
-            SelectReferencePlanesCommand = new CommandGeneric(SelectReferencePlanesAction);
-            CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #endregion
 
         #region VALIDATION
 
-        public string Error { get { return null; } }
-
-        public string this[string propertyName]
-        {
-            get
-            {
-                return GetValidationError(propertyName);
-            }
-        }
-
-        string GetValidationError(string propertyName)
+        private protected override string GetValidationError(string propertyName)
         {
             string error = null;
             
@@ -252,8 +249,6 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as WallsArrangedModel;
-
             Model.DistanceStepCm = DistanceStep;
             Model.DistanceToleranceCm = DistanceTolerance;
             Model.FilterColorAngleSystem = FilterColorAngle;
@@ -270,7 +265,8 @@ namespace BIM_Leaders_Windows
         private void SelectReferencePlanesAction()
         {
             IsVisible = false;
-            
+
+            SelectReferencePlanesModel = new SelectReferencePlanesModel(BaseModel);
             SelectReferencePlanesModel.Run();
 
             SelectedElements = SelectReferencePlanesModel.SelectedElements;

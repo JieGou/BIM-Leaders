@@ -19,7 +19,7 @@ namespace BIM_Leaders_Core
 
         public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _result = new RunResult();
+            _result = new RunResult() { Started = true };
 
             Run(commandData);
 
@@ -30,8 +30,6 @@ namespace BIM_Leaders_Core
             else
                 return Result.Succeeded;
         }
-
-        //private protected abstract void Run(ExternalCommandData commandData);
 
         private protected virtual void Run(ExternalCommandData commandData)
         {
@@ -45,7 +43,7 @@ namespace BIM_Leaders_Core
 
             // ViewModel
             _viewModel.BaseModel = _model;
-            _viewModel.GetInitialData();
+            _viewModel.SetInitialData();
 
             // View
             _view.DataContext = _viewModel;

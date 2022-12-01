@@ -18,8 +18,7 @@ namespace BIM_Leaders_Core
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            _result = new RunResult();
-            _result.Started = true;
+            _result = new RunResult() { Started = true };
 
             try
             {

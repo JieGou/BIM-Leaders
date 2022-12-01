@@ -64,20 +64,27 @@ namespace BIM_Leaders_Windows
 
         public GridsAlignViewModel()
         {
-            Side1 = true;
-            Side2 = true;
-            Switch2D = true;
-
             RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
+
+        #region METHODS
+
+        public override void SetInitialData()
+        {
+            Model = (GridsAlignModel)BaseModel;
+
+            Side1 = true;
+            Side2 = true;
+            Switch2D = true;
+        }
+
+        #endregion
 
         #region COMMANDS
 
         private protected override void RunAction(Window window)
         {
-            Model = BaseModel as GridsAlignModel;
-
             Model.Side1 = Side1;
             Model.Side2 = Side2;
             Model.Switch2D = Switch2D;
