@@ -83,6 +83,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ElementPropertiesMatchModel.cs" />
+    <Compile Include="Models\ElementsJoinModel.cs" />
+    <Compile Include="Models\ElementPaintRemoveModel.cs" />
     <Compile Include="Models\JournalAnalyzeModel.cs" />
     <Compile Include="RunResult.cs" />
     <Compile Include="Models\PurgeModel.cs" />

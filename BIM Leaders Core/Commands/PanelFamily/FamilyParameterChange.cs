@@ -80,7 +80,7 @@ namespace BIM_Leaders_Core
             return text;
         }
 
-        private protected override async void Run(ExternalCommandData commandData) { return; }
+        private protected override void Run(ExternalCommandData commandData) { }
 
         public static string GetPath() => typeof(FamilyParameterChange).Namespace + "." + nameof(FamilyParameterChange);
     }

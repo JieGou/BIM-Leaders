@@ -30,11 +30,13 @@ namespace BIM_Leaders_Core
             {
                 XYZ zero = new XYZ(0, 0, 0);
 
-                List<XYZ> points = new List<XYZ>();
-                points.Add(new XYZ(_linesLength, 0, 0));
-                points.Add(new XYZ(0, _linesLength, 0));
-                points.Add(new XYZ(0 - _linesLength, 0, 0));
-                points.Add(new XYZ(0, 0 - _linesLength, 0));
+                List<XYZ> points = new List<XYZ>
+                {
+                    new XYZ(_linesLength, 0, 0),
+                    new XYZ(0, _linesLength, 0),
+                    new XYZ(0 - _linesLength, 0, 0),
+                    new XYZ(0, 0 - _linesLength, 0)
+                };
 
                 List<Line> lines = points
                     .ConvertAll(x => Line.CreateBound(zero, x));
@@ -64,7 +66,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private protected override void Run(ExternalCommandData commandData) { return; }
+        private protected override void Run(ExternalCommandData commandData) { }
 
         public static string GetPath() => typeof(FamilyZeroCoordinates).Namespace + "." + nameof(FamilyZeroCoordinates);
     }

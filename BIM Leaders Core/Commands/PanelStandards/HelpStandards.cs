@@ -35,7 +35,7 @@ namespace BIM_Leaders_Core
             }
         }
 
-        private protected override async void Run(ExternalCommandData commandData) { return; }
+        private protected override void Run(ExternalCommandData commandData) { }
 
         public static string GetPath() => typeof(HelpStandards).Namespace + "." + nameof(HelpStandards);
     }
