@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using BIM_Leaders_Logic;
+using System.Data;
 using System.Windows;
 
 namespace BIM_Leaders_Windows
@@ -10,6 +11,13 @@ namespace BIM_Leaders_Windows
     {
         #region PROPERTIES
 
+        private JournalAnalyzeModel _model;
+        public JournalAnalyzeModel Model
+        {
+            get { return _model; }
+            set { _model = value; }
+        }
+
         private DataSet _commandsDataSet;
         public DataSet CommandsDataSet
         {
@@ -19,16 +27,20 @@ namespace BIM_Leaders_Windows
 
         #endregion
 
-        public JournalAnalyzeViewModel(DataSet commandsDataSet)
+        public JournalAnalyzeViewModel()
         {
-            CommandsDataSet = commandsDataSet;
-
+            RunCommand = new CommandWindow(RunAction);
             CloseCommand = new CommandWindow(CloseAction);
         }
 
         #region METHODS
 
-        public override void SetInitialData() { }
+        public override void SetInitialData()
+        {
+            Model = (JournalAnalyzeModel)BaseModel;
+
+            CommandsDataSet = Model.Get;
+        }
 
         #endregion
 

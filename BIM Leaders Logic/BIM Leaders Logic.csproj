@@ -83,6 +83,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\JournalAnalyzeModel.cs" />
     <Compile Include="RunResult.cs" />
     <Compile Include="Models\PurgeModel.cs" />
     <Compile Include="Models\WallsParallelModel.cs" />

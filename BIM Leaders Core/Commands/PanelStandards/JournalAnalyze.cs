@@ -297,7 +297,7 @@ namespace BIM_Leaders_Core
             Grid,
             Close
         }
-
+        /*
         /// <summary>
         /// Find all revit commands in a given string array.
         /// </summary>
@@ -317,7 +317,7 @@ namespace BIM_Leaders_Core
 
             return commands;
         }
-
+        */
         /// <summary>
         /// Create a DataSet for using in tables.
         /// </summary>

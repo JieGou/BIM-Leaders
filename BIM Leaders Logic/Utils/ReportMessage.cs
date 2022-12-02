@@ -11,6 +11,7 @@ namespace BIM_Leaders_Logic
     {
         public string MessageName { get; set; }
         public string MessageText { get; set; }
+        public int MessageCount { get; set; }
         public ReportMessage(string messageName, string messageText)
         {
             MessageName = messageName;
@@ -20,6 +21,11 @@ namespace BIM_Leaders_Logic
         {
             MessageName = messageName;
             MessageText = "-";
+        }
+        public ReportMessage(string messageName, int messageCount)
+        {
+            MessageName = messageName;
+            MessageCount = messageCount;
         }
     }
 }
