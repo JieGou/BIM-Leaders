@@ -39,21 +39,20 @@ namespace BIM_Leaders_Logic
 
         #region METHODS
 
-        private protected override void TryExecute()
+        private protected override void TryExecute() { }
+
+        public DataSet GetCommandsDataSet()
         {
             JournalContent = GetJournalContent();
             Commands = FindCommands();
 
             IEnumerable<ReportMessage> reportMessages = SortCommands();
-            Result.Report = GetRunReport(reportMessages);
+            DataSet commandsDataSet = GetRunReport(reportMessages);
 
-            if (Result.Report.Tables[0].Rows.Count == 0)
+            if (commandsDataSet.Tables[0].Rows.Count == 0)
                 Result.Result = "No commands found in the journal file.";
-        }
 
-        public DataSet AnalyzeJournal()
-        {
-
+            return commandsDataSet;
         }
 
         private string[] GetJournalContent()
@@ -356,7 +355,7 @@ namespace BIM_Leaders_Logic
             {
                 DataRow dataRow = dataTable.NewRow();
                 dataRow["Command"] = reportMessage.MessageName;
-                dataRow["Count"] = reportMessage.MessageText;
+                dataRow["Count"] = reportMessage.MessageCount;
                 dataTable.Rows.Add(dataRow);
             }
 

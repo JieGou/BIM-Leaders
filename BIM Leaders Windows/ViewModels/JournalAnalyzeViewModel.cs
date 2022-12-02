@@ -39,7 +39,7 @@ namespace BIM_Leaders_Windows
         {
             Model = (JournalAnalyzeModel)BaseModel;
 
-            CommandsDataSet = Model.Get;
+            CommandsDataSet = Model.GetCommandsDataSet();
         }
 
         #endregion
