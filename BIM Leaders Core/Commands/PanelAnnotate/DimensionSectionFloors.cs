@@ -14,8 +14,8 @@ namespace BIM_Leaders_Core
             _transactionName = "Annotate Section";
 
             _model = new DimensionSectionFloorsModel();
-            _viewModel = new DimensionPlanLineViewModel();
-            _view = new DimensionPlanLineForm();
+            _viewModel = new DimensionSectionFloorsViewModel();
+            _view = new DimensionSectionFloorsForm();
         }
 
         public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
