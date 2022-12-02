@@ -13,7 +13,7 @@
         WindowStartupLocation="CenterScreen"
         Title="BIM Leaders - Dimension Plan Walls"
         Width="306"
-        Height="396"
+        Height="306"
         
         d:DataContext="{d:DesignInstance Type=local:DimensionPlanLineViewModel}"
         MouseLeftButtonDown="FormMouseMove">
