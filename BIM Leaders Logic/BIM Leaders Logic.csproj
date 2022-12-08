@@ -110,6 +110,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BaseModel.cs" />
     <Compile Include="SelectionModels\SelectReferencePlaneModel.cs" />
+    <None Include="Utils\Journal.cs" />
     <Compile Include="Utils\ViewUtils.cs" />
     <Compile Include="SelectionModels\SelectReferencePlanesModel.cs" />
     <Compile Include="SelectionModels\SelectLineModel.cs" />

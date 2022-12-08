@@ -18,11 +18,11 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
-        private DataSet _commandsDataSet;
-        public DataSet CommandsDataSet
+        private DataSet _journalDataSet;
+        public DataSet JournalDataSet
         {
-            get { return _commandsDataSet; }
-            set { _commandsDataSet = value; }
+            get { return _journalDataSet; }
+            set { _journalDataSet = value; }
         }
 
         #endregion
@@ -39,7 +39,7 @@ namespace BIM_Leaders_Windows
         {
             Model = (JournalAnalyzeModel)BaseModel;
 
-            CommandsDataSet = Model.GetCommandsDataSet();
+            JournalDataSet = Model.GetJournalDataSet();
         }
 
         #endregion

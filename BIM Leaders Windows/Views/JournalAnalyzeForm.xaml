@@ -49,7 +49,7 @@
 
                 <Grid Grid.Row="1">
                     <DataGrid x:Name="datagridCommands"
-                              ItemsSource="{Binding CommandsDataSet.Tables[0]}" IsReadOnly="True"
+                              ItemsSource="{Binding JournalDataSet.Tables[0]}" IsReadOnly="True"
                               Margin="18,0"
                               Style="{StaticResource SDataGridSimple}">
                         <DataGrid.ContextMenu>
