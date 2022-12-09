@@ -12,8 +12,8 @@
         Style="{DynamicResource SWindow}"
         Title="BIM Leaders - Analyze Journal"
         WindowStartupLocation="CenterScreen"
-        Width="810"
-        Height="360"
+        Width="306"
+        Height="306"
         
         d:DataContext="{d:DesignInstance Type=local:JournalAnalyzeViewModel}"
         MouseLeftButtonDown="FormMouseMove">
@@ -39,7 +39,7 @@
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
-                    <TextBlock Text="Journal Analyze"
+                    <TextBlock Text="Analyze Journal"
                                Style="{StaticResource STextBlock}" />
                     <Button x:Name="buttonCancel"
                             Command = "{Binding CloseCommand, Mode=OneWay}"
@@ -48,25 +48,52 @@
                 </Grid>
 
                 <Grid Grid.Row="1">
-                    <DataGrid x:Name="datagridCommands"
-                              ItemsSource="{Binding JournalDataSet.Tables[0]}" IsReadOnly="True"
-                              Margin="18,0"
-                              Style="{StaticResource SDataGridSimple}">
-                        <DataGrid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
-                            </ContextMenu>
-                        </DataGrid.ContextMenu>
-                    </DataGrid>
+                    <StackPanel Margin="18,0">
+                        <Label Content="Warning Types"
+                               Style="{StaticResource SLabelBold}" />
+                        <CheckBox x:Name="checkboxAnalyzeCommands" IsChecked="{Binding Path=AnalyzeCommands, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Commands" ToolTip="Commands"
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxAnalyzeActivate" IsChecked="{Binding Path=AnalyzeActivate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Views Activating" ToolTip="Events raised when view is activated"
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxAnalyzeWheel" IsChecked="{Binding Path=AnalyzeWheel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Mouse Wheel" ToolTip="Events raised when mouse wheel is rotated"
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxAnalyzeMouseButtons" IsChecked="{Binding Path=AnalyzeMouseButtons, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Mouse Buttons" ToolTip="Events raised when mouse button is pressed"
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxAnalyzeMouseMove" IsChecked="{Binding Path=AnalyzeMouseMove, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Mouse Moving" ToolTip="Events raised when mouse is moved"
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxAnalyzeKey" IsChecked="{Binding Path=AnalyzeKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Keyboard" ToolTip="Events raised when keyboard keys are pressed"
+                                  Style="{StaticResource SCheckBox}" />
+                    </StackPanel>
                 </Grid>
 
                 <Grid Grid.Row="2">
-                    <Button x:Name="buttonOk"
-                            Command = "{Binding CloseCommand, Mode=OneWay}"
-                            CommandParameter = "{Binding ElementName=JournalAnalyzeWindow}"
-                            Content="OK" ToolTip="Close"
-                            Width="234"
-                            Style="{StaticResource SButtonOk}" />
+                    <StackPanel>
+                        <Button x:Name="buttonOk"
+                                Command="{Binding RunCommand}"
+                                CommandParameter = "{Binding ElementName=JournalAnalyzeWindow}"
+                                Content="OK" ToolTip="Close"
+                                Style="{StaticResource SButtonOk}">
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                                    <Binding ElementName="checkboxAnalyzeCommands" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxAnalyzeActivate" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxAnalyzeWheel" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxAnalyzeMouseButtons" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxAnalyzeMouseMove" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxAnalyzeKey" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
+                        <TextBlock Text="{Binding ElementName=checkboxAnalyzeCommands, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Margin="0,-18,36,0"
+                                   Style="{StaticResource STextBlockError}" />
+                    </StackPanel>
                 </Grid>
             </Grid>
 
