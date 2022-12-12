@@ -13,7 +13,7 @@
         Title="BIM Leaders - Dimension Plan"
         WindowStartupLocation="CenterScreen"
         Width="306"
-        Height="396"
+        Height="466"
         
         d:DataContext="{d:DesignInstance Type=local:DimensionsPlanViewModel}"
         MouseLeftButtonDown="FormMouseMove">
@@ -65,7 +65,7 @@
                                  Style="{StaticResource STextBox}" />
                         <TextBlock Text="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors)[0].ErrorContent}"
                                    Style="{StaticResource STextBlockError}" />
-
+                        
                         <Label Content="Min New References"
                                Margin="-5,9,0,0"
                                Style="{StaticResource SLabelBold}" />
@@ -73,6 +73,15 @@
                                  Text="{Binding MinReferencesString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                  Style="{StaticResource STextBox}" />
                         <TextBlock Text="{Binding ElementName=textboxReferences, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
+
+                        <Label Content="Max Distance for Union"
+                               Margin="-5,9,0,0"
+                               Style="{StaticResource SLabelBold}" />
+                        <TextBox x:Name="textboxMaxUnionDistance" ToolTip="If distance between new line and existing lines will be lower, dimension will be joined with existing one."
+                                 Text="{Binding MaxUnionDistanceString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource STextBox}" />
+                        <TextBlock Text="{Binding ElementName=textboxMaxUnionDistance, Path=(Validation.Errors)[0].ErrorContent}"
                                    Style="{StaticResource STextBlockError}" />
                     </StackPanel>
                 </Grid>
@@ -89,6 +98,7 @@
                                     <Binding ElementName="textboxSearchStep" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="textboxSearchDistance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="textboxReferences" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxMaxUnionDistance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                 </MultiBinding>
                             </Button.IsEnabled>
                         </Button>

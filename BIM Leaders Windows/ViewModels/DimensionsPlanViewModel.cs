@@ -14,6 +14,8 @@ namespace BIM_Leaders_Windows
         private const int _searchDistanceMaxValue = 10000;
         private const int _minReferencesMinValue = 0;
         private const int _minReferencesMaxValue = 10;
+        private const int _maxUnionDistanceMinValue = 0;
+        private const int _maxUnionDistanceMaxValue = 1000;
 
         #region PROPERTIES
 
@@ -75,6 +77,23 @@ namespace BIM_Leaders_Windows
             set { _minReferences = value; }
         }
 
+        private string _maxUnionDistanceString;
+        public string MaxUnionDistanceString
+        {
+            get { return _maxUnionDistanceString; }
+            set
+            {
+                _maxUnionDistanceString = value;
+                OnPropertyChanged(nameof(MaxUnionDistanceString));
+            }
+        }
+        private double _maxUnionDistance;
+        public double MaxUnionDistance
+        {
+            get { return _maxUnionDistance; }
+            set { _maxUnionDistance = value; }
+        }
+
         #endregion
 
         public DimensionsPlanViewModel()
@@ -95,6 +114,8 @@ namespace BIM_Leaders_Windows
             SearchDistanceString = SearchDistance.ToString();
             MinReferences = 5;
             MinReferencesString = MinReferences.ToString();
+            MaxUnionDistance = 30;
+            MaxUnionDistanceString= MaxUnionDistance.ToString();
         }
 
         #endregion
@@ -108,7 +129,7 @@ namespace BIM_Leaders_Windows
             switch (propertyName)
             {
                 case "SearchStepString":
-                    error = ValidateInputIsWholeNumber(out int searchStep, _searchStepString);
+                    error = ValidateInputIsWholeNumber(out int searchStep, SearchStepString);
                     if (string.IsNullOrEmpty(error))
                     {
                         SearchStep = searchStep;
@@ -116,7 +137,7 @@ namespace BIM_Leaders_Windows
                     }
                     break;
                 case "SearchDistanceString":
-                    error = ValidateInputIsWholeNumber(out int searchDistance, _searchDistanceString);
+                    error = ValidateInputIsWholeNumber(out int searchDistance, SearchDistanceString);
                     if (string.IsNullOrEmpty(error))
                     {
                         SearchDistance = searchDistance;
@@ -124,11 +145,19 @@ namespace BIM_Leaders_Windows
                     }
                     break;
                 case "MinReferencesString":
-                    error = ValidateInputIsWholeNumber(out int minreferences, _minReferencesString);
+                    error = ValidateInputIsWholeNumber(out int minReferences, MinReferencesString);
                     if (string.IsNullOrEmpty(error))
                     {
-                        MinReferences = minreferences;
+                        MinReferences = minReferences;
                         error = ValidateResultMinReferences();
+                    }
+                    break;
+                case "MaxUnionDistanceString":
+                    error = ValidateInputIsWholeNumber(out int maxUnionDistance, MaxUnionDistanceString);
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        MaxUnionDistance = maxUnionDistance;
+                        error = ValidateResultMaxUnionDistance();
                     }
                     break;
             }
@@ -168,6 +197,13 @@ namespace BIM_Leaders_Windows
             return null;
         }
 
+        private string ValidateResultMaxUnionDistance()
+        {
+            if (MaxUnionDistance < _maxUnionDistanceMinValue || MaxUnionDistance > _maxUnionDistanceMaxValue)
+                return $"From {_maxUnionDistanceMinValue} to {_maxUnionDistanceMaxValue}";
+            return null;
+        }
+
         #endregion
 
         #region COMMANDS
@@ -177,6 +213,7 @@ namespace BIM_Leaders_Windows
             Model.SearchDistanceCm = SearchDistance;
             Model.SearchStepCm = SearchStep;
             Model.MinReferences = MinReferences;
+            Model.MaxUnionDistanceCm = MaxUnionDistance;
 
             Model.Run();
 
