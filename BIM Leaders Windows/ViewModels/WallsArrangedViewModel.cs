@@ -200,7 +200,7 @@ namespace BIM_Leaders_Windows
                     }
                     break;
                 case "SelectedElementsString":
-                    if (SelectReferencePlanesModel.Error?.Length > 0)
+                    if (SelectReferencePlanesModel?.Error?.Length > 0)
                         error = SelectReferencePlanesModel.Error;
                     if (SelectedElements[0] == 0)
                         error = "No selection";
