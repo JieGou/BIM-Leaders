@@ -85,72 +85,6 @@ namespace BIM_Leaders_Windows
             }
         }
 
-        private SortedDictionary<string, int> _titleBlockList;
-        public SortedDictionary<string, int> TitleBlockList
-        {
-            get { return _titleBlockList; }
-            set
-            {
-                _titleBlockList = value;
-                OnPropertyChanged(nameof(TitleBlockList));
-            }
-        }
-
-        private int _titleBlockListSelected;
-        public int TitleBlockListSelected
-        {
-            get { return _titleBlockListSelected; }
-            set
-            {
-                _titleBlockListSelected = value;
-                OnPropertyChanged(nameof(TitleBlockListSelected));
-            }
-        }
-
-        private double _tagPlacementOffsetX;
-        public double TagPlacementOffsetX
-        {
-            get { return _tagPlacementOffsetX; }
-            set
-            {
-                _tagPlacementOffsetX = value;
-                OnPropertyChanged(nameof(TagPlacementOffsetX));
-            }
-        }
-
-        private string _tagPlacementOffsetXstring;
-        public string TagPlacementOffsetXstring
-        {
-            get { return _tagPlacementOffsetXstring; }
-            set
-            {
-                _tagPlacementOffsetXstring = value;
-                OnPropertyChanged(nameof(TagPlacementOffsetXstring));
-            }
-        }
-
-        private double _tagPlacementOffsetY;
-        public double TagPlacementOffsetY
-        {
-            get { return _tagPlacementOffsetY; }
-            set
-            {
-                _tagPlacementOffsetY = value;
-                OnPropertyChanged(nameof(TagPlacementOffsetY));
-            }
-        }
-
-        private string _tagPlacementOffsetYstring;
-        public string TagPlacementOffsetYstring
-        {
-            get { return _tagPlacementOffsetYstring; }
-            set
-            {
-                _tagPlacementOffsetYstring = value;
-                OnPropertyChanged(nameof(TagPlacementOffsetYstring));
-            }
-        }
-
         private bool _createAluminium;
         public bool CreateAluminium
         {
@@ -300,6 +234,72 @@ namespace BIM_Leaders_Windows
             }
         }
 
+        private SortedDictionary<string, int> _titleBlockList;
+        public SortedDictionary<string, int> TitleBlockList
+        {
+            get { return _titleBlockList; }
+            set
+            {
+                _titleBlockList = value;
+                OnPropertyChanged(nameof(TitleBlockList));
+            }
+        }
+
+        private int _titleBlockListSelected;
+        public int TitleBlockListSelected
+        {
+            get { return _titleBlockListSelected; }
+            set
+            {
+                _titleBlockListSelected = value;
+                OnPropertyChanged(nameof(TitleBlockListSelected));
+            }
+        }
+
+        private double _tagPlacementOffsetX;
+        public double TagPlacementOffsetX
+        {
+            get { return _tagPlacementOffsetX; }
+            set
+            {
+                _tagPlacementOffsetX = value;
+                OnPropertyChanged(nameof(TagPlacementOffsetX));
+            }
+        }
+
+        private string _tagPlacementOffsetXstring;
+        public string TagPlacementOffsetXstring
+        {
+            get { return _tagPlacementOffsetXstring; }
+            set
+            {
+                _tagPlacementOffsetXstring = value;
+                OnPropertyChanged(nameof(TagPlacementOffsetXstring));
+            }
+        }
+
+        private double _tagPlacementOffsetY;
+        public double TagPlacementOffsetY
+        {
+            get { return _tagPlacementOffsetY; }
+            set
+            {
+                _tagPlacementOffsetY = value;
+                OnPropertyChanged(nameof(TagPlacementOffsetY));
+            }
+        }
+
+        private string _tagPlacementOffsetYstring;
+        public string TagPlacementOffsetYstring
+        {
+            get { return _tagPlacementOffsetYstring; }
+            set
+            {
+                _tagPlacementOffsetYstring = value;
+                OnPropertyChanged(nameof(TagPlacementOffsetYstring));
+            }
+        }
+
         #endregion
 
         public ListsCreateViewModel()
@@ -341,7 +341,7 @@ namespace BIM_Leaders_Windows
             TitleBlockListSelected = TitleBlockList.First().Value;
             TagPlacementOffsetX = 177.5;
             TagPlacementOffsetXstring = TagPlacementOffsetX.ToString();
-            TagPlacementOffsetY = 208.7;
+            TagPlacementOffsetY = 248.7;
             TagPlacementOffsetYstring = TagPlacementOffsetY.ToString();
         }
 

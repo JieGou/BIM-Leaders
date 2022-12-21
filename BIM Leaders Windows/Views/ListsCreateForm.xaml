@@ -190,7 +190,7 @@
                             
                             <Label Content="Tag Placement Offset X (mm)"
                                    Style="{StaticResource SLabelBold}" />
-                            <TextBox x:Name="textboxTagPlacementOffsetXstring" ToolTip="Move tag instances by given coordinates from the family instance. After this move section must be inside of tag's table."
+                            <TextBox x:Name="textboxTagPlacementOffsetXstring" ToolTip="Move tag by given coordinates from the the element instance origin. After this move section must be inside of tag's table."
                                      Text="{Binding TagPlacementOffsetXstring, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                      Style="{StaticResource STextBox}" />
                             <TextBlock Text="{Binding ElementName=textboxTagPlacementOffsetXstring, Path=(Validation.Errors)[0].ErrorContent}"
@@ -198,7 +198,7 @@
 
                             <Label Content="Tag Placement Offset Y (mm)"
                                    Style="{StaticResource SLabelBold}" />
-                            <TextBox x:Name="textboxTagPlacementOffsetYstring" ToolTip="Move tag instances by given coordinates from the family instance. After this move section must be inside of tag's table."
+                            <TextBox x:Name="textboxTagPlacementOffsetYstring" ToolTip="Move tag by given coordinates from the element instance origin. After this move section must be inside of tag's table."
                                      Text="{Binding TagPlacementOffsetYstring, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                      Style="{StaticResource STextBox}" />
                             <TextBlock Text="{Binding ElementName=textboxTagPlacementOffsetYstring, Path=(Validation.Errors)[0].ErrorContent}"
@@ -219,8 +219,6 @@
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
                                     <Binding ElementName="textboxViewNamePrefix" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
-                                    <Binding ElementName="textboxTagPlacementOffsetXstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
-                                    <Binding ElementName="textboxTagPlacementOffsetYstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="textboxTypeCommentsAluminium" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="textboxTypeNamePrefixAluminiumWalls" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="textboxTypeCommentsMetal" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
@@ -228,6 +226,8 @@
                                     <Binding ElementName="checkboxCreateAluminium" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="checkboxCreateMetal" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="checkboxCreateCarpentry" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxTagPlacementOffsetXstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxTagPlacementOffsetYstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                 </MultiBinding>
                             </Button.IsEnabled>
                         </Button>

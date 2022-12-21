@@ -12,6 +12,8 @@ namespace BIM_Leaders_Logic
     [Transaction(TransactionMode.Manual)]
     public class ListsCreateModel : BaseModel
     {
+        const double SECTION_SIDES_EXTENSION = 1;
+
         private int _countViewsAluminium;
         private int _countViewsMetal;
         private int _countViewsCarpentry;
@@ -505,9 +507,11 @@ namespace BIM_Leaders_Logic
 
             foreach (Element element in elements)
             {
-                BoundingBoxXYZ sectionBox = GetSectionBox(element);
+                (BoundingBoxXYZ Section, BoundingBoxXYZ Facade) viewsBoxes = GetSectionBoxes(element);
 
-                ViewSection section = ViewSection.CreateSection(Doc, viewType, sectionBox);
+                ViewSection section = ViewSection.CreateSection(Doc, viewType, viewsBoxes.Section);
+
+                // CREATE HERE FACADE AND PLAN VIEWS
 
                 string typeMark = GetTypeMark(element);
                 if (typeMark == "")
@@ -530,11 +534,11 @@ namespace BIM_Leaders_Logic
                 Reference reference = new Reference(element);
 
                 // Move tag on the view because it's on the family point now.
-                XYZ tagLocation = sectionBox.Transform.Origin;
+                XYZ tagLocation = viewsBoxes.Section.Transform.Origin;
 
                 double moveTagX = -(section.RightDirection.X * TagPlacementOffsetX * scale);
                 double moveTagY = -(section.RightDirection.Y * TagPlacementOffsetX * scale);
-                double moveTagZ = (sectionBox.Max.Y - sectionBox.Min.Y) / 2 - TagPlacementOffsetY * scale;
+                double moveTagZ = (viewsBoxes.Section.Max.Y - viewsBoxes.Section.Min.Y) / 2 - TagPlacementOffsetY * scale;
                 XYZ moveTag = new XYZ(moveTagX, moveTagY, moveTagZ);
 
                 XYZ tagLocationMoved = tagLocation.Add(moveTag);
@@ -554,8 +558,6 @@ namespace BIM_Leaders_Logic
         {
             BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
 
-            const double SECTION_SIDES_EXTENSION = 1;
-
             if (element.GetType() == typeof(FamilyInstance))
                 sectionBox = GetSectionBoxInstance(element as FamilyInstance, SECTION_SIDES_EXTENSION);
             else if (element.GetType() == typeof(Wall))
@@ -566,6 +568,27 @@ namespace BIM_Leaders_Logic
             }
 
             return sectionBox;
+        }
+
+        /// <summary>
+        /// Get section box for section creating.
+        /// </summary>
+        /// <param name="element">Element that needs a section.</param>
+        private (BoundingBoxXYZ, BoundingBoxXYZ) GetSectionBoxes(Element element)
+        {
+            BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
+            BoundingBoxXYZ facadeBox = new BoundingBoxXYZ();
+
+            if (element.GetType() == typeof(FamilyInstance))
+                (sectionBox, facadeBox) = GetSectionBoxesInstance(element as FamilyInstance, SECTION_SIDES_EXTENSION);
+            else if (element.GetType() == typeof(Wall))
+                (sectionBox, facadeBox) = GetSectionBoxesWall(element as Wall, SECTION_SIDES_EXTENSION);
+            else if (element.GetType() == typeof(Railing))
+            {
+
+            }
+
+            return (sectionBox, facadeBox);
         }
 
         /// <summary>
@@ -628,6 +651,73 @@ namespace BIM_Leaders_Logic
             sectionBox.Transform = instanceTransformRaised;
 
             return sectionBox;
+        }
+
+        /// <summary>
+        /// Get bounding box for creating a section view that cuts the given <paramref name="familyInstance"/>.
+        /// </summary>
+        /// <param name="doc">Document.</param>
+        /// <param name="familyInstance">Family instance to cut.</param>
+        /// <param name="SECTION_SIDES_EXTENSION">Extension of the bounding box (will apply to left, right and far side).</param>
+        /// <returns>Bounding box with right coordinates for section creating (Z is looking to the section direction, etc).</returns>
+        private (BoundingBoxXYZ, BoundingBoxXYZ) GetSectionBoxesInstance(FamilyInstance familyInstance, double SECTION_SIDES_EXTENSION)
+        {
+            BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
+            BoundingBoxXYZ facadeBox = new BoundingBoxXYZ();
+
+            ElementId elementTypeId = familyInstance.GetTypeId();
+            if (elementTypeId == ElementId.InvalidElementId)
+                return (null, null);
+            Element elementType = familyInstance.Document.GetElement(elementTypeId);
+
+            Wall wall = familyInstance.Host as Wall;
+            double wallThickness = wall.WallType.Width;
+
+#if VERSION2020 || VERSION2021
+            double instanceWidth = elementType.get_Parameter(BuiltInParameter.CASEWORK_WIDTH).AsDouble();
+            double wallHeight = wall.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM).AsDouble();
+#else
+            double instanceWidth = elementType.GetParameter(ParameterTypeId.FamilyWidthParam).AsDouble();
+            double wallHeight = wall.GetParameter(ParameterTypeId.WallUserHeightParam).AsDouble();
+#endif
+
+            // Get box dimensions, box will cover one half of the element + extension.
+            double sectionBoxOriginalWidth = wallThickness + 2 * SECTION_SIDES_EXTENSION;
+            double sectionBoxOriginalDepth = instanceWidth / 2 + SECTION_SIDES_EXTENSION;
+            double sectionBoxOriginalHeight = wallHeight + 2 * SECTION_SIDES_EXTENSION;
+            // Box will be rotated, so depth and height will interchange.
+            double sectionBoxWidth = sectionBoxOriginalWidth;
+            double sectionBoxDepth = sectionBoxOriginalHeight;
+            double sectionBoxHeight = sectionBoxOriginalDepth;
+
+            // Change the dimensions of the section box.
+            XYZ sectionBoxMin = new XYZ(-sectionBoxWidth / 2, -sectionBoxDepth / 2, 0);
+            XYZ sectionBoxMax = new XYZ(sectionBoxWidth / 2, sectionBoxDepth / 2, sectionBoxHeight);
+            sectionBox.Min = sectionBoxMin;
+            sectionBox.Max = sectionBoxMax;
+
+            // Move the sexion box to the needed coordinates via Transform.
+
+            // Get element transform (location, rotation, etc.).
+            // Change it via Z rotation because we need to see not front of element but side of it
+            // Change it via X rotation because for section creating Z is looking from section front.
+            Transform instanceTransform = familyInstance.GetTransform();
+
+            Transform rotationZ = Transform.CreateRotation(new XYZ(0, 0, 1), -Math.PI / 2);
+            Transform rotationX = Transform.CreateRotation(new XYZ(1, 0, 0), Math.PI / 2);
+            Transform rotationSection = rotationZ.Multiply(rotationX);
+            Transform rotationFacade = rotationZ;
+            Transform instanceTransformSectionRotated = instanceTransform.Multiply(rotationSection);
+            Transform instanceTransformFacadeRotated = instanceTransform.Multiply(rotationFacade);
+
+            Transform moveUp = Transform.CreateTranslation(new XYZ(0, sectionBoxOriginalHeight / 2 - SECTION_SIDES_EXTENSION, 0));
+            Transform instanceTransformSectionRaised = instanceTransformSectionRotated.Multiply(moveUp);
+            Transform instanceTransformFacadeRaised = instanceTransformFacadeRotated.Multiply(moveUp);
+
+            sectionBox.Transform = instanceTransformSectionRaised;
+            facadeBox.Transform = instanceTransformFacadeRaised;
+
+            return (sectionBox, facadeBox);
         }
 
         /// <summary>
@@ -699,6 +789,83 @@ namespace BIM_Leaders_Logic
         }
 
         /// <summary>
+        /// Get bounding box for creating a section view that cuts the given <paramref name="wall"/>.
+        /// </summary>
+        /// <param name="doc">Document.</param>
+        /// <param name="wall">Wall to cut.</param>
+        /// <param name="SECTION_SIDES_EXTENSION">Extension of the bounding box (will apply to left, right and far side).</param>
+        /// <returns>Bounding box with right coordinates for section creating (Z is looking to the section direction, etc).</returns>
+        private (BoundingBoxXYZ, BoundingBoxXYZ) GetSectionBoxesWall(Wall wall, double SECTION_SIDES_EXTENSION)
+        {
+            BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
+            BoundingBoxXYZ facadeBox = new BoundingBoxXYZ();
+
+            XYZ location = new XYZ();
+
+            ElementId elementTypeId = wall.GetTypeId();
+            if (elementTypeId == ElementId.InvalidElementId)
+                return (null, null);
+
+            Element elementType = wall.Document.GetElement(elementTypeId);
+
+            double wallThickness = wall.WallType.Width;
+
+#if VERSION2020 || VERSION2021
+            double wallLength = wall.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble();
+            double wallHeight = wall.get_Parameter(BuiltInParameter.WALL_USER_HEIGHT_PARAM).AsDouble();
+#else
+            double wallLength = elementType.GetParameter(ParameterTypeId.CurveElemLength).AsDouble();
+            double wallHeight = wall.GetParameter(ParameterTypeId.WallUserHeightParam).AsDouble();
+#endif
+
+            // Get box dimensions, box will cover one half of the wall + extension.
+            double sectionBoxOriginalWidth = wallThickness + 2 * SECTION_SIDES_EXTENSION;
+            double sectionBoxOriginalDepth = wallLength / 2 + SECTION_SIDES_EXTENSION;
+            double sectionBoxOriginalHeight = wallHeight + 2 * SECTION_SIDES_EXTENSION;
+            // Box will be rotated, so depth and height will interchange.
+            double sectionBoxWidth = sectionBoxOriginalWidth;
+            double sectionBoxDepth = sectionBoxOriginalHeight;
+            double sectionBoxHeight = sectionBoxOriginalDepth;
+
+            // Change the dimensions of the section box.
+            XYZ sectionBoxMin = new XYZ(-sectionBoxWidth / 2, -sectionBoxDepth / 2, 0);
+            XYZ sectionBoxMax = new XYZ(sectionBoxWidth / 2, sectionBoxDepth / 2, sectionBoxHeight);
+            sectionBox.Min = sectionBoxMin;
+            sectionBox.Max = sectionBoxMax;
+
+            // Move the sexion box to the needed coordinates via Transform.
+
+            // Get wall location line
+            LocationCurve wallLocationCurve = wall.Location as LocationCurve;
+            XYZ wallPoint0 = wallLocationCurve.Curve.GetEndPoint(0);
+            XYZ wallPoint1 = wallLocationCurve.Curve.GetEndPoint(1);
+
+            XYZ wallCenter = wallPoint0.Add(wallPoint1.Subtract(wallPoint0) / 2);
+
+            XYZ wallDirection = wallPoint1.Subtract(wallPoint0).Normalize();
+
+            XYZ upDirection = new XYZ(0, 0, 1);
+            Transform transformSection = Transform.Identity;
+            Transform transformFacade = Transform.Identity;
+            transformSection.Origin = wallCenter;
+            transformSection.BasisY = upDirection;
+            transformSection.BasisZ = wallDirection;
+            transformSection.BasisX = upDirection.CrossProduct(wallDirection);
+
+            transformFacade.Origin = wallCenter;
+            transformFacade.BasisY = upDirection;
+            transformFacade.BasisZ = upDirection.CrossProduct(wallDirection);
+            transformFacade.BasisX = -wallDirection;
+
+            //XYZ wallOrientation = wall.Orientation;
+
+            sectionBox.Transform = transformSection;
+            facadeBox.Transform = transformFacade;
+
+            return (sectionBox, facadeBox);
+        }
+
+        /// <summary>
         /// Get point of the location for Family Instance element.
         /// </summary>
         /// <param name="element">Element to calculate the location point.</param>
@@ -730,7 +897,12 @@ namespace BIM_Leaders_Logic
             }
             int sheetNumberCount = 1;
 
-            XYZ placementPoint = new XYZ(TagPlacementOffsetXmm, TagPlacementOffsetYmm, 0);
+            // TEMP
+            double SectionPlacementOffsetX = 0;
+            double SectionPlacementOffsetY = 0;
+
+
+            XYZ placementPoint = new XYZ(SectionPlacementOffsetX, SectionPlacementOffsetY, 0);
             ElementId viewportType = GetViewportType();
 
             foreach (View view in views)
