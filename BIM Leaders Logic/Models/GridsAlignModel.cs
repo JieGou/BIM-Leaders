@@ -73,7 +73,7 @@ namespace BIM_Leaders_Logic
             Result.Result = GetRunResult();
         }
 
-        private protected override string  GetRunResult()
+        private protected override string GetRunResult()
         {
             string text = "No grids aligned.";
             

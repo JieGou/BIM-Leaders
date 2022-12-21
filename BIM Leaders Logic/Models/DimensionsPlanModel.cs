@@ -71,6 +71,28 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        private double _maxUnionDistanceCm;
+        public double MaxUnionDistanceCm
+        {
+            get { return _maxUnionDistanceCm; }
+            set
+            {
+                _maxUnionDistanceCm = value;
+                OnPropertyChanged(nameof(MaxUnionDistanceCm));
+            }
+        }
+
+        private double _maxUnionDistance;
+        public double MaxUnionDistance
+        {
+            get { return _maxUnionDistance; }
+            set
+            {
+                _maxUnionDistance = value;
+                OnPropertyChanged(nameof(MaxUnionDistance));
+            }
+        }
+
         #endregion
 
         #region METHODS
@@ -138,9 +160,11 @@ namespace BIM_Leaders_Logic
 #if VERSION2020
 			SearchStep = UnitUtils.ConvertToInternalUnits(SearchStepCm, DisplayUnitType.DUT_CENTIMETERS);
 			SearchDistance = UnitUtils.ConvertToInternalUnits(SearchDistanceCm, DisplayUnitType.DUT_CENTIMETERS);
+            MaxUnionDistance = UnitUtils.ConvertToInternalUnits(MaxUnionDistanceCm, DisplayUnitType.DUT_CENTIMETERS);
 #else
             SearchStep = UnitUtils.ConvertToInternalUnits(SearchStepCm, UnitTypeId.Centimeters);
             SearchDistance = UnitUtils.ConvertToInternalUnits(SearchDistanceCm, UnitTypeId.Centimeters);
+            MaxUnionDistance = UnitUtils.ConvertToInternalUnits(MaxUnionDistanceCm, UnitTypeId.Centimeters);
 #endif
         }
 
@@ -369,7 +393,7 @@ namespace BIM_Leaders_Logic
                     dimensionsDataCollector.Add(maxIntersectionLine, maxIntersectionFaces);
                 else
                 {
-                    List<PlanarFace> maxIntersectionFacesPurged = PurgeFacesList(dimensionsDataCollector, maxIntersectionFaces);
+                    List<PlanarFace> maxIntersectionFacesPurged = PurgeFacesList(dimensionsDataCollector, maxIntersectionLine, maxIntersectionFaces);
 
                     // If after purging we still have new dimension
                     if (maxIntersectionFacesPurged != null)
@@ -550,13 +574,42 @@ namespace BIM_Leaders_Logic
         /// <param name="minUniqueReferences">If reference array will contain less unique references, it will be deleted with transfering references to existing array in the data.</param>
         /// <returns>Purged list of faces or null if new dimension not needed (its completely inside of collected one or almost inside - then add new items to the collected list).
         /// Can be improved later, to clear duplicates smartly.</returns>
-        private List<PlanarFace> PurgeFacesList(Dictionary<Line, List<PlanarFace>> dimensionsDataCollector, List<PlanarFace> facesNew)
+        private List<PlanarFace> PurgeFacesList(Dictionary<Line, List<PlanarFace>> dimensionsDataCollector, Line lineNew, List<PlanarFace> facesNew)
         {
             List<PlanarFace> facesNewPurged = new List<PlanarFace>();
 
-            // From collected faces data and new faces list we make data with replaced: list of faces => tuples of 3 faces lists (see below)
-            // dimensionsDataCollector + facesNew => facesDividedData(facesUniqueCollected, facesShared, facesUniqueNew)
-            // { | ; ([C], [S], [N]) }   C - collected unique, S - shared, N - new unique.
+            var facesDividedData = DivideFacesList(dimensionsDataCollector, facesNew);
+            if(facesDividedData == null)
+                return null;
+
+            var minimalNewKey = FindLineWithMinNewFaces(facesDividedData);
+
+            bool newReferencesCountIsTooLow = facesDividedData[minimalNewKey].Item3.Count < MinReferences;
+            bool newLineIsClose = minimalNewKey.Distance(lineNew.GetEndPoint(0)) < MaxUnionDistance;
+            // Add new dimension to this one with minimal.
+            if (newReferencesCountIsTooLow && newLineIsClose)
+            {
+                dimensionsDataCollector[minimalNewKey].AddRange(facesDividedData[minimalNewKey].Item3);
+                return null;
+            }
+            // Else make new dimension with shared and new faces.
+            else
+            {
+                facesNewPurged.AddRange(facesDividedData[minimalNewKey].Item2);
+                facesNewPurged.AddRange(facesDividedData[minimalNewKey].Item3);
+            }
+
+            return facesNewPurged;
+        }
+
+        /// <summary>
+        /// From collected faces data and new faces list we make data with replaced: list of faces => tuples of 3 faces lists (see below)
+        /// dimensionsDataCollector + facesNew => facesDividedData(facesUniqueCollected, facesShared, facesUniqueNew)
+        /// { | ; ([C], [S], [N]) }   C - collected unique, S - shared, N - new unique.
+        /// </summary>
+        /// <returns>Dictionary with lines as keys and values represented as tuple of 3 lists of faces.</returns>
+        private Dictionary<Line, Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>>> DivideFacesList(Dictionary<Line, List<PlanarFace>> dimensionsDataCollector, List<PlanarFace> facesNew)
+        {
             Dictionary<Line, Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>>> facesDividedData = new Dictionary<Line, Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>>>();
 
             // Go through collected lists and compare each one with the new list.
@@ -590,11 +643,17 @@ namespace BIM_Leaders_Logic
                 facesDividedData.Add(line, facesTuples);
             }
 
-            // Now analyze list of tuples
+            return facesDividedData;
+        }
 
-            // Find a new dimension with at least new faces.
-            Line minimalNewKey = facesDividedData.First().Key;
-            Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>> minimalNew = facesDividedData[minimalNewKey];
+        /// <summary>
+        /// Find a new dimension line with at least new faces.
+        /// </summary>
+        /// <returns>Line</returns>
+        private Line FindLineWithMinNewFaces(Dictionary<Line, Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>>> facesDividedData)
+        {
+            var minimalNewKey = facesDividedData.First().Key;
+            var minimalNew = facesDividedData[minimalNewKey];
             foreach (Line line in facesDividedData.Keys)
             {
                 Tuple<List<PlanarFace>, List<PlanarFace>, List<PlanarFace>> minimalNewCompare = facesDividedData[line];
@@ -603,20 +662,7 @@ namespace BIM_Leaders_Logic
                     minimalNewKey = line;
             }
 
-            // If minimal new faces count is less than threshold then add new dimension to this one with minimal.
-            if (facesDividedData[minimalNewKey].Item3.Count < MinReferences)
-            {
-                dimensionsDataCollector[minimalNewKey].AddRange(facesDividedData[minimalNewKey].Item3);
-                return null;
-            }
-            // Else make new dimension with shared and new faces.
-            else
-            {
-                facesNewPurged.AddRange(facesDividedData[minimalNewKey].Item2);
-                facesNewPurged.AddRange(facesDividedData[minimalNewKey].Item3);
-            }
-
-            return facesNewPurged;
+            return minimalNewKey;
         }
 
         private protected override string GetRunResult()

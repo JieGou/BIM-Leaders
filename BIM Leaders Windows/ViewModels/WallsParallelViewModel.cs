@@ -120,7 +120,7 @@ namespace BIM_Leaders_Windows
             switch (propertyName)
             {
                 case "SelectedElementString":
-                    if (SelectReferencePlaneModel.Error?.Length > 0)
+                    if (SelectReferencePlaneModel?.Error?.Length > 0)
                         error = SelectReferencePlaneModel.Error;
                     if (SelectedElement == 0)
                         error = "No selection";

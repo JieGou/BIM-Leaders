@@ -87,6 +87,7 @@
     <Compile Include="Models\ElementsJoinModel.cs" />
     <Compile Include="Models\ElementPaintRemoveModel.cs" />
     <Compile Include="Models\JournalAnalyzeModel.cs" />
+    <Compile Include="Models\ListsCreateModel.cs" />
     <Compile Include="RunResult.cs" />
     <Compile Include="Models\PurgeModel.cs" />
     <Compile Include="Models\WallsParallelModel.cs" />
