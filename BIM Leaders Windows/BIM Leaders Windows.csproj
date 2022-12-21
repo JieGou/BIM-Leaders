@@ -84,6 +84,7 @@
     <Compile Include="Commands\CommandWindow.cs" />
     <Compile Include="Converters\MultivalueTextBoxesConverter.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ListsCreateViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="ViewModels\DimensionPlanLineViewModel.cs" />
     <Compile Include="ViewModels\ResultViewModel.cs" />
@@ -91,6 +92,9 @@
     <Compile Include="Views\BaseView.cs" />
     <Compile Include="Views\DimensionPlanLineForm.xaml.cs">
       <DependentUpon>DimensionPlanLineForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ListsCreateForm.xaml.cs">
+      <DependentUpon>ListsCreateForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TagsPlanCheckForm.xaml.cs">
       <DependentUpon>TagsPlanCheckForm.xaml</DependentUpon>
@@ -228,6 +232,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ListsCreateForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

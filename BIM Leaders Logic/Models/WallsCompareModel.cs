@@ -55,9 +55,10 @@ namespace BIM_Leaders_Logic
         public SortedDictionary<string, int> GetMaterialsList()
         {
             // Get Fills
-            FilteredElementCollector collector = new FilteredElementCollector(Doc);
-            IEnumerable<Material> materialsAll = collector.OfClass(typeof(Material)).OrderBy(a => a.Name)
-                .Cast<Material>(); //LINQ function;
+            IEnumerable<Material> materialsAll = new FilteredElementCollector(Doc)
+                .OfClass(typeof(Material))
+                .OrderBy(a => a.Name)
+                .Cast<Material>();
 
             // Get unique fills names list
             List<Material> materials = new List<Material>();
@@ -84,9 +85,10 @@ namespace BIM_Leaders_Logic
         public SortedDictionary<string, int> GetFillTypesList()
         {
             // Get Fills
-            FilteredElementCollector collector = new FilteredElementCollector(Doc);
-            IEnumerable<FilledRegionType> fillTypesAll = collector.OfClass(typeof(FilledRegionType)).OrderBy(a => a.Name)
-                .Cast<FilledRegionType>(); //LINQ function;
+            IEnumerable<FilledRegionType> fillTypesAll = new FilteredElementCollector(Doc)
+                .OfClass(typeof(FilledRegionType))
+                .OrderBy(a => a.Name)
+                .Cast<FilledRegionType>();
 
             // Get unique fills names list
             List<FilledRegionType> fillTypes = new List<FilledRegionType>();

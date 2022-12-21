@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.Attributes;
+﻿using System;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using BIM_Leaders_Logic;
@@ -37,7 +38,7 @@ namespace BIM_Leaders_Core
             _model.SetCommandData(commandData);
             _model.TransactionName = _transactionName;
             _model.Result = _result;
-            _model.ShowResult = new System.Action<RunResult>(ShowResult);
+            _model.ShowResult = new Action<RunResult>(ShowResult);
             ExternalEvent externalEvent = ExternalEvent.Create(_model);
             _model.ExternalEvent = externalEvent;
 

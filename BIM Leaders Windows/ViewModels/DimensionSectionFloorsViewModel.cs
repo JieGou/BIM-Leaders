@@ -205,8 +205,9 @@ namespace BIM_Leaders_Windows
 
         private string ValidatePlacement()
         {
-            if (PlaceOnThinTop == false && PlaceOnThickTop == false
-                && PlaceOnThickBot == false)
+            if (PlaceOnThinTop == false && 
+                PlaceOnThickTop == false &&
+                PlaceOnThickBot == false)
                 return "Check at least one placement";
             return null;
         }

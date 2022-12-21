@@ -2,9 +2,9 @@
 
 namespace BIM_Leaders_Logic
 {
-    internal static class ExceptionUtils
+    public static class ExceptionUtils
     {
-        internal static string GetMessage(Exception exception)
+        public static string GetMessage(Exception exception)
         {
             string message = "";
 
