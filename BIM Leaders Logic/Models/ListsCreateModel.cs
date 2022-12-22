@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.Policy;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -480,6 +482,7 @@ namespace BIM_Leaders_Logic
             }
         }
 
+        //Dictionary<Element, Tuple<View, View, View>>
         /// <summary>
         /// Create views for given list elements.
         /// </summary>
@@ -510,28 +513,26 @@ namespace BIM_Leaders_Logic
                 (BoundingBoxXYZ Section, BoundingBoxXYZ Facade) viewsBoxes = GetSectionBoxes(element);
 
                 ViewSection section = ViewSection.CreateSection(Doc, viewType, viewsBoxes.Section);
-
-                // CREATE HERE FACADE AND PLAN VIEWS
+                ViewSection facade = ViewSection.CreateSection(Doc, viewType, viewsBoxes.Facade);
+                // CREATE HERE PLAN VIEW
 
                 string typeMark = GetTypeMark(element);
                 if (typeMark == "")
-                {
-                    TaskDialog.Show("Create Lists", $"Error creating views. Element {element.Id} has empty Type Mark.");
-                    return null;
-                }
+                    throw new InvalidOperationException($"Error creating views. Element {element.Id} has empty Type Mark.");
                 try
                 {
-                    section.Name = ViewNamePrefix + typeMark;
+                    section.Name = ViewNamePrefix + typeMark + "_S";
+                    facade.Name = ViewNamePrefix + typeMark + "_F";
                 }
                 catch
                 {
-                    TaskDialog.Show("Create Lists", "Error creating views. Element with duplicate Type Marks exist.");
-                    return null;
+                    throw new InvalidOperationException($"Error creating views. Element with duplicate Type Marks exist.");
                 }
 
                 section.ViewTemplateId = viewTemplate;
+                facade.ViewTemplateId = viewTemplate;
 
-                Reference reference = new Reference(element);
+                viewsCreated.Add(section);
 
                 // Move tag on the view because it's on the family point now.
                 XYZ tagLocation = viewsBoxes.Section.Transform.Origin;
@@ -543,9 +544,11 @@ namespace BIM_Leaders_Logic
 
                 XYZ tagLocationMoved = tagLocation.Add(moveTag);
 
-                IndependentTag.Create(Doc, tagType, section.Id, reference, false, TagOrientation.Horizontal, tagLocationMoved);
+                Reference reference = new Reference(element);
 
-                viewsCreated.Add(section);
+                IndependentTag.Create(Doc, tagType, section.Id, reference, false, TagOrientation.Horizontal, tagLocationMoved);
+                
+                // ADD FACADE AND PLAN TO RETURN
             }
             return viewsCreated;
         }
