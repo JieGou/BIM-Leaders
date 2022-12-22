@@ -97,6 +97,12 @@
     <PackageReference Include="MaterialDesignThemes">
       <Version>4.6.1</Version>
     </PackageReference>
+    <PackageReference Include="WiX">
+      <Version>3.11.2</Version>
+    </PackageReference>
+    <PackageReference Include="WiX.Toolset">
+      <Version>3.9.1208</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
