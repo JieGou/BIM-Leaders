@@ -19,7 +19,6 @@
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\Output\2020\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
@@ -29,8 +28,6 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\Output\2021\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
@@ -40,8 +37,15 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\Output\2022\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2023|AnyCPU'">
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Output\2023\</OutputPath>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
@@ -55,14 +59,16 @@
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="ClassDiagram2.cd" />
-    <None Include="[Ribbon].cs" />
     <Compile Include="ExternalDBAppGroupRestore.cs" />
     <Compile Include="SetupInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Main.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BIM Leaders Core\BIM Leaders Core.csproj">
+      <Project>{cc132aca-21dd-4e90-b767-f7fc7b339fca}</Project>
+      <Name>BIM Leaders Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BIM Leaders UI\BIM Leaders UI.csproj">
       <Project>{ee61c151-bf4c-41a7-b29c-45d042e6ea0f}</Project>
       <Name>BIM Leaders UI</Name>
@@ -71,11 +77,6 @@
     <ProjectReference Include="..\BIM Leaders Windows\BIM Leaders Windows.csproj">
       <Project>{799942ac-6d9b-44e4-ab3f-1191b32f8cd4}</Project>
       <Name>BIM Leaders Windows</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\BIM Leaders Core\BIM Leaders Core.csproj">
-      <Project>{cc132aca-21dd-4e90-b767-f7fc7b339fca}</Project>
-      <Name>BIM Leaders Core</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\BIM Leaders Resources\BIM Leaders Resources.csproj">
@@ -91,10 +92,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MaterialDesignColors">
-      <Version>2.0.1</Version>
+      <Version>2.0.9</Version>
     </PackageReference>
     <PackageReference Include="MaterialDesignThemes">
-      <Version>4.1.0</Version>
+      <Version>4.6.1</Version>
+    </PackageReference>
+    <PackageReference Include="WiX">
+      <Version>3.11.2</Version>
+    </PackageReference>
+    <PackageReference Include="WiX.Toolset">
+      <Version>3.9.1208</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +134,13 @@
       <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2022\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2023'">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2023\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI" Condition=" '$(Configuration)' == '2023'">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2023\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Revit.ico" />
@@ -135,13 +149,14 @@
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == 2020 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2020"
 if $(ConfigurationName) == 2021 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2021"
-if $(ConfigurationName) == 2022 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2022"</PostBuildEvent>
+if $(ConfigurationName) == 2022 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2022"
+if $(ConfigurationName) == 2023 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2023"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets'))" />
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets'))" />
   </Target>
 </Project>

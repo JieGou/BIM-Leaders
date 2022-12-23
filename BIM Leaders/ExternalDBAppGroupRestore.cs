@@ -33,17 +33,20 @@ namespace BIM_Leaders
         public void GroupRestoreEvent(object sender, DocumentChangedEventArgs args)
         {
             ElementFilter filter = new ElementCategoryFilter(BuiltInCategory.OST_IOSModelGroups);
-            ElementId element = args.GetModifiedElementIds(filter).First();
+            ElementId groupId = args.GetModifiedElementIds(filter).First();
             string name = args.GetTransactionNames().First();
 
             if (name == "Restore All Excluded")
             {
-                TaskDialog td = new TaskDialog("Group Restoring");
-                td.MainIcon = TaskDialogIcon.TaskDialogIconWarning;
-                td.Title = "Group Restoring";
-                td.MainInstruction = "Group Id " + element.ToString() + " trying to be restored. This is not recommended and can cause problems!";
-                td.MainContent = "Contact with model responsible person (Architect, BIM Coordinator) to ensure that groups can be restored.";
-                td.Show();
+                TaskDialog dialog = new TaskDialog("Group Restoring")
+                {
+                    MainIcon = TaskDialogIcon.TaskDialogIconWarning,
+                    MainInstruction = "Group Id " + groupId.ToString() + " trying to be restored. This is not recommended and can cause problems!",
+                    MainContent = "Contact with model responsible person (Architect, BIM Coordinator) to ensure that groups can be restored. If you are not sure, cancel the operation.",
+                    CommonButtons = TaskDialogCommonButtons.Ok
+                };
+
+                dialog.Show(); 
             }
         }
     }

@@ -1,0 +1,29 @@
+﻿// SOURCE: https://makolyte.com/auto-increment-build-numbers-in-visual-studio/
+
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+
+using System.Reflection;
+
+[assembly: AssemblyVersion("<#= this.VersionNumber #>.<#= this.MajorNumber #>.0.0")]
+
+<#+
+
+int VersionNumber = 1;
+
+#if VERSION2020
+    VersionNumber = 2020;
+#elif VERSION2021
+    VersionNumber = 2021;
+#elif VERSION2022
+    VersionNumber = 2022;
+#elif VERSION2023
+    VersionNumber = 2023;
+#endif
+
+VersionNumber = 2;
+
+static DateTime ProjectStartedDate = new DateTime(year: 2022, month: 3, day: 12);
+int MajorNumber = (int)((DateTime.UtcNow - ProjectStartedDate).TotalDays);
+
+#>

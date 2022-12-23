@@ -1,76 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
-using BIM_Leaders_Windows;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
-    public class FamilyParameterChange : IExternalCommand
+    [Transaction(TransactionMode.Manual)]
+    public class FamilyParameterChange : BaseCommand
     {
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        private static Document _doc;
+        private static int _countParametersChanged = 0;
+
+        public FamilyParameterChange()
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
+            _transactionName = "Change Parameter";
+        }
 
-            // Get Document
-            Document doc = uidoc.Document;
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            _result = new RunResult() { Started = true };
 
-            int count = 0;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
             try
             {
-                /*
-                FamilyParameterSetForm form = new FamilyParameterSetForm(uidoc);
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                FamilyParameterSetData data = form.DataContext as FamilyParameterSetData;
-                string parameterName = data.ParametersListSelected;
-                string parameterValue = data.ParameterValue;
-                */
-                // Get parameter
-                //FamilyParameter parameter = doc.FamilyManager.get_Parameter(parameterName);
-
-                using (Transaction trans = new Transaction(doc, "Change Parameter"))
+                using (Transaction trans = new Transaction(_doc, _transactionName))
                 {
                     trans.Start();
 
-                    count = SwitchParameter(doc);
+                    SwitchParameter();
 
                     trans.Commit();
                 }
 
-                // Show result
-                string text = (count == 0)
-                    ? "No parameters changed."
-                    : $"{count} parameters changed.";
-                TaskDialog.Show("Parameter Change", text);
+                _result.Result = GetRunResult();
+
+                ShowResult(_result);
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _result.Failed = true;
+                _result.Result = e.Message;
                 return Result.Failed;
             }
         }
 
         /// <summary>
-        /// Chaange the given parameter from shared to family parameter.
+        /// Change the given parameter from shared to family parameter.
         /// </summary>
-        /// <returns>Count of parameters changed.</returns>
-        private static int SwitchParameter(Document doc)
+        private static void SwitchParameter()
         {
-            int count = 0;
-
-            IEnumerable<FamilyParameter> parameters = doc.FamilyManager.GetParameters().Where(x => x.IsShared);
+            IEnumerable<FamilyParameter> parameters = _doc.FamilyManager.GetParameters().Where(x => x.IsShared);
             foreach (FamilyParameter parameter in parameters)
             {
                 string parameterName = parameter.Definition.Name;
@@ -78,18 +63,25 @@ namespace BIM_Leaders_Core
                 BuiltInParameterGroup parameterGroup = parameter.Definition.ParameterGroup;
                 bool parameterIsInstance = parameter.IsInstance;
 
-                FamilyParameter parameterNew = doc.FamilyManager.ReplaceParameter(parameter, parameterNameTemp, parameterGroup, parameterIsInstance);
-                doc.FamilyManager.RenameParameter(parameterNew, parameterName);
-                count++;
+                FamilyParameter parameterNew = _doc.FamilyManager.ReplaceParameter(parameter, parameterNameTemp, parameterGroup, parameterIsInstance);
+                _doc.FamilyManager.RenameParameter(parameterNew, parameterName);
+                
+                _countParametersChanged++;
             }
-            count = parameters.Count();
-            return count;
+            _countParametersChanged = parameters.Count();
         }
 
-        public static string GetPath()
+        private string GetRunResult()
         {
-            // Return constructed namespace path
-            return typeof(FamilyParameterChange).Namespace + "." + nameof(FamilyParameterChange);
+            string text = (_countParametersChanged == 0)
+                    ? "No parameters changed."
+                    : $"{_countParametersChanged} parameters changed.";
+
+            return text;
         }
+
+        private protected override void Run(ExternalCommandData commandData) { }
+
+        public static string GetPath() => typeof(FamilyParameterChange).Namespace + "." + nameof(FamilyParameterChange);
     }
 }

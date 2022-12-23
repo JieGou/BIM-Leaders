@@ -1,78 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
-    public class DwgNameDelete : IExternalCommand
+    [Transaction(TransactionMode.Manual)]
+    public class DwgNameDelete : BaseCommand
     {
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public DwgNameDelete()
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
+            _transactionName = "Delete DWG by Name";
 
-            // Get Document
-            Document doc = uidoc.Document;
+            _model = new DwgNameDeleteModel();
+            _viewModel = new DwgNameDeleteViewModel();
+            _view = new DwgNameDeleteForm();
+        }
 
-            int count = 0;
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            _result = new RunResult() { Started = true };
 
-            try
+            if (!CheckIfDocumentContainsDwg(commandData))
             {
-                DwgNameDeleteForm form = new DwgNameDeleteForm(uidoc);
-                form.ShowDialog();
-
-                if (form.DialogResult == false)
-                    return Result.Cancelled;
-
-                // Get user provided information from window
-                DwgNameDeleteData data = form.DataContext as DwgNameDeleteData;
-
-                string name = doc.GetElement(data.DwgListSelected).Category.Name;
-
-                // Get all Imports with name same as input from a form
-                ICollection<ElementId> dwgDelete = new FilteredElementCollector(doc)
-                    .OfClass(typeof(ImportInstance))
-                    .WhereElementIsNotElementType()
-                    .Where(x => x.Category.Name == name) //LINQ function
-                    .ToList()                            //LINQ function
-                    .ConvertAll(x => x.Id)               //LINQ function
-                    .ToList();                           //LINQ function
-
-                count = dwgDelete.Count;
-
-                using (Transaction trans = new Transaction(doc, "Delete DWG by Name"))
-                {
-                    trans.Start();
-
-                    doc.Delete(dwgDelete);  
-
-                    trans.Commit();
-                }
-
-                // Show result
-                string text = (count == 0)
-                    ? "No DWG deleted"
-                    : $"{count} DWG named {name} deleted";
-                TaskDialog.Show("DWG Deleted", text);
-
+                _result.Result = "Document has no DWG.";
+                ShowResult(_result);
                 return Result.Succeeded;
             }
-            catch (Exception e)
-            {
-                message = e.Message;
+
+            Run(commandData);
+
+            if (!_result.Started)
+                return Result.Cancelled;
+            if (_result.Failed)
                 return Result.Failed;
-            }
+            else
+                return Result.Succeeded;
         }
 
-        public static string GetPath()
+        private bool CheckIfDocumentContainsDwg(ExternalCommandData commandData)
         {
-            // Return constructed namespace path
-            return typeof(DwgNameDelete).Namespace + "." + nameof(DwgNameDelete);
+            Document doc = commandData.Application.ActiveUIDocument.Document;
+
+            int count = new FilteredElementCollector(doc)
+                .OfClass(typeof(ImportInstance))
+                .ToElementIds()
+                .Count;
+
+            return count > 0;
         }
+
+        public static string GetPath() => typeof(DwgNameDelete).Namespace + "." + nameof(DwgNameDelete);
     }
 }

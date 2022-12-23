@@ -1,35 +1,18 @@
 ﻿using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 
-// Общие сведения об этой сборке предоставляются следующим набором
-// атрибутов. Отредактируйте значения этих атрибутов, чтобы изменить
-// связанные с этой сборкой.
 [assembly: AssemblyTitle("BIM Leaders UI")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BIM Leaders UI")]
-[assembly: AssemblyCopyright("Copyright © 2021")]
+[assembly: AssemblyCopyright("Copyright © 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-// Установка значения False для параметра ComVisible делает типы в этой сборке невидимыми
-// для компонентов COM. Если необходимо обратиться к типу в этой сборке через
-// компонента COM, задайте для атрибута ComVisible этого типа значение TRUE.
+// COM
 [assembly: ComVisible(false)]
-
-//Чтобы начать создание локализуемых приложений, задайте
-//<UICulture>CultureYouAreCodingWith</UICulture> в файле .csproj
-//внутри <PropertyGroup>.  Например, если используется английский США
-//в своих исходных файлах установите <UICulture> в en-US.  Затем отмените преобразование в комментарий
-//атрибута NeutralResourceLanguage ниже.  Обновите "en-US" в
-//строка внизу для обеспечения соответствия настройки UICulture в файле проекта.
-
-//[assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.Satellite)]
-
 
 [assembly:ThemeInfo(
     ResourceDictionaryLocation.None, //где расположены словари ресурсов по конкретным тематикам
@@ -40,16 +23,8 @@ using System.Windows;
                                       // в приложении или в каких-либо словарях ресурсов для конкретной темы)
 )]
 
-
-// Сведения о версии сборки состоят из следующих четырех значений:
-//
-//      Основной номер версии
-//      Дополнительный номер версии
-//   Номер сборки
-//      Редакция
-//
-// Можно задать все значения или принять номера сборки и редакции по умолчанию 
-// используя "*", как показано ниже:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.2")]
-[assembly: AssemblyFileVersion("1.22.7.28")]
+// MainVersion.Version.Build.Edition
+// For updating the installation, new Build number needed.
+[assembly: AssemblyVersion("1.1.1.0")]
+// MainVersion.Year.Month.Day
+[assembly: AssemblyFileVersion("1.22.12.2")]

@@ -3,7 +3,6 @@
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-                    xmlns:local="clr-namespace:BIM_Leaders_Windows"
                     mc:Ignorable="d">
 
     <ResourceDictionary.MergedDictionaries>
@@ -14,22 +13,22 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="SWindow" TargetType="Window">
-        <Setter Property="Window.ResizeMode" Value="NoResize" />
-        <Setter Property="Window.WindowStyle" Value="None" />
-        <Setter Property="Window.Background" Value="{x:Null}" />
-        <Setter Property="Window.AllowsTransparency" Value="True" />
+        <Setter Property="ResizeMode" Value="NoResize" />
+        <Setter Property="WindowStyle" Value="None" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="AllowsTransparency" Value="True" />
         <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
 
-        <Setter Property="Window.Title" Value="BIM Leaders" />
-        <Setter Property="Window.Width" Value="300" />
-        <Setter Property="Window.Height" Value="400" />
-
+        <Setter Property="Title" Value="BIM Leaders" />
+        <Setter Property="Width" Value="306" />
+        <Setter Property="Height" Value="396" />
+        <!--
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Window">
                     <Grid Background="{x:Null}">
-                        <materialDesign:Card Margin="10" UniformCornerRadius="30" Background="{x:Null}">
+                        <materialDesign:Card UniformCornerRadius="36" Background="{x:Null}">
                             <StackPanel>
                                 <StackPanel.Background>
                                     <LinearGradientBrush StartPoint="0.1,0" EndPoint="0.3,1">
@@ -48,7 +47,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-
+        -->
     </Style>
 
 </ResourceDictionary>

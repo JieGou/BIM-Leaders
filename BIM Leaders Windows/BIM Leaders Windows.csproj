@@ -20,51 +20,48 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == '2020|AnyCPU' ">
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\Output\2020\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2021|AnyCPU'">
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\Output\2021\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
-    <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>..\Output\2021\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2022|AnyCPU'">
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <DebugSymbols>true</DebugSymbols>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>..\Output\2022\</OutputPath>
     <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2023|AnyCPU'">
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>..\Output\2022\</OutputPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignColors.2.0.1\lib\net452\MaterialDesignColors.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
+    <Reference Include="MaterialDesignColors, Version=2.0.9.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.2.0.9\lib\net462\MaterialDesignColors.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignThemes.Wpf, Version=4.1.0.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignThemes.4.1.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=4.6.1.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.4.6.1\lib\net462\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2021\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -83,81 +80,105 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MultivalueTextBoxesConverter.cs" />
-    <Compile Include="Windows\CheckerReportData.cs" />
-    <Compile Include="Windows\DimensionsPlanData.cs" />
-    <Compile Include="Windows\DimensionsPlanForm.xaml.cs">
+    <Compile Include="Commands\CommandGeneric.cs" />
+    <Compile Include="Commands\CommandWindow.cs" />
+    <Compile Include="Converters\MultivalueTextBoxesConverter.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ListsCreateViewModel.cs" />
+    <Compile Include="ViewModels\ReportViewModel.cs" />
+    <Compile Include="ViewModels\DimensionPlanLineViewModel.cs" />
+    <Compile Include="ViewModels\ResultViewModel.cs" />
+    <Compile Include="ViewModels\WallsParallelViewModel.cs" />
+    <Compile Include="Views\BaseView.cs" />
+    <Compile Include="Views\DimensionPlanLineForm.xaml.cs">
+      <DependentUpon>DimensionPlanLineForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ListsCreateForm.xaml.cs">
+      <DependentUpon>ListsCreateForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TagsPlanCheckForm.xaml.cs">
+      <DependentUpon>TagsPlanCheckForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\TagsPlanCheckViewModel.cs" />
+    <Compile Include="ViewModels\DimensionsPlanViewModel.cs" />
+    <Compile Include="Views\DimensionsPlanForm.xaml.cs">
       <DependentUpon>DimensionsPlanForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DimensionStairsLandingsForm.xaml.cs">
+    <Compile Include="Views\DimensionStairsLandingsForm.xaml.cs">
       <DependentUpon>DimensionStairsLandingsForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DimensionStairsLandingsData.cs" />
-    <Compile Include="Windows\DimensionsPlanCheckData.cs" />
-    <Compile Include="Windows\JournalAnalyzeData.cs" />
-    <Compile Include="Windows\JournalAnalyzeForm.xaml.cs">
+    <Compile Include="ViewModels\DimensionStairsLandingsViewModel.cs" />
+    <Compile Include="ViewModels\DimensionsPlanCheckViewModel.cs" />
+    <Compile Include="ViewModels\JournalAnalyzeViewModel.cs" />
+    <Compile Include="Views\JournalAnalyzeForm.xaml.cs">
       <DependentUpon>JournalAnalyzeForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MultivalueBoolConverter.cs" />
-    <Compile Include="Windows\WarningsSolveData.cs" />
-    <Compile Include="Windows\WarningsSolveForm.xaml.cs">
+    <Compile Include="Converters\MultivalueBoolConverter.cs" />
+    <Compile Include="ViewModels\WarningsSolveViewModel.cs" />
+    <Compile Include="Views\ResultForm.xaml.cs">
+      <DependentUpon>ResultForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WallsParallelForm.xaml.cs">
+      <DependentUpon>WallsParallelForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WarningsSolveForm.xaml.cs">
       <DependentUpon>WarningsSolveForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\WallsArrangedData.cs" />
-    <Compile Include="Windows\DimensionsPlanCheckForm.xaml.cs">
+    <Compile Include="ViewModels\WallsArrangedViewModel.cs" />
+    <Compile Include="Views\DimensionsPlanCheckForm.xaml.cs">
       <DependentUpon>DimensionsPlanCheckForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\WallsArrangedForm.xaml.cs">
+    <Compile Include="Views\WallsArrangedForm.xaml.cs">
       <DependentUpon>WallsArrangedForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\FamilyParameterSetData.cs" />
-    <Compile Include="Windows\FamilyParameterSetForm.xaml.cs">
+    <Compile Include="ViewModels\FamilyParameterSetViewModel.cs" />
+    <Compile Include="Views\FamilyParameterSetForm.xaml.cs">
       <DependentUpon>FamilyParameterSetForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DwgViewFoundData.cs" />
-    <Compile Include="Windows\CheckerData.cs" />
-    <Compile Include="Windows\CheckerReportForm.xaml.cs">
-      <DependentUpon>CheckerReportForm.xaml</DependentUpon>
+    <Compile Include="ViewModels\DwgViewFoundViewModel.cs" />
+    <Compile Include="ViewModels\CheckerViewModel.cs" />
+    <Compile Include="Views\ReportForm.xaml.cs">
+      <DependentUpon>ReportForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\NamesChangeData.cs" />
-    <Compile Include="Windows\LinetypesDeleteData.cs" />
-    <Compile Include="Windows\DwgViewFoundForm.xaml.cs">
+    <Compile Include="ViewModels\NamesChangeViewModel.cs" />
+    <Compile Include="ViewModels\PurgeViewModel.cs" />
+    <Compile Include="Views\DwgViewFoundForm.xaml.cs">
       <DependentUpon>DwgViewFoundForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\CheckerForm.xaml.cs">
+    <Compile Include="Views\CheckerForm.xaml.cs">
       <DependentUpon>CheckerForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\NamesChangeForm.xaml.cs">
+    <Compile Include="Views\NamesChangeForm.xaml.cs">
       <DependentUpon>NamesChangeForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\LinetypesDeleteForm.xaml.cs">
-      <DependentUpon>LinetypesDeleteForm.xaml</DependentUpon>
+    <Compile Include="Views\PurgeForm.xaml.cs">
+      <DependentUpon>PurgeForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DwgNameDeleteData.cs" />
-    <Compile Include="Windows\WallsCompareData.cs" />
-    <Compile Include="Windows\DwgNameDeleteForm.xaml.cs">
+    <Compile Include="ViewModels\DwgNameDeleteViewModel.cs" />
+    <Compile Include="ViewModels\WallsCompareViewModel.cs" />
+    <Compile Include="Views\DwgNameDeleteForm.xaml.cs">
       <DependentUpon>DwgNameDeleteForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\WallsCompareForm.xaml.cs">
+    <Compile Include="Views\WallsCompareForm.xaml.cs">
       <DependentUpon>WallsCompareForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\StairsStepsEnumerateForm.xaml.cs">
+    <Compile Include="Views\StairsStepsEnumerateForm.xaml.cs">
       <DependentUpon>StairsStepsEnumerateForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\StairsStepsEnumerateData.cs" />
-    <Compile Include="Windows\DimensionSectionFloorsData.cs" />
-    <Compile Include="Windows\DimensionSectionFloorsForm.xaml.cs">
+    <Compile Include="ViewModels\StairsStepsEnumerateViewModel.cs" />
+    <Compile Include="ViewModels\DimensionSectionFloorsViewModel.cs" />
+    <Compile Include="Views\DimensionSectionFloorsForm.xaml.cs">
       <DependentUpon>DimensionSectionFloorsForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\LevelsAlignForm.xaml.cs">
+    <Compile Include="Views\LevelsAlignForm.xaml.cs">
       <DependentUpon>LevelsAlignForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\LevelsAlignData.cs" />
-    <Compile Include="Windows\GridsAlignData.cs" />
-    <Compile Include="Windows\GridsAlignForm.xaml.cs">
+    <Compile Include="ViewModels\LevelsAlignViewModel.cs" />
+    <Compile Include="ViewModels\GridsAlignViewModel.cs" />
+    <Compile Include="Views\GridsAlignForm.xaml.cs">
       <DependentUpon>GridsAlignForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MultivalueBoolInvertConverter.cs" />
+    <Compile Include="Converters\MultivalueBoolInvertConverter.cs" />
     <Page Include="Fonts.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -214,75 +235,95 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\CheckerReportForm.xaml">
+    <Page Include="Views\ListsCreateForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DimensionsPlanForm.xaml">
+    <Page Include="Views\ReportForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DimensionStairsLandingsForm.xaml">
+    <Page Include="Views\DimensionPlanLineForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DimensionsPlanCheckForm.xaml">
+    <Page Include="Views\TagsPlanCheckForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\JournalAnalyzeForm.xaml">
+    <Page Include="Views\DimensionsPlanForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\WarningsSolveForm.xaml">
+    <Page Include="Views\DimensionStairsLandingsForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\WallsArrangedForm.xaml">
+    <Page Include="Views\DimensionsPlanCheckForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\FamilyParameterSetForm.xaml">
+    <Page Include="Views\JournalAnalyzeForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DwgViewFoundForm.xaml">
+    <Page Include="Views\ResultForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\CheckerForm.xaml">
+    <Page Include="Views\WallsParallelForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\NamesChangeForm.xaml">
+    <Page Include="Views\WarningsSolveForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\LinetypesDeleteForm.xaml">
+    <Page Include="Views\WallsArrangedForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DwgNameDeleteForm.xaml">
+    <Page Include="Views\FamilyParameterSetForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\WallsCompareForm.xaml">
+    <Page Include="Views\DwgViewFoundForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\StairsStepsEnumerateForm.xaml">
+    <Page Include="Views\CheckerForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\LevelsAlignForm.xaml">
+    <Page Include="Views\NamesChangeForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\GridsAlignForm.xaml">
+    <Page Include="Views\PurgeForm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DimensionSectionFloorsForm.xaml">
+    <Page Include="Views\DwgNameDeleteForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WallsCompareForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\StairsStepsEnumerateForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\LevelsAlignForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GridsAlignForm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\DimensionSectionFloorsForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -311,13 +352,18 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BIM Leaders Logic\BIM Leaders Logic.csproj">
+      <Project>{654795bd-31cc-451a-b3fe-0fb14c765e48}</Project>
+      <Name>BIM Leaders Logic</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" />
+  <Import Project="..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets'))" />
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets'))" />
   </Target>
 </Project>

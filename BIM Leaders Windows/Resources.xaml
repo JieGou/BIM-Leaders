@@ -19,6 +19,8 @@
         <ResourceDictionary Source="Styles/Window.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
     <local:MultivalueErrorConverter  x:Key="MultivalueError" />
     <local:MultivalueBoolInvertConverter  x:Key="MultivalueBoolInvert" />
     <local:MultivalueTextBoxesConverter  x:Key="MultivalueTextBoxes" />

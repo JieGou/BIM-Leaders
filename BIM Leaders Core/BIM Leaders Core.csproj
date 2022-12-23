@@ -25,15 +25,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2020|AnyCPU'">
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <OutputPath>..\Output\2020\</OutputPath>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <DefineConstants>VERSION2020</DefineConstants>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>VERSION2020</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2021|AnyCPU'">
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <OutputPath>..\Output\2021\</OutputPath>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <DefineConstants>VERSION2021</DefineConstants>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -47,16 +45,21 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '2023|AnyCPU'">
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <OutputPath>..\Output\2023\</OutputPath>
+    <DefineConstants>VERSION2023</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignColors.2.0.1\lib\net452\MaterialDesignColors.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+    <Reference Include="MaterialDesignColors, Version=2.0.9.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.2.0.9\lib\net462\MaterialDesignColors.dll</HintPath>
     </Reference>
-    <Reference Include="MaterialDesignThemes.Wpf, Version=4.1.0.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignThemes.4.1.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=4.6.1.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.4.6.1\lib\net462\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -75,10 +78,10 @@
     <Reference Include="WindowsBase" />
     <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2020'">
       <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPI.dll</HintPath>
-    </Reference>
-    <Reference Include="RevitAPIUI" Condition=" '$(Configuration)' == '2020'">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2020'">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2020\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2021'">
       <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2021\RevitAPI.dll</HintPath>
@@ -94,24 +97,35 @@
       <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2022\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="RevitAPI" Condition=" '$(Configuration)' == '2023'">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2023\RevitAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="RevitAPIUI" Condition=" '$(Configuration)' == '2023'">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2023\RevitAPIUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Helpers\Message.cs" />
-    <Compile Include="Commands\Helpers\Categories.cs" />
+    <Compile Include="CommandsAvailability\DocumentIsFamily.cs" />
+    <Compile Include="CommandsAvailability\ViewIsPlan.cs" />
+    <Compile Include="CommandsAvailability\ViewIsSection.cs" />
+    <Compile Include="CommandsAvailability\ViewIsSectionOrElevation.cs" />
+    <Compile Include="CommandsAvailability\ViewIsStandard.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlan.cs" />
-    <Compile Include="Commands\PanelAnnotate\DimensionsPlanLine.cs" />
+    <Compile Include="Commands\PanelAnnotate\TagsPlanCheck.cs" />
+    <Compile Include="Commands\PanelAnnotate\DimensionPlanLine.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlanCheck.cs" />
     <Compile Include="Commands\PanelAnnotate\StairsHeadLine.cs" />
     <Compile Include="Commands\PanelElement\ElementPropertiesMatch.cs" />
     <Compile Include="Commands\PanelElement\ElementsJoin.cs" />
+    <Compile Include="Commands\PanelElement\ListsCreate.cs" />
     <Compile Include="Commands\PanelFamily\FamilyParameterChange.cs" />
     <Compile Include="Commands\PanelFamily\FamilyParameterSet.cs" />
     <Compile Include="Commands\PanelStandards\JournalAnalyze.cs" />
     <Compile Include="Commands\PanelStandards\WarningsSolve.cs" />
     <Compile Include="Commands\PanelStandards\WallsArranged.cs" />
     <Compile Include="Commands\PanelStandards\HelpStandards.cs" />
-    <Compile Include="Commands\Helpers\SelectionFilterByCategory.cs" />
-    <Compile Include="Commands\Helpers\WindowType.cs" />
+    <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="CoreAssembly.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionSectionFloors.cs" />
     <Compile Include="Commands\PanelDwg\DwgNameDelete.cs" />
@@ -121,36 +135,38 @@
     <Compile Include="Commands\PanelFamily\FamilyVoidsSelect.cs" />
     <Compile Include="Commands\PanelAnnotate\GridsAlign.cs" />
     <Compile Include="Commands\PanelAnnotate\LevelsAlign.cs" />
-    <Compile Include="Commands\PanelStandards\LinestylesUnusedDelete.cs" />
-    <Compile Include="Commands\PanelStandards\LinetypesDelete.cs" />
+    <Compile Include="Commands\PanelStandards\Purge.cs" />
     <Compile Include="Commands\PanelStandards\Checker.cs" />
     <Compile Include="Commands\PanelStandards\NamesChange.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionStairsLandings.cs" />
     <Compile Include="Commands\PanelAnnotate\StairsStepsEnumerate.cs" />
     <Compile Include="Commands\PanelAnnotate\WallsCompare.cs" />
     <Compile Include="Commands\PanelStandards\WallsParallel.cs" />
-    <Compile Include="RevitPushButtonAvailability.cs" />
-    <None Include="packages.config" />
-    <None Include="[Sample].cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BIM Leaders Logic\BIM Leaders Logic.csproj">
+      <Project>{654795bd-31cc-451a-b3fe-0fb14c765e48}</Project>
+      <Name>BIM Leaders Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BIM Leaders Windows\BIM Leaders Windows.csproj">
       <Project>{799942ac-6d9b-44e4-ab3f-1191b32f8cd4}</Project>
       <Name>BIM Leaders Windows</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == 2020 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2020"
-if $(ConfigurationName) == 2021 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2021"
-if $(ConfigurationName) == 2022 copy "$(TargetDir)"."" "$(ProgramData)\Autodesk\Revit\Addins\2022"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" />
+  <Import Project="..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets'))" />
+    <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.6.1\build\MaterialDesignThemes.targets'))" />
   </Target>
 </Project>

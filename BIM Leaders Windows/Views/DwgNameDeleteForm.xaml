@@ -1,0 +1,77 @@
+﻿<local:BaseView x:Class="BIM_Leaders_Windows.DwgNameDeleteForm"
+        x:Name="DwgNameDeleteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:BIM_Leaders_Windows"
+        mc:Ignorable="d"
+        
+        WindowStyle="None"
+        Style="{DynamicResource SWindow}"
+        Title="BIM Leaders - Delete DWG By Name"
+        WindowStartupLocation="CenterScreen"
+        Width="306"
+        Height="306"
+        
+        d:DataContext="{d:DesignInstance Type=local:DwgNameDeleteViewModel}"
+        MouseLeftButtonDown="FormMouseMove">
+
+    <local:BaseView.Resources>
+        <ResourceDictionary Source="../Resources.xaml" />
+    </local:BaseView.Resources>
+
+    <Grid Background="{x:Null}">
+        <materialDesign:Card UniformCornerRadius="36">
+            <materialDesign:Card.Background>
+                <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0" />
+                </LinearGradientBrush>
+            </materialDesign:Card.Background>
+
+            <Grid Background="{x:Null}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <TextBlock Text="Delete DWG By Name"
+                               Style="{StaticResource STextBlock}" />
+                    <Button x:Name="buttonCancel"
+                            Command="{Binding CloseCommand, Mode=OneWay}"
+                            CommandParameter="{Binding ElementName=DwgNameDeleteWindow}"
+                            Style="{StaticResource SButtonClose}" />
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <StackPanel Margin="18,0">
+                        <Label Content="DWG"
+                               Style="{StaticResource SLabelBold}" />
+                        <ComboBox x:Name="comboboxDwgList" SelectedValue="{Binding DwgListSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                  ItemsSource="{Binding DwgList, Mode=OneWay}"
+                                  Style="{StaticResource SComboBox}" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <Button x:Name="buttonOk"
+                            Command="{Binding RunCommand}"
+                            CommandParameter="{Binding ElementName=DwgNameDeleteWindow}"
+                            Content="Magic" ToolTip="Run"
+                            Style="{StaticResource SButtonOk}">
+                        <Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource MultivalueTextBoxes}" Mode="TwoWay">
+                                <Binding ElementName="comboboxDwgList" Path="SelectedItem" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                            </MultiBinding>
+                        </Button.IsEnabled>
+                    </Button>
+                </Grid>
+            </Grid>
+
+        </materialDesign:Card>
+    </Grid>
+</local:BaseView>

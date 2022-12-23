@@ -3,9 +3,9 @@
 namespace BIM_Leaders
 {
     /// <summary>
-    /// Startup class for all Revit plugin (described in .addin file)
+    /// Startup class for all Revit plugin (described in .addin file).
+    /// OnStartup() after initializing on startup returns Result.Succeeded.
     /// </summary>
-    /// <returns>After initializing on startup returns Result.Succeeded</returns>
     public class Main : IExternalApplication
     {
         public Result OnStartup(UIControlledApplication application)

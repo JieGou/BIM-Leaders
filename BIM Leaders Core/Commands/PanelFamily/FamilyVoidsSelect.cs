@@ -1,22 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.ReadOnly)]
-    public class FamilyVoidsSelect : IExternalCommand
+    [Transaction(TransactionMode.ReadOnly)]
+    public class FamilyVoidsSelect : BaseCommand
     {
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
-        {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
+        private static UIDocument _uidoc;
+        private static Document _doc;
+        private bool _runFailed;
+        private string _runResult;
 
-            // Get Document
-            Document doc = uidoc.Document;
+        public FamilyVoidsSelect()
+        {
+            _transactionName = "Voids";
+        }
+
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            _result = new RunResult() { Started = true };
+
+            _uidoc = commandData.Application.ActiveUIDocument;
+            _doc = _uidoc.Document;
 
             try
             {
@@ -30,7 +40,7 @@ namespace BIM_Leaders_Core
                 ElementMulticlassFilter elementMulticlassFilter = new ElementMulticlassFilter(types);
 
                 // Get Geometry primitives
-                List<GenericForm> voids = new FilteredElementCollector(doc)
+                List<GenericForm> voids = new FilteredElementCollector(_doc)
                     .WherePasses(elementMulticlassFilter)
                     .ToElements()
                     .Cast<GenericForm>()              //LINQ function
@@ -39,25 +49,26 @@ namespace BIM_Leaders_Core
 
                 if (voids.Count == 0)
                 {
-                    TaskDialog.Show("Voids", "No voids found in this family");
-                    return Result.Failed;
+                    _runResult = "No voids found in this family";
+                    ShowResult(_result);
+                    return Result.Succeeded;
                 }
 
-                uidoc.Selection.SetElementIds(voids.ConvertAll(x => x.Id));
+                _uidoc.Selection.SetElementIds(voids.ConvertAll(x => x.Id));
 
                 return Result.Succeeded;
             }
             catch (Exception e)
             {
-                message = e.Message;
+                _runFailed = true;
+                _runResult = e.Message;
+                ShowResult(_result);
                 return Result.Failed;
             }
         }
 
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(FamilyVoidsSelect).Namespace + "." + nameof(FamilyVoidsSelect);
-        }
+        private protected override void Run(ExternalCommandData commandData) { }
+
+        public static string GetPath() => typeof(FamilyVoidsSelect).Namespace + "." + nameof(FamilyVoidsSelect);
     }
 }

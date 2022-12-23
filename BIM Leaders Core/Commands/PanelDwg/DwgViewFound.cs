@@ -1,117 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 using BIM_Leaders_Windows;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.ReadOnly)]
-    public class DwgViewFound : IExternalCommand
+    [Transaction(TransactionMode.ReadOnly)]
+    public class DwgViewFound : BaseCommand
     {
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public DwgViewFound()
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
+            _transactionName = "Imports";
 
-            // Get Document
-            Document doc = uidoc.Document;
+            _model = new DwgViewFoundModel();
+            _viewModel = new DwgViewFoundViewModel();
+            _view = new DwgViewFoundForm();
+        }
 
-            try
+        public override Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            _result = new RunResult() { Started = true };
+
+            if (!CheckIfDocumentContainsDwg(commandData))
             {
-                // Get Imports
-                IEnumerable<ImportInstance> imports = new FilteredElementCollector(doc)
-                    .OfClass(typeof(ImportInstance))
-                    .WhereElementIsNotElementType()
-                    .Cast<ImportInstance>(); //LINQ function;
-
-                DataSet dwgDataSet = CreateDwgDataSet(doc, imports);
-
-                // Export to Excel
-                // ...
-
-                // Show result
-                if (imports.Count() > 0)
-                {
-                    //DwgViewFoundData data = new DwgViewFoundData(dwgDataSet);
-                    DwgViewFoundForm form = new DwgViewFoundForm(dwgDataSet);
-                    form.ShowDialog();
-                }
-                else
-                    TaskDialog.Show("Imports", "No imports in the file.");
-                
+                _result.Result = "Document has no DWG.";
+                ShowResult(_result);
                 return Result.Succeeded;
             }
-            catch (Exception e)
-            {
-                message = e.Message;
+
+            Run(commandData);
+
+            if (!_result.Started)
+                return Result.Cancelled;
+            if (_result.Failed)
                 return Result.Failed;
-            }
+            else
+                return Result.Succeeded;
         }
 
-        /// <summary>
-        /// Create DataSet table for report window.
-        /// </summary>
-        /// <returns>DataSet object contains all data.</returns>
-        private static DataSet CreateDwgDataSet(Document doc, IEnumerable<ImportInstance> imports)
+        private bool CheckIfDocumentContainsDwg(ExternalCommandData commandData)
         {
-            // Create a DataSet
-            DataSet dwgDataSet = new DataSet("reportDataSet");
+            Document doc = commandData.Application.ActiveUIDocument.Document;
 
-            // Create DataTable
-            DataTable dwgDataTable = new DataTable("DWG");
-            // Create 4 columns, and add them to the table
-            DataColumn dwgColumnFile = new DataColumn("File", typeof(string));
-            DataColumn dwgColumnView = new DataColumn("View", typeof(string));
-            DataColumn dwgColumnId = new DataColumn("Id", typeof(string));
-            DataColumn dwgColumnImportType = new DataColumn("Import Type", typeof(string));
+            int count = new FilteredElementCollector(doc)
+                .OfClass(typeof(ImportInstance))
+                .ToElementIds()
+                .Count;
 
-            dwgDataTable.Columns.Add(dwgColumnFile);
-            dwgDataTable.Columns.Add(dwgColumnView);
-            dwgDataTable.Columns.Add(dwgColumnId);
-            dwgDataTable.Columns.Add(dwgColumnImportType);
-
-            // Add the table to the DataSet
-            dwgDataSet.Tables.Add(dwgDataTable);
-
-            // Fill the table
-            foreach (ImportInstance i in imports)
-            {
-                DataRow newRow = dwgDataTable.NewRow();
-
-                // Name
-                string iName = i.Category?.Name ?? "Error";
-
-                // Checking if 2D or 3D
-                string iView = (i.ViewSpecific)
-                    ? doc.GetElement(i.OwnerViewId).Name
-                    : "Not a view specific import";
-
-                // Id
-                string iId = i.Id.ToString();
-
-                // Checking if link or import
-                string iLink = (i.IsLinked)
-                    ? "Link"
-                    : "Import";
-
-                newRow["File"] = iName;
-                newRow["View"] = iView;
-                newRow["Id"] = iId;
-                newRow["Import Type"] = iLink;
-
-                dwgDataTable.Rows.Add(newRow);
-            }
-
-            return dwgDataSet;
+            return count > 0;
         }
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(DwgViewFound).Namespace + "." + nameof(DwgViewFound);
-        }
+
+        public static string GetPath() => typeof(DwgViewFound).Namespace + "." + nameof(DwgViewFound);
     }
 }

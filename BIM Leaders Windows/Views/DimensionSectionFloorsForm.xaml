@@ -1,0 +1,127 @@
+﻿<local:BaseView x:Class="BIM_Leaders_Windows.DimensionSectionFloorsForm"
+        x:Name="DimensionSectionFloorsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:BIM_Leaders_Windows"
+        mc:Ignorable="d"
+        
+        WindowStyle="None"
+        Style="{DynamicResource SWindow}"
+        Title="BIM Leaders - Dimension Section Floors"
+        WindowStartupLocation="CenterScreen"
+        Width="306"
+        Height="486"
+        
+        d:DataContext="{d:DesignInstance Type=local:DimensionSectionFloorsViewModel}"
+        MouseLeftButtonDown="FormMouseMove">
+
+    <local:BaseView.Resources>
+        <ResourceDictionary Source="../Resources.xaml" />
+    </local:BaseView.Resources>
+
+    <local:BaseView.Visibility>
+        <Binding Path="IsVisible" Mode="Twoway" Converter="{StaticResource BooleanToVisibilityConverter}" />
+    </local:BaseView.Visibility>
+
+    <Grid Background="{x:Null}">
+        <materialDesign:Card UniformCornerRadius="36">
+            <materialDesign:Card.Background>
+                <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0" />
+                </LinearGradientBrush>
+            </materialDesign:Card.Background>
+
+            <Grid Background="{x:Null}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <TextBlock Text="Dimension Section Floors"
+                               Style="{StaticResource STextBlock}" />
+                    <Button x:Name="buttonCancel"
+                            Command="{Binding CloseCommand, Mode=OneWay}"
+                            CommandParameter="{Binding ElementName=DimensionSectionFloorsWindow}"
+                            Style="{StaticResource SButtonClose}" />
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <StackPanel Margin="18,0" VerticalAlignment="Top">
+                        <Label Content="Annotation type"
+                               Style="{StaticResource SLabelBold}" />
+                        <RadioButton x:Name="radiobuttonPlaceSpots" GroupName="radiobuttonGroup" IsChecked="{Binding Path=PlaceSpots, Mode=TwoWay}"
+                                     Content="Spot Elevations"
+                                     Style="{StaticResource SRadioButton}" />
+                        <RadioButton x:Name="radiobuttonPlaceSpotsNo" GroupName="radiobuttonGroup"
+                                     Content="Dimensions"
+                                     Style="{StaticResource SRadioButton}" />
+
+                        <Label Content="Annotation placement"
+                               Style="{StaticResource SLabelBold}" />
+                        <CheckBox x:Name="checkboxPlaceOnThinTop" IsChecked="{Binding Path=PlaceOnThinTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Thin Floor - Top" ToolTip="Annotate the top side of thin floors."
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxPlaceOnThickTop" IsChecked="{Binding Path=PlaceOnThickTop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Thick Floor - Top" ToolTip="Annotate the top side of thick floors."
+                                  Style="{StaticResource SCheckBox}" />
+                        <CheckBox x:Name="checkboxPlaceOnThickBot" IsChecked="{Binding Path=PlaceOnThickBot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                  Content="Thick Floor - Bottom" ToolTip="Annotate the bottom side of thick floors."
+                                  Style="{StaticResource SCheckBox}" />
+                        <TextBlock Text="{Binding ElementName=checkboxPlaceOnThinTop, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Margin="0,0,0,9" HorizontalAlignment="Left" 
+                                   Style="{StaticResource STextBlockError}" />
+                        
+                        <Label Content="Thin Floor - Max thickness (cm)"
+                               Style="{StaticResource SLabelBold}" />
+                        <TextBox x:Name="textboxMinThickThicknessString" ToolTip="All floors thicker than given value will be recognized as thick."
+                                 Text="{Binding MinThickThicknessString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource STextBox}" />
+                        <TextBlock Text="{Binding ElementName=textboxMinThickThicknessString, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
+
+                        <Button x:Name="buttonSelectElement" Command="{Binding SelectLineCommand}"
+                                Content="Select Line" ToolTip="Select vertical line to locate annotations"
+                                Margin="0,20,0,0"
+                                Style="{StaticResource SButtonSelect}">
+                        </Button>
+                        <TextBlock Text="{Binding SelectedElementError, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource STextBlockError}" />
+
+                        <Label Content="Selected Line ID:"
+                               Style="{StaticResource SLabel}" />
+                        <Label x:Name="labelSelectedElement" Content="{Binding SelectedElementString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                               Margin="90,-24,0,0"
+                               Style="{StaticResource SLabel}" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <StackPanel>
+                        <Button x:Name="buttonOk"
+                                Command="{Binding RunCommand}"
+                                CommandParameter="{Binding ElementName=DimensionSectionFloorsWindow}"
+                                Content="Magic" ToolTip="Run"
+                                Style="{StaticResource SButtonOk}">
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                                    <Binding ElementName="checkboxPlaceOnThinTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxPlaceOnThickTop" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="checkboxPlaceOnThickBot" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxMinThickThicknessString" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="labelSelectedElement" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </materialDesign:Card>
+    </Grid>
+</local:BaseView>

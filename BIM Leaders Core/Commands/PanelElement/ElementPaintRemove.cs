@@ -1,88 +1,35 @@
-﻿using System;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
+using BIM_Leaders_Logic;
 
 namespace BIM_Leaders_Core
 {
-    [TransactionAttribute(TransactionMode.Manual)]
-    public class ElementPaintRemove : IExternalCommand
+    [Transaction(TransactionMode.Manual)]
+    public class ElementPaintRemove : BaseCommand
     {
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        public ElementPaintRemove()
         {
-            // Get UIDocument
-            UIDocument uidoc = commandData.Application.ActiveUIDocument;
+            _transactionName = "Remove Paint from Element";
 
-            // Get Document
-            Document doc = uidoc.Document;
-
-            int facesCountAll = 0;
-            int facesCountCleared = 0;
-
-            try
-            {
-                // Pick Object
-                Reference reference = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
-                Element element = doc.GetElement(reference.ElementId);
-
-                using (Transaction trans = new Transaction(doc, "Remove Paint from Element"))
-                {
-                    trans.Start();
-
-                    (facesCountAll, facesCountCleared) = RemovePaint(doc, element);
-
-                    trans.Commit();
-                }
-
-                // Show result
-                string text = (facesCountCleared == 0)
-                    ? "Painted faces not found."
-                    : $"{facesCountCleared} of {facesCountAll} faces have been cleared from paint.";
-                TaskDialog.Show("Paint remove", text);
-
-                return Result.Succeeded;
-            }
-            catch (Exception e)
-            {
-                message = e.Message;
-                return Result.Failed;
-            }
+            _model = new ElementPaintRemoveModel();
+            _viewModel = null;
+            _view = null;
         }
 
-        /// <summary>
-        /// Remove paint from all faces of element.
-        /// </summary>
-        /// <returns>Count of all element faces and faced with removed paint.</returns>
-        private static (int, int) RemovePaint(Document doc, Element element)
+        private protected override void Run(ExternalCommandData commandData)
         {
-            int count = 0;
-            int countCleared = 0;
+            // Model
+            _model.SetCommandData(commandData);
+            _model.TransactionName = _transactionName;
+            _model.Result = _result;
+            _model.ShowResult = new System.Action<RunResult>(ShowResult);
+            ExternalEvent externalEvent = ExternalEvent.Create(_model);
+            _model.ExternalEvent = externalEvent;
 
-            Options options = new Options
-            {
-                ComputeReferences = true
-            };
-
-            foreach (Solid solid in element.get_Geometry(options))
-            {
-                FaceArray faces = solid.Faces;
-                count += faces.Size;
-                foreach (Face face in faces)
-                {
-                    if (doc.IsPainted(element.Id, face))
-                    {
-                        doc.RemovePaint(element.Id, face);
-                        countCleared++;
-                    }
-                }
-            }
-
-            return (count, countCleared);
+            _model.Run();
         }
-        public static string GetPath()
-        {
-            // Return constructed namespace path
-            return typeof(ElementPaintRemove).Namespace + "." + nameof(ElementPaintRemove);
-        }
+
+        public static string GetPath() => typeof(ElementPaintRemove).Namespace + "." + nameof(ElementPaintRemove);
     }
 }

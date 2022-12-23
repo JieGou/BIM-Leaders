@@ -1,0 +1,111 @@
+﻿<local:BaseView x:Class="BIM_Leaders_Windows.DimensionsPlanForm"
+        x:Name="DimensionsPlanWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:BIM_Leaders_Windows"
+        mc:Ignorable="d"
+        
+        WindowStyle="None"
+        Style="{DynamicResource SWindow}"
+        Title="BIM Leaders - Dimension Plan"
+        WindowStartupLocation="CenterScreen"
+        Width="306"
+        Height="466"
+        
+        d:DataContext="{d:DesignInstance Type=local:DimensionsPlanViewModel}"
+        MouseLeftButtonDown="FormMouseMove">
+
+    <local:BaseView.Resources>
+        <ResourceDictionary Source="../Resources.xaml" />
+    </local:BaseView.Resources>
+
+    <Grid Background="{x:Null}">
+        <materialDesign:Card UniformCornerRadius="30">
+            <materialDesign:Card.Background>
+                <LinearGradientBrush StartPoint="0.1, 0" EndPoint="0.3, 1">
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain1}, Path=Color}" Offset="1" />
+                    <GradientStop Color="{Binding Source={StaticResource SColorBackgroundMain2}, Path=Color}" Offset="0" />
+                </LinearGradientBrush>
+            </materialDesign:Card.Background>
+
+            <Grid Background="{x:Null}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="72" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="72" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <TextBlock Text="Dimension Plan"
+                               Style="{StaticResource STextBlock}" />
+                    <Button x:Name="buttonCancel"
+                            Command="{Binding CloseCommand, Mode=OneWay}"
+                            CommandParameter="{Binding ElementName=DimensionsPlanWindow}"
+                            Style="{StaticResource SButtonClose}" />
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <StackPanel Margin="18,0">
+                        <Label Content="Search Step (cm)"
+                               Style="{StaticResource SLabelBold}" />
+                        <TextBox x:Name="textboxSearchStep" ToolTip="Step along element faces to create searching lines."
+                                 Text="{Binding SearchStepString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource STextBox}" />
+                        <TextBlock Text="{Binding ElementName=textboxSearchStep, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
+
+                        <Label Content="Search Distance (cm)"
+                               Margin="-5,9,0,0"
+                               Style="{StaticResource SLabelBold}" />
+                        <TextBox x:Name="textboxSearchDistance" ToolTip="Distance from element face to search other elements."
+                                 Text="{Binding SearchDistanceString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource STextBox}" />
+                        <TextBlock Text="{Binding ElementName=textboxSearchDistance, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
+                        
+                        <Label Content="Min New References"
+                               Margin="-5,9,0,0"
+                               Style="{StaticResource SLabelBold}" />
+                        <TextBox x:Name="textboxReferences" ToolTip="If count of references in the next dimension line will be lower, dimension will be joined with existing one."
+                                 Text="{Binding MinReferencesString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource STextBox}" />
+                        <TextBlock Text="{Binding ElementName=textboxReferences, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
+
+                        <Label Content="Max Distance for Union"
+                               Margin="-5,9,0,0"
+                               Style="{StaticResource SLabelBold}" />
+                        <TextBox x:Name="textboxMaxUnionDistance" ToolTip="If distance between new line and existing lines will be lower, dimension will be joined with existing one."
+                                 Text="{Binding MaxUnionDistanceString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                 Style="{StaticResource STextBox}" />
+                        <TextBlock Text="{Binding ElementName=textboxMaxUnionDistance, Path=(Validation.Errors)[0].ErrorContent}"
+                                   Style="{StaticResource STextBlockError}" />
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <StackPanel>
+                        <Button x:Name="buttonOk"
+                                Command="{Binding RunCommand}"
+                                CommandParameter="{Binding ElementName=DimensionsPlanWindow}"
+                                Content="Magic" ToolTip="Run"
+                                Style="{StaticResource SButtonOk}">
+                            <Button.IsEnabled>
+                                <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
+                                    <Binding ElementName="textboxSearchStep" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxSearchDistance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxReferences" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxMaxUnionDistance" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                </MultiBinding>
+                            </Button.IsEnabled>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+        </materialDesign:Card>
+    </Grid>
+</local:BaseView>
