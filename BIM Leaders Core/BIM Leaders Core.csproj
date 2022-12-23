@@ -101,6 +101,7 @@
     <Compile Include="Commands\PanelAnnotate\DimensionsPlan.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlanLine.cs" />
     <Compile Include="Commands\PanelAnnotate\DimensionsPlanCheck.cs" />
+    <Compile Include="Commands\PanelAnnotate\StairsHeadLine.cs" />
     <Compile Include="Commands\PanelElement\ElementPropertiesMatch.cs" />
     <Compile Include="Commands\PanelElement\ElementsJoin.cs" />
     <Compile Include="Commands\PanelFamily\FamilyParameterChange.cs" />
