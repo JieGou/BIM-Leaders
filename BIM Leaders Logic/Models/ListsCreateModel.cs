@@ -23,8 +23,10 @@ namespace BIM_Leaders_Logic
         #region PROPERTIES
 
         // Input
-        public int SelectedViewType { get; set; }
-        public int SelectedViewTemplate { get; set; }
+        public int SelectedViewTypeSection { get; set; }
+        public int SelectedViewTemplateSection { get; set; }
+        public int SelectedViewTypePlan { get; set; }
+        public int SelectedViewTemplatePlan { get; set; }
         public string ViewNamePrefix { get; set; }
 
         public bool SortIsNeeded { get; set; }
@@ -73,65 +75,6 @@ namespace BIM_Leaders_Logic
                 if (CreateCarpentry)
                     CreateLists(ListType.Carpentry, elementsAll);
 
-                /*
-                while (CreateAluminium)
-                {
-                    List<Element> elements = FilterElements(ListType.Aluminium, elementsAll);
-
-                    if (elements.Count == 0)
-                        break;
-
-                    if (SortIsNeeded)
-                        elements = SortElements(elements);
-
-                    MarkElements(elements);
-                    List<View> views = CreateListViews(elements, new ElementId(SelectedTagGenAluminium));
-
-                    CreateListSheets(ListType.Aluminium, views);
-
-                    _countViewsAluminium += views.Count;
-
-                    break;
-                }
-                while (CreateMetal)
-                {
-                    List<Element> elements = FilterElements(elementsAll, TypeCommentsMetal);
-
-                    if (elements.Count == 0)
-                        break;
-
-                    if (SortIsNeeded)
-                        elements = SortElements(elements);
-
-                    MarkElements(elements, TypeNamePrefixAluminiumWalls);
-                    List<View> views = CreateListViews(elements, new ElementId(SelectedTagGenMetal));
-
-                    CreateListSheets(ListType.Metal, views);
-
-                    _countViewsMetal += views.Count;
-
-                    break;
-                }
-                while (CreateCarpentry)
-                {
-                    List<Element> elements = FilterElements(elementsAll, TypeCommentsCarpentry);
-
-                    if (elements.Count == 0)
-                        break;
-
-                    if (SortIsNeeded)
-                        elements = SortElements(elements);
-
-                    MarkElements(elements, TypeNamePrefixAluminiumWalls);
-                    List<View> views = CreateListViews(elements, new ElementId(SelectedTagGenCarpentry));
-
-                    CreateListSheets(ListType.Carpentry, views);
-
-                    _countViewsCarpentry += views.Count;
-
-                    break;
-                }
-                */
                 // !!! Create sheets
                 // !!! Place views
                 // !!! Place legend components
@@ -142,7 +85,7 @@ namespace BIM_Leaders_Logic
             Result.Result = GetRunResult();
         }
 
-        public SortedDictionary<string, int> GetViewTypeList()
+        public SortedDictionary<string, int> GetViewTypeListSection()
         {
             IEnumerable<ViewFamilyType> views = new FilteredElementCollector(Doc)
                 .OfClass(typeof(ViewFamilyType))
@@ -156,7 +99,7 @@ namespace BIM_Leaders_Logic
             return new SortedDictionary<string, int>(views.ToDictionary(x => x.Name, x => x.Id.IntegerValue));
         }
 
-        public SortedDictionary<string, int> GetViewTemplateList()
+        public SortedDictionary<string, int> GetViewTemplateListSection()
         {
             SortedDictionary<string, int> viewTemplatesList = new SortedDictionary<string, int>();
 
@@ -174,6 +117,42 @@ namespace BIM_Leaders_Logic
 
             if (viewTemplatesList.Count == 0)
                 throw new Exception("Cannot retrieve section view templates!");
+
+            return viewTemplatesList;
+        }
+
+        public SortedDictionary<string, int> GetViewTypeListPlan()
+        {
+            IEnumerable<ViewFamilyType> views = new FilteredElementCollector(Doc)
+                .OfClass(typeof(ViewFamilyType))
+                .ToElements()
+                .Cast<ViewFamilyType>()
+                .Where(x => x.ViewFamily == ViewFamily.FloorPlan);
+
+            if (views.Count() == 0)
+                throw new InvalidOperationException("Cannot retrieve plan view types!");
+
+            return new SortedDictionary<string, int>(views.ToDictionary(x => x.Name, x => x.Id.IntegerValue));
+        }
+
+        public SortedDictionary<string, int> GetViewTemplateListPlan()
+        {
+            SortedDictionary<string, int> viewTemplatesList = new SortedDictionary<string, int>();
+
+            List<View> views = new FilteredElementCollector(Doc)
+                .OfClass(typeof(ViewPlan))
+                .ToElements()
+                .Cast<View>()
+                .ToList();
+
+            foreach (View view in views)
+            {
+                if (view.IsTemplate && !viewTemplatesList.ContainsKey(view.Name))
+                    viewTemplatesList.Add(view.Name, view.Id.IntegerValue);
+            }
+
+            if (viewTemplatesList.Count == 0)
+                throw new Exception("Cannot retrieve plan view templates!");
 
             return viewTemplatesList;
         }
@@ -492,8 +471,11 @@ namespace BIM_Leaders_Logic
             if (elements == null || elements.Count == 0)
                 return null;
 
-            ElementId viewType = new ElementId(SelectedViewType);
-            ElementId viewTemplate = new ElementId(SelectedViewTemplate);
+            ElementId viewTypeSection = new ElementId(SelectedViewTypeSection);
+            ElementId viewTemplateSection = new ElementId(SelectedViewTemplateSection);
+            ElementId viewTypePlan = new ElementId(SelectedViewTypePlan);
+            ElementId viewTemplatePlan = new ElementId(SelectedViewTemplatePlan);
+
             int tagTypeId = 0;
             switch(listType)
             {
@@ -505,32 +487,40 @@ namespace BIM_Leaders_Logic
 
             List<View> viewsCreated = new List<View>();
 
-            View view = Doc.GetElement(viewTemplate) as View;
+            View view = Doc.GetElement(viewTemplateSection) as View;
             double scale = view.Scale;
 
             foreach (Element element in elements)
             {
                 (BoundingBoxXYZ Section, BoundingBoxXYZ Facade) viewsBoxes = GetSectionBoxes(element);
 
-                ViewSection section = ViewSection.CreateSection(Doc, viewType, viewsBoxes.Section);
-                ViewSection facade = ViewSection.CreateSection(Doc, viewType, viewsBoxes.Facade);
-                // CREATE HERE PLAN VIEW
+                ViewSection section = ViewSection.CreateSection(Doc, viewTypeSection, viewsBoxes.Section);
+                ViewSection facade = ViewSection.CreateSection(Doc, viewTypeSection, viewsBoxes.Facade);
+                ViewPlan plan = ViewPlan.Create(Doc, viewTypePlan, element.LevelId);
 
                 string typeMark = GetTypeMark(element);
                 if (typeMark == "")
                     throw new InvalidOperationException($"Error creating views. Element {element.Id} has empty Type Mark.");
-                try
-                {
-                    section.Name = ViewNamePrefix + typeMark + "_S";
-                    facade.Name = ViewNamePrefix + typeMark + "_F";
-                }
+                
+                try { section.Name = ViewNamePrefix + typeMark + "_S"; }
                 catch
                 {
-                    throw new InvalidOperationException($"Error creating views. Element with duplicate Type Marks exist.");
+                    throw new InvalidOperationException($"Error naming views. View with name {section.Name} exist.");
+                }
+                try { facade.Name = ViewNamePrefix + typeMark + "_F"; }
+                catch
+                {
+                    throw new InvalidOperationException($"Error naming views. View with name {facade.Name} exist.");
+                }
+                try { plan.Name = ViewNamePrefix + typeMark + "_P"; }
+                catch
+                {
+                    throw new InvalidOperationException($"Error naming views. View with name {plan.Name} exist.");
                 }
 
-                section.ViewTemplateId = viewTemplate;
-                facade.ViewTemplateId = viewTemplate;
+                section.ViewTemplateId = viewTemplateSection;
+                facade.ViewTemplateId = viewTemplateSection;
+                plan.ViewTemplateId = viewTemplatePlan;
 
                 viewsCreated.Add(section);
 

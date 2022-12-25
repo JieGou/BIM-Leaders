@@ -56,18 +56,30 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Margin="18,0" VerticalAlignment="Top">
-                            <Label Content="Views Type"
+                            <Label Content="Section Views Type"
                                    Style="{StaticResource SLabelBold}" />
-                            <ComboBox x:Name="comboboxViewTypeList" SelectedValue="{Binding ViewTypeListSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                      ItemsSource="{Binding ViewTypeList, Mode=OneWay}"
+                            <ComboBox x:Name="comboboxViewTypeListSection" SelectedValue="{Binding ViewTypeListSectionSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                      ItemsSource="{Binding ViewTypeListSection, Mode=OneWay}"
                                       Style="{StaticResource SComboBox}" />
 
-                            <Label Content="Views Template"
+                            <Label Content="Section Views Template"
                                    Style="{StaticResource SLabelBold}" />
-                            <ComboBox x:Name="comboboxViewTemplateList" SelectedValue="{Binding ViewTemplateListSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                  ItemsSource="{Binding ViewTemplateList, Mode=OneWay}"
+                            <ComboBox x:Name="comboboxViewTemplateListSection" SelectedValue="{Binding ViewTemplateListSectionSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                  ItemsSource="{Binding ViewTemplateListSection, Mode=OneWay}"
                                   Style="{StaticResource SComboBox}" />
 
+                            <Label Content="Plan Views Type"
+                                   Style="{StaticResource SLabelBold}" />
+                            <ComboBox x:Name="comboboxViewTypeListPlan" SelectedValue="{Binding ViewTypeListPlanSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                      ItemsSource="{Binding ViewTypeListPlan, Mode=OneWay}"
+                                      Style="{StaticResource SComboBox}" />
+
+                            <Label Content="Plan Views Template"
+                                   Style="{StaticResource SLabelBold}" />
+                            <ComboBox x:Name="comboboxViewTemplateListPlan" SelectedValue="{Binding ViewTemplateListPlanSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                  ItemsSource="{Binding ViewTemplateListPlan, Mode=OneWay}"
+                                  Style="{StaticResource SComboBox}" />
+                            
                             <Label Content="Views Name Prefix"
                                    Style="{StaticResource SLabelBold}">
                             </Label>

@@ -19,47 +19,91 @@ namespace BIM_Leaders_Windows
             set { _model = value; }
         }
 
-        private SortedDictionary<string, int> _viewTypeList;
-        public SortedDictionary<string, int> ViewTypeList
+        private SortedDictionary<string, int> _viewTypeListSection;
+        public SortedDictionary<string, int> ViewTypeListSection
         {
-            get { return _viewTypeList; }
+            get { return _viewTypeListSection; }
             set
             {
-                _viewTypeList = value;
-                OnPropertyChanged(nameof(ViewTypeList));
+                _viewTypeListSection = value;
+                OnPropertyChanged(nameof(ViewTypeListSection));
             }
         }
 
-        private int _viewTypeListSelected;
-        public int ViewTypeListSelected
+        private int _viewTypeListSectionSelected;
+        public int ViewTypeListSectionSelected
         {
-            get { return _viewTypeListSelected; }
+            get { return _viewTypeListSectionSelected; }
             set
             {
-                _viewTypeListSelected = value;
-                OnPropertyChanged(nameof(ViewTypeListSelected));
+                _viewTypeListSectionSelected = value;
+                OnPropertyChanged(nameof(ViewTypeListSectionSelected));
             }
         }
 
-        private SortedDictionary<string, int> _viewTemplateList;
-        public SortedDictionary<string, int> ViewTemplateList
+        private SortedDictionary<string, int> _viewTemplateListSection;
+        public SortedDictionary<string, int> ViewTemplateListSection
         {
-            get { return _viewTemplateList; }
+            get { return _viewTemplateListSection; }
             set
             {
-                _viewTemplateList = value;
-                OnPropertyChanged(nameof(ViewTemplateList));
+                _viewTemplateListSection = value;
+                OnPropertyChanged(nameof(ViewTemplateListSection));
             }
         }
 
-        private int _viewTemplateListSelected;
-        public int ViewTemplateListSelected
+        private int _viewTemplateListSectionSelected;
+        public int ViewTemplateListSectionSelected
         {
-            get { return _viewTemplateListSelected; }
+            get { return _viewTemplateListSectionSelected; }
             set
             {
-                _viewTemplateListSelected = value;
-                OnPropertyChanged(nameof(ViewTemplateListSelected));
+                _viewTemplateListSectionSelected = value;
+                OnPropertyChanged(nameof(ViewTemplateListSectionSelected));
+            }
+        }
+
+        private SortedDictionary<string, int> _viewTypeListPlan;
+        public SortedDictionary<string, int> ViewTypeListPlan
+        {
+            get { return _viewTypeListPlan; }
+            set
+            {
+                _viewTypeListPlan = value;
+                OnPropertyChanged(nameof(ViewTypeListPlan));
+            }
+        }
+
+        private int _viewTypeListPlanSelected;
+        public int ViewTypeListPlanSelected
+        {
+            get { return _viewTypeListPlanSelected; }
+            set
+            {
+                _viewTypeListPlanSelected = value;
+                OnPropertyChanged(nameof(ViewTypeListPlanSelected));
+            }
+        }
+
+        private SortedDictionary<string, int> _viewTemplateListPlan;
+        public SortedDictionary<string, int> ViewTemplateListPlan
+        {
+            get { return _viewTemplateListPlan; }
+            set
+            {
+                _viewTemplateListPlan = value;
+                OnPropertyChanged(nameof(ViewTemplateListPlan));
+            }
+        }
+
+        private int _viewTemplateListPlanSelected;
+        public int ViewTemplateListPlanSelected
+        {
+            get { return _viewTemplateListPlanSelected; }
+            set
+            {
+                _viewTemplateListPlanSelected = value;
+                OnPropertyChanged(nameof(ViewTemplateListPlanSelected));
             }
         }
 
@@ -314,10 +358,14 @@ namespace BIM_Leaders_Windows
         {
             Model = (ListsCreateModel)BaseModel;
 
-            ViewTypeList = Model.GetViewTypeList();
-            ViewTypeListSelected = ViewTypeList.First().Value;
-            ViewTemplateList = Model.GetViewTemplateList();
-            ViewTemplateListSelected = ViewTemplateList.First().Value;
+            ViewTypeListSection = Model.GetViewTypeListSection();
+            ViewTypeListSectionSelected = ViewTypeListSection.First().Value;
+            ViewTemplateListSection = Model.GetViewTemplateListSection();
+            ViewTemplateListSectionSelected = ViewTemplateListSection.First().Value;
+            ViewTypeListPlan = Model.GetViewTypeListPlan();
+            ViewTypeListPlanSelected = ViewTypeListPlan.First().Value;
+            ViewTemplateListPlan = Model.GetViewTemplateListPlan();
+            ViewTemplateListPlanSelected = ViewTemplateListPlan.First().Value;
             ViewNamePrefix = "LIST_";
             SortIsNeeded = true;
 
@@ -428,8 +476,10 @@ namespace BIM_Leaders_Windows
 
         private protected override void RunAction(Window window)
         {
-            Model.SelectedViewType = ViewTypeListSelected;
-            Model.SelectedViewTemplate = ViewTemplateListSelected;
+            Model.SelectedViewTypeSection = ViewTypeListSectionSelected;
+            Model.SelectedViewTemplateSection = ViewTemplateListSectionSelected;
+            Model.SelectedViewTypePlan = ViewTypeListPlanSelected;
+            Model.SelectedViewTemplatePlan = ViewTemplateListPlanSelected;
             Model.ViewNamePrefix = ViewNamePrefix;
             Model.SortIsNeeded = SortIsNeeded;
 
