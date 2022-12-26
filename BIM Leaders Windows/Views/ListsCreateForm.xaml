@@ -13,7 +13,7 @@
         Title="BIM Leaders - Create Lists"
         WindowStartupLocation="CenterScreen"
         Width="918"
-        Height="486"
+        Height="576"
         
         d:DataContext="{d:DesignInstance Type=local:ListsCreateViewModel}"
         MouseLeftButtonDown="FormMouseMove">
@@ -56,45 +56,6 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Margin="18,0" VerticalAlignment="Top">
-                            <Label Content="Section Views Type"
-                                   Style="{StaticResource SLabelBold}" />
-                            <ComboBox x:Name="comboboxViewTypeListSection" SelectedValue="{Binding ViewTypeListSectionSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                      ItemsSource="{Binding ViewTypeListSection, Mode=OneWay}"
-                                      Style="{StaticResource SComboBox}" />
-
-                            <Label Content="Section Views Template"
-                                   Style="{StaticResource SLabelBold}" />
-                            <ComboBox x:Name="comboboxViewTemplateListSection" SelectedValue="{Binding ViewTemplateListSectionSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                  ItemsSource="{Binding ViewTemplateListSection, Mode=OneWay}"
-                                  Style="{StaticResource SComboBox}" />
-
-                            <Label Content="Plan Views Type"
-                                   Style="{StaticResource SLabelBold}" />
-                            <ComboBox x:Name="comboboxViewTypeListPlan" SelectedValue="{Binding ViewTypeListPlanSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                      ItemsSource="{Binding ViewTypeListPlan, Mode=OneWay}"
-                                      Style="{StaticResource SComboBox}" />
-
-                            <Label Content="Plan Views Template"
-                                   Style="{StaticResource SLabelBold}" />
-                            <ComboBox x:Name="comboboxViewTemplateListPlan" SelectedValue="{Binding ViewTemplateListPlanSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                  ItemsSource="{Binding ViewTemplateListPlan, Mode=OneWay}"
-                                  Style="{StaticResource SComboBox}" />
-                            
-                            <Label Content="Views Name Prefix"
-                                   Style="{StaticResource SLabelBold}">
-                            </Label>
-                            <TextBox x:Name="textboxViewNamePrefix"
-                                     Text="{Binding ViewNamePrefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                                     Style="{StaticResource STextBox}" />
-                            <TextBlock Text="{Binding ElementName=textboxViewNamePrefix, Path=(Validation.Errors)/ErrorContent}"
-                                       Style="{StaticResource STextBlockError}" />
-
-                            <CheckBox x:Name="checkboxSortIsNeeded" IsChecked="{Binding Path=SortIsNeeded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-                                      Content="Sort is needed" ToolTip="Sort numbering of elements from the lowest to the upper."
-                                      Style="{StaticResource SCheckBox}" Margin="0,0,0,7"/>
-                        </StackPanel>
-                        
-                        <StackPanel Grid.Column="1" Margin="18,0" VerticalAlignment="Top">
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -140,7 +101,7 @@
                                       ItemsSource="{Binding TagGenAluminiumList, Mode=OneWay}"
                                       Style="{StaticResource SComboBox}" />
 
-                            <Grid Margin="0,5,0,0">
+                            <Grid Margin="0,27,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*" />
@@ -165,7 +126,7 @@
                                       ItemsSource="{Binding TagGenMetalList, Mode=OneWay}"
                                       Style="{StaticResource SComboBox}" />
 
-                            <Grid Margin="0,5,0,0">
+                            <Grid Margin="0,27,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*" />
@@ -192,14 +153,48 @@
 
                         </StackPanel>
 
-                        <StackPanel Grid.Column="2" Margin="18,0" VerticalAlignment="Top">
+                        <StackPanel Grid.Column="1" Margin="18,0" VerticalAlignment="Top">
 
-                            <Label Content="Titleblock Type"
+                            <Label Content="Marking"
                                    Style="{StaticResource SLabelBold}" />
-                            <ComboBox x:Name="titleblockList" SelectedValue="{Binding TitleBlockListSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
-                                      ItemsSource="{Binding TitleBlockList, Mode=OneWay}"
+                            <CheckBox x:Name="checkboxSortIsNeeded" IsChecked="{Binding Path=SortIsNeeded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                      Content="Sort is needed" ToolTip="Sort numbering of elements from the lowest to the upper."
+                                      Style="{StaticResource SCheckBox}" Margin="0,0,0,7"/>
+
+                            <Label Content="Views Name Prefix"
+                                   Style="{StaticResource SLabelBold}" Margin="-5,21,0,0" />
+                            <TextBox x:Name="textboxViewNamePrefix"
+                                     Text="{Binding ViewNamePrefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                     Style="{StaticResource STextBox}" />
+                            <TextBlock Text="{Binding ElementName=textboxViewNamePrefix, Path=(Validation.Errors)/ErrorContent}"
+                                       Style="{StaticResource STextBlockError}" />
+
+                            <Label Content="Section Views Type"
+                                   Style="{StaticResource SLabelBold}" Margin="-5,25,0,0" />
+                            <ComboBox x:Name="comboboxViewTypeListSection" SelectedValue="{Binding ViewTypeListSectionSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                      ItemsSource="{Binding ViewTypeListSection, Mode=OneWay}"
                                       Style="{StaticResource SComboBox}" />
-                            
+
+                            <Label Content="Section Views Template"
+                                   Style="{StaticResource SLabelBold}" />
+                            <ComboBox x:Name="comboboxViewTemplateListSection" SelectedValue="{Binding ViewTemplateListSectionSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                  ItemsSource="{Binding ViewTemplateListSection, Mode=OneWay}"
+                                  Style="{StaticResource SComboBox}" />
+
+                            <Label Content="Plan Views Type"
+                                   Style="{StaticResource SLabelBold}" Margin="-5,27,0,0" />
+                            <ComboBox x:Name="comboboxViewTypeListPlan" SelectedValue="{Binding ViewTypeListPlanSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                      ItemsSource="{Binding ViewTypeListPlan, Mode=OneWay}"
+                                      Style="{StaticResource SComboBox}" />
+
+                            <Label Content="Plan Views Template"
+                                   Style="{StaticResource SLabelBold}" />
+                            <ComboBox x:Name="comboboxViewTemplateListPlan" SelectedValue="{Binding ViewTemplateListPlanSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                  ItemsSource="{Binding ViewTemplateListPlan, Mode=OneWay}"
+                                  Style="{StaticResource SComboBox}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Margin="18,0" VerticalAlignment="Top">
                             <Label Content="Tag Placement Offset X (mm)"
                                    Style="{StaticResource SLabelBold}" />
                             <TextBox x:Name="textboxTagPlacementOffsetXstring" ToolTip="Move tag by given coordinates from the the element instance origin. After this move section must be inside of tag's table."
@@ -215,6 +210,12 @@
                                      Style="{StaticResource STextBox}" />
                             <TextBlock Text="{Binding ElementName=textboxTagPlacementOffsetYstring, Path=(Validation.Errors)[0].ErrorContent}"
                                        Style="{StaticResource STextBlockError}" />
+
+                            <Label Content="Titleblock Type"
+                                   Style="{StaticResource SLabelBold}" Margin="-5,24,0,0" />
+                            <ComboBox x:Name="titleblockList" SelectedValue="{Binding TitleBlockListSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
+                                      ItemsSource="{Binding TitleBlockList, Mode=OneWay}"
+                                      Style="{StaticResource SComboBox}" />
                         </StackPanel>
 
                     </Grid>
