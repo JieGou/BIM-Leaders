@@ -14,9 +14,9 @@ namespace BIM_Leaders_Logic
     {
         const double SECTION_SIDES_EXTENSION = 1;
 
-        private int _countViewsAluminium;
-        private int _countViewsMetal;
-        private int _countViewsCarpentry;
+        private int _countSheetsAluminium;
+        private int _countSheetsMetal;
+        private int _countSheetsCarpentry;
 
         #region PROPERTIES
 
@@ -75,10 +75,6 @@ namespace BIM_Leaders_Logic
                     CreateLists(ListType.Metal, elementsAll);
                 if (CreateCarpentry)
                     CreateLists(ListType.Carpentry, elementsAll);
-
-                // !!! Create sheets
-                // !!! Place views
-                // !!! Place legend components
 
                 trans.Commit();
             }
@@ -283,8 +279,7 @@ namespace BIM_Leaders_Logic
             var views = CreateListViews(listType, elements);
 
             CreateListSheets(listType, views);
-
-            _countViewsAluminium += views.Count;
+            PlaceTags(listType, views);
         }
 
         /// <summary>
@@ -474,9 +469,9 @@ namespace BIM_Leaders_Logic
         /// Create views for given list elements.
         /// </summary>
         /// <returns>Dictionary of elements and views created for them.</returns>
-        private Dictionary<Element, Tuple<ViewSection, ViewSection, ViewPlan>> CreateListViews(ListType listType, List<Element> elements)
+        private Dictionary<Element, Tuple<ViewSection, ViewSection, ViewSection>> CreateListViews(ListType listType, List<Element> elements)
         {
-            var viewsData = new Dictionary<Element, Tuple<ViewSection, ViewSection, ViewPlan>>();
+            var viewsData = new Dictionary<Element, Tuple<ViewSection, ViewSection, ViewSection>>();
 
             if (elements == null || elements.Count == 0)
                 return null;
@@ -486,25 +481,14 @@ namespace BIM_Leaders_Logic
             ElementId viewTypePlan = new ElementId(SelectedViewTypePlan);
             ElementId viewTemplatePlan = new ElementId(SelectedViewTemplatePlan);
 
-            int tagTypeId = 0;
-            switch(listType)
-            {
-                case ListType.Aluminium: tagTypeId = SelectedTagGenAluminium; break;
-                case ListType.Metal: tagTypeId = SelectedTagGenMetal; break;
-                case ListType.Carpentry: tagTypeId = SelectedTagGenCarpentry; break;
-            }
-            ElementId tagType = new ElementId(tagTypeId);
-
-            View view = Doc.GetElement(viewTemplateSection) as View;
-            double scale = view.Scale;
-
             foreach (Element element in elements)
             {
-                (BoundingBoxXYZ Section, BoundingBoxXYZ Facade) viewsBoxes = GetSectionBoxes(element);
+                (BoundingBoxXYZ Section, BoundingBoxXYZ Facade, BoundingBoxXYZ Plan) viewsBoxes = GetSectionBoxes(element);
 
                 ViewSection facade = ViewSection.CreateSection(Doc, viewTypeSection, viewsBoxes.Facade);
                 ViewSection section = ViewSection.CreateSection(Doc, viewTypeSection, viewsBoxes.Section);
-                ViewPlan plan = ViewPlan.Create(Doc, viewTypePlan, element.LevelId);
+                ViewSection plan = ViewSection.CreateSection(Doc, viewTypeSection, viewsBoxes.Plan);
+                //ViewPlan.Create(Doc, viewTypePlan, element.LevelId);
 
                 string typeMark = GetTypeMark(element);
                 if (typeMark == "")
@@ -528,29 +512,10 @@ namespace BIM_Leaders_Logic
 
                 facade.ViewTemplateId = viewTemplateSection;
                 section.ViewTemplateId = viewTemplateSection;
-                plan.ViewTemplateId = viewTemplatePlan;
+                plan.ViewTemplateId = viewTemplateSection;
+                //plan.ViewTemplateId = viewTemplatePlan;
 
-
-                // Move tag on the view because it's on the family point now.
-                XYZ tagLocation = viewsBoxes.Facade.Transform.Origin;
-
-                double moveTagX = -(facade.RightDirection.X * TagPlacementOffsetX * scale);
-                double moveTagY = -(facade.RightDirection.Y * TagPlacementOffsetX * scale);
-                double moveTagZ = (viewsBoxes.Facade.Max.Y - viewsBoxes.Facade.Min.Y) / 2 - TagPlacementOffsetY * scale;
-                XYZ moveTag = new XYZ(moveTagX, moveTagY, moveTagZ);
-
-                XYZ tagLocationMoved = tagLocation.Add(moveTag);
-
-                Reference reference = new Reference(element);
-
-                IndependentTag.Create(Doc, tagType, facade.Id, reference, false, TagOrientation.Horizontal, tagLocationMoved);
-
-
-                plan.CropBox = viewsBoxes.Facade;
-                plan.CropBoxActive = true;
-
-
-                viewsData.Add(element, new Tuple<ViewSection, ViewSection, ViewPlan>(facade, section, plan));
+                viewsData.Add(element, new Tuple<ViewSection, ViewSection, ViewSection>(facade, section, plan));
             }
             return viewsData;
         }
@@ -579,13 +544,14 @@ namespace BIM_Leaders_Logic
         /// Get section box for section creating.
         /// </summary>
         /// <param name="element">Element that needs a section.</param>
-        private (BoundingBoxXYZ, BoundingBoxXYZ) GetSectionBoxes(Element element)
+        private (BoundingBoxXYZ, BoundingBoxXYZ, BoundingBoxXYZ) GetSectionBoxes(Element element)
         {
             BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
             BoundingBoxXYZ facadeBox = new BoundingBoxXYZ();
+            BoundingBoxXYZ planBox = new BoundingBoxXYZ();
 
             if (element.GetType() == typeof(FamilyInstance))
-                (sectionBox, facadeBox) = GetSectionBoxesInstance(element as FamilyInstance, SECTION_SIDES_EXTENSION);
+                (sectionBox, facadeBox, planBox) = GetSectionBoxesInstance(element as FamilyInstance, SECTION_SIDES_EXTENSION);
             else if (element.GetType() == typeof(Wall))
                 (sectionBox, facadeBox) = GetSectionBoxesWall(element as Wall, SECTION_SIDES_EXTENSION);
             else if (element.GetType() == typeof(Railing))
@@ -593,7 +559,7 @@ namespace BIM_Leaders_Logic
 
             }
 
-            return (sectionBox, facadeBox);
+            return (sectionBox, facadeBox, planBox);
         }
 
         /// <summary>
@@ -665,14 +631,15 @@ namespace BIM_Leaders_Logic
         /// <param name="familyInstance">Family instance to cut.</param>
         /// <param name="SECTION_SIDES_EXTENSION">Extension of the bounding box (will apply to left, right and far side).</param>
         /// <returns>Bounding box with right coordinates for section creating (Z is looking to the section direction, etc).</returns>
-        private (BoundingBoxXYZ, BoundingBoxXYZ) GetSectionBoxesInstance(FamilyInstance familyInstance, double SECTION_SIDES_EXTENSION)
+        private (BoundingBoxXYZ, BoundingBoxXYZ, BoundingBoxXYZ) GetSectionBoxesInstance(FamilyInstance familyInstance, double SECTION_SIDES_EXTENSION)
         {
-            BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
             BoundingBoxXYZ facadeBox = new BoundingBoxXYZ();
+            BoundingBoxXYZ sectionBox = new BoundingBoxXYZ();
+            BoundingBoxXYZ planBox = new BoundingBoxXYZ();
 
             ElementId elementTypeId = familyInstance.GetTypeId();
             if (elementTypeId == ElementId.InvalidElementId)
-                return (null, null);
+                return (null, null, null);
             Element elementType = familyInstance.Document.GetElement(elementTypeId);
 
             Wall wall = familyInstance.Host as Wall;
@@ -685,44 +652,77 @@ namespace BIM_Leaders_Logic
             double instanceWidth = elementType.GetParameter(ParameterTypeId.FamilyWidthParam).AsDouble();
             double wallHeight = wall.GetParameter(ParameterTypeId.WallUserHeightParam).AsDouble();
 #endif
+            // Get cropping dimensions, cropping will cover size of the element + extension.
+            // For section cropping box, depth will be only half of the element + extenxion.
+            double croppingBoxDepth = wallThickness + 2 * SECTION_SIDES_EXTENSION;
+            double croppingBoxWidth = instanceWidth + 2 * SECTION_SIDES_EXTENSION;
+            double croppingBoxWidthHalf = instanceWidth / 2 + SECTION_SIDES_EXTENSION;
+            double croppingBoxHeight = wallHeight + 2 * SECTION_SIDES_EXTENSION;
 
-            // Get box dimensions, box will cover one half of the element + extension.
-            double sectionBoxOriginalWidth = wallThickness + 2 * SECTION_SIDES_EXTENSION;
-            double sectionBoxOriginalDepth = instanceWidth / 2 + SECTION_SIDES_EXTENSION;
-            double sectionBoxOriginalHeight = wallHeight + 2 * SECTION_SIDES_EXTENSION;
-            // Box will be rotated, so depth and height will interchange.
-            double sectionBoxWidth = sectionBoxOriginalWidth;
-            double sectionBoxDepth = sectionBoxOriginalHeight;
-            double sectionBoxHeight = sectionBoxOriginalDepth;
+            double facadeBoxWidth = croppingBoxWidth;
+            double facadeBoxDepth = croppingBoxHeight;
+            double facadeBoxHeight = croppingBoxDepth;
 
-            // Change the dimensions of the section box.
+            // Box will be rotated, so width and height will interchange.
+            double sectionBoxWidth = croppingBoxDepth;
+            double sectionBoxDepth = croppingBoxHeight;
+            double sectionBoxHeight = croppingBoxWidthHalf;
+
+            // Plan will be created with section view.
+            // Depth here is absolute Z. Height here is plan height on sheet.
+            double planBoxWidth = croppingBoxWidth;
+            double planBoxDepth = croppingBoxHeight;
+            double planBoxHeight = croppingBoxDepth;
+
+            Transform instanceTransform = familyInstance.GetTransform();
+
+            // Change the dimensions of the section boxes.
+            XYZ facadeBoxMin = new XYZ(-facadeBoxWidth / 2, -facadeBoxDepth / 2, 0);
+            XYZ facadeBoxMax = new XYZ(facadeBoxWidth / 2, facadeBoxDepth / 2, facadeBoxHeight);
+            facadeBox.Min = facadeBoxMin;
+            facadeBox.Max = facadeBoxMax;
             XYZ sectionBoxMin = new XYZ(-sectionBoxWidth / 2, -sectionBoxDepth / 2, 0);
             XYZ sectionBoxMax = new XYZ(sectionBoxWidth / 2, sectionBoxDepth / 2, sectionBoxHeight);
             sectionBox.Min = sectionBoxMin;
             sectionBox.Max = sectionBoxMax;
+            XYZ planBoxMin = new XYZ(-planBoxWidth / 2, -planBoxHeight / 2, instanceTransform.Origin.Z - SECTION_SIDES_EXTENSION);
+            XYZ planBoxMax = new XYZ(planBoxWidth / 2, planBoxHeight / 2, instanceTransform.Origin.Z + 5 * SECTION_SIDES_EXTENSION);
+            planBox.Min = planBoxMin;
+            planBox.Max = planBoxMax;
 
             // Move the sexion box to the needed coordinates via Transform.
 
             // Get element transform (location, rotation, etc.).
             // Change it via Z rotation because we need to see not front of element but side of it
             // Change it via X rotation because for section creating Z is looking from section front.
-            Transform instanceTransform = familyInstance.GetTransform();
 
             Transform rotationZ = Transform.CreateRotation(new XYZ(0, 0, 1), -Math.PI / 2);
             Transform rotationX = Transform.CreateRotation(new XYZ(1, 0, 0), Math.PI / 2);
+            Transform rotation2Z = Transform.CreateRotation(new XYZ(0, 0, 1), -Math.PI);
+            Transform rotation2X = Transform.CreateRotation(new XYZ(1, 0, 0), Math.PI);
+
             Transform rotationSection = rotationZ.Multiply(rotationX);
-            Transform rotationFacade = rotationZ;
+            Transform rotationFacade = rotationX;
+            Transform rotationPlan = rotation2Z.Multiply(rotation2X);
+
             Transform instanceTransformSectionRotated = instanceTransform.Multiply(rotationSection);
             Transform instanceTransformFacadeRotated = instanceTransform.Multiply(rotationFacade);
+            Transform instanceTransformPlanRotated = instanceTransform.Multiply(rotationPlan);
 
-            Transform moveUp = Transform.CreateTranslation(new XYZ(0, sectionBoxOriginalHeight / 2 - SECTION_SIDES_EXTENSION, 0));
+            Transform moveUp = Transform.CreateTranslation(new XYZ(0, wallHeight / 2, 0));
+            Transform moveFromWall = Transform.CreateTranslation(new XYZ(0, 0, -croppingBoxDepth / 2));
+            Transform moveUpPlan = Transform.CreateTranslation(new XYZ(0, 0, -5 * SECTION_SIDES_EXTENSION));
+
             Transform instanceTransformSectionRaised = instanceTransformSectionRotated.Multiply(moveUp);
             Transform instanceTransformFacadeRaised = instanceTransformFacadeRotated.Multiply(moveUp);
+            Transform instanceTransformFacadeFromWall = instanceTransformFacadeRaised.Multiply(moveFromWall);
+            Transform instanceTransformPlanRaised = instanceTransformPlanRotated.Multiply(moveUpPlan);
 
             sectionBox.Transform = instanceTransformSectionRaised;
-            facadeBox.Transform = instanceTransformFacadeRaised;
+            facadeBox.Transform = instanceTransformFacadeFromWall;
+            planBox.Transform = instanceTransformPlanRaised;
 
-            return (sectionBox, facadeBox);
+            return (sectionBox, facadeBox, planBox);
         }
 
         /// <summary>
@@ -870,20 +870,7 @@ namespace BIM_Leaders_Logic
             return (sectionBox, facadeBox);
         }
 
-        /// <summary>
-        /// Get point of the location for Family Instance element.
-        /// </summary>
-        /// <param name="element">Element to calculate the location point.</param>
-        /// <returns>XYZ location point.</returns>
-        private XYZ GetElementLocationInstance(FamilyInstance familyInstance)
-        {
-            Transform instanceTransform = familyInstance.GetTransform();
-            XYZ instanceLocation = instanceTransform.Origin;
-
-            return instanceLocation;
-        }
-
-        private void CreateListSheets(ListType listType, Dictionary<Element, Tuple<ViewSection, ViewSection, ViewPlan>> viewsData)
+        private void CreateListSheets(ListType listType, Dictionary<Element, Tuple<ViewSection, ViewSection, ViewSection>> viewsData)
         {
             ElementId titleblockType = new ElementId(SelectedTitleBlock);
 
@@ -908,7 +895,7 @@ namespace BIM_Leaders_Logic
 
             ElementId viewportType = GetViewportType();
 
-            foreach (KeyValuePair<Element, Tuple<ViewSection, ViewSection, ViewPlan>> viewData in viewsData)
+            foreach (KeyValuePair<Element, Tuple<ViewSection, ViewSection, ViewSection>> viewData in viewsData)
             {
                 ViewSheet sheet = ViewSheet.Create(Doc, titleblockType);
                 sheet.SheetNumber = $"A90.{sheetNumberType}.{sheetNumberCount:D2}";
@@ -922,6 +909,13 @@ namespace BIM_Leaders_Logic
                 viewportFacade.ChangeTypeId(viewportType);
                 viewportSection.ChangeTypeId(viewportType);
                 viewportPlan.ChangeTypeId(viewportType);
+
+                if (listType == ListType.Aluminium)
+                    _countSheetsAluminium++;
+                else if (listType == ListType.Metal)
+                    _countSheetsMetal++;
+                else if (listType == ListType.Carpentry)
+                    _countSheetsCarpentry++;
             }
         }
 
@@ -944,6 +938,42 @@ namespace BIM_Leaders_Logic
             return viewportTypes.FirstOrDefault().Id;
         }
 
+        /// <summary>
+        /// Place tags on views.
+        /// </summary>
+        private void PlaceTags(ListType listType, Dictionary<Element, Tuple<ViewSection, ViewSection, ViewSection>> viewsData)
+        {
+            int tagTypeId = 0;
+            switch (listType)
+            {
+                case ListType.Aluminium: tagTypeId = SelectedTagGenAluminium; break;
+                case ListType.Metal: tagTypeId = SelectedTagGenMetal; break;
+                case ListType.Carpentry: tagTypeId = SelectedTagGenCarpentry; break;
+            }
+            ElementId tagType = new ElementId(tagTypeId);
+
+            foreach (KeyValuePair<Element, Tuple<ViewSection, ViewSection, ViewSection>> viewData in viewsData)
+            {
+                ViewSection view = viewData.Value.Item1;
+                double scale = view.Scale;
+
+                // Move tag on the view because it's on the family point now.
+                //XYZ tagLocation = viewsBoxes.Facade.Transform.Origin;
+                XYZ tagLocation = view.Origin;
+
+                double moveTagX = -(view.RightDirection.X * TagPlacementOffsetX * scale);
+                double moveTagY = -(view.RightDirection.Y * TagPlacementOffsetX * scale);
+                double moveTagZ = (view.CropBox.Max.Z - view.CropBox.Min.Z) / 2 - TagPlacementOffsetY * scale;
+                XYZ moveTag = new XYZ(moveTagX, moveTagY, moveTagZ);
+
+                XYZ tagLocationMoved = tagLocation.Add(moveTag);
+
+                Reference reference = new Reference(viewData.Key);
+
+                IndependentTag.Create(Doc, tagType, view.Id, reference, false, TagOrientation.Horizontal, tagLocationMoved);
+            }
+        }
+
         private enum ListType
         {
             Aluminium,
@@ -953,27 +983,27 @@ namespace BIM_Leaders_Logic
 
         private protected override string GetRunResult()
         {
-            if (_countViewsAluminium == 0 &&
-                _countViewsMetal == 0 &&
-                _countViewsCarpentry == 0
+            if (_countSheetsAluminium == 0 &&
+                _countSheetsMetal == 0 &&
+                _countSheetsCarpentry == 0
                 )
                 return "No lists created.";
 
             string text = "";
 
-            if (_countViewsAluminium > 0)
-                text += $"{_countViewsAluminium} alumimium";
-            if (_countViewsMetal > 0)
+            if (_countSheetsAluminium > 0)
+                text += $"{_countSheetsAluminium} alumimium";
+            if (_countSheetsMetal > 0)
             {
                 if (text.Length > 0)
                     text += $", ";
-                text += $"{_countViewsAluminium} metal";
+                text += $"{_countSheetsAluminium} metal";
             }  
-            if (_countViewsCarpentry > 0)
+            if (_countSheetsCarpentry > 0)
             {
                 if (text.Length > 0)
                     text += $", ";
-                text += $"{_countViewsCarpentry} carpentry";
+                text += $"{_countSheetsCarpentry} carpentry";
             }
 
             text += " lists were created.";

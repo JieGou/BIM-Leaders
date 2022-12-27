@@ -471,20 +471,20 @@ namespace BIM_Leaders_Windows
             TagGenMetalListSelected = TagGenMetalList.First().Value;
             TagGenCarpentryList = Model.GetTagGenList();
             TagGenCarpentryListSelected = TagGenCarpentryList.First().Value;
-            TagPlacementOffsetX = 177.5;
+            TagPlacementOffsetX = 73;
             TagPlacementOffsetXstring = TagPlacementOffsetX.ToString();
-            TagPlacementOffsetY = 248.7;
+            TagPlacementOffsetY = 166;
             TagPlacementOffsetYstring = TagPlacementOffsetY.ToString();
 
             TitleBlockList = Model.GetTitleBlockList();
             TitleBlockListSelected = TitleBlockList.First().Value;
-            FacadePlacementOffsetX = 177.5;
+            FacadePlacementOffsetX = 87.2;
             FacadePlacementOffsetXstring = FacadePlacementOffsetX.ToString();
-            FacadePlacementOffsetY = 248.7;
+            FacadePlacementOffsetY = 211.3;
             FacadePlacementOffsetYstring = FacadePlacementOffsetY.ToString();
-            SectionPlacementOffsetX = 177.5;
+            SectionPlacementOffsetX = 189.2;
             SectionPlacementOffsetXstring = SectionPlacementOffsetX.ToString();
-            PlanPlacementOffsetY = 248.7;
+            PlanPlacementOffsetY = 133.0;
             PlanPlacementOffsetYstring = PlanPlacementOffsetY.ToString();
         }
 
@@ -537,28 +537,28 @@ namespace BIM_Leaders_Windows
                     break;
 
                 case "FacadePlacementOffsetXstring":
-                    error = ValidateNumber(out double facadePlacementOffsetX, TagPlacementOffsetXstring);
+                    error = ValidateNumber(out double facadePlacementOffsetX, FacadePlacementOffsetXstring);
                     if (string.IsNullOrEmpty(error))
                     {
                         FacadePlacementOffsetX = facadePlacementOffsetX;
                     }
                     break;
                 case "FacadePlacementOffsetYstring":
-                    error = ValidateNumber(out double facadePlacementOffsetY, TagPlacementOffsetYstring);
+                    error = ValidateNumber(out double facadePlacementOffsetY, FacadePlacementOffsetYstring);
                     if (string.IsNullOrEmpty(error))
                     {
                         FacadePlacementOffsetY = facadePlacementOffsetY;
                     }
                     break;
                 case "SectionPlacementOffsetXstring":
-                    error = ValidateNumber(out double sectionPlacementOffsetX, TagPlacementOffsetXstring);
+                    error = ValidateNumber(out double sectionPlacementOffsetX, SectionPlacementOffsetXstring);
                     if (string.IsNullOrEmpty(error))
                     {
                         SectionPlacementOffsetX = sectionPlacementOffsetX;
                     }
                     break;
                 case "PlanPlacementOffsetYstring":
-                    error = ValidateNumber(out double planPlacementOffsetY, TagPlacementOffsetYstring);
+                    error = ValidateNumber(out double planPlacementOffsetY, PlanPlacementOffsetYstring);
                     if (string.IsNullOrEmpty(error))
                     {
                         PlanPlacementOffsetY = planPlacementOffsetY;
