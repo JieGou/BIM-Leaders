@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Policy;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
@@ -23,36 +21,39 @@ namespace BIM_Leaders_Logic
         #region PROPERTIES
 
         // Input
+        public bool CreateAluminium { get; set; }
+        public bool CreateMetal { get; set; }
+        public bool CreateCarpentry { get; set; }
+        public string TypeNamePrefixAluminiumWalls { get; set; }
+        public string TypeCommentsAluminium { get; set; }
+        public string TypeCommentsMetal { get; set; }
+        public string TypeCommentsCarpentry { get; set; }
+        public bool SortIsNeeded { get; set; }
+
+        public string ViewNamePrefix { get; set; }
         public int SelectedViewTypeSection { get; set; }
         public int SelectedViewTemplateSection { get; set; }
         public int SelectedViewTypePlan { get; set; }
         public int SelectedViewTemplatePlan { get; set; }
-        public string ViewNamePrefix { get; set; }
-
-        public bool SortIsNeeded { get; set; }
-
-        public bool CreateAluminium { get; set; }
-        public string TypeCommentsAluminium { get; set; }
+        
         public int SelectedTagGenAluminium { get; set; }
-        public string TypeNamePrefixAluminiumWalls { get; set; }
-
-        public bool CreateMetal { get; set; }
-        public string TypeCommentsMetal { get; set; }
         public int SelectedTagGenMetal { get; set; }
-
-        public bool CreateCarpentry { get; set; }
-        public string TypeCommentsCarpentry { get; set; }
         public int SelectedTagGenCarpentry { get; set; }
-
         public int SelectedTagRailing { get; set; }
-
-        public int SelectedTitleBlock { get; set; }
         public double TagPlacementOffsetXmm { get; set; }
         public double TagPlacementOffsetYmm { get; set; }
-
-        // Converted
         public double TagPlacementOffsetX { get; private set; }
         public double TagPlacementOffsetY { get; private set; }
+
+        public int SelectedTitleBlock { get; set; }
+        public double FacadePlacementOffsetXmm { get; set; }
+        public double FacadePlacementOffsetYmm { get; set; }
+        public double FacadePlacementOffsetX { get; private set; }
+        public double FacadePlacementOffsetY { get; private set; }
+        public double SectionPlacementOffsetXmm { get; set; }
+        public double SectionPlacementOffsetX { get; private set; }
+        public double PlanPlacementOffsetYmm { get; set; }
+        public double PlanPlacementOffsetY { get; private set; }
 
         #endregion
 
@@ -213,9 +214,17 @@ namespace BIM_Leaders_Logic
 #if VERSION2020
 			TagPlacementOffsetX = UnitUtils.ConvertToInternalUnits(TagPlacementOffsetXmm, DisplayUnitType.DUT_MILLIMETERS);
 			TagPlacementOffsetY = UnitUtils.ConvertToInternalUnits(TagPlacementOffsetYmm, DisplayUnitType.DUT_MILLIMETERS);
+            FacadePlacementOffsetX = UnitUtils.ConvertToInternalUnits(FacadePlacementOffsetXmm, DisplayUnitType.DUT_MILLIMETERS);
+			FacadePlacementOffsetY = UnitUtils.ConvertToInternalUnits(FacadePlacementOffsetYmm, DisplayUnitType.DUT_MILLIMETERS);
+            SectionPlacementOffsetX = UnitUtils.ConvertToInternalUnits(SectionPlacementOffsetXmm, DisplayUnitType.DUT_MILLIMETERS);
+			PlanPlacementOffsetY = UnitUtils.ConvertToInternalUnits(PlanPlacementOffsetYmm, DisplayUnitType.DUT_MILLIMETERS);
 #else
             TagPlacementOffsetX = UnitUtils.ConvertToInternalUnits(TagPlacementOffsetXmm, UnitTypeId.Millimeters);
             TagPlacementOffsetY = UnitUtils.ConvertToInternalUnits(TagPlacementOffsetYmm, UnitTypeId.Millimeters);
+            FacadePlacementOffsetX = UnitUtils.ConvertToInternalUnits(FacadePlacementOffsetXmm, UnitTypeId.Millimeters);
+            FacadePlacementOffsetY = UnitUtils.ConvertToInternalUnits(FacadePlacementOffsetYmm, UnitTypeId.Millimeters);
+            SectionPlacementOffsetX = UnitUtils.ConvertToInternalUnits(SectionPlacementOffsetXmm, UnitTypeId.Millimeters);
+            PlanPlacementOffsetY = UnitUtils.ConvertToInternalUnits(PlanPlacementOffsetYmm, UnitTypeId.Millimeters);
 #endif
         }
 
@@ -271,7 +280,7 @@ namespace BIM_Leaders_Logic
                 elements = SortElements(elements);
 
             MarkElements(elements);
-            List<View> views = CreateListViews(listType, elements);
+            var views = CreateListViews(listType, elements);
 
             CreateListSheets(listType, views);
 
@@ -461,13 +470,14 @@ namespace BIM_Leaders_Logic
             }
         }
 
-        //Dictionary<Element, Tuple<View, View, View>>
         /// <summary>
         /// Create views for given list elements.
         /// </summary>
-        /// <returns>List of created views.</returns>
-        private List<View> CreateListViews(ListType listType, List<Element> elements)
+        /// <returns>Dictionary of elements and views created for them.</returns>
+        private Dictionary<Element, Tuple<ViewSection, ViewSection, ViewPlan>> CreateListViews(ListType listType, List<Element> elements)
         {
+            var viewsData = new Dictionary<Element, Tuple<ViewSection, ViewSection, ViewPlan>>();
+
             if (elements == null || elements.Count == 0)
                 return null;
 
@@ -485,8 +495,6 @@ namespace BIM_Leaders_Logic
             }
             ElementId tagType = new ElementId(tagTypeId);
 
-            List<View> viewsCreated = new List<View>();
-
             View view = Doc.GetElement(viewTemplateSection) as View;
             double scale = view.Scale;
 
@@ -494,23 +502,23 @@ namespace BIM_Leaders_Logic
             {
                 (BoundingBoxXYZ Section, BoundingBoxXYZ Facade) viewsBoxes = GetSectionBoxes(element);
 
-                ViewSection section = ViewSection.CreateSection(Doc, viewTypeSection, viewsBoxes.Section);
                 ViewSection facade = ViewSection.CreateSection(Doc, viewTypeSection, viewsBoxes.Facade);
+                ViewSection section = ViewSection.CreateSection(Doc, viewTypeSection, viewsBoxes.Section);
                 ViewPlan plan = ViewPlan.Create(Doc, viewTypePlan, element.LevelId);
 
                 string typeMark = GetTypeMark(element);
                 if (typeMark == "")
                     throw new InvalidOperationException($"Error creating views. Element {element.Id} has empty Type Mark.");
-                
-                try { section.Name = ViewNamePrefix + typeMark + "_S"; }
-                catch
-                {
-                    throw new InvalidOperationException($"Error naming views. View with name {section.Name} exist.");
-                }
+
                 try { facade.Name = ViewNamePrefix + typeMark + "_F"; }
                 catch
                 {
                     throw new InvalidOperationException($"Error naming views. View with name {facade.Name} exist.");
+                }
+                try { section.Name = ViewNamePrefix + typeMark + "_S"; }
+                catch
+                {
+                    throw new InvalidOperationException($"Error naming views. View with name {section.Name} exist.");
                 }
                 try { plan.Name = ViewNamePrefix + typeMark + "_P"; }
                 catch
@@ -518,29 +526,33 @@ namespace BIM_Leaders_Logic
                     throw new InvalidOperationException($"Error naming views. View with name {plan.Name} exist.");
                 }
 
-                section.ViewTemplateId = viewTemplateSection;
                 facade.ViewTemplateId = viewTemplateSection;
+                section.ViewTemplateId = viewTemplateSection;
                 plan.ViewTemplateId = viewTemplatePlan;
 
-                viewsCreated.Add(section);
 
                 // Move tag on the view because it's on the family point now.
-                XYZ tagLocation = viewsBoxes.Section.Transform.Origin;
+                XYZ tagLocation = viewsBoxes.Facade.Transform.Origin;
 
-                double moveTagX = -(section.RightDirection.X * TagPlacementOffsetX * scale);
-                double moveTagY = -(section.RightDirection.Y * TagPlacementOffsetX * scale);
-                double moveTagZ = (viewsBoxes.Section.Max.Y - viewsBoxes.Section.Min.Y) / 2 - TagPlacementOffsetY * scale;
+                double moveTagX = -(facade.RightDirection.X * TagPlacementOffsetX * scale);
+                double moveTagY = -(facade.RightDirection.Y * TagPlacementOffsetX * scale);
+                double moveTagZ = (viewsBoxes.Facade.Max.Y - viewsBoxes.Facade.Min.Y) / 2 - TagPlacementOffsetY * scale;
                 XYZ moveTag = new XYZ(moveTagX, moveTagY, moveTagZ);
 
                 XYZ tagLocationMoved = tagLocation.Add(moveTag);
 
                 Reference reference = new Reference(element);
 
-                IndependentTag.Create(Doc, tagType, section.Id, reference, false, TagOrientation.Horizontal, tagLocationMoved);
-                
-                // ADD FACADE AND PLAN TO RETURN
+                IndependentTag.Create(Doc, tagType, facade.Id, reference, false, TagOrientation.Horizontal, tagLocationMoved);
+
+
+                plan.CropBox = viewsBoxes.Facade;
+                plan.CropBoxActive = true;
+
+
+                viewsData.Add(element, new Tuple<ViewSection, ViewSection, ViewPlan>(facade, section, plan));
             }
-            return viewsCreated;
+            return viewsData;
         }
 
         /// <summary>
@@ -871,7 +883,7 @@ namespace BIM_Leaders_Logic
             return instanceLocation;
         }
 
-        private void CreateListSheets(ListType listType, List<View> views)
+        private void CreateListSheets(ListType listType, Dictionary<Element, Tuple<ViewSection, ViewSection, ViewPlan>> viewsData)
         {
             ElementId titleblockType = new ElementId(SelectedTitleBlock);
 
@@ -890,15 +902,13 @@ namespace BIM_Leaders_Logic
             }
             int sheetNumberCount = 1;
 
-            // TEMP
-            double SectionPlacementOffsetX = 0;
-            double SectionPlacementOffsetY = 0;
+            XYZ viewportPointFacade = new XYZ(FacadePlacementOffsetX, FacadePlacementOffsetY, 0);
+            XYZ viewportPointSection = new XYZ(SectionPlacementOffsetX, FacadePlacementOffsetY, 0);
+            XYZ viewportPointPlan = new XYZ(FacadePlacementOffsetX, PlanPlacementOffsetY, 0);
 
-
-            XYZ placementPoint = new XYZ(SectionPlacementOffsetX, SectionPlacementOffsetY, 0);
             ElementId viewportType = GetViewportType();
 
-            foreach (View view in views)
+            foreach (KeyValuePair<Element, Tuple<ViewSection, ViewSection, ViewPlan>> viewData in viewsData)
             {
                 ViewSheet sheet = ViewSheet.Create(Doc, titleblockType);
                 sheet.SheetNumber = $"A90.{sheetNumberType}.{sheetNumberCount:D2}";
@@ -906,8 +916,12 @@ namespace BIM_Leaders_Logic
 
                 sheetNumberCount++;
 
-                Viewport viewport = Viewport.Create(Doc, sheet.Id, view.Id, placementPoint);
-                viewport.ChangeTypeId(viewportType);
+                Viewport viewportFacade = Viewport.Create(Doc, sheet.Id, viewData.Value.Item1.Id, viewportPointFacade);
+                Viewport viewportSection = Viewport.Create(Doc, sheet.Id, viewData.Value.Item2.Id, viewportPointSection);
+                Viewport viewportPlan = Viewport.Create(Doc, sheet.Id, viewData.Value.Item3.Id, viewportPointPlan);
+                viewportFacade.ChangeTypeId(viewportType);
+                viewportSection.ChangeTypeId(viewportType);
+                viewportPlan.ChangeTypeId(viewportType);
             }
         }
 

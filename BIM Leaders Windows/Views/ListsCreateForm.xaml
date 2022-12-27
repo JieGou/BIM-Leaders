@@ -190,6 +190,38 @@
                             <ComboBox x:Name="titleblockList" SelectedValue="{Binding TitleBlockListSelected, Mode=TwoWay}" DisplayMemberPath="Key" SelectedValuePath="Value"
                                       ItemsSource="{Binding TitleBlockList, Mode=OneWay}"
                                       Style="{StaticResource SComboBox}" />
+
+                            <Label Content="Facade Placement Offset X (mm)"
+                                   Style="{StaticResource SLabelBold}" Margin="-5,21,0,0" />
+                            <TextBox x:Name="textboxFacadePlacementOffsetXstring" ToolTip="Move facade view by given coordinates from the the sheet origin. After this move facade must be inside of tag's table."
+                                     Text="{Binding FacadePlacementOffsetXstring, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                     Style="{StaticResource STextBox}" />
+                            <TextBlock Text="{Binding ElementName=textboxFacadePlacementOffsetXstring, Path=(Validation.Errors)[0].ErrorContent}"
+                                       Style="{StaticResource STextBlockError}" />
+
+                            <Label Content="Facade Placement Offset Y (mm)"
+                                   Style="{StaticResource SLabelBold}" />
+                            <TextBox x:Name="textboxFacadePlacementOffsetYstring" ToolTip="Move facade view by given coordinates from the sheet origin. After this move facade must be inside of tag's table."
+                                     Text="{Binding FacadePlacementOffsetYstring, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                     Style="{StaticResource STextBox}" />
+                            <TextBlock Text="{Binding ElementName=textboxFacadePlacementOffsetYstring, Path=(Validation.Errors)[0].ErrorContent}"
+                                       Style="{StaticResource STextBlockError}" />
+
+                            <Label Content="Section Placement Offset X (mm)"
+                                   Style="{StaticResource SLabelBold}" Margin="-5,21,0,0" />
+                            <TextBox x:Name="textboxSectionPlacementOffsetXstring" ToolTip="Move section view by given coordinates from the the sheet origin. After this move section must be inside of tag's table."
+                                     Text="{Binding SectionPlacementOffsetXstring, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                     Style="{StaticResource STextBox}" />
+                            <TextBlock Text="{Binding ElementName=textboxSectionPlacementOffsetXstring, Path=(Validation.Errors)[0].ErrorContent}"
+                                       Style="{StaticResource STextBlockError}" />
+
+                            <Label Content="Plan Placement Offset Y (mm)"
+                                   Style="{StaticResource SLabelBold}" Margin="-5,21,0,0" />
+                            <TextBox x:Name="textboxPlanPlacementOffsetYstring" ToolTip="Move plan view by given coordinates from the sheet origin. After this move plan must be inside of tag's table."
+                                     Text="{Binding PlanPlacementOffsetYstring, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                     Style="{StaticResource STextBox}" />
+                            <TextBlock Text="{Binding ElementName=textboxPlanPlacementOffsetYstring, Path=(Validation.Errors)[0].ErrorContent}"
+                                       Style="{StaticResource STextBlockError}" />
                         </StackPanel>
 
                     </Grid>
@@ -205,16 +237,23 @@
                                 Style="{StaticResource SButtonOk}" Width="270">
                             <Button.IsEnabled>
                                 <MultiBinding Converter="{StaticResource MultivalueBoolInvert}" Mode="TwoWay">
-                                    <Binding ElementName="textboxViewNamePrefix" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
-                                    <Binding ElementName="textboxTypeCommentsAluminium" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
-                                    <Binding ElementName="textboxTypeNamePrefixAluminiumWalls" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
-                                    <Binding ElementName="textboxTypeCommentsMetal" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
-                                    <Binding ElementName="textboxTypeCommentsCarpentry" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="checkboxCreateAluminium" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="checkboxCreateMetal" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="checkboxCreateCarpentry" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxTypeNamePrefixAluminiumWalls" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxTypeCommentsAluminium" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxTypeCommentsMetal" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxTypeCommentsCarpentry" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+
+                                    <Binding ElementName="textboxViewNamePrefix" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+
                                     <Binding ElementName="textboxTagPlacementOffsetXstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                     <Binding ElementName="textboxTagPlacementOffsetYstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+
+                                    <Binding ElementName="textboxFacadePlacementOffsetXstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxFacadePlacementOffsetYstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxSectionPlacementOffsetXstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
+                                    <Binding ElementName="textboxPlanPlacementOffsetYstring" Path="(Validation.HasError)" UpdateSourceTrigger="PropertyChanged" Mode="OneWay" />
                                 </MultiBinding>
                             </Button.IsEnabled>
                         </Button>
