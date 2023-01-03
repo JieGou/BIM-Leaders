@@ -478,13 +478,13 @@ namespace BIM_Leaders_Windows
 
             TitleBlockList = Model.GetTitleBlockList();
             TitleBlockListSelected = TitleBlockList.First().Value;
-            FacadePlacementOffsetX = 87.2;
+            FacadePlacementOffsetX = 80.6;
             FacadePlacementOffsetXstring = FacadePlacementOffsetX.ToString();
-            FacadePlacementOffsetY = 211.3;
+            FacadePlacementOffsetY = 203.1;
             FacadePlacementOffsetYstring = FacadePlacementOffsetY.ToString();
-            SectionPlacementOffsetX = 189.2;
+            SectionPlacementOffsetX = 181.0;
             SectionPlacementOffsetXstring = SectionPlacementOffsetX.ToString();
-            PlanPlacementOffsetY = 133.0;
+            PlanPlacementOffsetY = 123.0;
             PlanPlacementOffsetYstring = PlanPlacementOffsetY.ToString();
         }
 

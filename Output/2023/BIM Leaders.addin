@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>BIM Leaders</Name>
+		<Assembly>BIM Leaders.dll</Assembly>
+		<AddInId>00FA9222-1F87-4A80-8117-252D13A640D4</AddInId>
+		<FullClassName>BIM_Leaders.Main</FullClassName>
+		<VendorId>Pinchuk</VendorId>
+		<VendorDescription>42</VendorDescription>
+	</AddIn>
+	<AddIn Type="DBApplication">
+		<Name>BIM Leaders DB</Name>
+		<Assembly>BIM Leaders.dll</Assembly>
+		<AddInId>CADBFF10-CE2C-4729-8CDE-B3F5E1ABB310</AddInId>
+		<FullClassName>BIM_Leaders.ExternalDBAppGroupRestore</FullClassName>
+		<Text>Group Restore in a Document</Text>
+		<Description>Event Register for Group Restore</Description>
+		<VendorId>Pinchuk</VendorId>
+		<VendorDescription>42</VendorDescription>
+	</AddIn>
+</RevitAddIns>

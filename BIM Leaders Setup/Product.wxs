@@ -3,16 +3,16 @@
 
 	<!-- Сhange ProductCode for creating major upgrade! -->
 	<?if $(var.Configuration)=2020 ?>
-	<?define ProductCode = "{63D66942-0A74-438B-B21B-F54DB79FF8AB}"?>
+	<?define ProductCode = "{00B2CB78-278A-47EC-B793-D3B0B18CC406}"?>
 	<?endif?>
 	<?if $(var.Configuration)=2021 ?>
-	<?define ProductCode = "{FA5ADA25-5487-4DDF-91B5-92E585EEC1E1}"?>
+	<?define ProductCode = "{78EA91DF-F8A5-4045-958C-4F6616FCFBDD}"?>
 	<?endif?>
 	<?if $(var.Configuration)=2022 ?>
-	<?define ProductCode = "{1BD4F3FC-5302-4D9A-BA15-D78101752724}"?>
+	<?define ProductCode = "{1BF5D31D-ED63-4F1B-8B8A-40C0BEBDC714}"?>
 	<?endif?>
 	<?if $(var.Configuration)=2023 ?>
-	<?define ProductCode = "{9137D687-21C0-46B9-9F04-476FEC2596C0}"?>
+	<?define ProductCode = "{93B639A1-4E21-48C4-908A-7D85B0F3A51D}"?>
 	<?endif?>
 
 	<!-- Do not change! Must be the same in all versions -->
@@ -22,7 +22,7 @@
 	<?define Company = "BIM Leaders"?>
 	<?define Description = "Revit Addin"?>
 	<?define Keywords = "revit, addin, plugin"?>
-	<?define Comments = "Developed in 2022 to make work easy"?>
+	<?define Comments = "Developed in 2023 to make work easy"?>
 	
 	<Product Id="$(var.ProductCode)"
 			 Name="BIM Leaders Addin"

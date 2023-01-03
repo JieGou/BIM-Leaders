@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BIM Leaders Resources")]
-[assembly: AssemblyCopyright("Copyright © 2022")]
+[assembly: AssemblyCopyright("Copyright © 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -16,6 +16,6 @@ using System.Runtime.InteropServices;
 
 // MainVersion.Version.Build.Edition
 // For updating the installation, new Build number needed.
-[assembly: AssemblyVersion("1.1.1.0")]
+[assembly: AssemblyVersion("1.1.2.0")]
 // MainVersion.Year.Month.Day
-[assembly: AssemblyFileVersion("1.22.12.2")]
+[assembly: AssemblyFileVersion("1.23.1.3")]

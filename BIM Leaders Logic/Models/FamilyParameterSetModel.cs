@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -147,54 +148,62 @@ namespace BIM_Leaders_Logic
             {
                 ElementId id = new ElementId(0);
 #if VERSION2023
-                switch (parameter.Definition.GetDataType())
+                ForgeTypeId ft = parameter.Definition.GetDataType();
+
+                if (ft == null)
+                    return;
+
+                if (Category.IsBuiltInCategory(ft))
                 {
-                    case ParameterType.Invalid:
-                        break;
-                    case ParameterType.Text:
-                        break;
-                    case ParameterType.Material:
-                        ICollection<ElementId> materialIds = new FilteredElementCollector(_doc)
-                            .OfClass(typeof(Material))
-                            .WhereElementIsNotElementType()
-                            .ToElementIds();
-                        foreach (ElementId materialId in materialIds)
-                            if (_doc.GetElement(materialId).Name == Value)
-                                id = materialId;
+                    ICollection<ElementId> familyTypeIds = new FilteredElementCollector(Doc)
+                        .OfClass(typeof(FamilyType))
+                        .WhereElementIsNotElementType()
+                        .ToElementIds();
+                    foreach (ElementId familyTypeId in familyTypeIds)
+                        if (Doc.GetElement(familyTypeId).Name == Value)
+                            id = familyTypeId;
 
-                        _doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF MATERIAL WITH GIVEN NAME NOT FOUND !!!
-                        _countParametersSet++;
-                        break;
+                    Doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF FAMILY TYPE WITH GIVEN NAME NOT FOUND !!!
+                    _countParametersSet++;
 
-                    case ParameterType.FamilyType:
-                        ICollection<ElementId> familyTypeIds = new FilteredElementCollector(_doc)
-                            .OfClass(typeof(FamilyType))
-                            .WhereElementIsNotElementType()
-                            .ToElementIds();
-                        foreach (ElementId familyTypeId in familyTypeIds)
-                            if (_doc.GetElement(familyTypeId).Name == Value)
-                                id = familyTypeId;
-
-                        _doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF FAMILY TYPE WITH GIVEN NAME NOT FOUND !!!
-                        _countParametersSet++;
-                        break;
-
-                    case ParameterType.Image:
-                        ICollection<ElementId> imageIds = new FilteredElementCollector(_doc)
-                            .OfClass(typeof(ImageType))
-                            .WhereElementIsNotElementType()
-                            .ToElementIds();
-                        foreach (ElementId imageId in imageIds)
-                            if (_doc.GetElement(imageId).Name == Value)
-                                id = imageId;
-
-                        _doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF IMAGE WITH GIVEN NAME NOT FOUND !!!
-                        _countParametersSet++;
-                        break;
-
-                    default:
-                        break;
+                    return;
                 }
+
+                if (ft == SpecTypeId.String.Text)
+                    return;
+
+                if (ft == SpecTypeId.Reference.Material)
+                {
+                    ICollection<ElementId> materialIds = new FilteredElementCollector(Doc)
+                        .OfClass(typeof(Material))
+                        .WhereElementIsNotElementType()
+                        .ToElementIds();
+                    foreach (ElementId materialId in materialIds)
+                        if (Doc.GetElement(materialId).Name == Value)
+                            id = materialId;
+
+                    Doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF MATERIAL WITH GIVEN NAME NOT FOUND !!!
+                    _countParametersSet++;
+
+                    return;
+                }
+
+                if (ft == SpecTypeId.Reference.Image)
+                {
+                    ICollection<ElementId> imageIds = new FilteredElementCollector(Doc)
+                        .OfClass(typeof(ImageType))
+                        .WhereElementIsNotElementType()
+                        .ToElementIds();
+                    foreach (ElementId imageId in imageIds)
+                        if (Doc.GetElement(imageId).Name == Value)
+                            id = imageId;
+
+                    Doc.FamilyManager.Set(parameter, id); // NEED TO ADD ERROR IF IMAGE WITH GIVEN NAME NOT FOUND !!!
+                    _countParametersSet++;
+
+                    return;
+                }
+                
 #else
 switch (parameter.Definition.ParameterType)
                 {
